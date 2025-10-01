@@ -737,6 +737,7 @@ const Header = ({ onAction }) => {
               gap: 2,
             }}
           >
+            {/* Logo */}
             <Box
               component="img"
               src={logo}
@@ -748,20 +749,55 @@ const Header = ({ onAction }) => {
               }}
             />
 
-            <Button
-              variant="contained"
-              onClick={() => navigate("/register")}
-              sx={{
-                borderRadius: 1,
-                px: 3,
-                py: 1,
-                textTransform: "none",
-                fontWeight: "bold",
-              }}
-              aria-label="سجل الآن"
-            >
-              {t ? t("apply_now") : "سجل الآن"}
-            </Button>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              {/* Language Switch */}
+              <Box
+                sx={{ display: "flex", alignItems: "center", cursor: "pointer",  color:theme.palette.primary.main}}
+                onClick={handleLangMenuOpen}
+              >
+                <LanguageIcon
+                  sx={{
+                    width: 28,
+                    height: 28,
+                    mr: 1,
+                    filter: theme.palette.mode === "dark" ? "invert(1)" : "none",
+                  }}
+                />
+                <Typography
+                  variant="body1"
+                  fontWeight="bold"
+                  sx={{ display: { xs: "none", sm: "block" }, mx: 1 , color:theme.palette.primary.main}}
+                >
+                  {i18n.language === "en" ? "EN" : "AR"}
+                </Typography>
+                {langMenuAnchor ? <ArrowDropUp /> : <ArrowDropDown />}
+              </Box>
+
+              <Menu
+                anchorEl={langMenuAnchor}
+                open={Boolean(langMenuAnchor)}
+                onClose={handleLangMenuClose}
+              >
+                <MenuItem onClick={() => changeLanguage("en")}>English</MenuItem>
+                <MenuItem onClick={() => changeLanguage("ar")}>العربية</MenuItem>
+              </Menu>
+
+              {/* Apply Button */}
+              <Button
+                variant="contained"
+                onClick={() => navigate("/register")}
+                sx={{
+                  borderRadius: 1,
+                  px: 3,
+                  py: 1,
+                  textTransform: "none",
+                  fontWeight: "bold",
+                }}
+                aria-label="سجل الآن"
+              >
+                {t("apply_now")}
+              </Button>
+            </Box>
           </Box>
         </Toolbar>
       </AppBar>

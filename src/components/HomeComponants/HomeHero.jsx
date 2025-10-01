@@ -3,35 +3,35 @@ import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { ReactComponent as VisionIcon } from "../../assets/vision.svg";
 import { ReactComponent as MissionIcon } from "../../assets/mission.svg";
 import { ReactComponent as GoalsIcon } from "../../assets/goal.svg";
+import { useTranslation } from "react-i18next";
 
 export default function HomeHero() {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
   const heroHeight = isSm ? 480 : 854;
+  const { t } = useTranslation();
 
   const cards = [
     {
       key: "vision",
       Icon: VisionIcon,
-      title: "Our Vision",
-      desc:
-        "To be a leading institution recognized for its commitment to academic excellence, research, and community engagement.",
+      title: t("vision_title"),
+      desc: t("vision_desc"),
     },
     {
       key: "mission",
       Icon: MissionIcon,
-      title: "Our Mission",
-      desc:
-        "To provide a transformative educational experience that prepares students to be leaders and innovators in a global society.",
+      title: t("mission_title"),
+      desc: t("mission_desc"),
     },
     {
       key: "goals",
       Icon: GoalsIcon,
-      title: "Our Goals",
-      desc:
-        "To advance knowledge through impactful research, foster a diverse and inclusive community, and contribute to the betterment of society.",
+      title: t("goals_title"),
+      desc: t("goals_desc"),
     },
   ];
+  
 
   return (
     <Box>
@@ -73,14 +73,14 @@ export default function HomeHero() {
               variant={isSm ? "h5" : "h3"}
               sx={{ fontWeight: "bold", color: theme.palette.secondary.main }}
             >
-              UNIVERSITY OF ACADEMIC SCIENCES
-            </Typography>
+  {t("university_title")}
+  </Typography>
             <Typography
               variant={isSm ? "body1" : "h6"}
               sx={{ mt: 1, color: theme.palette.primary.contrastText }}
             >
-              Welcome to our new website
-            </Typography>
+  {t("welcome_message")}
+  </Typography>
           </Box>
 
           {/* النص الجديد على خلفية غامقة */}
@@ -99,14 +99,7 @@ export default function HomeHero() {
                 lineHeight: 1.7,
               }}
             >
-              The University of Innovation is dedicated to providing a world-class
-              education that empowers students to succeed in their chosen fields.
-              Our faculty and staff are committed to fostering a supportive and
-              challenging learning environment. The University of Innovation is
-              dedicated to providing a world-class education that empowers students
-              to succeed in their chosen fields. Our faculty and staff are
-              committed to fostering a supportive and challenging learning
-              environment.
+             {t("university_description")}
             </Typography>
           </Box>
         </Box>
@@ -143,10 +136,10 @@ export default function HomeHero() {
               >
                 <Icon sx={{ fontSize: 40, mb: 1, color: theme.palette.secondary.main }} />
                 <Typography variant="h6" sx={{ fontWeight: "bold", color: theme.palette.secondary.main }}>
-                  {c.title}
+                  {t(c.title)}
                 </Typography>
                 <Typography variant="body2" sx={{ mt: 1.5, color: theme.palette.primary.main }}>
-                  {c.desc}
+                  {t(c.desc)}
                 </Typography>
               </Box>
             );

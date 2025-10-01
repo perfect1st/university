@@ -31,5 +31,29 @@
   "Read More": "Read More",
   "Activities & Programs": "Activities & Programs",
   "Upcoming Events": "Upcoming Events",
-  "Future Academic Programs": "Future Academic Programs"
+  "Future Academic Programs": "Future Academic Programs",
+  "footer": {
+    "contact": "Contact Us",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "accessibility": "Accessibility",
+    "rights": "©2024 VUAS. All rights reserved."
+  },
+  "university_description": "The University of Innovation is dedicated to providing a world-class education that empowers students to succeed in their chosen fields. Our faculty and staff are committed to fostering a supportive and challenging learning environment. The University of Innovation is dedicated to providing a world-class education that empowers students to succeed in their chosen fields. Our faculty and staff are committed to fostering a supportive and challenging learning environment.",
+  "welcome_message": "Welcome to our new website",
+  "university_title": "UNIVERSITY OF ACADEMIC SCIENCES",
+  "vision_title": "Our Vision",
+  "vision_desc": "To be a leading institution recognized for its commitment to academic excellence, research, and community engagement.",
+
+  "mission_title": "Our Mission",
+  "mission_desc": "To provide a transformative educational experience that prepares students to be leaders and innovators in a global society.",
+
+  "goals_title": "Our Goals",
+  "goals_desc": "To advance knowledge through impactful research, foster a diverse and inclusive community, and contribute to the betterment of society.",
+  "terms_header": "Terms and Conditions for Student Admissions (2025/2026 Academic Year)",
+  "card1_title": "Application and Admission",
+  "card1_desc": "The application for admission to the program constitutes an offer by the candidate to join the university under these terms and conditions.\n- Admission is granted at the sole discretion of the university and is contingent upon meeting all specified academic and financial criteria.\n- All information provided in the application must be accurate and complete. The university reserves the right to revoke admission if any information is found to be false or misleading.",
+  "card2_title": "Academic Requirements",
+  "card2_desc": "Admission is conditional upon the submission of final, certified academic transcripts from the previous year of study (e.g., the 2024 academic year).\n- Students must meet the minimum grade requirements for their specific track (General, Modified Arab, or Foreign programs) as defined by the university and the Supreme Council of Universities.\n- The university reserves the right to amend its academic programs, course offerings, and regulations as it deems necessary.",
+  "accept_terms": "Accept Terms"
 }

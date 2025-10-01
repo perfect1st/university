@@ -37,9 +37,7 @@ export default function FutureVision() {
           </Typography>
 
           <Typography variant="body1" sx={{ mb: 3 }}>
-            {t(
-              "Our ambitious expansion plans include state-of-the-art facilities, research labs, and collaborative spaces to enhance the learning experience."
-            )}
+            {t("Future Vision Description")}
           </Typography>
 
           {/* Button aligned to end */}

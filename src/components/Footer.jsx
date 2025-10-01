@@ -2,42 +2,52 @@ import React from "react";
 import { Box, Typography, Link, IconButton, Stack } from "@mui/material";
 import { Twitter, Facebook, Instagram, LinkedIn } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Box
       component="footer"
       sx={{
         backgroundColor: theme.palette.primary.main,
-        color: theme.palette.background.secDefault, // النص الافتراضي
+        color: theme.palette.background.secDefault,
         py: 4,
+        px: 2
       }}
     >
       {/* Top Links */}
       <Stack
-        direction="row"
-        spacing={4}
+        direction={{ xs: "column", sm: "row" }}
+        spacing={3}
         justifyContent="center"
-        sx={{ mb: 2 }}
+        alignItems="center"
+        sx={{ mb: 2, textAlign: "center" }}
       >
-        <Link href="#contact" color={theme.palette.background.secDefault} underline="hover">
-          Contact Us
+        <Link href="#contact" underline="hover" sx={{ color: theme.palette.background.secDefault }}>
+          {t("footer.contact")}
         </Link>
-        <Link href="#privacy" color={theme.palette.background.secDefault} underline="hover">
-          Privacy Policy
+        <Link href="#privacy" underline="hover" sx={{ color: theme.palette.background.secDefault }}>
+          {t("footer.privacy")}
         </Link>
-        <Link href="#terms" color={theme.palette.background.secDefault} underline="hover">
-          Terms of Service
+        <Link href="#terms" underline="hover" sx={{ color: theme.palette.background.secDefault }}>
+          {t("footer.terms")}
         </Link>
-        <Link href="#accessibility" color={theme.palette.background.secDefault} underline="hover">
-          Accessibility
+        <Link href="#accessibility" underline="hover" sx={{ color: theme.palette.background.secDefault }}>
+          {t("footer.accessibility")}
         </Link>
       </Stack>
 
       {/* Social Icons */}
-      <Stack direction="row" spacing={2} justifyContent="center" sx={{ mb: 2 }}>
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="center"
+        flexWrap="wrap"
+        sx={{ mb: 2 }}
+      >
         <IconButton
           component="a"
           href="https://twitter.com"
@@ -77,8 +87,12 @@ export default function Footer() {
       </Stack>
 
       {/* Bottom Text */}
-      <Typography variant="body2" align="center" sx={{ color: theme.palette.background.secDefault }}>
-        ©2024 VUAS. All rights reserved.
+      <Typography
+        variant="body2"
+        align="center"
+        sx={{ color: theme.palette.background.secDefault }}
+      >
+        {t("footer.rights")}
       </Typography>
     </Box>
   );

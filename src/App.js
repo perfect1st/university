@@ -19,6 +19,7 @@ import { useDispatch } from "react-redux";
 import ProtectedRoute from "./Auth/ProtectedRoute";
 import SecondHeader from "./components/SecondHeader/SecondHeader";
 import Footer from "./components/Footer";
+import Admissions from "./pages/Admissions/Admissions";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -29,9 +30,7 @@ function App() {
   const { i18n } = useTranslation();
   const location = useLocation();
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getAllSetting());
-  }, []);
+
   // Update direction and language in localStorage
   useEffect(() => {
     const storedMode = localStorage.getItem("theme-mode");
@@ -234,17 +233,17 @@ const isLoggedIn = Boolean(initialUser?.id);
 
 
 
-useEffect(() => {
-  if (!isLoggedIn) return; 
+// useEffect(() => {
+//   if (!isLoggedIn) return; 
 
-  dispatch(getAllNotifications());
+//   dispatch(getAllNotifications());
 
-  const interval = setInterval(() => {
-    dispatch(getAllNotifications());
-  }, 60000); 
+//   const interval = setInterval(() => {
+//     dispatch(getAllNotifications());
+//   }, 60000); 
 
-  return () => clearInterval(interval);
-}, [dispatch, isLoggedIn]);
+//   return () => clearInterval(interval);
+// }, [dispatch, isLoggedIn]);
 
 
   const hideHeader = location.pathname != "/login";
@@ -292,6 +291,14 @@ useEffect(() => {
                 element={
                   <MainLayout>
                     <Home />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/Admissions"
+                element={
+                  <MainLayout>
+                    <Admissions />
                   </MainLayout>
                 }
               />

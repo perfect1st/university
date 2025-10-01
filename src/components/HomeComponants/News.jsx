@@ -8,7 +8,7 @@ export default function News() {
   const [showAll, setShowAll] = useState(false);
   const { t } = useTranslation();
 
-  const newsData = Array.from({ length: 10 }).map((_, i) => ({
+  const newsData = Array.from({ length: 12 }).map((_, i) => ({
     id: i + 1,
     title: `News Title ${i + 1}`,
     desc: `This is the description for news item ${
@@ -17,7 +17,7 @@ export default function News() {
     image: require("../../assets/news.jpg"),
   }));
 
-  const displayedNews = showAll ? newsData : newsData.slice(0, 4);
+  const displayedNews = showAll ? newsData : newsData.slice(0, 6);
 
   return (
     <Box
