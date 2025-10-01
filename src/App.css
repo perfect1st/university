@@ -1,0 +1,6 @@
+.recharts-wrapper:focus {
+  outline: none;
+}
+.no-focus-outline:focus {
+  outline: none;
+}
