@@ -271,7 +271,7 @@ useEffect(() => {
               <Route
                 path="/"
                 element={
-                  user ? <Navigate to="/home" /> : <Navigate to="/login" />
+                 <Navigate to="/home" />
                 }
               />
               {/* <Route path="/login" element={<LoginScreen />} /> */}
