@@ -10,13 +10,15 @@ import {
 import { ArrowForward } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-export default function TermsConditions({setAcceptTerms}) {
+export default function TermsConditions({setAcceptTerms, acceptTerms}) {
   const theme = useTheme();
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language == "ar"
-  const acceptTerms = () =>{
+  const handleAcceptTerms = () =>{
     setAcceptTerms(true)
+    console.log("acceptTerms",acceptTerms)
   }
+
 
   return (
     <Box
@@ -102,8 +104,8 @@ export default function TermsConditions({setAcceptTerms}) {
               transition: "transform 0.3s ease",
               mr:1
             }}
-            onClick={acceptTerms}
             />}
+            onClick={handleAcceptTerms}
           sx={{
             bgcolor: theme.palette.secondary.main,
             color: theme.palette.primary.contrastText,

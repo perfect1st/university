@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import { CssBaseline, ThemeProvider, Toolbar, createTheme, useMediaQuery } from "@mui/material";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Header from "./components/Header";
@@ -30,6 +30,7 @@ function App() {
   const { i18n } = useTranslation();
   const location = useLocation();
   const dispatch = useDispatch();
+  const isArabic = i18n.language === "ar";
 
   // Update direction and language in localStorage
   useEffect(() => {
@@ -79,6 +80,8 @@ function App() {
           mode,
           primary: {
             main: mode === "light" ? "#095690" : "#22ABCE",
+            textField: "#E8EDF2",
+            textFieldText: "#4D7399",
             contrastText: "#ffffff",
           },
           secondary: {
@@ -220,6 +223,7 @@ function App() {
     [mode, i18n.language]
   );
   
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
 
   const user = getUserCookie();
@@ -247,6 +251,7 @@ const isLoggedIn = Boolean(initialUser?.id);
 
 
   const hideHeader = location.pathname != "/login";
+  const hideSecandHeader = location.pathname == "/home";
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -262,6 +267,8 @@ const isLoggedIn = Boolean(initialUser?.id);
         >
           {hideHeader && <Header />}
            <SecondHeader />
+          {isMobile && !isArabic && hideSecandHeader &&<Toolbar sx={{ width: "100%" }}>
+</Toolbar>}
           {/* Modals */}
 
           <main style={{ flex: 1 }}>
