@@ -20,6 +20,7 @@ import ProtectedRoute from "./Auth/ProtectedRoute";
 import SecondHeader from "./components/SecondHeader/SecondHeader";
 import Footer from "./components/Footer";
 import Admissions from "./pages/Admissions/Admissions";
+import StudentDashboard from "./pages/StudentDashboard/StudentDashboard";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -82,7 +83,9 @@ function App() {
             main: mode === "light" ? "#095690" : "#22ABCE",
             textField: "#E8EDF2",
             textFieldText: "#4D7399",
+            gray:"#F9FAFB",
             contrastText: "#ffffff",
+            tabelHeader:"#D2D6DB",
           },
           secondary: {
             main: mode === "light" ? "#F39A15" : "#F39A15",
@@ -306,6 +309,14 @@ const isLoggedIn = Boolean(initialUser?.id);
                 element={
                   <MainLayout>
                     <Admissions />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/StudentDashboard"
+                element={
+                  <MainLayout>
+                    <StudentDashboard />
                   </MainLayout>
                 }
               />
