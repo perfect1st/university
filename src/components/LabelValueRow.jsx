@@ -11,6 +11,7 @@ export default function LabelValueRow({ label, value }) {
         borderRadius: 1,
         px: 2,
         py: 1.2,
+        my:1
       }}
     >
       <Grid container alignItems="center" spacing={2}>

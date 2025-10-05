@@ -333,6 +333,8 @@ export default function Admissions() {
     setAcadErrors((prev) => ({ ...prev, highSchoolFile: msg }));
   }
 
+
+
   return (
     <Box>
       <AdmissionsHero />

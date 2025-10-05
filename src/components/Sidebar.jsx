@@ -45,10 +45,10 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const drawerContent = (
     <Box
       sx={{
-        width: 250,
+        width: 230,
         height: "100%",
-        background: theme.palette.primary.main,
-        color: "#ffffff",
+        background: theme.palette.background.secDefault,
+        color: theme.palette.primary.main,
         pt: 2,
       }}
     >
@@ -113,7 +113,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
 
           return (
             <React.Fragment key={item.key}>
-              <Box sx={{ px: 2, mb: 0.5 }}>
+              <Box sx={{ px: 1, mb: 0.5 }}>
                 <ListItemButton
                   component={item.path ? Link : "div"}
                   to={item.path || undefined}
@@ -122,44 +122,47 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                   sx={{
                     pl: 3,
                     mb: 0.5,
+                    height: 40,
                     "&.Mui-selected": {
                       backgroundColor: isDirectlyActive
-                        ? theme.palette.background.default
+                        ? theme.palette.primary.main
                         : "transparent",
                       color: isDirectlyActive
-                        ? theme.palette.primary.main
-                        : "inherit",
+                        ? theme.palette.background.secDefault
+                        : theme.palette.primary.main,
+                        p:0
                     },
                     "&.Mui-selected:hover": {
                       backgroundColor: isDirectlyActive
-                        ? theme.palette.background.default
+                        ? theme.palette.primary.main
                         : "rgba(255, 255, 255, 0.1)",
                     },
                     borderRadius: "8px",
                   }}
                 >
-                  {IconComponent ? (
-                    <ListItemIcon sx={{ minWidth: 24 }}>
-                      <IconComponent
-                        sx={{
-                          color: isDirectlyActive
-                            ? theme.palette.primary.main
-                            : "inherit",
-                        }}
-                      />
-                    </ListItemIcon>
-                  ) : (
-                    <ListItemIcon sx={{ minWidth: 24 }}>
+                  {isDirectlyActive && <ListItemIcon sx={{ minWidth: 24 }}>
                       <Box
                         sx={{
                           width: 6,
                           height: 24,
                           borderRadius: "3px",
-                          backgroundColor: theme.palette.primary.main,
+                          backgroundColor: theme.palette.info.main,
+                        }}
+                      />
+                    </ListItemIcon>}
+                    
+                  {IconComponent && (
+                    <ListItemIcon sx={{ minWidth: 24 }}>
+                      <IconComponent
+                        sx={{
+                          color: isDirectlyActive
+                            ? theme.palette.background.secDefault
+                            : "inherit",
+                            mx:1
                         }}
                       />
                     </ListItemIcon>
-                  )}
+                  ) }
 
                   <ListItemText
                     primary={
@@ -167,7 +170,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                         sx={{ display: "flex", alignItems: "start" }}
                         variant="body1"
                         fontWeight="bold"
-                        color={isDirectlyActive ? "primary.main" : "inherit"}
+                        color={isDirectlyActive ? "background.secDefault" : "inherit"}
                       >
                         {item.label[i18n.language]}
                       </Typography>
@@ -199,6 +202,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                             selected={!!isChildActive}
                             sx={{
                               mb: 0.5,
+                              height: 40,
                               width: "100%",
                               borderRadius: "8px",
                               "&.Mui-selected": {
@@ -247,9 +251,9 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
               {index < menuItems.length - 1 && (
                 <Divider
                   sx={{
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderColor: "primary.main",
                     mx: 2,
-                    my: 1,
+                    my: 0.5,
                   }}
                 />
               )}

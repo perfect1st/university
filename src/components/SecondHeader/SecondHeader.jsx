@@ -2,12 +2,8 @@ import React from "react";
 import { Box, Button, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getUserCookie } from "../../hooks/authCookies";
 
-const navItems = [
-  { key: "home", path: "/home" },
-  { key: "admissions.title", path: "/admissions" },
-  { key: "support", path: "/support" },
-];
 
 export default function SecondHeader() {
   const theme = useTheme();
@@ -15,6 +11,14 @@ export default function SecondHeader() {
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
+  const user = getUserCookie();
+  const isAuthenticated = Boolean(user); 
+
+  const navItems = [
+    { key: "home", path: "/home" },
+    { key: "admissions.title", path: isAuthenticated ? "/StudentDashboard" :"/admissions" },
+    { key: "support", path: "/support" },
+  ];
 
   const getActive = (path) => {
     if (path === "/") return currentPath == "/home";

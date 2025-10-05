@@ -154,6 +154,31 @@
       "invalidGpaRange": "يجب أن يكون المعدل بين 0 و 4",
       "requiredFile": "يرجى إرفاق شهادة الثانوية العامة"
     }
+  },
+  "studentDashboard": {
+    "majorInformation": "المعلومات الأساسية",
+    "faculty": "الكلية",
+    "facultyDepartment": "القسم",
+    "yearInformation": "معلومات السنة الدراسية",
+    "yearOfEducation": "سنة التعليم",
+    "studyYear": "سنة الدراسة",
+    "semester": "الفصل الدراسي",
+    "subjects": "المواد الدراسية",
+    "subjectTitle": "اسم المادة",
+    "fullmarkDegree": "الدرجة الكاملة",
+    "successDegree": "درجة النجاح"
+  },
+  "registrationSteps": {
+    "title": "خطوات التسجيل",
+    "registrationStages": "مراحل تسجيل الطالب",
+    "completedSteps": "الخطوات المكتملة",
+    "checkPayment": "تحقق من دفع الرسوم",
+    "personalInformation": "المعلومات الشخصية",
+    "academicInformation": "المعلومات الأكاديمية",
+    "majorInformation": "معلومات التخصص",
+    "feePayment": "دفع الرسوم",
+    "payFirstSemester": "ادفع الفصل الدراسي الأول",
+    "paySecondSemester": "ادفع الفصل الدراسي الثاني"
   }
 
 }

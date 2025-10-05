@@ -8,6 +8,7 @@ export default function AdmissionsHero() {
   const heroHeight = 397;
   const { t } = useTranslation();
 
+
   return (
       <Box
         sx={{

@@ -117,5 +117,30 @@
       "invalidGpaRange": "GPA must be between 0 and 4",
       "requiredFile": "Please attach your high school certificate file"
     }
+  },
+  "studentDashboard": {
+    "majorInformation": "Major Information",
+    "faculty": "Faculty",
+    "facultyDepartment": "Faculty Department",
+    "yearInformation": "Year Information",
+    "yearOfEducation": "Year Of Education",
+    "studyYear": "Study Year",
+    "semester": "Semester",
+    "subjects": "Subjects",
+    "subjectTitle": "Subject Title",
+    "fullmarkDegree": "Fullmark Degree",
+    "successDegree": "Success Degree"
+  },
+  "registrationSteps": {
+    "title": "Registration Steps",
+    "registrationStages": "Stages of student registration",
+    "completedSteps": "Completed Steps",
+    "checkPayment": "Check your fee Payment",
+    "personalInformation": "Personal Information",
+    "academicInformation": "Academic Information",
+    "majorInformation": "Major Information",
+    "feePayment": "Fee Payment",
+    "payFirstSemester": "Pay First Semester",
+    "paySecondSemester": "Pay Second Semester"
   }
 }
