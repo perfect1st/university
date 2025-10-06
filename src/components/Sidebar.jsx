@@ -123,6 +123,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                     pl: 3,
                     mb: 0.5,
                     height: 40,
+                    gap:1,
                     "&.Mui-selected": {
                       backgroundColor: isDirectlyActive
                         ? theme.palette.primary.main
@@ -152,13 +153,13 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                     </ListItemIcon>}
                     
                   {IconComponent && (
-                    <ListItemIcon sx={{ minWidth: 24 }}>
+  <ListItemIcon sx={{ minWidth: 24, color: isDirectlyActive ? theme.palette.background.secDefault : theme.palette.primary.main }}>
                       <IconComponent
                         sx={{
                           color: isDirectlyActive
                             ? theme.palette.background.secDefault
-                            : "inherit",
-                            mx:1
+                            : theme.palette.primary.main,
+                            // mx:1
                         }}
                       />
                     </ListItemIcon>
