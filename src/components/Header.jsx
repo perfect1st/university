@@ -668,7 +668,7 @@ const Header = ({ onAction }) => {
                     justifyContent: "flex-start",
                   }}
                 >
-                  {t("profile")}
+                  {t("profile.title")}
                 </Typography>
               }
             />
@@ -1199,7 +1199,7 @@ const Header = ({ onAction }) => {
             >
               <PersonIcon fontSize="small" />
               <Typography fontWeight="medium" fontSize={14}>
-                {i18n.t("profile")}
+                {i18n.t("profile.title")}
               </Typography>
             </MenuItem>
 

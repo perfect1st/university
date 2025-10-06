@@ -13,7 +13,6 @@
   "notifications": "الإشعارات",
   "noNotifications": "لا توجد إشعارات",
   "mark_all_as_read": "تحديد الكل كمقروء",
-  "profile": "الملف الشخصي",
   "logout": "تسجيل الخروج",
   "apply_now": "سجل الآن",
   "settings": "الإعدادات",
@@ -179,6 +178,57 @@
     "feePayment": "دفع الرسوم",
     "payFirstSemester": "ادفع الفصل الدراسي الأول",
     "paySecondSemester": "ادفع الفصل الدراسي الثاني"
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "personalInformation": "المعلومات الشخصية",
+    "academicInformation": "المعلومات الأكاديمية",
+    "majorInformation": "معلومات التخصص",
+    "Name": "الاسم",
+    "NameInArabic": "الاسم بالعربية",
+    "Gender": "النوع",
+    "Nationality": "الجنسية",
+    "DateOfBirth": "تاريخ الميلاد",
+    "HomePhone": "هاتف المنزل",
+    "Email": "البريد الإلكتروني",
+    "PhoneNumber": "رقم الهاتف",
+    "IDNo": "رقم الهوية",
+    "YearOfEducation": "سنة الدراسة",
+    "Country": "البلد",
+    "City": "المدينة",
+    "StudentNoInHighSchool": "رقم الطالب في الثانوية",
+    "GeneralAppreciation": "التقدير العام",
+    "GPA": "المعدل التراكمي",
+    "HighSchoolCertificate": "شهادة الثانوية",
+    "Faculty": "الكلية",
+    "FacultyDepartment": "قسم الكلية"
+  },
+  "fee": {
+    "academicYear": "السنة الدراسية",
+    "showPaidDocument": "عرض سند الدفع",
+    "downloadPayment": "تحميل سند الدفع",
+    "feeTitle": "رسوم {{semester}}",
+    "paymentDate": "تاريخ الدفع",
+    "transactionSerial": "رقم المعاملة",
+    "paid": "مدفوع",
+    "unpaid": "غير مدفوع",
+    "table": {
+      "reason": "السبب",
+      "amount": "المبلغ"
+    },
+    "pay": "ادفع {{price}}",
+    "paymentMethodsTitle": "طرق الدفع",
+    "method": {
+      "cash": "نقدًا",
+      "bank": "تحويل بنكي",
+      "online": "دفع إلكتروني"
+    },
+    "payDialogTitle": "ادفع {{price}}",
+    "payNowBtn": "ادفع {{price}}",
+    "payNow": "ادفع"
+  },
+  "common": {
+    "cancel": "إلغاء"
   }
 
 }

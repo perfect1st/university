@@ -1,7 +1,15 @@
 import React from "react";
-import { Grid, Typography, useTheme, Box } from "@mui/material";
+import {
+  Grid,
+  Typography,
+  useTheme,
+  Box,
+  IconButton,
+} from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import DownloadIcon from "@mui/icons-material/Download";
 
-export default function LabelValueRow({ label, value }) {
+export default function LabelValueRow({ label, value, file = false, onOpen, onDownload }) {
   const theme = useTheme();
 
   return (
@@ -11,7 +19,7 @@ export default function LabelValueRow({ label, value }) {
         borderRadius: 1,
         px: 2,
         py: 1.2,
-        my:1
+        my: 1,
       }}
     >
       <Grid container alignItems="center" spacing={2}>
@@ -28,13 +36,36 @@ export default function LabelValueRow({ label, value }) {
 
         {/* Value */}
         <Grid item xs={9}>
-          <Typography
-            variant="body1"
-            color="text.primary"
-            sx={{ fontWeight: 700 }}
-          >
-            {value}
-          </Typography>
+          {file ? (
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <CheckCircleIcon color="success" fontSize="small" />
+              <Typography
+                variant="body1"
+                color="primary"
+                sx={{
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+                onClick={onOpen}
+              >
+                {value}
+              </Typography>
+            </Box>
+              <IconButton size="small" onClick={onDownload}>
+                <DownloadIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          ) : (
+            <Typography
+              variant="body1"
+              color="text.primary"
+              sx={{ fontWeight: 700 }}
+            >
+              {value}
+            </Typography>
+          )}
         </Grid>
       </Grid>
     </Box>

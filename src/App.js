@@ -21,6 +21,8 @@ import SecondHeader from "./components/SecondHeader/SecondHeader";
 import Footer from "./components/Footer";
 import Admissions from "./pages/Admissions/Admissions";
 import StudentDashboard from "./pages/StudentDashboard/StudentDashboard";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import FeePaymentPage from "./pages/FeePaymentPage/FeePaymentPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -317,6 +319,22 @@ const isLoggedIn = Boolean(initialUser?.id);
                 element={
                   <MainLayout>
                     <StudentDashboard />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <MainLayout>
+                    <ProfilePage />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/FeePayment"
+                element={
+                  <MainLayout>
+                    <FeePaymentPage />
                   </MainLayout>
                 }
               />

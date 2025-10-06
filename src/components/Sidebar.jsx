@@ -269,7 +269,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       <Box
         sx={{
           display: { xs: "none", md: "block" },
-          width: 250,
+          width: 230,
           flexShrink: 0,
         }}
       >

@@ -13,7 +13,6 @@
   "notifications": "Notifications",
   "noNotifications": "No notifications",
   "mark_all_as_read": "Mark all as read",
-  "profile": "Profile",
   "logout": "Logout",
   "apply_now": "Apply Now",
   "settings": "Settings",
@@ -142,5 +141,58 @@
     "feePayment": "Fee Payment",
     "payFirstSemester": "Pay First Semester",
     "paySecondSemester": "Pay Second Semester"
+  },
+  "profile": {
+    "title": "Profile",
+    "personalInformation": "Personal Information",
+    "academicInformation": "Academic Information",
+    "majorInformation": "Major Information",
+    "Name": "Name",
+    "NameInArabic": "Name In Arabic",
+    "Gender": "Gender",
+    "Nationality": "Nationality",
+    "DateOfBirth": "Date Of Birth",
+    "HomePhone": "Home Phone",
+    "Email": "Email",
+    "PhoneNumber": "Phone Number",
+    "IDNo": "ID No.",
+    "YearOfEducation": "Year Of Education",
+    "Country": "Country",
+    "City": "City",
+    "StudentNoInHighSchool": "Student No. In High School",
+    "GeneralAppreciation": "General Appreciation",
+    "GPA": "GPA",
+    "HighSchoolCertificate": "High School Certificate",
+    "Faculty": "Faculty",
+    "FacultyDepartment": "Faculty Department"
+  },
+  "fee": {
+    "academicYear": "Academic Year",
+    "showPaidDocument": "Show Paid Document",
+    "downloadPayment": "Download Payment",
+    "feeTitle": "{{semester}} Fees",
+    "paymentDate": "Payment Date",
+    "transactionSerial": "Transaction Serial",
+    "paid": "Paid",
+    "unpaid": "UnPaid",
+    "table": {
+      "reason": "Reason",
+      "amount": "Amount"
+    },
+    "pay": "Pay {{price}}",
+    "paymentMethodsTitle": "Payment Methods",
+    "method": {
+      "cash": "Cash",
+      "bank": "Bank Transfer",
+      "online": "Online Payment"
+    },
+    "payDialogTitle": "Pay {{price}}",
+    "payNowBtn": "Pay {{price}}",
+    "payNow": "Pay"
+  },
+  "common": {
+    "cancel": "Cancel"
   }
+
+
 }
