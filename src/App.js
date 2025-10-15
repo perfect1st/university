@@ -23,6 +23,8 @@ import Admissions from "./pages/Admissions/Admissions";
 import StudentDashboard from "./pages/StudentDashboard/StudentDashboard";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import FeePaymentPage from "./pages/FeePaymentPage/FeePaymentPage";
+import UsersPage from "./pages/Users/Users";
+import UserDetails from "./pages/Users/UserDetails";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -106,6 +108,9 @@ function App() {
             primary: mode === "light" ? "#0f172a" : "#f1f5f9",
             sec: mode === "light" ? "#f1f5f9" : "#0f172a",
             secondary: mode === "light" ? "#475569" : "#CBD5E1",
+          },
+          whiteText: {
+            primary: mode === "light" ? "#ffffff" : "#191C32",
           },
         },
         typography: {
@@ -335,6 +340,23 @@ const isLoggedIn = Boolean(initialUser?.id);
                 element={
                   <MainLayout>
                     <FeePaymentPage />
+                  </MainLayout>
+                }
+              />
+            
+              <Route
+                path="/Users"
+                element={
+                  <MainLayout>
+                    <UsersPage />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/UserDetails/:id"
+                element={
+                  <MainLayout>
+                    <UserDetails />
                   </MainLayout>
                 }
               />

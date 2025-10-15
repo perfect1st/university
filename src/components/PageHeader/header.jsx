@@ -57,17 +57,22 @@ const user = getUserCookie()
 
         <Box display="flex" alignItems="center" gap={1.5}>
           {haveBtn && (
-            <Button
-              variant="contained"
-              endIcon={btnIcon}
-              onClick={onSubmit}
-              sx={{
-                fontWeight: 'bold',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {btn}
-            </Button>
+         <Button
+         variant="contained"
+         endIcon={btnIcon}
+         onClick={onSubmit}
+         sx={{
+           fontWeight: "bold",
+           whiteSpace: "nowrap",
+           bgcolor: "secondary.main",
+           borderRadius: 1,
+           "&:hover": {
+             bgcolor: "secondary.dark", // keeps a visible hover state
+           },
+         }}
+       >
+         {btn}
+       </Button>       
           )}
 {(user?.super_admin ||user?.has_report_actions) && <>
           {isExcel && (

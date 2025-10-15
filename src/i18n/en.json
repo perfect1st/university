@@ -55,7 +55,7 @@
   "card2_desc": "Admission is conditional upon the submission of final, certified academic transcripts from the previous year of study (e.g., the 2024 academic year).\n- Students must meet the minimum grade requirements for their specific track (General, Modified Arab, or Foreign programs) as defined by the university and the Supreme Council of Universities.\n- The university reserves the right to amend its academic programs, course offerings, and regulations as it deems necessary.",
   "accept_terms": "Accept Terms",
   "admissions": {
-    "title":"Admissions",
+    "title": "Admissions",
     "step": "Step {{step}} of 2",
     "personalInformation": "Personal Information",
     "academicInformation": "Academic Information",
@@ -192,7 +192,24 @@
   },
   "common": {
     "cancel": "Cancel"
-  }
-
-
+  },
+  "Users": "Users",
+  "Users Details": "Users Details",
+  "Add User": "Add User",
+  "Search by User Name , Email and Mobile": "Search by User Name, Email, and Mobile",
+  "User Type": "User Type",
+  "Status": "Status",
+  "All": "All",
+  "Search": "Search",
+  "Cancel": "Cancel",
+  "Admin": "Admin",
+  "student": "Student",
+  "accountant": "Accountant",
+  "active": "Active",
+  "inActive": "Inactive",
+  "ID": "ID",
+  "Full Name": "Full Name",
+  "Email": "Email",
+  "Mobile": "Mobile",
+  "Details":"Details"
 }

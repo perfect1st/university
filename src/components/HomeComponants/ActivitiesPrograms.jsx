@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Tabs,
@@ -9,72 +9,49 @@ import {
   CardMedia,
   CardContent,
   Paper,
+  CircularProgress,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import TitleComponent from "./TitleComponent";
 import image from "../../assets/news.jpg";
+import { useQuery } from "@apollo/client/react";
+import { newsActivityArticales } from "../../graphql/queries/articleQueries.js";
 
-const data = {
-  upcoming: [
-    {
-      id: 1,
-      img: image,
-      title: "Event 1",
-      description:
-        "This is a short description for the upcoming event. It will be limited to two lines only.",
-    },
-    {
-      id: 2,
-      img: image,
-      title: "Event 2",
-      description:
-        "Another example of an upcoming event. The text will end with dots if it's too long.",
-    },
-    {
-      id: 3,
-      img: image,
-      title: "Event 3",
-      description:
-        "Upcoming event description should be truncated after two lines using CSS line clamp.",
-    },
-  ],
-  future: [
-    {
-      id: 1,
-      img: image,
-      title: "Program 1",
-      description:
-        "This is a future academic program. More details can be added but limited to 2 lines.",
-    },
-    {
-      id: 2,
-      img: image,
-      title: "Program 2",
-      description:
-        "Another academic program in the future. Description truncated with ellipsis.",
-    },
-    {
-      id: 3,
-      img: image,
-      title: "Program 3",
-      description:
-        "Future program description should only show two lines. Extra text will be hidden.",
-    },
-  ],
-};
+export default function ActivitiesPrograms({ Activities = [] }) {
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language === "ar";
 
-export default function ActivitiesPrograms() {
-  const { t } = useTranslation();
-  const [tab, setTab] = useState(0);
+  // initialize tab with the first activity id if available
+  const [tab, setTab] = useState(() => Activities?.[0]?.id ?? null);
+
+  // update tab when Activities prop changes (keep controlled)
+  useEffect(() => {
+    if (Activities && Activities.length > 0) {
+      setTab((prev) => (prev ? prev : Activities[0].id));
+    } else {
+      setTab(null);
+    }
+  }, [Activities]);
+
+  // Query articles for the selected activity (departmentId = tab)
+  const { data: newsData, loading, error } = useQuery(newsActivityArticales, {
+    variables: { departmentId: tab },
+    skip: !tab, // don't run until we have a valid tab
+    fetchPolicy: "network-only",
+  });
+
+  const articles = newsData?.getArticlesByDepartment ?? [];
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
   };
 
-  const currentData = tab === 0 ? data.upcoming : data.future;
+  // helper to get image (main_image -> first images_array -> fallback image)
+  const getImage = (article) =>
+    article?.main_image || (article?.images_array && article.images_array[0]) || image;
 
   return (
-    <Paper sx={{ p: 4, backgroundColor: "background.paper",  borderRadius: 0 }} elevation={3}>
+    <Paper sx={{ p: 4, backgroundColor: "background.paper", borderRadius: 0 }} elevation={3}>
       {/* Title */}
       <TitleComponent title={t("Activities & Programs")} />
 
@@ -91,41 +68,65 @@ export default function ActivitiesPrograms() {
           },
         }}
       >
-        <Tab label={t("Upcoming Events")} />
-        <Tab label={t("Future Academic Programs")} />
+        {Activities?.map((activity) => (
+          <Tab
+            key={activity.id}
+            value={activity.id}
+            label={isArabic ? activity.title_ar : activity.title_en}
+            id={`tab-${activity.id}`}
+            aria-controls={`tabpanel-${activity.id}`}
+          />
+        ))}
       </Tabs>
 
-      {/* Cards */}
-      <Grid container spacing={3}>
-        {currentData.map((item) => (
-          <Grid item xs={12} sm={6} md={4} key={item.id}>
-            <Card sx={{ height: "100%", borderRadius: 0, boxShadow: "none" }}>
-              <CardMedia
-                component="img"
-                height="200"
-                image={item.img}
-                alt={item.title}
-              />
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {item.title}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  {item.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      {/* Loading / Error */}
+      {(!tab || loading) ? (
+        <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Box sx={{ py: 4 }}>
+          <Typography color="error">Failed to load articles.</Typography>
+        </Box>
+      ) : (
+        // Cards: show articles returned for the selected department (activity)
+        <Grid container spacing={3}>
+          {articles.length === 0 ? (
+            <Grid item xs={12}>
+              <Typography>{t("No articles found")}</Typography>
+            </Grid>
+          ) : (
+            articles.map((item) => (
+              <Grid item xs={12} sm={6} md={4} key={item.id}>
+                <Card sx={{ height: "100%", borderRadius: 0, boxShadow: "none" }}>
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={getImage(item)}
+                    alt={isArabic ? item.title_ar : item.title_en}
+                  />
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      {isArabic ? item.title_ar : item.title_en}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {isArabic ? item.desc_ar : item.desc_en}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          )}
+        </Grid>
+      )}
     </Paper>
   );
 }

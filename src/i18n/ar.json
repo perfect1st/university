@@ -229,6 +229,25 @@
   },
   "common": {
     "cancel": "إلغاء"
-  }
+  },
+  "Users": "المستخدمون",
+  "Users Details": "تفاصيل المستخدمين",
+  "Add User": "إضافة مستخدم",
+  "Search by User Name , Email and Mobile": "ابحث باسم المستخدم أو البريد الإلكتروني أو رقم الجوال",
+  "User Type": "نوع المستخدم",
+  "Status": "الحالة",
+  "All": "الكل",
+  "Search": "بحث",
+  "Cancel": "إلغاء",
+  "Admin": "مسؤول",
+  "student": "طالب",
+  "accountant": "محاسب",
+  "active": "نشط",
+  "inActive": "غير نشط",
+  "ID": "م",
+  "Full Name": "الاسم الكامل",
+  "Email": "البريد الإلكتروني",
+  "Mobile": "رقم الجوال",
+  "Details":"التفاصيل"
 
 }
