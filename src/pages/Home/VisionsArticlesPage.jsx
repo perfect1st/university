@@ -165,7 +165,7 @@ export default function VisionsArticlesPage({ }) {
           <IconButton
             aria-label="close"
             onClick={() => setOpenArticle(null)}
-            sx={{ position: "absolute", right: 8, top: 8 }}
+            sx={{ position: "absolute", ...( !isArabic && { right: 8 } ),...( isArabic && { left: 8 } ), top: 8 }}
           >
             <CloseIcon />
           </IconButton>

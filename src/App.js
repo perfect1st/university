@@ -26,6 +26,7 @@ import FeePaymentPage from "./pages/FeePaymentPage/FeePaymentPage";
 import UsersPage from "./pages/Users/Users";
 import UserDetails from "./pages/Users/UserDetails";
 import VisionsArticlesPage from "./pages/Home/VisionsArticlesPage";
+import NewsPage from "./pages/Home/NewsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -262,7 +263,7 @@ const isLoggedIn = Boolean(initialUser?.id);
 
 
   const hideHeader = location.pathname != "/login";
-  const hideSecandHeader = location.pathname == "/home" || location.pathname == "/visionsArticals";
+  const hideSecandHeader = location.pathname == "/home" || location.pathname == "/visionsArticals" || location.pathname == "/news";
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -309,6 +310,14 @@ const isLoggedIn = Boolean(initialUser?.id);
                 element={
                   <MainLayout>
                     <VisionsArticlesPage />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/news"
+                element={
+                  <MainLayout>
+                    <NewsPage />
                   </MainLayout>
                 }
               />

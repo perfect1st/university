@@ -14,11 +14,13 @@ import { useTranslation } from "react-i18next";
 
 // import your dummy images
 import mainImage from "../../assets/news.jpg";
+import { useNavigate } from "react-router-dom";
 
 export default function News({ news = [] }) {
   const theme = useTheme();
   const [showAll, setShowAll] = useState(false);
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
 
   // Choose real data or dummy
   const newsList = news?.length > 0 ? news : [];
@@ -51,17 +53,20 @@ export default function News({ news = [] }) {
       </Grid>
 
       {/* Show More / Less Button */}
-      {news?.length > 5 && (
+      {/* {news?.length > 5 && ( */}
         <Box sx={{ textAlign: "end", mt: 6 }}>
           <Button
             variant="contained"
             color="secondary"
-            onClick={() => setShowAll((prev) => !prev)}
+            // onClick={() => setShowAll((prev) => !prev)}
+              onClick={() => navigate("/news")}
+
           >
-            {showAll ? t("show_less") : t("show_more")}
+            {t("show_more")}
+            {/* {showAll ? t("show_less") : t("show_more")} */}
           </Button>
         </Box>
-      )}
+      {/* )} */}
     </Box>
   );
 }
