@@ -16,9 +16,9 @@ const AnimatedText = styled("text")(({ theme }) => ({
   strokeDashoffset: 500,
   animation: `${draw} 4s linear infinite`,
   fontFamily: "Arial, sans-serif",
-  fontSize: "6vw",
+  fontSize: "4vw",
   [theme.breakpoints.up("sm")]: {
-    fontSize: "48px",
+    fontSize: "32px",
   },
 }));
 
@@ -51,7 +51,7 @@ const LoadingPage = () => {
         p: 2,
       }}
     >
-      <Box sx={{ width: "100%", maxWidth: 400 }}>
+      <Box sx={{ width: "100%", maxWidth: 500 }}>
         <svg
           viewBox="0 0 400 100"
           preserveAspectRatio="xMidYMid meet"
@@ -63,7 +63,7 @@ const LoadingPage = () => {
             textAnchor="middle"
             dominantBaseline="middle"
           >
-            WOMAN DRIVER
+            ACADEMIC SCIENCES
           </AnimatedText>
         </svg>
       </Box>

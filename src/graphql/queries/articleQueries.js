@@ -21,8 +21,8 @@ export const GetWebsiteArticles = gql`
   }
 `;
 
-export const HomeSlider = gql`
-  query HomeSlider($departmentId: ID!) {
+export const ArticalesById = gql`
+  query ArticalesById($departmentId: ID!) {
     getArticlesByDepartment(departmentId: $departmentId) {
       id
       title_ar
@@ -40,44 +40,7 @@ export const HomeSlider = gql`
     }
   }
 `;
-export const newsArticales = gql`
-  query newsArticales($departmentId: ID!) {
-    getArticlesByDepartment(departmentId: $departmentId) {
-      id
-      title_ar
-      title_en
-      desc_ar
-      desc_en
-      article_date
-      images_array
-      main_image
-      status
-      website_department_id
-      users_id
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const newsActivityArticales = gql`
-  query newsActivityArticales($departmentId: ID!) {
-    getArticlesByDepartment(departmentId: $departmentId) {
-      id
-      title_ar
-      title_en
-      desc_ar
-      desc_en
-      article_date
-      images_array
-      main_image
-      status
-      website_department_id
-      users_id
-      createdAt
-      updatedAt
-    }
-  }
-`;
+
 
 // {  "input": {
 //   "title_ar": "حدث 1",

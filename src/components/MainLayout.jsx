@@ -8,7 +8,7 @@ const MainLayout = ({ children }) => {
  const location = useLocation();
   const user = getUserCookie();
   const isAuthenticated = Boolean(user); 
-  const hideSecandHeader = location.pathname == "/home";
+  const hideSecandHeader = location.pathname == "/home" || location.pathname == "/visionsArticals";
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>

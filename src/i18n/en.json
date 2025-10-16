@@ -211,5 +211,8 @@
   "Full Name": "Full Name",
   "Email": "Email",
   "Mobile": "Mobile",
-  "Details":"Details"
+  "Details":"Details",
+  "No articles found":"No articles found",
+  "Future Vision Articles":"Future Vision Articles",
+  "No Future Vision articles found.":"No Future Vision articles found."
 }

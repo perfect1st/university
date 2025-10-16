@@ -8,7 +8,7 @@ import News from "../../components/HomeComponants/News";
 import ActivitiesPrograms from "../../components/HomeComponants/ActivitiesPrograms";
 import FutureVision from "../../components/HomeComponants/FutureVision";
 import { useQuery } from "@apollo/client/react";
-import { GetWebsiteArticles , HomeSlider, newsArticales} from "../../graphql/queries/articleQueries.js";
+import { GetWebsiteArticles ,ArticalesById} from "../../graphql/queries/articleQueries.js";
 import { GetWebsiteDepartments, getDepartmentByFatherId } from "../../graphql/queries/departmentsQueries.js";
 
 const Home = () => {
@@ -17,20 +17,17 @@ const Home = () => {
   const dispatch = useDispatch();
   const isArabic = i18n.language === "ar";
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const { data: articlesData, loading: articlesLoading, error: articlesError } = useQuery(GetWebsiteArticles, {
-    fetchPolicy: "network-only",
-  });
   
-  const { data: departmentsData, loading: departmentsLoading, error: departmentsError } = useQuery(GetWebsiteDepartments, {
-    fetchPolicy: "network-only",
-  });
-
-  const { data: HomeSliderData, loading: HomeSliderLoading, error: HomeSliderError } = useQuery(HomeSlider, {
+  const { data: HomeSliderData, loading: HomeSliderLoading, error: HomeSliderError } = useQuery(ArticalesById, {
     variables: { departmentId: "68ef9373023da961743a05ca" },
     fetchPolicy: "network-only",
   });
-  const { data: newsArticalesData, loading: newsArticalesLoading, error: newsArticalesError } = useQuery(newsArticales, {
+  const { data: newsArticalesData, loading: newsArticalesLoading, error: newsArticalesError } = useQuery(ArticalesById, {
     variables: { departmentId: "68ef93c7023da961743a05cc" },
+    fetchPolicy: "network-only",
+  });
+  const { data: visionArticalesData, loading: visionArticalesLoading, error: visionArticalesError } = useQuery(ArticalesById, {
+    variables: { departmentId: "68f09521023da961743a06a8" },
     fetchPolicy: "network-only",
   });
   const { data: getDepartmentByFatherIdData, loading: getDepartmentByFatherIdLoading, error: getDepartmentByFatherIdError } = useQuery(getDepartmentByFatherId, {
@@ -39,21 +36,15 @@ const Home = () => {
   });
 
   
-
-  // console.log("GetWebsiteArticles",articlesData)
-  // console.log("HomeSliderData",HomeSliderData)
-  // console.log("departmentsData",departmentsData)
-  console.log("getDepartmentByFatherIdData",getDepartmentByFatherIdData)
-  console.log("newsArticalesData",newsArticalesData)
-
-  // if (loading) return <LoadingComponent />;
+  const loading = HomeSliderLoading || newsArticalesLoading || visionArticalesLoading || getDepartmentByFatherIdLoading;
+  if (loading) return <LoadingComponent />;
 
   return (
     <Box sx={{ backgroundColor: theme.palette.background.secDefault}}>
       <HomeHero HomeSliderData={HomeSliderData?.getArticlesByDepartment} />
       <News news={newsArticalesData?.getArticlesByDepartment}/>
       <ActivitiesPrograms Activities={getDepartmentByFatherIdData?.getDepartmentsByFather} />
-      <FutureVision />
+      <FutureVision visionArticalesData={visionArticalesData?.getArticlesByDepartment} />
     </Box>
   );
 };
