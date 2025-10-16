@@ -27,6 +27,7 @@ import UsersPage from "./pages/Users/Users";
 import UserDetails from "./pages/Users/UserDetails";
 import VisionsArticlesPage from "./pages/Home/VisionsArticlesPage";
 import NewsPage from "./pages/Home/NewsPage";
+import ArticalDetails from "./pages/Home/ArticalDetails";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -306,7 +307,7 @@ const isLoggedIn = Boolean(initialUser?.id);
                   <Route element={<ProtectedRoute />}>
 
               <Route
-                path="/visionsArticals"
+                path="/VisionsArticles"
                 element={
                   <MainLayout>
                     <VisionsArticlesPage />
@@ -329,6 +330,15 @@ const isLoggedIn = Boolean(initialUser?.id);
                   </MainLayout>
                 }
               />
+                <Route path="/ArticalDetails/:id" 
+                  element={
+                    <MainLayout>
+                      <ArticalDetails />
+                    </MainLayout>
+                  }
+
+                 />
+
               <Route
                 path="/Admissions"
                 element={

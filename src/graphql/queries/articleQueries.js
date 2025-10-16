@@ -14,7 +14,6 @@ export const GetWebsiteArticles = gql`
       main_image
       status
       website_department_id
-      users_id
       createdAt
       updatedAt
     }
@@ -34,12 +33,38 @@ export const ArticalesById = gql`
       main_image
       status
       website_department_id
-      users_id
       createdAt
       updatedAt
+      users_id {
+        id
+        fullname
+      }
     }
   }
 `;
+export const ArticaleById = gql`
+  query ArticaleById($id: ID!) {
+    getWebsiteArticleById(id: $id) {
+      id
+        title_ar
+        title_en
+        desc_ar
+        desc_en
+        article_date
+        images_array
+        main_image
+        status
+        website_department_id
+        createdAt
+        updatedAt
+      users_id {
+        id
+        fullname
+      }
+    }
+  }
+`;
+
 
 
 // {  "input": {

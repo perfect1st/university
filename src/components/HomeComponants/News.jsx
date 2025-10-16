@@ -21,6 +21,7 @@ export default function News({ news = [] }) {
 
   // Show only first 6 on homepage
   const displayedNews = newsList.slice(0, 6);
+  console.log("displayedNews",displayedNews)
 
   return (
     <Box
@@ -76,6 +77,25 @@ function NewsCard({ item, i18n, theme }) {
 
   const getImageSrc = (path) => path || mainImage;
 
+  function formatDate(timestamp, lang = "en") {
+    const date = new Date(Number(timestamp));
+  
+    // Define locales
+    const locale = lang === "ar" ? "ar-EG" : "en-GB";
+  
+    // Format options
+    const options = {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    };
+  
+    return new Intl.DateTimeFormat(locale, options).format(date);
+  }
+  
+
+  
+
   return (
     <Box
       sx={{
@@ -99,7 +119,7 @@ function NewsCard({ item, i18n, theme }) {
       />
 
       {/* 🔹 Optional dots indicator */}
-      {images.length > 1 && (
+      {/* {images.length > 1 && (
         <Box
           sx={{
             position: "absolute",
@@ -129,7 +149,7 @@ function NewsCard({ item, i18n, theme }) {
             />
           ))}
         </Box>
-      )}
+      )} */}
 
       {/* 🔹 Text Box */}
       <Box
@@ -168,7 +188,7 @@ function NewsCard({ item, i18n, theme }) {
           variant="body2"
           sx={{
             mt: 1,
-            color: theme.palette.text.secondary,
+            color: theme.palette.primary.main,
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
@@ -176,6 +196,32 @@ function NewsCard({ item, i18n, theme }) {
           }}
         >
           {i18n.language === "ar" ? item.desc_ar : item.desc_en}
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            mt: 1,
+            color: theme.palette.text.primary,
+            fontWeight: "bold",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            display: "flex",
+            gap:1
+          }}
+        >
+          {item?.users_id?.fullname} 
+          <Typography variant="body2"
+          sx={{
+            color: theme.palette.text.secondary,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            display: "flex"
+          }}
+          > {" "} - {formatDate(item?.createdAt, i18n.language)}</Typography>
         </Typography>
       </Box>
     </Box>

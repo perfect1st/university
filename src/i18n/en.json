@@ -215,5 +215,10 @@
   "No articles found":"No articles found",
   "Future Vision Articles":"Future Vision Articles",
   "No Future Vision articles found.":"No Future Vision articles found.",
-  "No news found":"No news found"
+  "No news found":"No news found",
+  "notfound": {
+    "title": "Page Not Found",
+    "description": "Oops! The page you’re looking for doesn’t exist or has been moved. Please check the URL or go back to the homepage.",
+    "back_home": "Back to Home"
+  }
 }

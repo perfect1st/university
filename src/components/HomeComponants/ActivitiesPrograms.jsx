@@ -15,6 +15,7 @@ import TitleComponent from "./TitleComponent";
 import image from "../../assets/news.jpg";
 import { useQuery } from "@apollo/client/react";
 import { ArticalesById } from "../../graphql/queries/articleQueries.js";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Small image slider used inside each card.
@@ -81,6 +82,7 @@ function ArticleImageSlider({ images = [], height = 300, intervalMs = 4000 }) {
 export default function ActivitiesPrograms({ Activities = [] }) {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
+  const navigate = useNavigate();
 
   // initialize tab with the first activity id if available
   const [tab, setTab] = useState(() => Activities?.[0]?.id ?? null);
@@ -189,7 +191,18 @@ export default function ActivitiesPrograms({ Activities = [] }) {
           ) : (
             articles.map((item) => (
               <Grid item xs={12} sm={6} md={4} key={item.id}>
-                <Card sx={{ height: "100%", borderRadius: 0, boxShadow: "none" }}>
+                <Card 
+                    sx={{
+                      height: "100%",
+                      borderRadius: 0,
+                      boxShadow: "none",
+                      cursor: "pointer",
+                      "&:hover": { boxShadow: 4, transform: "scale(1.01)", transition: "0.3s" },
+                    }}
+
+                    onClick={() => navigate(`/ArticalDetails/${item.id}`)} // ✅ هنا الانتقال
+
+                >
                   {/* <-- Replaced CardMedia with image slider component --> */}
                   <ArticleImageSlider images={buildImages(item)} height={300} intervalMs={4000} />
 
