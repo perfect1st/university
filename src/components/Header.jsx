@@ -785,7 +785,7 @@ const Header = ({ onAction }) => {
               {/* Apply Button */}
               <Button
                 variant="contained"
-                onClick={() => navigate("/register")}
+                onClick={() => navigate("/admissions")}
                 sx={{
                   borderRadius: 1,
                   px: 3,

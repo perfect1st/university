@@ -19,7 +19,9 @@ import AdmissionsHero from "../../components/AdmissionsComponents/AdmissionsHero
 import TermsConditions from "../../components/AdmissionsComponents/TermsConditions";
 import { useTranslation } from "react-i18next";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-
+import { useQuery } from "@apollo/client/react";
+import { GetWebsiteArticles ,ArticalesById} from "../../graphql/queries/articleQueries.js";
+import PhoneNumberInput from "../../components/PhoneInput.jsx";
 // CustomTextField wrapper (keeps placeholder support + helperText)
 function CustomTextField(props) {
   const theme = useTheme();
@@ -68,6 +70,13 @@ export default function Admissions() {
   const theme = useTheme();
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [step, setStep] = useState(1);
+
+  const { data: ArticalesData, loading: ArticalesLoading, error: ArticalesError } = useQuery(ArticalesById, {
+    variables: { departmentId: "68f0e59da78374194a5ef3d0" },
+    fetchPolicy: "network-only",
+  });
+
+  console.log("ArticalesData",ArticalesData)
 
   // step1 state
   const [personal, setPersonal] = useState({
@@ -337,12 +346,13 @@ export default function Admissions() {
 
   return (
     <Box>
-      <AdmissionsHero />
+      <AdmissionsHero data={ArticalesData?.getArticlesByDepartment?.[0]}/>
 
       {!acceptTerms && (
         <TermsConditions
           setAcceptTerms={setAcceptTerms}
           acceptTerms={acceptTerms}
+          data={ArticalesData?.getArticlesByDepartment?.slice(1)}
         />
       )}
 
@@ -555,25 +565,13 @@ export default function Admissions() {
                       {t("admissions.phoneNumber")}
                     </Typography>
                     {/* phone as text but validated by regex */}
-                    <CustomTextField
-                      placeholder="5XXXXXXXX"
-                      type="text"
-                      value={personal.phoneNumber}
-                      onChange={(e) =>
-                        setPersonal((p) => ({
-                          ...p,
-                          phoneNumber: e.target.value,
-                        }))
-                      }
-                      onBlur={() => handlePersonalBlur("phoneNumber")}
-                      error={!!errors.phoneNumber}
-                      helperText={errors.phoneNumber || ""}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">+966</InputAdornment>
-                        ),
-                      }}
-                    />
+                    <PhoneNumberInput
+  personal={personal ?? { phoneNumber: "", countryCode: "" }}
+  setPersonal={setPersonal ?? (() => {})}
+  errors={errors ?? {}}
+  handlePersonalBlur={handlePersonalBlur ?? (() => {})}
+/>
+
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
@@ -915,7 +913,7 @@ export default function Admissions() {
                     }}
                   />
                 }
-                sx={{ background: theme.palette.info?.main, gap: 1 , mx:2 }}
+                sx={{ background: theme.palette.info?.main, gap: 1}}
                 onClick={handleNext}
               >
                 {t("admissions.next")}
@@ -1012,7 +1010,7 @@ export default function Admissions() {
                       }}
                     />
                   }
-                  sx={{ background: theme.palette.info?.main , gap:1, mx:2}}
+                  sx={{ background: theme.palette.info?.main , gap:1}}
                   onClick={handleFinish}
                 >
                   {t("admissions.finish")}

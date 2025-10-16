@@ -10,7 +10,7 @@ import {
 import { ArrowForward } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-export default function TermsConditions({setAcceptTerms, acceptTerms}) {
+export default function TermsConditions({setAcceptTerms, acceptTerms, data = []}) {
   const theme = useTheme();
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language == "ar"
@@ -18,7 +18,7 @@ export default function TermsConditions({setAcceptTerms, acceptTerms}) {
     setAcceptTerms(true)
     console.log("acceptTerms",acceptTerms)
   }
-
+console.log("data",data)
 
   return (
     <Box
@@ -53,45 +53,39 @@ export default function TermsConditions({setAcceptTerms, acceptTerms}) {
 
       {/* Terms Cards */}
       <Stack spacing={3}>
-        {/* Card 1 */}
-        <Paper elevation={1} sx={{ p: 3, textAlign: "start" }}>
-          <Typography
-            variant="h6"
-            sx={{
-              color: theme.palette.info.main,
-              fontWeight: "bold",
-              mb: 1,
-            }}
-          >
-            {t("card1_title")}
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{ color: theme.palette.text.primary, lineHeight: 1.7 }}
-          >
-            {t("card1_desc")}
-          </Typography>
-        </Paper>
+      {data?.map((item, index) => (
+  <Paper
+    key={index}
+    elevation={1}
+    sx={{ p: 3, textAlign: "start", mb: 2 }}
+  >
+    <Typography
+      variant="h6"
+      sx={{
+        color: theme.palette.info.main,
+        fontWeight: "bold",
+        mb: 1,
+      }}
+    >
+      {isArabic ? item.title_ar : item.title_en}
+    </Typography>
 
-        {/* Card 2 */}
-        <Paper elevation={1} sx={{ p: 3, textAlign: "start"  }}>
-          <Typography
-            variant="h6"
-            sx={{
-              color: theme.palette.info.main,
-              fontWeight: "bold",
-              mb: 1,
-            }}
-          >
-            {t("card2_title")}
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{ color: theme.palette.text.primary, lineHeight: 1.7 }}
-          >
-            {t("card2_desc")}
-          </Typography>
-        </Paper>
+    <Typography
+  variant="body1"
+  sx={{
+    color: theme.palette.text.primary,
+    lineHeight: 1.7,
+    whiteSpace: "pre-line",
+  }}
+>
+{(isArabic ? item.desc_ar : item.desc_en)
+    ?.replace(/\s*-\s*/g, "\n- ") // ينزل سطر قبل كل شرطة
+    .trim()}
+</Typography>
+
+  </Paper>
+))}
+
       </Stack>
 
       {/* Accept Button */}
@@ -102,7 +96,6 @@ export default function TermsConditions({setAcceptTerms, acceptTerms}) {
             sx={{
               transform: i18n.language === "ar" ? "rotate(180deg)" : "none",
               transition: "transform 0.3s ease",
-              mr:1
             }}
             />}
             onClick={handleAcceptTerms}
@@ -111,6 +104,7 @@ export default function TermsConditions({setAcceptTerms, acceptTerms}) {
             color: theme.palette.primary.contrastText,
             px: 4,
             py: 1,
+            gap:1,
             "&:hover": {
               bgcolor: theme.palette.secondary.dark,
             },

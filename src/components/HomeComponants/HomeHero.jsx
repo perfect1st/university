@@ -1,27 +1,21 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
+// src/components/AdmissionsComponents/HomeHero.jsx
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Box, Typography, useTheme, useMediaQuery, IconButton } from "@mui/material";
 import { ReactComponent as VisionIcon } from "../../assets/vision.svg";
 import { ReactComponent as MissionIcon } from "../../assets/mission.svg";
 import { ReactComponent as GoalsIcon } from "../../assets/goal.svg";
 import { useTranslation } from "react-i18next";
-
-// HomeHero (unchanged design) —
-// - background is now a slider (auto-play, no visible controls so design stays the same)
-// - Vision / Mission / Goals cards get title + desc dynamically from HomeSliderData
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 export default function HomeHero({ HomeSliderData = [] }) {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
-  const heroHeight = isSm ? 480 : 854;
-  const { i18n } = useTranslation();
+  const heroHeight = isSm ? 600 : 854;
+  const { i18n, t } = useTranslation();
   const isArabic = i18n.language === "ar";
 
   // Build images array for the hero slider.
-  // Priority:
-  // 1. Use images_array from the first article that has images_array and length > 0
-  // 2. Otherwise, use first article main_image if present
-  // 3. Otherwise collect first available main_image from articles
-  // 4. Fallback to an empty array
   const sliderImages = useMemo(() => {
     if (!HomeSliderData || HomeSliderData.length === 0) return [];
 
@@ -30,27 +24,56 @@ export default function HomeHero({ HomeSliderData = [] }) {
     );
     if (firstWithImages) return firstWithImages.images_array;
 
-    const firstMain = HomeSliderData[0].main_image;
+    const firstMain = HomeSliderData[0]?.main_image;
     if (firstMain) return [firstMain];
 
     const mains = HomeSliderData.map((a) => a.main_image).filter(Boolean);
     return mains;
   }, [HomeSliderData]);
 
-  // slider state
+  // slider state (same behavior as AdmissionsHero)
+  const images = sliderImages;
+  const fallback = require("../../assets/home.jpg"); // local fallback
   const [index, setIndex] = useState(0);
+  const intervalRef = useRef(null);
+  const pausedRef = useRef(false);
 
-  // auto-play every 6 seconds. No visual controls added so design remains identical.
   useEffect(() => {
-    if (!sliderImages || sliderImages.length <= 1) return;
-    const id = setInterval(() => {
-      setIndex((p) => (p + 1) % sliderImages.length);
-    }, 6000);
-    return () => clearInterval(id);
-  }, [sliderImages]);
+    if (images.length > 1) startAutoplay();
+    return stopAutoplay;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [images.length]);
 
-  // Helper to get article by expected key. Uses title_en as the stable marker when available,
-  // falls back to title_ar or the first matching word.
+  function startAutoplay() {
+    stopAutoplay();
+    intervalRef.current = setInterval(() => {
+      if (!pausedRef.current) setIndex((p) => (p + 1) % images.length);
+    }, 6000); // 6s as original hero comment
+  }
+
+  function stopAutoplay() {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }
+
+  function goTo(i) {
+    setIndex(i);
+    startAutoplay();
+  }
+
+  function prev() {
+    setIndex((p) => (p - 1 + images.length) % images.length);
+    startAutoplay();
+  }
+
+  function next() {
+    setIndex((p) => (p + 1) % images.length);
+    startAutoplay();
+  }
+
+  // Helper to get article by expected key (unchanged)
   const getArticleByKey = (key) => {
     if (!HomeSliderData) return null;
     const map = {
@@ -60,106 +83,245 @@ export default function HomeHero({ HomeSliderData = [] }) {
     };
     const candidates = map[key] || [];
 
-    // try exact match on title_en or title_ar
+    for (const c of candidates) {
+      const found = HomeSliderData.find((a) => a.title_en === c || a.title_ar === c);
+      if (found) return found;
+    }
+
     for (const c of candidates) {
       const found = HomeSliderData.find(
-        (a) => a.title_en === c || a.title_ar === c
+        (a) =>
+          (a.title_en && a.title_en.includes(c)) ||
+          (a.title_ar && a.title_ar.includes(c))
       );
       if (found) return found;
     }
 
-    // fallback: find by inclusion (e.g. titles that contain the word)
-    for (const c of candidates) {
-      const found = HomeSliderData.find(
-        (a) => (a.title_en && a.title_en.includes(c)) || (a.title_ar && a.title_ar.includes(c))
-      );
-      if (found) return found;
-    }
-
-    // last resort: try to find by english word
-    const looseMatch = HomeSliderData.find((a) =>
-      (a.title_en && a.title_en.toLowerCase().includes(key)) ||
-      (a.title_ar && a.title_ar.includes(key))
+    const looseMatch = HomeSliderData.find(
+      (a) =>
+        (a.title_en && a.title_en.toLowerCase().includes(key)) ||
+        (a.title_ar && a.title_ar.includes(key))
     );
     return looseMatch || null;
   };
 
   const cards = [
-    {
-      key: "vision",
-      Icon: VisionIcon,
-      article: getArticleByKey("vision"),
-    },
-    {
-      key: "mission",
-      Icon: MissionIcon,
-      article: getArticleByKey("mission"),
-    },
-    {
-      key: "goals",
-      Icon: GoalsIcon,
-      article: getArticleByKey("goals"),
-    },
+    { key: "vision", Icon: VisionIcon, article: getArticleByKey("vision") },
+    { key: "mission", Icon: MissionIcon, article: getArticleByKey("mission") },
+    { key: "goals", Icon: GoalsIcon, article: getArticleByKey("goals") },
   ];
 
-  // hero background image to use (handle empty gracefully)
-  const heroBg = (sliderImages && sliderImages.length > 0) ? sliderImages[index] : HomeSliderData?.[0]?.main_image || "";
+  // If no images, fall back to first article main_image or empty
+  const hasImages = images && images.length > 0;
+  const currentBg = hasImages ? images[index] : HomeSliderData?.[0]?.main_image || "";
+  const contentPb = isSm ? theme.spacing(8) : "46%"; // returns like "64px" or "96px"
 
   return (
     <Box>
-      {/* Hero Section (layout & style preserved) */}
+      {/* Hero Section - now a slider */}
       <Box
         sx={{
           position: "relative",
-          height: heroHeight,
           width: "100%",
-          backgroundImage: `url(${heroBg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          height: heroHeight,
+          overflow: "hidden",
+          direction: isArabic ? "rtl" : "ltr",
+        }}
+        onMouseEnter={() => (pausedRef.current = true)}
+        onMouseLeave={() => (pausedRef.current = false)}
+      >
+        {/* Slides */}
+        {(!hasImages && !currentBg) ? (
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              backgroundImage: `url(${fallback})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+          />
+        ) : (
+          (hasImages ? images : [currentBg]).map((src, i) => (
+            <Box
+              key={i}
+              sx={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: `url(${src || fallback})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                transition: "opacity 800ms ease-in-out",
+                opacity: i === index ? 1 : 0,
+                zIndex: i === index ? 2 : 1,
+                display: "flex",
+                alignItems: "flex-end",
+              }}
+            >
+ 
+              {/* Overlay (keeps look similar to previous backgroundColor overlay) */}
+              <Box
+                sx={{
+                  position: "absolute",
+                  inset: 0,
+                  backgroundColor: "rgba(0,0,0,0.45)",
+                  zIndex: 1,
+                }}
+              />
+ {(hasImages && images.length > 1) && (
+      <Box
+        sx={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          // bottom is set so dots sit JUST ABOVE the content box's padded area
+          bottom: `calc(${contentPb} + 8px)`,
           display: "flex",
-          alignItems: "flex-end",
+          justifyContent: "center",
+          gap: 1,
+          zIndex: 4,
+          pointerEvents: "auto",
         }}
       >
-        <Box
-          sx={{
-            position: "relative",
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            textAlign: "center",
-            pb: { xs: 8, md: 12 },
-            backgroundColor: `${theme.palette.primary.main}F0`, // keep same translucent overlay
-          }}
-        >
-          {/* Title + welcome (unchanged) */}
-          <Box sx={{ width: "100%", py: { xs: 2, md: 3 }, px: { xs: 2, md: 6 } }}>
-            <Typography variant={isSm ? "h5" : "h3"} sx={{ fontWeight: "bold", color: theme.palette.secondary.main }}>
-              {isArabic
-                ? HomeSliderData?.[0]?.title_ar || ""
-                : HomeSliderData?.[0]?.title_en || ""}
-            </Typography>
-            <Typography variant={isSm ? "body1" : "h6"} sx={{ mt: 1, color: theme.palette.primary.contrastText }}>
-              {/* keep welcome_message usage as before so text isn't changed */}
-              {/* If you want welcome to come from dynamic data too, we can switch this later. */}
-              {/* t("welcome_message") was used previously; leaving it unchanged as requested. */}
-              { /* NOTE: keep i18n translation key usage as-is */ }
-              {/* eslint-disable-next-line react-hooks/rules-of-hooks */}
-              {""}
-            </Typography>
-          </Box>
+        {images.map((_, di) => (
+          <Box
+            key={di}
+            onClick={() => goTo(di)}
+            sx={{
+              width: 10,
+              height: 10,
+              borderRadius: "50%",
+              cursor: "pointer",
+              backgroundColor: di === index ? theme.palette.secondary.main : "rgba(255,255,255,0.45)",
+              border: di === index ? "2px solid rgba(0,0,0,0.12)" : "none",
+            }}
+          />
+        ))}
+      </Box>
+         )}
 
-          {/* Description on dark background (uses the first article's desc as before) */}
-          <Box sx={{ width: "100%", py: { xs: 3, md: 4 }, px: { xs: 2, md: 6 }, mt: 0.5 }}>
-            <Typography variant="body1" sx={{ color: theme.palette.primary.contrastText, lineHeight: 1.7 }}>
-              {isArabic ? HomeSliderData?.[0]?.desc_ar : HomeSliderData?.[0]?.desc_en}
-            </Typography>
+              {/* Content (title + welcome + desc) */}
+              <Box
+                sx={{
+                  position: "relative",
+                  zIndex: 2,
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  textAlign: isArabic ? "right" : "center",
+                  pb: { xs: 8, md: 12 },
+                  px: { xs: 2, md: 6 },
+                  backgroundColor: `${theme.palette.primary.main}DD`, // subtle tint to keep text readable
+                }}
+              >
+                
+
+
+                <Box sx={{ width: "100%", py: { xs: 2, md: 3 }, px: { xs: 2, md: 6 } }}>
+                  <Typography
+                    variant={isSm ? "h5" : "h3"}
+                    sx={{ fontWeight: "bold", color: theme.palette.secondary.main }}
+                  >
+                    {isArabic
+                      ? HomeSliderData?.[0]?.title_ar || ""
+                      : HomeSliderData?.[0]?.title_en || ""}
+                  </Typography>
+
+                  <Typography
+                    variant={isSm ? "body1" : "h6"}
+                    sx={{ mt: 1, color: theme.palette.primary.contrastText }}
+                  >
+                    {t("welcome_message")}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ width: "100%", py: { xs: 3, md: 4 }, px: { xs: 2, md: 6 }, mt: 0.5 }}>
+                  <Typography variant="body1" sx={{ color: theme.palette.primary.contrastText, lineHeight: 1.7 }}>
+                    {isArabic ? HomeSliderData?.[0]?.desc_ar : HomeSliderData?.[0]?.desc_en}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          ))
+        )}
+
+        {/* Dots */}
+        {(hasImages && images.length > 1) && (
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: 12,
+              left: 0,
+              right: 0,
+              display: "flex",
+              justifyContent: "center",
+              gap: 1,
+              zIndex: 3,
+            }}
+          >
+            {images.map((_, i) => (
+              <Box
+                key={i}
+                onClick={() => goTo(i)}
+                sx={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                  backgroundColor:
+                    i === index ? theme.palette.secondary.main : "rgba(255,255,255,0.45)",
+                  border: i === index ? "2px solid rgba(0,0,0,0.12)" : "none",
+                }}
+              />
+            ))}
           </Box>
-        </Box>
+        )}
+
+        {/* Arrows */}
+        {(hasImages && images.length > 1) && !isSm && (
+          <>
+            <IconButton
+              onClick={prev}
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: 8,
+                transform: "translateY(-50%)",
+                zIndex: 4,
+                color: "white",
+                bgcolor: "rgba(0,0,0,0.35)",
+                "&:hover": { bgcolor: "rgba(0,0,0,0.45)" },
+              }}
+              aria-label="previous"
+            >
+              <ArrowBackIosNewIcon fontSize="small" />
+            </IconButton>
+
+            <IconButton
+              onClick={next}
+              sx={{
+                position: "absolute",
+                top: "50%",
+                right: 8,
+                transform: "translateY(-50%)",
+                zIndex: 4,
+                color: "white",
+                bgcolor: "rgba(0,0,0,0.35)",
+                "&:hover": { bgcolor: "rgba(0,0,0,0.45)" },
+              }}
+              aria-label="next"
+            >
+              <ArrowForwardIosIcon fontSize="small" />
+            </IconButton>
+          </>
+        )}
       </Box>
 
-      {/* Cards Section (content now from dynamic objects; design & layout unchanged) */}
-      <Box sx={{ position: "relative", mt: { xs: -6, md: -10 }, px: { xs: 2, md: 6 } }}>
+      {/* Cards Section (unchanged) */}
+      <Box sx={{ position: "relative", mt: { xs: -6, md: -10 }, px: { xs: 2, md: 6 }, zIndex: 999 }}>
         <Box sx={{ display: "flex", gap: { xs: 2, md: 3 }, justifyContent: "center", alignItems: "stretch", flexWrap: "wrap" }}>
           {cards.map((c) => {
             const Icon = c.Icon;

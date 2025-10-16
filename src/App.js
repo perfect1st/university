@@ -280,8 +280,8 @@ const isLoggedIn = Boolean(initialUser?.id);
         >
           {hideHeader && <Header />}
            <SecondHeader />
-          {isMobile && !isArabic && hideSecandHeader &&<Toolbar sx={{ width: "100%" }}>
-</Toolbar>}
+          {/* {isMobile && !isArabic && hideSecandHeader &&<Toolbar sx={{ width: "100%" }}>
+</Toolbar>} */}
           {/* Modals */}
 
           <main style={{ flex: 1 }}>
