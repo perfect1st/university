@@ -1,32 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
   Grid,
   Button,
   useTheme,
-  IconButton,
 } from "@mui/material";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import TitleComponent from "./TitleComponent";
 import { useTranslation } from "react-i18next";
-
-// import your dummy images
 import mainImage from "../../assets/news.jpg";
 import { useNavigate } from "react-router-dom";
 
 export default function News({ news = [] }) {
   const theme = useTheme();
-  const [showAll, setShowAll] = useState(false);
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   // Choose real data or dummy
   const newsList = news?.length > 0 ? news : [];
 
-  // Determine which items to show
-  const displayedNews = showAll ? newsList : newsList.slice(0, 6);
+  // Show only first 6 on homepage
+  const displayedNews = newsList.slice(0, 6);
 
   return (
     <Box
@@ -52,39 +46,35 @@ export default function News({ news = [] }) {
         ))}
       </Grid>
 
-      {/* Show More / Less Button */}
-      {/* {news?.length > 5 && ( */}
-        <Box sx={{ textAlign: "end", mt: 6 }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            // onClick={() => setShowAll((prev) => !prev)}
-              onClick={() => navigate("/news")}
-
-          >
-            {t("show_more")}
-            {/* {showAll ? t("show_less") : t("show_more")} */}
-          </Button>
-        </Box>
-      {/* )} */}
+      {/* Show More Button */}
+      <Box sx={{ textAlign: "end", mt: 6 }}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => navigate("/news")}
+        >
+          {t("show_more")}
+        </Button>
+      </Box>
     </Box>
   );
 }
 
 function NewsCard({ item, i18n, theme }) {
-  // Prepare images: main_image first, then any images_array
+  // prepare images
   const images = [item.main_image, ...(item.images_array || [])].filter(Boolean);
   const [index, setIndex] = useState(0);
 
-  const next = () => setIndex((prev) => (prev + 1) % images.length);
-  const prev = () => setIndex((prev) => (prev - 1 + images.length) % images.length);
+  // 🔹 Auto slide every 3 seconds
+  useEffect(() => {
+    if (!images.length) return;
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [images]);
 
-  const getImageSrc = (path) => {
-    if (!path) return mainImage;
-    // keep same behavior as original: concat with base url
-    return `${path}`;
-    // return `${process.env.REACT_APP_API_BASE_URL}${path}`;
-  };
+  const getImageSrc = (path) => path || mainImage;
 
   return (
     <Box
@@ -94,7 +84,7 @@ function NewsCard({ item, i18n, theme }) {
         overflow: "hidden",
       }}
     >
-      {/* Slider image (keeps same size as before) */}
+      {/* 🔹 Auto-changing image */}
       <Box
         component="img"
         src={getImageSrc(images[index])}
@@ -104,79 +94,44 @@ function NewsCard({ item, i18n, theme }) {
           height: 250,
           objectFit: "cover",
           display: "block",
+          transition: "opacity 1s ease-in-out",
         }}
       />
 
-      {/* Prev/Next buttons (transparent over image) */}
+      {/* 🔹 Optional dots indicator */}
       {images.length > 1 && (
-        <>
-          <IconButton
-            size="small"
-            onClick={prev}
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: 8,
-              transform: "translateY(-50%)",
-              bgcolor: "rgba(0,0,0,0.35)",
-              color: "#fff",
-              '&:hover': { bgcolor: 'rgba(0,0,0,0.45)' },
-              zIndex: 5,
-            }}
-            aria-label="previous image"
-          >
-            <ChevronLeftIcon />
-          </IconButton>
-
-          <IconButton
-            size="small"
-            onClick={next}
-            sx={{
-              position: "absolute",
-              top: "50%",
-              right: 8,
-              transform: "translateY(-50%)",
-              bgcolor: "rgba(0,0,0,0.35)",
-              color: "#fff",
-              '&:hover': { bgcolor: 'rgba(0,0,0,0.45)' },
-              zIndex: 5,
-            }}
-            aria-label="next image"
-          >
-            <ChevronRightIcon />
-          </IconButton>
-
-          {/* Dots */}
-          <Box
-            sx={{
-              position: "absolute",
-              bottom: 64,
-              left: 0,
-              right: 0,
-              display: "flex",
-              justifyContent: "center",
-              gap: 1,
-              zIndex: 5,
-            }}
-          >
-            {images.map((_, i) => (
-              <Box
-                key={i}
-                onClick={() => setIndex(i)}
-                sx={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  bgcolor: i === index ? theme.palette.primary.main : "rgba(255,255,255,0.6)",
-                  cursor: "pointer",
-                }}
-              />
-            ))}
-          </Box>
-        </>
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 64,
+            left: 0,
+            right: 0,
+            display: "flex",
+            justifyContent: "center",
+            gap: 1,
+            zIndex: 5,
+          }}
+        >
+          {images.map((_, i) => (
+            <Box
+              key={i}
+              onClick={() => setIndex(i)}
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                bgcolor:
+                  i === index
+                    ? theme.palette.primary.main
+                    : "rgba(255,255,255,0.6)",
+                cursor: "pointer",
+              }}
+            />
+          ))}
+        </Box>
       )}
 
-      {/* Text Box (keeps original design and position) */}
+      {/* 🔹 Text Box */}
       <Box
         sx={{
           position: "absolute",

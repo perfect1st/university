@@ -13,6 +13,7 @@ import mainImage from "../../assets/news.jpg";
 import TitleComponent from "../../components/HomeComponants/TitleComponent";
 import { useQuery } from "@apollo/client/react";
 import { ArticalesById} from "../../graphql/queries/articleQueries.js";
+import LoadingPage from "../../components/LoadingComponent.jsx";
 export default function NewsPage() {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
@@ -24,6 +25,7 @@ export default function NewsPage() {
     fetchPolicy: "network-only",
   });
 
+  if(newsArticalesLoading) return <LoadingPage />
   if (!newsArticalesData?.getArticlesByDepartment?.length) {
     return (
       <Box sx={{ p: 6, textAlign: "center" }}>
