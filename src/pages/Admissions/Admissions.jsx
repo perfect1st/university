@@ -11,8 +11,10 @@ import {
   Checkbox,
   FormControlLabel,
   InputAdornment,
+  
   Divider,
   useTheme,
+  FormControl,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AdmissionsHero from "../../components/AdmissionsComponents/AdmissionsHero";
@@ -778,19 +780,39 @@ export default function Admissions() {
                     >
                       {t("admissions.city")}
                     </Typography>
+
+                    <FormControl
+                      fullWidth >
                     <CustomTextField
                       select
                       id="city"
                       placeholder={t("admissions.city")}
                      value={academic.city || ""}
+                     
                       onChange={(e) =>
                         setAcademic((a) => ({ ...a, city: e.target.value }))
                       }
                       onBlur={() => handleAcademicBlur("city")}
                       error={!!acadErrors.city}
                       helperText={acadErrors.city || ""}
+
+                      SelectProps={{
+                      displayEmpty: true,
+                      renderValue: (selected) => {
+                        if (!selected) {
+                          return <>{i18n.language === "ar" ? "اختر المدينة" : "Select City"}</>;
+                        }
+                        return (
+                          <>{i18n.language === "ar" ? cities?.find((city) => city?.id === selected)?.name_ar : cities?.find((city) => city?.id === selected)?.name_en}</>
+                        );
+                      },
+                      MenuProps: {
+                        // optional: keep menu within viewport
+                        PaperProps: { style: { maxHeight: 320 } },
+                      },
+                    }}
                     >
-                      <MenuItem value="">
+                      <MenuItem key="0" value="">
                       {i18n.language === "ar" ? "اختر المدينة" : "Select City"}
                       </MenuItem>
                       {
@@ -800,6 +822,7 @@ export default function Admissions() {
                         </MenuItem>
                       ))}
                     </CustomTextField>
+                      </FormControl>
                   </Grid>
 
                   <Grid item xs={12}>
