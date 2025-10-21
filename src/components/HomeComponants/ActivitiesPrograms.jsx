@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 import TitleComponent from "./TitleComponent";
 import image from "../../assets/news.jpg";
 import { useQuery } from "@apollo/client/react";
-import { ArticalesById } from "../../graphql/queries/articleQueries.js";
+import { ArticalesById } from "../../graphql/articleQueries.js";
 import { useNavigate } from "react-router-dom";
 
 /**

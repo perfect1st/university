@@ -25,7 +25,7 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useParams } from "react-router-dom"
 import { useQuery } from "@apollo/client/react";
-import { GET_USER_BY_ID } from "../../graphql/queries/usersQueries.js";
+import { GET_USER_BY_ID } from "../../graphql/usersQueries.js";
 // Reusable row component that supports inline edit and file actions
 function LabelValueRow({
   label,

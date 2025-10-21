@@ -12,7 +12,7 @@ import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useQuery } from "@apollo/client/react";
-import { GET_USERS } from "../../graphql/queries/usersQueries.js";
+import { GET_USERS } from "../../graphql/usersQueries.js";
 
 // Dummy data for second project
 const DUMMY_USERS = [

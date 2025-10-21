@@ -19,13 +19,19 @@ import AdmissionsHero from "../../components/AdmissionsComponents/AdmissionsHero
 import TermsConditions from "../../components/AdmissionsComponents/TermsConditions";
 import { useTranslation } from "react-i18next";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { useQuery } from "@apollo/client/react";
-import { GetWebsiteArticles ,ArticalesById} from "../../graphql/queries/articleQueries.js";
+import { useQuery , useLazyQuery } from "@apollo/client/react";
+import { GetWebsiteArticles ,ArticalesById} from "../../graphql/articleQueries.js";
 import PhoneNumberInput from "../../components/PhoneInput.jsx";
+import { GET_ALL_NATIONALITIES } from "../../graphql/nationalitiesQueries.js";
+import { GET_ALL_COUNTRIES, GET_CITIES_BY_COUNTRY_ID } from "../../graphql/countriesQueries.js";
+
+
 // CustomTextField wrapper (keeps placeholder support + helperText)
 function CustomTextField(props) {
   const theme = useTheme();
-  const { placeholder, helperText, error, ...rest } = props;
+  // const { placeholder, helperText, error, ...rest } = props;
+
+   const { placeholder, helperText, error, children, ...rest } = props;
   const { i18n } = useTranslation();
   const isArabic = i18n.language == "ar";
   return (
@@ -60,7 +66,9 @@ function CustomTextField(props) {
         },
         ...props.sx,
       }}
-    />
+    >
+      {children}
+      </TextField>
   );
 }
 
@@ -76,7 +84,19 @@ export default function Admissions() {
     fetchPolicy: "network-only",
   });
 
-  console.log("ArticalesData",ArticalesData)
+  // get all nationalities
+  const{data:nationalitiesData,loading:nationalitiesLoading,error:nationalitiesError}=useQuery(GET_ALL_NATIONALITIES,{
+    fetchPolicy: "network-only",
+  });
+
+  // get all countries
+  const{data:countriesData,loading:countriesLoading,error:countriesError}=useQuery(GET_ALL_COUNTRIES,{fetchPolicy: "network-only"});
+
+  // get cities by country code
+  const[getCitiesByCountry,{data:citiesInCountry,loading:citiesLoading,error:citiesError}]=useLazyQuery(GET_CITIES_BY_COUNTRY_ID,{fetchPolicy: "network-only"});
+
+  console.log("ArticalesData",ArticalesData);
+  console.log("countriesData",countriesData);
 
   // step1 state
   const [personal, setPersonal] = useState({
@@ -116,30 +136,26 @@ export default function Admissions() {
 
   const fileInputRef = useRef(null);
 
-  const nationalities = [
-    { value: "saudi", label: t("admissions.saudi") },
-    { value: "egypt", label: t("admissions.egypt") },
-    { value: "jordan", label: t("admissions.jordan") },
-    { value: "other", label: t("admissions.other") },
-  ];
-
   const genders = [
     { value: "male", label: t("admissions.male") },
     { value: "female", label: t("admissions.female") },
   ];
+  const nationalities= nationalitiesData?.nationalities;
 
-  const countries = [
-    { value: "saudi", label: t("admissions.saudi") },
-    { value: "egypt", label: t("admissions.egypt") },
-    { value: "other", label: t("admissions.other") },
-  ];
+  console.log('nationalities',nationalities);
 
-  const cities = [
-    { value: "riyadh", label: t("admissions.riyadh") },
-    { value: "jeddah", label: t("admissions.jeddah") },
-    { value: "dammam", label: t("admissions.dammam") },
-    { value: "other", label: t("admissions.other") },
-  ];
+  const countries = countriesData?.countries;
+  
+  console.log('citiesInCountry',citiesInCountry?.getCitiesByCountry);
+
+  const cities=citiesInCountry?.getCitiesByCountry;
+
+  // const cities = [
+  //   { value: "riyadh", label: t("admissions.riyadh") },
+  //   { value: "jeddah", label: t("admissions.jeddah") },
+  //   { value: "dammam", label: t("admissions.dammam") },
+  //   { value: "other", label: t("admissions.other") },
+  // ];
 
   const faculties = [
     { value: "engineering", label: t("admissions.engineering") },
@@ -248,6 +264,9 @@ export default function Admissions() {
       "idNo",
     ];
     const newErrors = {};
+
+    console.log("personal",personal);
+    
     keys.forEach((k) => {
       const msg = validateField(k, personal[k], false);
       if (msg) newErrors[k] = msg;
@@ -342,6 +361,7 @@ export default function Admissions() {
     setAcadErrors((prev) => ({ ...prev, highSchoolFile: msg }));
   }
 
+  console.log('i18n ',i18n.language );
 
 
   return (
@@ -479,20 +499,26 @@ export default function Admissions() {
                     <CustomTextField
                       select
                       placeholder={t("admissions.nationality")}
-                      value={personal.nationality}
-                      onChange={(e) =>
-                        setPersonal((p) => ({
+                      value={
+                         personal.nationality
+                        }
+                      onChange={(e) =>{
+                        console.log('e.target.value',e.target);
+                         setPersonal((p) => ({
                           ...p,
                           nationality: e.target.value,
-                        }))
+                        }));
+                      }
+                       
                       }
                       onBlur={() => handlePersonalBlur("nationality")}
                       error={!!errors.nationality}
                       helperText={errors.nationality || ""}
                     >
-                      {nationalities.map((n) => (
-                        <MenuItem key={n.value} value={n.value}>
-                          {n.label}
+                      {nationalities?.map((n) => (
+                        <MenuItem key={n?.id} value={n?.id}>
+                          {/* {n.label} */}
+                          {i18n.language === "ar" ? n?.name_ar : n?.name_en}
                         </MenuItem>
                       ))}
                     </CustomTextField>
@@ -713,16 +739,27 @@ export default function Admissions() {
                       select
                       placeholder={t("admissions.country")}
                       value={academic.country}
-                      onChange={(e) =>
-                        setAcademic((a) => ({ ...a, country: e.target.value }))
+                      onChange={(e) =>{
+                        setAcademic((a) => ({ ...a, country: e.target.value }));
+                        // get cities in selected country
+                        if(e.target.value !=''){
+                          // 44444444444444444444444444
+                          getCitiesByCountry({
+                            variables:{
+                              country_id:e.target.value
+                            }
+                          }); 
+                        }
+                      }
+                        
                       }
                       onBlur={() => handleAcademicBlur("country")}
                       error={!!acadErrors.country}
                       helperText={acadErrors.country || ""}
                     >
-                      {countries.map((country) => (
-                        <MenuItem key={country.value} value={country.value}>
-                          {country.label}
+                      {countries?.map((country) => (
+                        <MenuItem key={country?.id} value={country?.id}>
+                          {i18n.language === "ar" ? country?.name_ar : country?.name_en}
                         </MenuItem>
                       ))}
                     </CustomTextField>
@@ -746,9 +783,9 @@ export default function Admissions() {
                       error={!!acadErrors.city}
                       helperText={acadErrors.city || ""}
                     >
-                      {cities.map((city) => (
-                        <MenuItem key={city.value} value={city.value}>
-                          {city.label}
+                      {cities?.map((city) => (
+                        <MenuItem key={city?.id} value={city?.id}>
+                          {i18n.language === "ar" ? city?.name_ar : city?.name_en}
                         </MenuItem>
                       ))}
                     </CustomTextField>

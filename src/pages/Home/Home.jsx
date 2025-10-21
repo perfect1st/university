@@ -8,8 +8,8 @@ import News from "../../components/HomeComponants/News";
 import ActivitiesPrograms from "../../components/HomeComponants/ActivitiesPrograms";
 import FutureVision from "../../components/HomeComponants/FutureVision";
 import { useQuery } from "@apollo/client/react";
-import { GetWebsiteArticles ,ArticalesById} from "../../graphql/queries/articleQueries.js";
-import { GetWebsiteDepartments, getDepartmentByFatherId } from "../../graphql/queries/departmentsQueries.js";
+import { GetWebsiteArticles ,ArticalesById} from "../../graphql/articleQueries.js";
+import { GetWebsiteDepartments, getDepartmentByFatherId } from "../../graphql/departmentsQueries.js";
 
 const Home = () => {
   const theme = useTheme();

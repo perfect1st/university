@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import mainImage from "../../assets/news.jpg";
 import TitleComponent from "../../components/HomeComponants/TitleComponent";
 import { useQuery } from "@apollo/client/react";
-import { ArticalesById} from "../../graphql/queries/articleQueries.js";
+import { ArticalesById} from "../../graphql/articleQueries.js";
 import LoadingPage from "../../components/LoadingComponent.jsx";
 
 

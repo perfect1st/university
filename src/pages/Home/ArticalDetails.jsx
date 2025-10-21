@@ -9,7 +9,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { ArticaleById } from "../../graphql/queries/articleQueries";
+import { ArticaleById } from "../../graphql/articleQueries";
 
 export default function ArticalDetails() {
   const { id } = useParams();

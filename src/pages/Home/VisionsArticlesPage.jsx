@@ -19,7 +19,7 @@ import { useTranslation } from "react-i18next";
 import image from "../../assets/news.jpg";
 import TitleComponent from "../../components/HomeComponants/TitleComponent";
 import { useQuery } from "@apollo/client/react";
-import { GetWebsiteArticles ,ArticalesById} from "../../graphql/queries/articleQueries.js";
+import { GetWebsiteArticles ,ArticalesById} from "../../graphql/articleQueries.js";
 
 function ArticleImageSlider({ images = [], height = 300, intervalMs = 3500 }) {
   const imgs = useMemo(() => {
