@@ -24,6 +24,8 @@ import { GetWebsiteArticles ,ArticalesById} from "../../graphql/articleQueries.j
 import PhoneNumberInput from "../../components/PhoneInput.jsx";
 import { GET_ALL_NATIONALITIES } from "../../graphql/nationalitiesQueries.js";
 import { GET_ALL_COUNTRIES, GET_CITIES_BY_COUNTRY_ID } from "../../graphql/countriesQueries.js";
+import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries.js";
+// GET_ALL_FACULITIES
 
 
 // CustomTextField wrapper (keeps placeholder support + helperText)
@@ -34,6 +36,9 @@ function CustomTextField(props) {
    const { placeholder, helperText, error, children, ...rest } = props;
   const { i18n } = useTranslation();
   const isArabic = i18n.language == "ar";
+
+  
+
   return (
     <TextField
       fullWidth
@@ -77,7 +82,7 @@ export default function Admissions() {
   const isArabic = i18n.language === "ar";
   const theme = useTheme();
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
 
   const { data: ArticalesData, loading: ArticalesLoading, error: ArticalesError } = useQuery(ArticalesById, {
     variables: { departmentId: "68f0e59da78374194a5ef3d0" },
@@ -95,8 +100,15 @@ export default function Admissions() {
   // get cities by country code
   const[getCitiesByCountry,{data:citiesInCountry,loading:citiesLoading,error:citiesError}]=useLazyQuery(GET_CITIES_BY_COUNTRY_ID,{fetchPolicy: "network-only"});
 
+  // get all faculities
+  const{data:faculitiesData,loading:faculitiesLoading,error:faculitiesError}=useQuery(GET_ALL_FACULITIES,{fetchPolicy: "network-only"});
+  
+  // get departments in faculty
+  const[getFacultyDepartmentsByFaculty,{data:departmentsInFaculty,loading:departmentsLoading,error:departmentsError}]=useLazyQuery(GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID,{fetchPolicy: "network-only"});
+
   console.log("ArticalesData",ArticalesData);
   console.log("countriesData",countriesData);
+  console.log("faculitiesData",faculitiesData);
 
   // step1 state
   const [personal, setPersonal] = useState({
@@ -136,6 +148,8 @@ export default function Admissions() {
 
   const fileInputRef = useRef(null);
 
+  console.log('academic',academic);
+
   const genders = [
     { value: "male", label: t("admissions.male") },
     { value: "female", label: t("admissions.female") },
@@ -144,32 +158,21 @@ export default function Admissions() {
 
   console.log('nationalities',nationalities);
 
-  const countries = countriesData?.countries;
+  const countries = countriesData?.countries ? countriesData?.countries : null;
   
   console.log('citiesInCountry',citiesInCountry?.getCitiesByCountry);
 
-  const cities=citiesInCountry?.getCitiesByCountry;
+  const cities=citiesInCountry?.getCitiesByCountry ? citiesInCountry?.getCitiesByCountry : null;
 
-  // const cities = [
-  //   { value: "riyadh", label: t("admissions.riyadh") },
-  //   { value: "jeddah", label: t("admissions.jeddah") },
-  //   { value: "dammam", label: t("admissions.dammam") },
-  //   { value: "other", label: t("admissions.other") },
-  // ];
+  
+  const faculties=faculitiesData?.faculties ? faculitiesData?.faculties : null;
+  
 
-  const faculties = [
-    { value: "engineering", label: t("admissions.engineering") },
-    { value: "medicine", label: t("admissions.medicine") },
-    { value: "business", label: t("admissions.business") },
-    { value: "law", label: t("admissions.law") },
-  ];
+  console.log('departmentsInFaculty',departmentsInFaculty);
 
-  const departments = [
-    { value: "computer", label: t("admissions.computer") },
-    { value: "civil", label: t("admissions.civil") },
-    { value: "electrical", label: t("admissions.electrical") },
-    { value: "mechanical", label: t("admissions.mechanical") },
-  ];
+  const departments= departmentsInFaculty?.getFacultyDepartmentsByFaculty ?departmentsInFaculty?.getFacultyDepartmentsByFaculty : null;
+
+  
 
   // --- validation helpers (returns message or empty string) ---
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -362,6 +365,8 @@ export default function Admissions() {
   }
 
   console.log('i18n ',i18n.language );
+
+  console.log('academic.city',academic.city);
 
 
   return (
@@ -737,6 +742,7 @@ export default function Admissions() {
                     </Typography>
                     <CustomTextField
                       select
+                      id="country"
                       placeholder={t("admissions.country")}
                       value={academic.country}
                       onChange={(e) =>{
@@ -774,8 +780,9 @@ export default function Admissions() {
                     </Typography>
                     <CustomTextField
                       select
+                      id="city"
                       placeholder={t("admissions.city")}
-                      value={academic.city}
+                     value={academic.city || ""}
                       onChange={(e) =>
                         setAcademic((a) => ({ ...a, city: e.target.value }))
                       }
@@ -783,7 +790,11 @@ export default function Admissions() {
                       error={!!acadErrors.city}
                       helperText={acadErrors.city || ""}
                     >
-                      {cities?.map((city) => (
+                      <MenuItem value="">
+                      {i18n.language === "ar" ? "اختر المدينة" : "Select City"}
+                      </MenuItem>
+                      {
+                      cities?.map((city) => (
                         <MenuItem key={city?.id} value={city?.id}>
                           {i18n.language === "ar" ? city?.name_ar : city?.name_en}
                         </MenuItem>
@@ -985,16 +996,28 @@ export default function Admissions() {
                       select
                       placeholder={t("admissions.faculty")}
                       value={academic.faculty}
-                      onChange={(e) =>
-                        setAcademic((a) => ({ ...a, faculty: e.target.value }))
+                      onChange={(e) =>{
+
+                          if(e.target.value!=""){
+
+                             getFacultyDepartmentsByFaculty({
+                          variables: {
+                            faculty_id:e.target.value
+                          }
+                        });
+                            setAcademic((a) => ({ ...a, faculty: e.target.value }));  
+                          }
+                          
+                      }
+                        
                       }
                       onBlur={() => handleAcademicBlur("faculty")}
                       error={!!acadErrors.faculty}
                       helperText={acadErrors.faculty || ""}
                     >
-                      {faculties.map((faculty) => (
-                        <MenuItem key={faculty.value} value={faculty.value}>
-                          {faculty.label}
+                      { faculties?.map((faculty) => (
+                        <MenuItem key={faculty?.id} value={faculty?.id}>
+                          {i18n.language === "ar" ? faculty?.title_ar : faculty?.title_en}
                         </MenuItem>
                       ))}
                     </CustomTextField>
@@ -1011,19 +1034,26 @@ export default function Admissions() {
                       select
                       placeholder={t("admissions.facultyDepartment")}
                       value={academic.facultyDepartment}
-                      onChange={(e) =>
-                        setAcademic((a) => ({
-                          ...a,
-                          facultyDepartment: e.target.value,
-                        }))
+                      onChange={(e) =>{
+                          // 44444444444444444444444444444
+                          setAcademic((a) => ({
+                            ...a,
+                            facultyDepartment: e.target.value,
+                          }));
+                      }
+                        
                       }
                       onBlur={() => handleAcademicBlur("facultyDepartment")}
                       error={!!acadErrors.facultyDepartment}
                       helperText={acadErrors.facultyDepartment || ""}
                     >
-                      {departments.map((dept) => (
-                        <MenuItem key={dept.value} value={dept.value}>
-                          {dept.label}
+                       <MenuItem value="">
+                        {i18n.language === "ar" ? "اختر القسم" : "Select Faculty"}
+                        </MenuItem>
+
+                      {departments?.map((dept) => (
+                        <MenuItem key={dept?.id} value={dept?.id}>
+                          {i18n.language === "ar" ? dept?.title_ar : dept?.title_en}
                         </MenuItem>
                       ))}
                     </CustomTextField>
