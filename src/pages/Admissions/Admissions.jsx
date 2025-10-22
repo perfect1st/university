@@ -14,6 +14,8 @@ import {
   Divider,
   useTheme,
   FormControl,
+  LoadingButton,
+  CircularProgress
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AdmissionsHero from "../../components/AdmissionsComponents/AdmissionsHero";
@@ -36,6 +38,7 @@ import {
   GET_ALL_FACULITIES,
 } from "../../graphql/facultyQuiries.js";
 import { CREATE_REGISTERATION_FORM } from "../../graphql/registerationFormQueries.js";
+import notify from "../../components/notify.js";
 
 // CustomTextField wrapper (keeps placeholder support + helperText)
 function CustomTextField(props) {
@@ -183,6 +186,8 @@ export default function Admissions() {
     faculty_department_id: "",
   });
   const [acadErrors, setAcadErrors] = useState({});
+
+  const[isLoading, setIsLoading] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -422,18 +427,24 @@ export default function Admissions() {
 
       console.log('objToSend',objToSend);
 
+        setIsLoading(true);
        const result=await createRegisterForm({
           variables:{
             input:objToSend
           }
         });
-
+        setIsLoading(false);
          console.log("result",result?.data);
 
-      alert("Application submitted (demo)");
+         notify(t("admissions.success"),"success");
+     // alert("Application submitted (demo)");
     }
     } catch (error) {
         console.log('error',error.message) 
+         notify(t("admissions.error"),"error");
+    }
+    finally{
+      setIsLoading(false);
     }
     
   };
@@ -1274,6 +1285,7 @@ export default function Admissions() {
                 sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}
               >
                 <Button
+                  disabled={isLoading}
                   variant="contained"
                   size="large"
                   endIcon={
@@ -1288,7 +1300,7 @@ export default function Admissions() {
                   sx={{ background: theme.palette.info?.main, gap: 1 }}
                   onClick={handleFinish}
                 >
-                  {t("admissions.finish")}
+                  {isLoading ? <CircularProgress size={25} /> :t("admissions.finish")}
                 </Button>
               </Grid>
             </Grid>

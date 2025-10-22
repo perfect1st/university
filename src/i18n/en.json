@@ -107,6 +107,8 @@
     "riyadh": "Riyadh",
     "jeddah": "Jeddah",
     "dammam": "Dammam",
+    "success":"Application submitted successfully",
+    "error":"Application submission failed try again later",
     "errors": {
       "required": "This field is required",
       "invalidEmail": "Invalid email address",
