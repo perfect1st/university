@@ -114,7 +114,8 @@
       "invalidId": "Invalid ID number",
       "invalidNumber": "Please enter a valid number",
       "invalidGpaRange": "GPA must be between 0 and 4",
-      "requiredFile": "Please attach your high school certificate file"
+      "requiredFile": "Please attach your high school certificate file",
+      "nationality_select":"You must choose one of the options: ID card, passport, or place of residence."
     }
   },
   "studentDashboard": {
@@ -220,5 +221,9 @@
     "title": "Page Not Found",
     "description": "Oops! The page you’re looking for doesn’t exist or has been moved. Please check the URL or go back to the homepage.",
     "back_home": "Back to Home"
-  }
+  },
+  "Select City":"Select City",
+   "Select Country":"Select Country",
+   "Select Nationality":"Select Nationality",
+   "Select Type":"Select Type"
 }

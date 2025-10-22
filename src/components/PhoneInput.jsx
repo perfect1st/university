@@ -62,7 +62,7 @@ const PhoneNumberInput = (props) => {
   } = props || {};
 
   // local safe personal object (سيئتر منك لو parent مرّر undefined)
-  const personal = incomingPersonal || { phoneNumber: "", countryCode: "" };
+  const personal = incomingPersonal || { mobile: "", countryCode: "" };
 
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -207,20 +207,20 @@ const PhoneNumberInput = (props) => {
     <Field
       placeholder="5XXXXXXXX"
       type="text"
-      value={(personal && personal.phoneNumber) || ""}
+      value={(personal && personal.mobile) || ""}
       onChange={(e) => {
         if (typeof setPersonal === "function") {
-          setPersonal((p) => ({ ...(p || {}), phoneNumber: e.target.value }));
+          setPersonal((p) => ({ ...(p || {}), mobile: e.target.value }));
         }
       }}
       onBlur={() => {
         try {
           if (typeof handlePersonalBlur === "function")
-            handlePersonalBlur("phoneNumber");
+            handlePersonalBlur("mobile");
         } catch (e) {}
       }}
-      error={!!(errors && errors.phoneNumber)}
-      helperText={(errors && errors.phoneNumber) || ""}
+      error={!!(errors && errors.mobile)}
+      helperText={(errors && errors.mobile) || ""}
       InputProps={{ startAdornment }}
       fullWidth
       // إذا Field هو MUI TextField فالـ props أعلاه شغالة. لو Field هو custom قد يتقبّل props أيضاً.

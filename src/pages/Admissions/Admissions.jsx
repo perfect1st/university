@@ -11,7 +11,6 @@ import {
   Checkbox,
   FormControlLabel,
   InputAdornment,
-  
   Divider,
   useTheme,
   FormControl,
@@ -21,25 +20,31 @@ import AdmissionsHero from "../../components/AdmissionsComponents/AdmissionsHero
 import TermsConditions from "../../components/AdmissionsComponents/TermsConditions";
 import { useTranslation } from "react-i18next";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { useQuery , useLazyQuery } from "@apollo/client/react";
-import { GetWebsiteArticles ,ArticalesById} from "../../graphql/articleQueries.js";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/client/react";
+import {
+  GetWebsiteArticles,
+  ArticalesById,
+} from "../../graphql/articleQueries.js";
 import PhoneNumberInput from "../../components/PhoneInput.jsx";
 import { GET_ALL_NATIONALITIES } from "../../graphql/nationalitiesQueries.js";
-import { GET_ALL_COUNTRIES, GET_CITIES_BY_COUNTRY_ID } from "../../graphql/countriesQueries.js";
-import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries.js";
-// GET_ALL_FACULITIES
-
+import {
+  GET_ALL_COUNTRIES,
+  GET_CITIES_BY_COUNTRY_ID,
+} from "../../graphql/countriesQueries.js";
+import {
+  GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID,
+  GET_ALL_FACULITIES,
+} from "../../graphql/facultyQuiries.js";
+import { CREATE_REGISTERATION_FORM } from "../../graphql/registerationFormQueries.js";
 
 // CustomTextField wrapper (keeps placeholder support + helperText)
 function CustomTextField(props) {
   const theme = useTheme();
   // const { placeholder, helperText, error, ...rest } = props;
 
-   const { placeholder, helperText, error, children, ...rest } = props;
+  const { placeholder, helperText, error, children, ...rest } = props;
   const { i18n } = useTranslation();
   const isArabic = i18n.language == "ar";
-
-  
 
   return (
     <TextField
@@ -75,7 +80,7 @@ function CustomTextField(props) {
       }}
     >
       {children}
-      </TextField>
+    </TextField>
   );
 }
 
@@ -84,51 +89,82 @@ export default function Admissions() {
   const isArabic = i18n.language === "ar";
   const theme = useTheme();
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
 
-  const { data: ArticalesData, loading: ArticalesLoading, error: ArticalesError } = useQuery(ArticalesById, {
+  const {
+    data: ArticalesData,
+    loading: ArticalesLoading,
+    error: ArticalesError,
+  } = useQuery(ArticalesById, {
     variables: { departmentId: "68f0e59da78374194a5ef3d0" },
     fetchPolicy: "network-only",
   });
 
   // get all nationalities
-  const{data:nationalitiesData,loading:nationalitiesLoading,error:nationalitiesError}=useQuery(GET_ALL_NATIONALITIES,{
+  const {
+    data: nationalitiesData,
+    loading: nationalitiesLoading,
+    error: nationalitiesError,
+  } = useQuery(GET_ALL_NATIONALITIES, {
     fetchPolicy: "network-only",
   });
 
   // get all countries
-  const{data:countriesData,loading:countriesLoading,error:countriesError}=useQuery(GET_ALL_COUNTRIES,{fetchPolicy: "network-only"});
+  const {
+    data: countriesData,
+    loading: countriesLoading,
+    error: countriesError,
+  } = useQuery(GET_ALL_COUNTRIES, { fetchPolicy: "network-only" });
 
   // get cities by country code
-  const[getCitiesByCountry,{data:citiesInCountry,loading:citiesLoading,error:citiesError}]=useLazyQuery(GET_CITIES_BY_COUNTRY_ID,{fetchPolicy: "network-only"});
+  const [
+    getCitiesByCountry,
+    { data: citiesInCountry, loading: citiesLoading, error: citiesError },
+  ] = useLazyQuery(GET_CITIES_BY_COUNTRY_ID, { fetchPolicy: "network-only" });
 
   // get all faculities
-  const{data:faculitiesData,loading:faculitiesLoading,error:faculitiesError}=useQuery(GET_ALL_FACULITIES,{fetchPolicy: "network-only"});
-  
-  // get departments in faculty
-  const[getFacultyDepartmentsByFaculty,{data:departmentsInFaculty,loading:departmentsLoading,error:departmentsError}]=useLazyQuery(GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID,{fetchPolicy: "network-only"});
+  const {
+    data: faculitiesData,
+    loading: faculitiesLoading,
+    error: faculitiesError,
+  } = useQuery(GET_ALL_FACULITIES, { fetchPolicy: "network-only" });
 
-  console.log("ArticalesData",ArticalesData);
-  console.log("countriesData",countriesData);
-  console.log("faculitiesData",faculitiesData);
+  // get departments in faculty
+  const [
+    getFacultyDepartmentsByFaculty,
+    {
+      data: departmentsInFaculty,
+      loading: departmentsLoading,
+      error: departmentsError,
+    },
+  ] = useLazyQuery(GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, {
+    fetchPolicy: "network-only",
+  });
+  // create registeration form
+  const [
+    createRegisterForm,
+    { data: createResponse, loading: createLoading, error: createError },
+  ] = useMutation(CREATE_REGISTERATION_FORM);
+
+  console.log("ArticalesData", ArticalesData);
+  console.log("countriesData", countriesData);
+  console.log("faculitiesData", faculitiesData);
 
   // step1 state
   const [personal, setPersonal] = useState({
-    firstName: "",
-    secondName: "",
-    thirdName: "",
-    fourthName: "",
-    fullName: "",
+    first_name: "",
+    second_name: "",
+    third_name: "",
+    fourth_name: "",
+    // fullName: "",
     gender: "",
-    nationality: "",
-    dob: "",
+    nationality_id: "",
+    birthdate: "",
     email: "",
-    homePhone: "",
-    phoneNumber: "",
-    idNo: "",
-    idCard: false,
-    passport: false,
-    residence: false,
+    home_tel: "",
+    mobile: "",
+    national_id: "",
+    national_id_type: "",
   });
   // errors hold message string ('' or message)
   const [errors, setErrors] = useState({});
@@ -150,31 +186,34 @@ export default function Admissions() {
 
   const fileInputRef = useRef(null);
 
-  console.log('academic',academic);
+  console.log("academic", academic);
+  console.log("personal", personal);
 
   const genders = [
     { value: "male", label: t("admissions.male") },
     { value: "female", label: t("admissions.female") },
   ];
-  const nationalities= nationalitiesData?.nationalities;
+  const nationalities = nationalitiesData?.nationalities;
 
-  console.log('nationalities',nationalities);
+  console.log("nationalities", nationalities);
 
   const countries = countriesData?.countries ? countriesData?.countries : null;
-  
-  console.log('citiesInCountry',citiesInCountry?.getCitiesByCountry);
 
-  const cities=citiesInCountry?.getCitiesByCountry ? citiesInCountry?.getCitiesByCountry : null;
+  console.log("citiesInCountry", citiesInCountry?.getCitiesByCountry);
 
-  
-  const faculties=faculitiesData?.faculties ? faculitiesData?.faculties : null;
-  
+  const cities = citiesInCountry?.getCitiesByCountry
+    ? citiesInCountry?.getCitiesByCountry
+    : null;
 
-  console.log('departmentsInFaculty',departmentsInFaculty);
+  const faculties = faculitiesData?.faculties
+    ? faculitiesData?.faculties
+    : null;
 
-  const departments= departmentsInFaculty?.getFacultyDepartmentsByFaculty ?departmentsInFaculty?.getFacultyDepartmentsByFaculty : null;
+  console.log("departmentsInFaculty", departmentsInFaculty);
 
-  
+  const departments = departmentsInFaculty?.getFacultyDepartmentsByFaculty
+    ? departmentsInFaculty?.getFacultyDepartmentsByFaculty
+    : null;
 
   // --- validation helpers (returns message or empty string) ---
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -186,24 +225,24 @@ export default function Admissions() {
   const validateField = (name, value, isAcademic = false) => {
     if (!isAcademic) {
       switch (name) {
-        case "firstName":
-        case "secondName":
-        case "thirdName":
-        case "fourthName":
-        case "fullName":
-          return value ? "" : t("admissions.errors.required") || "Required";
+        case "first_name":
+        case "second_name":
+        case "third_name":
+        case "fourth_name":
+        // case "fullName":
+        //   return value ? "" : t("admissions.errors.required") || "Required";
         case "gender":
           return value ? "" : t("admissions.errors.required") || "Required";
-        case "nationality":
+        case "nationality_id":
           return value ? "" : t("admissions.errors.required") || "Required";
-        case "dob":
+        case "birthdate":
           return value ? "" : t("admissions.errors.required") || "Required";
         case "email":
           if (!value) return t("admissions.errors.required") || "Required";
           if (!emailRegex.test(value))
             return t("admissions.errors.invalidEmail") || "Invalid email";
           return "";
-        case "phoneNumber":
+        case "mobile":
           if (!value) return t("admissions.errors.required") || "Required";
           if (!phoneRegex.test(value))
             return (
@@ -211,11 +250,17 @@ export default function Admissions() {
               "Invalid phone format (e.g. 5XXXXXXXX)"
             );
           return "";
-        case "idNo":
+        case "national_id":
           if (!value) return t("admissions.errors.required") || "Required";
           if (!idRegex.test(value))
             return t("admissions.errors.invalidId") || "Invalid ID number";
           return "";
+
+        case "national_id_type":
+          return value
+            ? ""
+            : t("admissions.errors.nationality_select") || "Required";
+
         default:
           return "";
       }
@@ -244,41 +289,47 @@ export default function Admissions() {
             );
           return "";
         case "highSchoolFile":
-          return value
-            ? ""
-            : t("admissions.errors.requiredFile") ||
-                "Please attach certificate file";
+        // return value
+        //   ? ""
+        //   : t("admissions.errors.requiredFile") ||
+        //       "Please attach certificate file";
         default:
           return "";
       }
     }
-  }
+  };
 
   const validateStep1 = () => {
     const keys = [
-      "firstName",
-      "secondName",
-      "thirdName",
-      "fourthName",
-      "fullName",
+      "first_name",
+      "second_name",
+      "third_name",
+      "fourth_name",
+      // "fullName",
       "gender",
-      "nationality",
-      "dob",
+      "nationality_id",
+      "birthdate",
       "email",
-      "phoneNumber",
-      "idNo",
+      "mobile",
+      "national_id",
+      "national_id_type",
     ];
     const newErrors = {};
 
-    console.log("personal",personal);
-    
+    console.log("personal", personal);
+
     keys.forEach((k) => {
       const msg = validateField(k, personal[k], false);
       if (msg) newErrors[k] = msg;
     });
     setErrors(newErrors);
+
+    console.log("personal error", newErrors);
+
+    if (newErrors?.national_id_type) alert(newErrors?.national_id_type);
+
     return Object.keys(newErrors).length === 0;
-  }
+  };
 
   const validateStep2 = () => {
     const keys = [
@@ -298,38 +349,49 @@ export default function Admissions() {
       const msg = validateField(k, academic[k], true);
       if (msg) newErrors[k] = msg;
     });
+
+    console.log("newErrors", newErrors);
     setAcadErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }
+  };
 
   // single-field onBlur validation (for immediate feedback)
   const handlePersonalBlur = (field) => {
+    console.log("field", field, "personal[field]", personal[field]);
+
     const msg = validateField(field, personal[field], false);
+
+    console.log("msg personal", msg);
     setErrors((prev) => ({ ...prev, [field]: msg }));
-  }
+  };
 
   const handleAcademicBlur = (field) => {
     const msg = validateField(field, academic[field], true);
     setAcadErrors((prev) => ({ ...prev, [field]: msg }));
-  }
+  };
 
   const handleNext = () => {
     if (validateStep1()) {
       setStep(2);
       // scroll to top of step2 maybe
     }
-  }
+  };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
+    console.log("finish", validateStep2());
     if (validateStep2()) {
+      // console.log('oooooooooooooooo');
       const formData = new FormData();
-  
+
       // Append personal data
       Object.entries(personal).forEach(([key, value]) => {
         // لو قيمة Boolean زي checkboxes نخليها string
-        formData.append(key, typeof value === "boolean" ? String(value) : value);
+        formData.append(
+          key,
+          typeof value === "boolean" ? String(value) : value
+        );
       });
-  
+
       // Append academic data
       Object.entries(academic).forEach(([key, value]) => {
         if (key === "highSchoolFile" && value instanceof File) {
@@ -338,42 +400,50 @@ export default function Admissions() {
           formData.append(key, value);
         }
       });
-  
+
+      console.log("formData", formData);
+
       // ✅ مثال توضيحي: ارسال البيانات
       // axios.post("/api/admissions", formData)
       //   .then(res => console.log("Submitted successfully"))
       //   .catch(err => console.error(err));
-  
+
       // Debug
       for (let [key, value] of formData.entries()) {
         console.log(key, value);
       }
-  
+
+      //  const result=await createRegisterForm({
+      //     variables:{
+      //       input:formData
+      //     }
+      //   });
+
+      //   console.log("result",result?.data);
+
       alert("Application submitted (demo)");
     }
-  }
-  
+  };
 
   // File handling
   const handlePickFile = () => {
     if (fileInputRef.current) fileInputRef.current.click();
-  }
+  };
   const handleFileChange = (e) => {
     const file = e.target.files?.[0] ?? null;
     setAcademic((a) => ({ ...a, highSchoolFile: file }));
     // validate file right away
     const msg = validateField("highSchoolFile", file, true);
     setAcadErrors((prev) => ({ ...prev, highSchoolFile: msg }));
-  }
+  };
 
-  console.log('i18n ',i18n.language );
+  console.log("i18n ", i18n.language);
 
-  console.log('academic.city',academic.city);
-
+  console.log("academic.city", academic.city);
 
   return (
     <Box>
-      <AdmissionsHero data={ArticalesData?.getArticlesByDepartment?.[0]}/>
+      <AdmissionsHero data={ArticalesData?.getArticlesByDepartment?.[0]} />
 
       {!acceptTerms && (
         <TermsConditions
@@ -423,10 +493,10 @@ export default function Admissions() {
 
                 <Grid container spacing={2}>
                   {[
-                    { key: "firstName", label: t("admissions.firstName") },
-                    { key: "secondName", label: t("admissions.secondName") },
-                    { key: "thirdName", label: t("admissions.thirdName") },
-                    { key: "fourthName", label: t("admissions.fourthName") },
+                    { key: "first_name", label: t("admissions.firstName") },
+                    { key: "second_name", label: t("admissions.secondName") },
+                    { key: "third_name", label: t("admissions.thirdName") },
+                    { key: "fourth_name", label: t("admissions.fourthName") },
                   ].map((field) => (
                     <Grid key={field.key} item xs={12} sm={6} md={3}>
                       <Typography
@@ -451,7 +521,7 @@ export default function Admissions() {
                     </Grid>
                   ))}
 
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <Typography
                       variant="body2"
                       sx={{ display: "block", mb: 0.5 }}
@@ -468,7 +538,7 @@ export default function Admissions() {
                       error={!!errors.fullName}
                       helperText={errors.fullName || ""}
                     />
-                  </Grid>
+                  </Grid> */}
 
                   <Grid item xs={12} sm={6}>
                     <Typography
@@ -487,6 +557,27 @@ export default function Admissions() {
                       onBlur={() => handlePersonalBlur("gender")}
                       error={!!errors.gender}
                       helperText={errors.gender || ""}
+                      SelectProps={{
+                        displayEmpty: true,
+                        renderValue: (selected) => {
+                          if (!selected) {
+                            return (
+                              <span style={{ color: "#aaa" }}>
+                                {t("Select Type")}
+                              </span>
+                            );
+                          }
+
+                          // 👇 استرجاع الاسم المناسب حسب اللغة
+                          const genderLabel = genders.find(
+                            (g) => g.value === selected
+                          )?.label;
+                          return <>{genderLabel}</>;
+                        },
+                        MenuProps: {
+                          PaperProps: { style: { maxHeight: 320 } },
+                        },
+                      }}
                     >
                       {genders.map((g) => (
                         <MenuItem key={g.value} value={g.value}>
@@ -506,21 +597,32 @@ export default function Admissions() {
                     <CustomTextField
                       select
                       placeholder={t("admissions.nationality")}
-                      value={
-                         personal.nationality
-                        }
-                      onChange={(e) =>{
-                        console.log('e.target.value',e.target);
-                         setPersonal((p) => ({
+                      value={personal.nationality_id}
+                      onChange={(e) => {
+                        console.log("e.target.value", e.target);
+                        setPersonal((p) => ({
                           ...p,
-                          nationality: e.target.value,
+                          nationality_id: e.target.value,
                         }));
-                      }
-                       
-                      }
-                      onBlur={() => handlePersonalBlur("nationality")}
-                      error={!!errors.nationality}
-                      helperText={errors.nationality || ""}
+                      }}
+                      onBlur={() => handlePersonalBlur("nationality_id")}
+                      error={!!errors.nationality_id}
+                      helperText={errors.nationality_id || ""}
+                       SelectProps={{
+                      displayEmpty: true,
+                      renderValue: (selected) => {
+                        if (!selected) {
+                          return <>{t("Select Nationality")}</>;
+                        }
+                        return (
+                          <>{i18n.language === "ar" ? nationalities?.find((city) => city?.id === selected)?.name_ar : cities?.find((city) => city?.id === selected)?.name_en}</>
+                        );
+                      },
+                      MenuProps: {
+                        // optional: keep menu within viewport
+                        PaperProps: { style: { maxHeight: 320 } },
+                      },
+                    }}
                     >
                       {nationalities?.map((n) => (
                         <MenuItem key={n?.id} value={n?.id}>
@@ -540,14 +642,17 @@ export default function Admissions() {
                     </Typography>
                     <CustomTextField
                       type="date"
-                      value={personal.dob}
+                      value={personal.birthdate}
                       onChange={(e) =>
-                        setPersonal((p) => ({ ...p, dob: e.target.value }))
+                        setPersonal((p) => ({
+                          ...p,
+                          birthdate: e.target.value,
+                        }))
                       }
                       InputLabelProps={{ shrink: true }}
-                      onBlur={() => handlePersonalBlur("dob")}
-                      error={!!errors.dob}
-                      helperText={errors.dob || ""}
+                      onBlur={() => handlePersonalBlur("birthdate")}
+                      error={!!errors.birthdate}
+                      helperText={errors.birthdate || ""}
                     />
                   </Grid>
 
@@ -580,11 +685,11 @@ export default function Admissions() {
                     </Typography>
                     <CustomTextField
                       placeholder={t("admissions.homePhone")}
-                      value={personal.homePhone}
+                      value={personal.home_tel}
                       onChange={(e) =>
                         setPersonal((p) => ({
                           ...p,
-                          homePhone: e.target.value,
+                          home_tel: e.target.value,
                         }))
                       }
                     />
@@ -599,12 +704,11 @@ export default function Admissions() {
                     </Typography>
                     {/* phone as text but validated by regex */}
                     <PhoneNumberInput
-  personal={personal ?? { phoneNumber: "", countryCode: "" }}
-  setPersonal={setPersonal ?? (() => {})}
-  errors={errors ?? {}}
-  handlePersonalBlur={handlePersonalBlur ?? (() => {})}
-/>
-
+                      personal={personal ?? { mobile: "", countryCode: "" }}
+                      setPersonal={setPersonal ?? (() => {})}
+                      errors={errors ?? {}}
+                      handlePersonalBlur={handlePersonalBlur ?? (() => {})}
+                    />
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
@@ -617,13 +721,16 @@ export default function Admissions() {
                     <CustomTextField
                       placeholder={t("admissions.idNo")}
                       type="text"
-                      value={personal.idNo}
+                      value={personal.national_id}
                       onChange={(e) =>
-                        setPersonal((p) => ({ ...p, idNo: e.target.value }))
+                        setPersonal((p) => ({
+                          ...p,
+                          national_id: e.target.value,
+                        }))
                       }
-                      onBlur={() => handlePersonalBlur("idNo")}
-                      error={!!errors.idNo}
-                      helperText={errors.idNo || ""}
+                      onBlur={() => handlePersonalBlur("national_id")}
+                      error={!!errors.national_id}
+                      helperText={errors.national_id || ""}
                     />
                   </Grid>
 
@@ -636,13 +743,24 @@ export default function Admissions() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={personal.idCard}
-                          onChange={(e) =>
-                            setPersonal((p) => ({
-                              ...p,
-                              idCard: e.target.checked,
-                            }))
+                          checked={
+                            personal?.national_id_type == "id_card"
+                              ? true
+                              : false
                           }
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setPersonal((p) => ({
+                                ...p,
+                                national_id_type: "id_card",
+                              }));
+                            } else {
+                              setPersonal((p) => ({
+                                ...p,
+                                national_id_type: "",
+                              }));
+                            }
+                          }}
                         />
                       }
                       label={t("admissions.idCard")}
@@ -650,13 +768,24 @@ export default function Admissions() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={personal.passport}
-                          onChange={(e) =>
-                            setPersonal((p) => ({
-                              ...p,
-                              passport: e.target.checked,
-                            }))
+                          checked={
+                            personal?.national_id_type == "passport"
+                              ? true
+                              : false
                           }
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setPersonal((p) => ({
+                                ...p,
+                                national_id_type: "passport",
+                              }));
+                            } else {
+                              setPersonal((p) => ({
+                                ...p,
+                                national_id_type: "",
+                              }));
+                            }
+                          }}
                         />
                       }
                       label={t("admissions.passport")}
@@ -664,13 +793,24 @@ export default function Admissions() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={personal.residence}
-                          onChange={(e) =>
-                            setPersonal((p) => ({
-                              ...p,
-                              residence: e.target.checked,
-                            }))
+                          checked={
+                            personal?.national_id_type == "residence_no"
+                              ? true
+                              : false
                           }
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setPersonal((p) => ({
+                                ...p,
+                                national_id_type: "residence_no",
+                              }));
+                            } else {
+                              setPersonal((p) => ({
+                                ...p,
+                                national_id_type: "",
+                              }));
+                            }
+                          }}
                         />
                       }
                       label={t("admissions.residenceNo")}
@@ -747,27 +887,49 @@ export default function Admissions() {
                       id="country"
                       placeholder={t("admissions.country")}
                       value={academic.country}
-                      onChange={(e) =>{
+                      onChange={(e) => {
                         setAcademic((a) => ({ ...a, country: e.target.value }));
                         // get cities in selected country
-                        if(e.target.value !=''){
+                        if (e.target.value != "") {
                           // 44444444444444444444444444
                           getCitiesByCountry({
-                            variables:{
-                              country_id:e.target.value
-                            }
-                          }); 
+                            variables: {
+                              country_id: e.target.value,
+                            },
+                          });
                         }
-                      }
-                        
-                      }
+                      }}
                       onBlur={() => handleAcademicBlur("country")}
                       error={!!acadErrors.country}
                       helperText={acadErrors.country || ""}
+                      SelectProps={{
+                        displayEmpty: true,
+                        renderValue: (selected) => {
+                          if (!selected) {
+                            return <>{t("Select Country")}</>;
+                          }
+                          return (
+                            <>
+                              {i18n.language === "ar"
+                                ? countries?.find(
+                                    (city) => city?.id === selected
+                                  )?.name_ar
+                                : cities?.find((city) => city?.id === selected)
+                                    ?.name_en}
+                            </>
+                          );
+                        },
+                        MenuProps: {
+                          // optional: keep menu within viewport
+                          PaperProps: { style: { maxHeight: 320 } },
+                        },
+                      }}
                     >
                       {countries?.map((country) => (
                         <MenuItem key={country?.id} value={country?.id}>
-                          {i18n.language === "ar" ? country?.name_ar : country?.name_en}
+                          {i18n.language === "ar"
+                            ? country?.name_ar
+                            : country?.name_en}
                         </MenuItem>
                       ))}
                     </CustomTextField>
@@ -781,48 +943,54 @@ export default function Admissions() {
                       {t("admissions.city")}
                     </Typography>
 
-                    <FormControl
-                      fullWidth >
-                    <CustomTextField
-                      select
-                      id="city"
-                      placeholder={t("admissions.city")}
-                     value={academic.city || ""}
-                     
-                      onChange={(e) =>
-                        setAcademic((a) => ({ ...a, city: e.target.value }))
-                      }
-                      onBlur={() => handleAcademicBlur("city")}
-                      error={!!acadErrors.city}
-                      helperText={acadErrors.city || ""}
-
-                      SelectProps={{
-                      displayEmpty: true,
-                      renderValue: (selected) => {
-                        if (!selected) {
-                          return <>{i18n.language === "ar" ? "اختر المدينة" : "Select City"}</>;
+                    <FormControl fullWidth>
+                      <CustomTextField
+                        select
+                        id="city"
+                        placeholder={t("admissions.city")}
+                        value={academic.city || ""}
+                        onChange={(e) =>
+                          setAcademic((a) => ({ ...a, city: e.target.value }))
                         }
-                        return (
-                          <>{i18n.language === "ar" ? cities?.find((city) => city?.id === selected)?.name_ar : cities?.find((city) => city?.id === selected)?.name_en}</>
-                        );
-                      },
-                      MenuProps: {
-                        // optional: keep menu within viewport
-                        PaperProps: { style: { maxHeight: 320 } },
-                      },
-                    }}
-                    >
-                      <MenuItem key="0" value="">
-                      {i18n.language === "ar" ? "اختر المدينة" : "Select City"}
-                      </MenuItem>
-                      {
-                      cities?.map((city) => (
-                        <MenuItem key={city?.id} value={city?.id}>
-                          {i18n.language === "ar" ? city?.name_ar : city?.name_en}
+                        onBlur={() => handleAcademicBlur("city")}
+                        error={!!acadErrors.city}
+                        helperText={acadErrors.city || ""}
+                        SelectProps={{
+                          displayEmpty: true,
+                          renderValue: (selected) => {
+                            if (!selected) {
+                              return <>{t("Select City")}</>;
+                            }
+                            return (
+                              <>
+                                {i18n.language === "ar"
+                                  ? cities?.find(
+                                      (city) => city?.id === selected
+                                    )?.name_ar
+                                  : cities?.find(
+                                      (city) => city?.id === selected
+                                    )?.name_en}
+                              </>
+                            );
+                          },
+                          MenuProps: {
+                            // optional: keep menu within viewport
+                            PaperProps: { style: { maxHeight: 320 } },
+                          },
+                        }}
+                      >
+                        <MenuItem key="0" value="">
+                          {t("Select City")}
                         </MenuItem>
-                      ))}
-                    </CustomTextField>
-                      </FormControl>
+                        {cities?.map((city) => (
+                          <MenuItem key={city?.id} value={city?.id}>
+                            {i18n.language === "ar"
+                              ? city?.name_ar
+                              : city?.name_en}
+                          </MenuItem>
+                        ))}
+                      </CustomTextField>
+                    </FormControl>
                   </Grid>
 
                   <Grid item xs={12}>
@@ -926,13 +1094,15 @@ export default function Admissions() {
                           sx={{
                             background: theme.palette.secondary.main,
                             width: "150px",
-                            gap:1,
+                            gap: 1,
                           }}
                           endIcon={
                             <AddCircleOutlineIcon
                               sx={{
                                 transform:
-                                  i18n.language === "ar" ? "rotate(180deg)" : "none",
+                                  i18n.language === "ar"
+                                    ? "rotate(180deg)"
+                                    : "none",
                                 transition: "transform 0.3s ease",
                               }}
                             />
@@ -984,7 +1154,7 @@ export default function Admissions() {
                     }}
                   />
                 }
-                sx={{ background: theme.palette.info?.main, gap: 1}}
+                sx={{ background: theme.palette.info?.main, gap: 1 }}
                 onClick={handleNext}
               >
                 {t("admissions.next")}
@@ -1019,28 +1189,28 @@ export default function Admissions() {
                       select
                       placeholder={t("admissions.faculty")}
                       value={academic.faculty}
-                      onChange={(e) =>{
-
-                          if(e.target.value!=""){
-
-                             getFacultyDepartmentsByFaculty({
-                          variables: {
-                            faculty_id:e.target.value
-                          }
-                        });
-                            setAcademic((a) => ({ ...a, faculty: e.target.value }));  
-                          }
-                          
-                      }
-                        
-                      }
+                      onChange={(e) => {
+                        if (e.target.value != "") {
+                          getFacultyDepartmentsByFaculty({
+                            variables: {
+                              faculty_id: e.target.value,
+                            },
+                          });
+                          setAcademic((a) => ({
+                            ...a,
+                            faculty: e.target.value,
+                          }));
+                        }
+                      }}
                       onBlur={() => handleAcademicBlur("faculty")}
                       error={!!acadErrors.faculty}
                       helperText={acadErrors.faculty || ""}
                     >
-                      { faculties?.map((faculty) => (
+                      {faculties?.map((faculty) => (
                         <MenuItem key={faculty?.id} value={faculty?.id}>
-                          {i18n.language === "ar" ? faculty?.title_ar : faculty?.title_en}
+                          {i18n.language === "ar"
+                            ? faculty?.title_ar
+                            : faculty?.title_en}
                         </MenuItem>
                       ))}
                     </CustomTextField>
@@ -1057,26 +1227,28 @@ export default function Admissions() {
                       select
                       placeholder={t("admissions.facultyDepartment")}
                       value={academic.facultyDepartment}
-                      onChange={(e) =>{
-                          // 44444444444444444444444444444
-                          setAcademic((a) => ({
-                            ...a,
-                            facultyDepartment: e.target.value,
-                          }));
-                      }
-                        
-                      }
+                      onChange={(e) => {
+                        // 44444444444444444444444444444
+                        setAcademic((a) => ({
+                          ...a,
+                          facultyDepartment: e.target.value,
+                        }));
+                      }}
                       onBlur={() => handleAcademicBlur("facultyDepartment")}
                       error={!!acadErrors.facultyDepartment}
                       helperText={acadErrors.facultyDepartment || ""}
                     >
-                       <MenuItem value="">
-                        {i18n.language === "ar" ? "اختر القسم" : "Select Faculty"}
-                        </MenuItem>
+                      <MenuItem value="">
+                        {i18n.language === "ar"
+                          ? "اختر القسم"
+                          : "Select Faculty"}
+                      </MenuItem>
 
                       {departments?.map((dept) => (
                         <MenuItem key={dept?.id} value={dept?.id}>
-                          {i18n.language === "ar" ? dept?.title_ar : dept?.title_en}
+                          {i18n.language === "ar"
+                            ? dept?.title_ar
+                            : dept?.title_en}
                         </MenuItem>
                       ))}
                     </CustomTextField>
@@ -1090,7 +1262,7 @@ export default function Admissions() {
               >
                 <Button
                   variant="contained"
-                   size="large"
+                  size="large"
                   endIcon={
                     <KeyboardDoubleArrowRightIcon
                       sx={{
@@ -1100,7 +1272,7 @@ export default function Admissions() {
                       }}
                     />
                   }
-                  sx={{ background: theme.palette.info?.main , gap:1}}
+                  sx={{ background: theme.palette.info?.main, gap: 1 }}
                   onClick={handleFinish}
                 >
                   {t("admissions.finish")}
