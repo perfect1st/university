@@ -1267,6 +1267,21 @@ export default function Admissions() {
                       onBlur={() => handleAcademicBlur("faculty_id")}
                       error={!!acadErrors.faculty_id}
                       helperText={acadErrors.faculty_id || ""}
+                      SelectProps={{
+                      displayEmpty: true,
+                      renderValue: (selected) => {
+                        if (!selected) {
+                          return <>{t("admissions.faculty")}</>;
+                        }
+                        return (
+                          <>{i18n.language === "ar" ? faculties?.find((city) => city?.id === selected)?.title_ar : cities?.find((city) => city?.id === selected)?.title_en}</>
+                        );
+                      },
+                      MenuProps: {
+                        // optional: keep menu within viewport
+                        PaperProps: { style: { maxHeight: 320 } },
+                      },
+                    }}
                     >
                       {faculties?.map((faculty) => (
                         <MenuItem key={faculty?.id} value={faculty?.id}>
@@ -1299,6 +1314,23 @@ export default function Admissions() {
                       onBlur={() => handleAcademicBlur("faculty_department_id")}
                       error={!!acadErrors.faculty_department_id}
                       helperText={acadErrors.faculty_department_id || ""}
+
+                       SelectProps={{
+                      displayEmpty: true,
+                      renderValue: (selected) => {
+                        if (!selected) {
+                          return <>{t("admissions.facultyDepartment")}</>;
+                        }
+                        return (
+                          <>{i18n.language === "ar" ? departments?.find((city) => city?.id === selected)?.title_ar : cities?.find((city) => city?.id === selected)?.title_en}</>
+                        );
+                      },
+                      MenuProps: {
+                        // optional: keep menu within viewport
+                        PaperProps: { style: { maxHeight: 320 } },
+                      },
+                    }}
+
                     >
                       <MenuItem value="">
                         {i18n.language === "ar"
