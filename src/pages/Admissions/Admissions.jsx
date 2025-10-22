@@ -171,16 +171,16 @@ export default function Admissions() {
 
   // step2 state
   const [academic, setAcademic] = useState({
-    yearOfEducation: "",
-    placeOfStudy: "",
-    country: "",
-    city: "",
-    studentNo: "",
-    generalAppreciation: "",
+    education_year: "",
+    study_place: "",
+    country_id: "",
+    city_id: "",
+    high_school_student_number: "",
+    general_grade: "",
     gpa: "",
-    highSchoolFile: null,
-    faculty: "",
-    facultyDepartment: "",
+    high_school_certificate_file: null,
+    faculty_id: "",
+    faculty_department_id: "",
   });
   const [acadErrors, setAcadErrors] = useState({});
 
@@ -267,14 +267,14 @@ export default function Admissions() {
     } else {
       // academic validations
       switch (name) {
-        case "yearOfEducation":
-        case "placeOfStudy":
-        case "country":
-        case "city":
-        case "studentNo":
-        case "generalAppreciation":
-        case "faculty":
-        case "facultyDepartment":
+        case "education_year":
+        case "study_place":
+        case "country_id":
+        case "city_id":
+        case "high_school_student_number":
+        case "general_grade":
+        case "faculty_id":
+        case "faculty_department_id":
           return value ? "" : t("admissions.errors.required") || "Required";
         case "gpa":
           if (!value) return t("admissions.errors.required") || "Required";
@@ -288,7 +288,7 @@ export default function Admissions() {
               "GPA must be between 0 and 4"
             );
           return "";
-        case "highSchoolFile":
+        case "high_school_certificate_file":
         // return value
         //   ? ""
         //   : t("admissions.errors.requiredFile") ||
@@ -333,16 +333,16 @@ export default function Admissions() {
 
   const validateStep2 = () => {
     const keys = [
-      "yearOfEducation",
-      "placeOfStudy",
-      "country",
-      "city",
-      "studentNo",
-      "generalAppreciation",
+      "education_year",
+      "study_place",
+      "country_id",
+      "city_id",
+      "high_school_student_number",
+      "general_grade",
       "gpa",
-      "highSchoolFile",
-      "faculty",
-      "facultyDepartment",
+      "high_school_certificate_file",
+      "faculty_id",
+      "faculty_department_id",
     ];
     const newErrors = {};
     keys.forEach((k) => {
@@ -378,7 +378,9 @@ export default function Admissions() {
   };
 
   const handleFinish = async () => {
-    console.log("finish", validateStep2());
+
+    try {
+      console.log("finish", validateStep2());
     if (validateStep2()) {
       // console.log('oooooooooooooooo');
       const formData = new FormData();
@@ -386,6 +388,7 @@ export default function Admissions() {
       // Append personal data
       Object.entries(personal).forEach(([key, value]) => {
         // لو قيمة Boolean زي checkboxes نخليها string
+        if(key=="countryCode") return;
         formData.append(
           key,
           typeof value === "boolean" ? String(value) : value
@@ -394,8 +397,8 @@ export default function Admissions() {
 
       // Append academic data
       Object.entries(academic).forEach(([key, value]) => {
-        if (key === "highSchoolFile" && value instanceof File) {
-          formData.append("highSchoolFile", value);
+        if (key === "high_school_certificate_file" && value instanceof File) {
+          formData.append("high_school_certificate_file", value);
         } else {
           formData.append(key, value);
         }
@@ -408,21 +411,31 @@ export default function Admissions() {
       //   .then(res => console.log("Submitted successfully"))
       //   .catch(err => console.error(err));
 
+      let objToSend={
+        address:"aaaaaaaaaaaaaa"
+      };
       // Debug
       for (let [key, value] of formData.entries()) {
         console.log(key, value);
+        objToSend[key] = value;
       }
 
-      //  const result=await createRegisterForm({
-      //     variables:{
-      //       input:formData
-      //     }
-      //   });
+      console.log('objToSend',objToSend);
 
-      //   console.log("result",result?.data);
+       const result=await createRegisterForm({
+          variables:{
+            input:objToSend
+          }
+        });
+
+         console.log("result",result?.data);
 
       alert("Application submitted (demo)");
     }
+    } catch (error) {
+        console.log('error',error.message) 
+    }
+    
   };
 
   // File handling
@@ -431,10 +444,10 @@ export default function Admissions() {
   };
   const handleFileChange = (e) => {
     const file = e.target.files?.[0] ?? null;
-    setAcademic((a) => ({ ...a, highSchoolFile: file }));
+    setAcademic((a) => ({ ...a, high_school_certificate_file: file }));
     // validate file right away
-    const msg = validateField("highSchoolFile", file, true);
-    setAcadErrors((prev) => ({ ...prev, highSchoolFile: msg }));
+    const msg = validateField("high_school_certificate_file", file, true);
+    setAcadErrors((prev) => ({ ...prev, high_school_certificate_file: msg }));
   };
 
   console.log("i18n ", i18n.language);
@@ -840,16 +853,16 @@ export default function Admissions() {
                     </Typography>
                     <CustomTextField
                       placeholder={t("admissions.yearOfEducation")}
-                      value={academic.yearOfEducation}
+                      value={academic.education_year}
                       onChange={(e) =>
                         setAcademic((a) => ({
                           ...a,
-                          yearOfEducation: e.target.value,
+                          education_year: e.target.value,
                         }))
                       }
-                      onBlur={() => handleAcademicBlur("yearOfEducation")}
-                      error={!!acadErrors.yearOfEducation}
-                      helperText={acadErrors.yearOfEducation || ""}
+                      onBlur={() => handleAcademicBlur("education_year")}
+                      error={!!acadErrors.education_year}
+                      helperText={acadErrors.education_year || ""}
                     />
                   </Grid>
 
@@ -862,16 +875,16 @@ export default function Admissions() {
                     </Typography>
                     <CustomTextField
                       placeholder={t("admissions.placeOfStudy")}
-                      value={academic.placeOfStudy}
+                      value={academic.study_place}
                       onChange={(e) =>
                         setAcademic((a) => ({
                           ...a,
-                          placeOfStudy: e.target.value,
+                          study_place: e.target.value,
                         }))
                       }
-                      onBlur={() => handleAcademicBlur("placeOfStudy")}
-                      error={!!acadErrors.placeOfStudy}
-                      helperText={acadErrors.placeOfStudy || ""}
+                      onBlur={() => handleAcademicBlur("study_place")}
+                      error={!!acadErrors.study_place}
+                      helperText={acadErrors.study_place || ""}
                     />
                   </Grid>
 
@@ -886,9 +899,9 @@ export default function Admissions() {
                       select
                       id="country"
                       placeholder={t("admissions.country")}
-                      value={academic.country}
+                      value={academic.country_id}
                       onChange={(e) => {
-                        setAcademic((a) => ({ ...a, country: e.target.value }));
+                        setAcademic((a) => ({ ...a, country_id: e.target.value }));
                         // get cities in selected country
                         if (e.target.value != "") {
                           // 44444444444444444444444444
@@ -899,9 +912,9 @@ export default function Admissions() {
                           });
                         }
                       }}
-                      onBlur={() => handleAcademicBlur("country")}
-                      error={!!acadErrors.country}
-                      helperText={acadErrors.country || ""}
+                      onBlur={() => handleAcademicBlur("country_id")}
+                      error={!!acadErrors.country_id}
+                      helperText={acadErrors.country_id || ""}
                       SelectProps={{
                         displayEmpty: true,
                         renderValue: (selected) => {
@@ -948,13 +961,13 @@ export default function Admissions() {
                         select
                         id="city"
                         placeholder={t("admissions.city")}
-                        value={academic.city || ""}
+                        value={academic.city_id || ""}
                         onChange={(e) =>
-                          setAcademic((a) => ({ ...a, city: e.target.value }))
+                          setAcademic((a) => ({ ...a, city_id: e.target.value }))
                         }
-                        onBlur={() => handleAcademicBlur("city")}
-                        error={!!acadErrors.city}
-                        helperText={acadErrors.city || ""}
+                        onBlur={() => handleAcademicBlur("city_id")}
+                        error={!!acadErrors.city_id}
+                        helperText={acadErrors.city_id || ""}
                         SelectProps={{
                           displayEmpty: true,
                           renderValue: (selected) => {
@@ -1002,16 +1015,16 @@ export default function Admissions() {
                     </Typography>
                     <CustomTextField
                       placeholder={t("admissions.studentNo")}
-                      value={academic.studentNo}
+                      value={academic.high_school_student_number}
                       onChange={(e) =>
                         setAcademic((a) => ({
                           ...a,
-                          studentNo: e.target.value,
+                          high_school_student_number: e.target.value,
                         }))
                       }
-                      onBlur={() => handleAcademicBlur("studentNo")}
-                      error={!!acadErrors.studentNo}
-                      helperText={acadErrors.studentNo || ""}
+                      onBlur={() => handleAcademicBlur("high_school_student_number")}
+                      error={!!acadErrors.high_school_student_number}
+                      helperText={acadErrors.high_school_student_number || ""}
                     />
                   </Grid>
 
@@ -1024,16 +1037,16 @@ export default function Admissions() {
                     </Typography>
                     <CustomTextField
                       placeholder={t("admissions.generalAppreciation")}
-                      value={academic.generalAppreciation}
+                      value={academic.general_grade}
                       onChange={(e) =>
                         setAcademic((a) => ({
                           ...a,
-                          generalAppreciation: e.target.value,
+                          general_grade: e.target.value,
                         }))
                       }
-                      onBlur={() => handleAcademicBlur("generalAppreciation")}
-                      error={!!acadErrors.generalAppreciation}
-                      helperText={acadErrors.generalAppreciation || ""}
+                      onBlur={() => handleAcademicBlur("general_grade")}
+                      error={!!acadErrors.general_grade}
+                      helperText={acadErrors.general_grade || ""}
                     />
                   </Grid>
 
@@ -1115,18 +1128,18 @@ export default function Admissions() {
                           variant="body2"
                           sx={{ alignSelf: "center" }}
                         >
-                          {academic.highSchoolFile
-                            ? academic.highSchoolFile.name
+                          {academic.high_school_certificate_file
+                            ? academic.high_school_certificate_file.name
                             : ""}
                         </Typography>
                       </Box>
-                      {acadErrors.highSchoolFile && (
+                      {acadErrors.high_school_certificate_file && (
                         <Typography
                           variant="caption"
                           color="error"
                           sx={{ display: "block", mt: 1 }}
                         >
-                          {acadErrors.highSchoolFile}
+                          {acadErrors.high_school_certificate_file}
                         </Typography>
                       )}
                     </Box>
@@ -1188,7 +1201,7 @@ export default function Admissions() {
                     <CustomTextField
                       select
                       placeholder={t("admissions.faculty")}
-                      value={academic.faculty}
+                      value={academic.faculty_id}
                       onChange={(e) => {
                         if (e.target.value != "") {
                           getFacultyDepartmentsByFaculty({
@@ -1198,13 +1211,13 @@ export default function Admissions() {
                           });
                           setAcademic((a) => ({
                             ...a,
-                            faculty: e.target.value,
+                            faculty_id: e.target.value,
                           }));
                         }
                       }}
-                      onBlur={() => handleAcademicBlur("faculty")}
-                      error={!!acadErrors.faculty}
-                      helperText={acadErrors.faculty || ""}
+                      onBlur={() => handleAcademicBlur("faculty_id")}
+                      error={!!acadErrors.faculty_id}
+                      helperText={acadErrors.faculty_id || ""}
                     >
                       {faculties?.map((faculty) => (
                         <MenuItem key={faculty?.id} value={faculty?.id}>
@@ -1226,17 +1239,17 @@ export default function Admissions() {
                     <CustomTextField
                       select
                       placeholder={t("admissions.facultyDepartment")}
-                      value={academic.facultyDepartment}
+                      value={academic.faculty_department_id}
                       onChange={(e) => {
                         // 44444444444444444444444444444
                         setAcademic((a) => ({
                           ...a,
-                          facultyDepartment: e.target.value,
+                          faculty_department_id: e.target.value,
                         }));
                       }}
-                      onBlur={() => handleAcademicBlur("facultyDepartment")}
-                      error={!!acadErrors.facultyDepartment}
-                      helperText={acadErrors.facultyDepartment || ""}
+                      onBlur={() => handleAcademicBlur("faculty_department_id")}
+                      error={!!acadErrors.faculty_department_id}
+                      helperText={acadErrors.faculty_department_id || ""}
                     >
                       <MenuItem value="">
                         {i18n.language === "ar"
