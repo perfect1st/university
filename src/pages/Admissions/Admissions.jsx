@@ -39,6 +39,7 @@ import {
 } from "../../graphql/facultyQuiries.js";
 import { CREATE_REGISTERATION_FORM } from "../../graphql/registerationFormQueries.js";
 import notify from "../../components/notify.js";
+import {baseURL} from "../../Api/apolloClient.js";
 
 // CustomTextField wrapper (keeps placeholder support + helperText)
 function CustomTextField(props) {
@@ -294,10 +295,10 @@ export default function Admissions() {
             );
           return "";
         case "high_school_certificate_file":
-        // return value
-        //   ? ""
-        //   : t("admissions.errors.requiredFile") ||
-        //       "Please attach certificate file";
+        return value
+          ? ""
+          : t("admissions.errors.requiredFile") ||
+              "Please attach certificate file";
         default:
           return "";
       }
@@ -331,7 +332,8 @@ export default function Admissions() {
 
     console.log("personal error", newErrors);
 
-    if (newErrors?.national_id_type) alert(newErrors?.national_id_type);
+    // newErrors?.national_id_type
+    if (newErrors?.national_id_type) notify(newErrors?.national_id_type, "error");
 
     return Object.keys(newErrors).length === 0;
   };
@@ -453,12 +455,48 @@ export default function Admissions() {
   const handlePickFile = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
-  const handleFileChange = (e) => {
+  const handleFileChange = async(e) => {
     const file = e.target.files?.[0] ?? null;
     setAcademic((a) => ({ ...a, high_school_certificate_file: file }));
     // validate file right away
     const msg = validateField("high_school_certificate_file", file, true);
     setAcadErrors((prev) => ({ ...prev, high_school_certificate_file: msg }));
+
+    console.log('ppppppppppppppppppppppp',file);
+
+    const formData=new FormData();
+    formData.append('file',file);
+
+    // const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+    //     headers: {
+    //       "Content-Type": "multipart/form-data",
+    //     },
+    //   });
+
+    //   console.log(res.data);
+    try {
+         const response = await fetch(`${baseURL}/api/forms/single`, {
+      method: "POST",
+      body: formData, // مهم جدًا ما تضيفش headers هنا
+    });
+
+    if (!response.ok) {
+      throw new Error("Upload failed");
+    }
+
+    const data = await response.json();
+    console.log("Upload successful:", data);
+    // data?.url
+
+    console.log('ooooooooooooo',`${baseURL}${data?.url}`);
+
+    setAcademic((a) => ({ ...a, high_school_certificate_file:`${baseURL}${data?.url}`  }));
+   
+    } catch (error) {
+        notify("admissions.errorUplaod","error");
+        console.log('error',error.message);
+    }
+       // console.log('formData',formData);
   };
 
   console.log("i18n ", i18n.language);
