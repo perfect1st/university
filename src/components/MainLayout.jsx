@@ -9,7 +9,7 @@ const MainLayout = ({ children }) => {
   const user = getUserCookie();
   const isAuthenticated = Boolean(user); 
   const hideSecandHeader = location.pathname == "/home" || location.pathname == "/visionsArticals" || location.pathname == "/news";
-
+console.log("user",user)
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
      {isAuthenticated && !hideSecandHeader &&<Sidebar />}

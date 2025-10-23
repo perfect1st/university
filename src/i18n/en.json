@@ -112,13 +112,18 @@
     "errors": {
       "required": "This field is required",
       "invalidEmail": "Invalid email address",
-      "invalidPhone": "Invalid phone format (e.g. 5XXXXXXXX)",
+      "invalidPhone": "Invalid phone format (9 digits and start with 5)",
       "invalidId": "Invalid ID number",
       "invalidNumber": "Please enter a valid number",
       "invalidGpaRange": "GPA must be between 0 and 4",
       "requiredFile": "Please attach your high school certificate file",
       "nationality_select":"You must choose one of the options: ID card, passport, or place of residence."
-    }
+    },
+    "cash":"Cash",
+    "bankTransfer":"Bank Transfer",
+    "onlinePayment":"Online Payment",
+    "Pay": "Pay",
+    "paymentMethods":"Payment Methods"
   },
   "studentDashboard": {
     "majorInformation": "Major Information",
@@ -227,5 +232,6 @@
   "Select City":"Select City",
    "Select Country":"Select Country",
    "Select Nationality":"Select Nationality",
-   "Select Type":"Select Type"
+   "Select Type":"Select Type",
+   "Back":"Back"
 }

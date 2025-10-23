@@ -15,7 +15,14 @@ import {
   useTheme,
   FormControl,
   LoadingButton,
-  CircularProgress
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormLabel,
+  RadioGroup,
+  Radio
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AdmissionsHero from "../../components/AdmissionsComponents/AdmissionsHero";
@@ -94,6 +101,8 @@ export default function Admissions() {
   const theme = useTheme();
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [step, setStep] = useState(1);
+  const[showPaymentModal, setShowPaymentModal] = useState(false);
+  const[registerationFees,setRegisterationFees] = useState(0);
 
   const {
     data: ArticalesData,
@@ -199,6 +208,13 @@ export default function Admissions() {
     { value: "male", label: t("admissions.male") },
     { value: "female", label: t("admissions.female") },
   ];
+
+  const paymentMethods=[
+    {value:"cash", label:t("admissions.cash")},
+    {value:"bankTransfer", label:t("admissions.bankTransfer")},
+    {value:"Online", label:t("admissions.onlinePayment")}
+
+  ];
   const nationalities = nationalitiesData?.nationalities;
 
   console.log("nationalities", nationalities);
@@ -239,6 +255,7 @@ export default function Admissions() {
         //   return value ? "" : t("admissions.errors.required") || "Required";
         case "gender":
           return value ? "" : t("admissions.errors.required") || "Required";
+        
         case "nationality_id":
           return value ? "" : t("admissions.errors.required") || "Required";
         case "birthdate":
@@ -249,13 +266,14 @@ export default function Admissions() {
             return t("admissions.errors.invalidEmail") || "Invalid email";
           return "";
         case "mobile":
-          if (!value) return t("admissions.errors.required") || "Required";
+         // return value ? "" : t("admissions.errors.invalidPhone") || "Required";
+         if (!value) return t("admissions.errors.required") || "Required";
           if (!phoneRegex.test(value))
-            return (
-              t("admissions.errors.invalidPhone") ||
-              "Invalid phone format (e.g. 5XXXXXXXX)"
-            );
+            return t("admissions.errors.invalidPhone") || "Invalid phone";
           return "";
+        
+        case "home_tel":
+          return value ? "" : t("admissions.errors.required") || "Required";
         case "national_id":
           if (!value) return t("admissions.errors.required") || "Required";
           if (!idRegex.test(value))
@@ -319,6 +337,7 @@ export default function Admissions() {
       "mobile",
       "national_id",
       "national_id_type",
+      "home_tel"
     ];
     const newErrors = {};
 
@@ -386,7 +405,9 @@ export default function Admissions() {
 
   const handleFinish = async () => {
 
-    try {
+    // try {
+
+      // return setShowPaymentModal(true);
       console.log("finish", validateStep2());
     if (validateStep2()) {
       // console.log('oooooooooooooooo');
@@ -418,6 +439,7 @@ export default function Admissions() {
       //   .then(res => console.log("Submitted successfully"))
       //   .catch(err => console.error(err));
 
+
       let objToSend={
         address:"aaaaaaaaaaaaaa"
       };
@@ -429,6 +451,7 @@ export default function Admissions() {
 
       console.log('objToSend',objToSend);
 
+      // try {
         setIsLoading(true);
        const result=await createRegisterForm({
           variables:{
@@ -436,19 +459,41 @@ export default function Admissions() {
           }
         });
         setIsLoading(false);
-         console.log("result",result?.data);
+         console.log("result",result?.data?.createRegisterForm);
+         // registration_Fees_Value
+        if(result?.data?.createRegisterForm?.success){
+            setRegisterationFees(result?.data?.createRegisterForm?.registration_Fees_Value);
+            setShowPaymentModal(true);
+        }
+        else{
+          notify(result?.data?.createRegisterForm?.message,"error");
+        }
+         
 
-         notify(t("admissions.success"),"success");
+        // notify(t("admissions.success"),"success");
+      // } catch (error) {
+      //   console.log('error',error); 
+      // }
+      // finally{
+      //   setIsLoading(false);
+      // }
+        
+
+         
      // alert("Application submitted (demo)");
+  //   }
+  //   } catch (error) {
+  //       console.log('error',error);
+  // //        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+  // //        console.error("🧩 GraphQL Errors:", error.graphQLErrors);
+  // // }
+  //      // console.log('error.networkError.result.errors',error.networkError.result.errors);
+  //        notify(t("admissions.error"),"error");
+  //   }
+    // finally{
+    //   setIsLoading(false);
+    // }
     }
-    } catch (error) {
-        console.log('error',error.message) 
-         notify(t("admissions.error"),"error");
-    }
-    finally{
-      setIsLoading(false);
-    }
-    
   };
 
   // File handling
@@ -505,6 +550,59 @@ export default function Admissions() {
 
   return (
     <Box>
+        {
+          showPaymentModal&&<Dialog 
+      open={showPaymentModal} 
+      onClose={() => setShowPaymentModal(false)}
+      PaperProps={{
+          sx: {
+            position: "absolute",
+            top: 20, // المسافة من أعلى الصفحة
+            margin: 0,
+          },
+        }}
+      >
+        <DialogTitle sx={{
+          color: theme.palette.primary.main
+          , fontWeight: 800 
+        }}>{t("admissions.Pay")}: {registerationFees}</DialogTitle>
+        <Box sx={{mx: 3}}>
+         
+
+        <FormControl>
+  <FormLabel
+  variant="contained"
+  sx={{ display: "block", mb: 0.5 , fontWeight: 700 }} 
+   id="demo-radio-buttons-group-label"
+  >{t("admissions.paymentMethods")}</FormLabel>
+  <RadioGroup
+    aria-labelledby="demo-radio-buttons-group-label"
+    defaultValue="female"
+    name="radio-buttons-group"
+  >
+    {
+      paymentMethods?.map((el,i)=>(
+        <FormControlLabel 
+        
+        key={i} value={el?.label} control={<Radio />} label={el?.label} />
+      ))
+    }
+  
+  </RadioGroup>
+</FormControl>
+        </Box>
+        
+
+        <DialogActions>
+          <Button onClick={() => setShowPaymentModal(false)}>إلغاء</Button>
+          <Button variant="contained" onClick={() => setShowPaymentModal(false)}>
+            تأكيد
+          </Button>
+        </DialogActions>
+      </Dialog>
+        }
+      
+
       <AdmissionsHero data={ArticalesData?.getArticlesByDepartment?.[0]} />
 
       {!acceptTerms && (
@@ -754,6 +852,9 @@ export default function Admissions() {
                           home_tel: e.target.value,
                         }))
                       }
+                      onBlur={() => handlePersonalBlur("home_tel")}
+                      error={!!errors.home_tel}
+                      helperText={errors.home_tel || ""}
                     />
                   </Grid>
 
@@ -1352,8 +1453,29 @@ export default function Admissions() {
               <Grid
                 item
                 xs={12}
-                sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}
+                sx={{ display: "flex", justifyContent: "space-between", my: 2 }}
+                
               >
+
+                 <Button
+                  
+                  variant="contained"
+                  size="large"
+                  endIcon={
+                    <KeyboardDoubleArrowRightIcon
+                      sx={{
+                        transform:
+                          i18n.language === "ar" ? "rotate(180deg)" : "none",
+                        transition: "transform 0.3s ease",
+                      }}
+                    />
+                  }
+                  sx={{ background: theme.palette.info?.main, gap: 1 }}
+                  onClick={()=>setStep(1)}
+                >
+                  {t("Back")}
+                </Button>
+
                 <Button
                   disabled={isLoading}
                   variant="contained"
@@ -1372,6 +1494,8 @@ export default function Admissions() {
                 >
                   {isLoading ? <CircularProgress size={25} /> :t("admissions.finish")}
                 </Button>
+
+                 
               </Grid>
             </Grid>
           )}

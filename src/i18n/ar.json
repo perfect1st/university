@@ -147,7 +147,7 @@
     "errors": {
       "required": "هذا الحقل مطلوب",
       "invalidEmail": "البريد الإلكتروني غير صالح",
-      "invalidPhone": "صيغة رقم الجوال غير صحيحة (مثال: 5XXXXXXXX)",
+      "invalidPhone": "يجب صيغة رقم الجوال غير صحيحة (عبارة عن 9 ارقام ويبدأ ب 5)",
       "invalidId": "رقم الهوية غير صالح",
       "invalidNumber": "يرجى إدخال رقم صالح",
       "invalidGpaRange": "يجب أن يكون المعدل بين 0 و 4",
@@ -156,7 +156,12 @@
     },
     "success":"تم تقديم الطلب بنجاح",
     "error":"فشل تقديم الطلب حاول مرة اخري",
-    "errorUplaod":"فشل في رفع الملف حاول مرة اخري"
+    "errorUplaod":"فشل في رفع الملف حاول مرة اخري",
+    "cash":"نقدا",
+    "bankTransfer":"تحويل بنكي",
+    "onlinePayment":"دفع اونلاين",
+    "Pay":"دفع",
+    "paymentMethods":"طرق الدفع"
   },
   "studentDashboard": {
     "majorInformation": "المعلومات الأساسية",
@@ -265,6 +270,7 @@
    "Select City":"من فضلك اختر المدينة",
    "Select Country":"من فضلك اختر الدولة",
    "Select Nationality":"من فضلك اختر الجنسية",
-   "Select Type":"من فضلك اختر النوع"
+   "Select Type":"من فضلك اختر النوع",
+   "Back":"رجوع"
 
 }

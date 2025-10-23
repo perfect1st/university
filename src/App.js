@@ -29,6 +29,11 @@ import VisionsArticlesPage from "./pages/Home/VisionsArticlesPage";
 import NewsPage from "./pages/Home/NewsPage";
 import ArticalDetails from "./pages/Home/ArticalDetails";
 
+import createCache from "@emotion/cache";
+import rtlPlugin from "stylis-plugin-rtl";
+import { prefixer } from "stylis";
+import { CacheProvider } from "@emotion/react";
+
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
 });
@@ -39,6 +44,12 @@ function App() {
   const location = useLocation();
   const dispatch = useDispatch();
   const isArabic = i18n.language === "ar";
+
+  // إنشاء cache يدعم RTL
+const cacheRtl = createCache({
+  key: "mui-rtl",
+  stylisPlugins: [prefixer, rtlPlugin],
+});
 
   // Update direction and language in localStorage
   useEffect(() => {
@@ -268,6 +279,7 @@ const isLoggedIn = Boolean(initialUser?.id);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
+      <CacheProvider value={cacheRtl}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div
@@ -410,6 +422,7 @@ const isLoggedIn = Boolean(initialUser?.id);
           theme={mode}
         />
       </ThemeProvider>
+      </CacheProvider>
     </ColorModeContext.Provider>
   );
 }
