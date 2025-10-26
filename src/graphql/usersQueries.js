@@ -38,6 +38,15 @@ export const GET_USER_BY_ID = gql`
   }
 `;
 
+// login 
+export const LOGIN_USER=gql`
+mutation Login($input: LoginInput!) {
+    login(input: $input) {
+        token
+    }
+}
+`;
+
 
 
 

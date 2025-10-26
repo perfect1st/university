@@ -20,12 +20,24 @@ import { login } from "../../redux/slices/user/thunk";
 import { useNavigate } from "react-router-dom";
 import { setToken, setUserCookie } from "../../hooks/authCookies";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { LOGIN_USER } from "../../graphql/usersQueries";
+import { useMutation } from "@apollo/client/react";
+
 
 const LoginPage = () => {
   const theme = useTheme();
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const[
+    login,{
+    data:loginData,
+    loading:loginLoading,
+    error:loginError
+  }
+]=useMutation(LOGIN_USER);
+
   const isArabic = i18n.language === "ar";
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -42,54 +54,69 @@ const LoginPage = () => {
     }),
     onSubmit: async (values) => {
       const data = {
-        phone_number: values.username,
+        identifier: values.username,
         password: values.password,
       };
       try {
         setIsLoading(true);
-        const response = await dispatch(login({ data }));
-        if (response?.payload?.token && response?.payload?.admin) {
-          const { groups } = response.payload.admin;
 
-          const mergedScreensMap = {};
-
-          groups.forEach((group) => {
-            group.screens.forEach((screen) => {
-              const screenName = screen.screen;
-
-              if (!mergedScreensMap[screenName]) {
-                mergedScreensMap[screenName] = { ...screen };
-              } else {
-                const existing = mergedScreensMap[screenName];
-                mergedScreensMap[screenName].permissions = {
-                  view: existing.permissions.view || screen.permissions.view,
-                  edit: existing.permissions.edit || screen.permissions.edit,
-                  delete:
-                    existing.permissions.delete || screen.permissions.delete,
-                  add: existing.permissions.add || screen.permissions.add,
-                };
-              }
-            });
-          });
-
-          const mergedScreensArray = Object.values(mergedScreensMap);
-
-          const mergedAdmin = {
-            ...response.payload.admin,
-            groups: [
-              {
-                _id: "merged-group",
-                name: "Merged Permissions",
-                screens: mergedScreensArray,
-              },
-            ],
-          };
-
-          // Set in cookies/local storage
-          setUserCookie(mergedAdmin);
-          setToken(response.payload.token);
-          navigate("/home");
+       // const response = await dispatch(login({ data }));
+       const response=await login({
+        variables:{
+         input:data
         }
+       });
+
+       console.log('response',response?.data?.login);
+        
+
+
+        setTimeout(()=>{
+          setUserCookie(response?.data?.login?.token);
+          navigate("/home");
+        },2000);
+        // if (response?.payload?.token && response?.payload?.admin) {
+        //   const { groups } = response.payload.admin;
+
+        //   const mergedScreensMap = {};
+
+        //   groups.forEach((group) => {
+        //     group.screens.forEach((screen) => {
+        //       const screenName = screen.screen;
+
+        //       if (!mergedScreensMap[screenName]) {
+        //         mergedScreensMap[screenName] = { ...screen };
+        //       } else {
+        //         const existing = mergedScreensMap[screenName];
+        //         mergedScreensMap[screenName].permissions = {
+        //           view: existing.permissions.view || screen.permissions.view,
+        //           edit: existing.permissions.edit || screen.permissions.edit,
+        //           delete:
+        //             existing.permissions.delete || screen.permissions.delete,
+        //           add: existing.permissions.add || screen.permissions.add,
+        //         };
+        //       }
+        //     });
+        //   });
+
+        //   const mergedScreensArray = Object.values(mergedScreensMap);
+
+        //   const mergedAdmin = {
+        //     ...response.payload.admin,
+        //     groups: [
+        //       {
+        //         _id: "merged-group",
+        //         name: "Merged Permissions",
+        //         screens: mergedScreensArray,
+        //       },
+        //     ],
+        //   };
+
+        //   // Set in cookies/local storage
+        //   setUserCookie(mergedAdmin);
+        //   setToken(response.payload.token);
+        //   navigate("/home");
+        // }
       } catch (error) {
         console.error("Error logging in:", error);
       } finally {
@@ -177,13 +204,13 @@ const LoginPage = () => {
 
           {/* Username */}
           <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
-            {t("form.phone")}
+            {t("form.phoneOrEmail")}
           </Typography>
           <TextField
             fullWidth
             id="username"
             name="username"
-            placeholder={t("form.phonePlaceholder")}
+            placeholder={t("form.phoneOrEmail")}
             value={formik.values.username}
             onChange={formik.handleChange}
             error={formik.touched.username && Boolean(formik.errors.username)}
@@ -201,7 +228,7 @@ const LoginPage = () => {
             id="password"
             name="password"
             type={showPassword ? "text" : "password"}
-            placeholder={t("form.passwordPlaceholder")}
+            placeholder={t("form.password")}
             value={formik.values.password}
             onChange={formik.handleChange}
             error={formik.touched.password && Boolean(formik.errors.password)}

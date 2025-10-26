@@ -202,6 +202,12 @@
   "common": {
     "cancel": "Cancel"
   },
+   "form":{
+    "login":"login Form",
+    "phoneOrEmail":"Enter your Phone Or Email",
+    "password":"Enter Your Password",
+    "loginButton":"Login"
+  },
   "Users": "Users",
   "Users Details": "Users Details",
   "Add User": "Add User",
