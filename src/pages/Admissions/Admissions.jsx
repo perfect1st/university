@@ -45,8 +45,13 @@ import {
   GET_ALL_FACULITIES,
 } from "../../graphql/facultyQuiries.js";
 import { CREATE_REGISTERATION_FORM } from "../../graphql/registerationFormQueries.js";
+import { CREATE_REGISTERATION_FORM_TRANSACTION } from "../../graphql/transactionQueries.js";
+
 import notify from "../../components/notify.js";
 import {baseURL} from "../../Api/apolloClient.js";
+import formatDateToString from "../../components/Utilities/FormatDateToString.js";
+
+
 
 // CustomTextField wrapper (keeps placeholder support + helperText)
 function CustomTextField(props) {
@@ -100,10 +105,12 @@ export default function Admissions() {
   const isArabic = i18n.language === "ar";
   const theme = useTheme();
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const[showPaymentModal, setShowPaymentModal] = useState(false);
-  const[registerationFees,setRegisterationFees] = useState(0);
-
+ // const[registerationFees,setRegisterationFees] = useState(0);
+  const[registerationFeesResults,setRegisterationFeesResults] = useState(null);
+  const[selectedPaymnetMethod, setSelectedPaymentMethod] = useState(null);
+  const[selectedFile,setSelectedFile] = useState(null);
   const {
     data: ArticalesData,
     loading: ArticalesLoading,
@@ -159,6 +166,12 @@ export default function Admissions() {
     { data: createResponse, loading: createLoading, error: createError },
   ] = useMutation(CREATE_REGISTERATION_FORM);
 
+  // CREATE NEW tRANSACTION
+  const [
+    createTransaction,
+    { data: transactionResponse, loading: transactionLoading, error: transactionError },
+  ] = useMutation(CREATE_REGISTERATION_FORM_TRANSACTION);
+
   console.log("ArticalesData", ArticalesData);
   console.log("countriesData", countriesData);
   console.log("faculitiesData", faculitiesData);
@@ -210,9 +223,9 @@ export default function Admissions() {
   ];
 
   const paymentMethods=[
-    {value:"cash", label:t("admissions.cash")},
-    {value:"bankTransfer", label:t("admissions.bankTransfer")},
-    {value:"Online", label:t("admissions.onlinePayment")}
+    {value:"CASH", label:t("admissions.cash")},
+    {value:"BANK_TRANSFER", label:t("admissions.bankTransfer")},
+    {value:"ONLINE", label:t("admissions.onlinePayment")}
 
   ];
   const nationalities = nationalitiesData?.nationalities;
@@ -462,7 +475,9 @@ export default function Admissions() {
          console.log("result",result?.data?.createRegisterForm);
          // registration_Fees_Value
         if(result?.data?.createRegisterForm?.success){
-            setRegisterationFees(result?.data?.createRegisterForm?.registration_Fees_Value);
+          setRegisterationFeesResults(result?.data?.createRegisterForm);
+
+           // setRegisterationFees(result?.data?.createRegisterForm?.registration_Fees_Value);
             setShowPaymentModal(true);
         }
         else{
@@ -496,6 +511,42 @@ export default function Admissions() {
     }
   };
 
+  const handleSubmitPayment=async()=>{
+    try {
+        // in transaction type id 
+    const transaction_type_id="68fdce917bb1890cd9720a60";
+    let transactionObj={
+      payment_method_type: selectedPaymnetMethod,
+      transaction_type_id,
+      user_id:registerationFeesResults?.user?.id,
+      fees_type_ids: registerationFeesResults?.registration_Fees_Id,
+      transaction_date:formatDateToString(new Date())
+    //   payment_method_type: "BANK_TRANSFER",
+    // transaction_type_id: "68fdce917bb1890cd9720a60",
+    // user_id: "68fdf94b0e57e6fb0218cf66",
+    // fees_type_ids: "68ee0bfaecbf2bab51f44db5",
+    // transaction_date: "2025-10-26"
+    };
+
+    
+
+    console.log('transactionObj',transactionObj);
+      const result=await createTransaction({
+        variables:{
+          input:transactionObj
+        }
+      });
+
+      console.log('payment result',result?.data?.createTransaction);
+      
+      notify("تم الدفع بنجاح","success");
+    } catch (error) {
+      console.log('error',error);
+      notify(t("admissions.error"),"error");
+      
+    }
+    
+  }
   // File handling
   const handlePickFile = () => {
     if (fileInputRef.current) fileInputRef.current.click();
@@ -509,6 +560,9 @@ export default function Admissions() {
 
     console.log('ppppppppppppppppppppppp',file);
 
+   // fileInputRef.current=file?.name;
+
+    setSelectedFile(file?.name);
     const formData=new FormData();
     formData.append('file',file);
 
@@ -548,6 +602,10 @@ export default function Admissions() {
 
   console.log("academic.city", academic.city);
 
+  console.log('setSelectedPaymentMethod',selectedPaymnetMethod);
+
+  console.log('fileInputRef',fileInputRef);
+
   return (
     <Box>
         {
@@ -561,41 +619,57 @@ export default function Admissions() {
             margin: 0,
           },
         }}
+
+        fullWidth     // يخليه ياخد 100% من maxWidth
+        maxWidth="xs"
       >
         <DialogTitle sx={{
           color: theme.palette.primary.main
           , fontWeight: 800 
-        }}>{t("admissions.Pay")}: {registerationFees}</DialogTitle>
+        }}>{t("admissions.Pay")}: {registerationFeesResults?.registration_Fees_Value}</DialogTitle>
         <Box sx={{mx: 3}}>
          
 
-        <FormControl>
+        <FormControl sx={{width:"100%"}}>
   <FormLabel
   variant="contained"
-  sx={{ display: "block", mb: 0.5 , fontWeight: 700 }} 
+  sx={{ display: "block",fontWeight:800 ,mb:2  }} 
    id="demo-radio-buttons-group-label"
   >{t("admissions.paymentMethods")}</FormLabel>
   <RadioGroup
     aria-labelledby="demo-radio-buttons-group-label"
     defaultValue="female"
     name="radio-buttons-group"
+    
   >
     {
       paymentMethods?.map((el,i)=>(
         <FormControlLabel 
-        
-        key={i} value={el?.label} control={<Radio />} label={el?.label} />
+        sx={{backgroundColor:"#E5E5E5",
+          m: 0,          // يشيل الـ margin الخارجي
+          p: 0,          // يشيل الـ padding الداخلي
+         '& .MuiFormControlLabel-label': {
+      fontWeight: 500, // ← هنا تغيّر السماكة (400 عادي - 500 متوسط - 700 عريض)
+    },
+        }}
+        key={i}
+        value={el?.value}
+        control={<Radio />}
+        onChange={(e)=>setSelectedPaymentMethod(e.target.value)}
+        label={el?.label} />
       ))
     }
   
   </RadioGroup>
+
+  
 </FormControl>
         </Box>
         
 
-        <DialogActions>
-          <Button onClick={() => setShowPaymentModal(false)}>إلغاء</Button>
-          <Button variant="contained" onClick={() => setShowPaymentModal(false)}>
+        <DialogActions sx={{mx:1}}>
+          {/* <Button onClick={() => setShowPaymentModal(false)}>إلغاء</Button> */}
+          <Button variant="contained"  sx={{width:"100%",mt:1}} onClick={() => handleSubmitPayment()}>
             تأكيد
           </Button>
         </DialogActions>
@@ -1251,6 +1325,7 @@ export default function Admissions() {
                           type="file"
                           hidden
                           onChange={handleFileChange}
+                         // value={selectedFile}
                         />
                         <Button
                           variant="contained"
@@ -1278,9 +1353,7 @@ export default function Admissions() {
                           variant="body2"
                           sx={{ alignSelf: "center" }}
                         >
-                          {academic.high_school_certificate_file
-                            ? academic.high_school_certificate_file.name
-                            : ""}
+                          {selectedFile ? selectedFile.name : ""}
                         </Typography>
                       </Box>
                       {acadErrors.high_school_certificate_file && (

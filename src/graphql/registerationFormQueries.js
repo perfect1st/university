@@ -17,6 +17,7 @@ mutation CreateRegisterForm($input: RegisterFormInput!) {
       status
     }
     registration_Fees_Value
+    registration_Fees_Id
   }
 }
 `;
