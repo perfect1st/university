@@ -161,7 +161,8 @@
     "bankTransfer":"تحويل بنكي",
     "onlinePayment":"دفع اونلاين",
     "Pay":"دفع",
-    "paymentMethods":"طرق الدفع"
+    "paymentMethods":"طرق الدفع",
+    "paymentSuccess":"تم دفع الطلب بنجاح"
   },
   "studentDashboard": {
     "majorInformation": "المعلومات الأساسية",

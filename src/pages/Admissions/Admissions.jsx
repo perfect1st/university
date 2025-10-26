@@ -539,11 +539,13 @@ export default function Admissions() {
 
       console.log('payment result',result?.data?.createTransaction);
       
-      notify("تم الدفع بنجاح","success");
+      notify("admissions.paymentSuccess","success");
+
+      setShowPaymentModal(false);
     } catch (error) {
       console.log('error',error);
       notify(t("admissions.error"),"error");
-      
+
     }
     
   }
