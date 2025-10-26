@@ -105,7 +105,7 @@ export default function Admissions() {
   const isArabic = i18n.language === "ar";
   const theme = useTheme();
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const[showPaymentModal, setShowPaymentModal] = useState(false);
  // const[registerationFees,setRegisterationFees] = useState(0);
   const[registerationFeesResults,setRegisterationFeesResults] = useState(null);
@@ -539,7 +539,7 @@ export default function Admissions() {
 
       console.log('payment result',result?.data?.createTransaction);
       
-      notify("admissions.paymentSuccess","success");
+      notify(t("admissions.paymentSuccess"),"success");
 
       setShowPaymentModal(false);
     } catch (error) {
@@ -549,6 +549,8 @@ export default function Admissions() {
     }
     
   }
+
+
   // File handling
   const handlePickFile = () => {
     if (fileInputRef.current) fileInputRef.current.click();
@@ -1355,7 +1357,7 @@ export default function Admissions() {
                           variant="body2"
                           sx={{ alignSelf: "center" }}
                         >
-                          {selectedFile ? selectedFile.name : ""}
+                          {selectedFile ? selectedFile : ""}
                         </Typography>
                       </Box>
                       {acadErrors.high_school_certificate_file && (
