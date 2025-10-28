@@ -47,6 +47,23 @@ mutation Login($input: LoginInput!) {
 }
 `;
 
+export const GET_LOGGED_USER_BY_TOKEN=gql`
+query Me {
+    me {
+        id
+        username
+        fullname
+        email
+        mobile
+        role
+        status
+        profile_image
+        qid_number
+        createdAt
+        updatedAt
+    }
+}
+`;  
 
 
 

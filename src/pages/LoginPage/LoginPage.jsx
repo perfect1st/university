@@ -73,7 +73,7 @@ const LoginPage = () => {
 
         setTimeout(()=>{
           setUserCookie(response?.data?.login?.token);
-          navigate("/home");
+          navigate("/profile");
         },2000);
         // if (response?.payload?.token && response?.payload?.admin) {
         //   const { groups } = response.payload.admin;
