@@ -7,7 +7,7 @@ const initialState = {
   loginResponse:null,
   loading: false,
   error: null,
-  oneUser: null
+  oneUser: null,
 };
 
 const userSlice = createSlice({
@@ -72,6 +72,9 @@ const userSlice = createSlice({
         state.error = action.error.message;
       });
   },
+  reducers:{
+    
+  }
 });
 
 export default userSlice.reducer;

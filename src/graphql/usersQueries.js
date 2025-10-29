@@ -66,6 +66,57 @@ query Me {
 `;  
 
 
+export const GET_USER_REQUIRED_FEES_BY_STUDENT_ID=gql`
+query GetUsersRequiredFeesByStudent($student_id: ID!) {
+    getUsersRequiredFeesByStudent(student_id: $student_id) {
+        id
+        is_paid
+        student_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            createdAt
+            updatedAt
+        }
+        website_user_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            createdAt
+            updatedAt
+        }
+        fees_types_id {
+            id
+            title_ar
+            title_en
+            inside_yemen_value
+            outside_yemen_value
+            createdAt
+            updatedAt
+        }
+        transactions_id {
+            id
+            payment_method_type
+            transaction_type_id
+            user_id
+            fees_type_ids
+            transaction_date
+        }
+    }
+}
 
+`;
 
 

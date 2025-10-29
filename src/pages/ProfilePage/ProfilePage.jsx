@@ -24,7 +24,7 @@ export default function ProfilePage() {
   const isArabic = i18n.language === "ar";
 
   
-  // get all countries
+  // get user token
     const {
       data: {me}={},
       loading: userLoading,
@@ -73,7 +73,7 @@ export default function ProfilePage() {
 
   let gender=genderTransArr.find(gender=>gender.en===getRegisterFormByUserId?.gender);
 
-  console.log('genderrrrr',gender)
+ // console.log('genderrrrr',gender)
   return (
     <Box sx={{ p: 3 , backgroundColor:"background.paper"}}>
       <Grid container spacing={3}>

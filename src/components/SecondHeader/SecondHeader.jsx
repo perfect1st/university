@@ -1,8 +1,10 @@
 import React from "react";
-import { Box, Button, useTheme } from "@mui/material";
+import { Box, Button, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { getUserCookie } from "../../hooks/authCookies";
+import { Close } from "@mui/icons-material";
+import MenuIcon from "@mui/icons-material/Menu";
 
 
 export default function SecondHeader() {
@@ -10,6 +12,10 @@ export default function SecondHeader() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const[searchParams,setSearchParams]=useSearchParams();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  
+  
   const currentPath = location.pathname;
   const user = getUserCookie();
   const isAuthenticated = Boolean(user); 
@@ -38,6 +44,16 @@ export default function SecondHeader() {
           py: { xs: 0.5, md: 1 },
         }}
       >
+        
+        {
+          isMobile&&<IconButton onClick={() => {
+          searchParams.set("mobileOpen",true);
+          setSearchParams(searchParams);
+        }}>
+         <MenuIcon fontSize="large" />
+        </IconButton>
+        }
+        
         {navItems.map((item) => {
           const active = getActive(item.path);
           return (

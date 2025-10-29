@@ -56,6 +56,8 @@ import {
   MarkRead,
 } from "../redux/slices/setting/thunk";
 import { useDispatch, useSelector } from "react-redux";
+import { useQuery } from "@apollo/client/react";
+import { GET_LOGGED_USER_BY_TOKEN } from "../graphql/usersQueries";
 
 const typeColors = {
   new_driver: "#81C784",
@@ -94,8 +96,16 @@ const Header = ({ onAction }) => {
     setSettingMenuOpen(false);
   };
 
-  const user = getUserCookie();
-  const isAuthenticated = Boolean(user); 
+  const {
+    data: { me } = {},
+    loading: userLoading,
+    error: userError,
+  } = useQuery(GET_LOGGED_USER_BY_TOKEN, { fetchPolicy: "network-only" });
+
+  const user = me;
+
+  console.log("me in nav", me);
+  const isAuthenticated = Boolean(me);
 
   const currentRoutes = routes.admin;
 
@@ -122,7 +132,6 @@ const Header = ({ onAction }) => {
   const handleLangMenuOpen = (event) => {
     setLangMenuAnchor(event.currentTarget);
   };
-  
 
   const handleLangMenuClose = () => {
     setLangMenuAnchor(null);
@@ -170,6 +179,9 @@ const Header = ({ onAction }) => {
   }, [location.pathname, menuItems]);
   const toggleOpen = (key) =>
     setOpenKeys((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  console.log("user?.fullname", user?.fullname);
+
   const drawerContent = (
     <Box
       sx={{
@@ -216,10 +228,10 @@ const Header = ({ onAction }) => {
         />
         <Box sx={{ textAlign: lang === "ar" ? "right" : "left" }}>
           <Typography variant="h6" fontWeight="bold" color="primary">
-            {user?.name}
+            {user?.fullname}
           </Typography>
           <Typography variant="body2" color="primary">
-            {user?.type}
+            {user?.role}
           </Typography>
         </Box>
       </Box>
@@ -317,10 +329,10 @@ const Header = ({ onAction }) => {
       <List>
         {/* Notifications */}
         <ListItemButton
-           onClick={async (e) => {
+          onClick={async (e) => {
             const target = e.currentTarget; // ✅ خد نسخة قبل await
             console.log("notificationAnchor", target, e);
-        
+
             await dispatch(getAllNotifications());
             setNotificationAnchor(target);
           }}
@@ -446,81 +458,83 @@ const Header = ({ onAction }) => {
 
                 return (
                   <MenuItem
-  key={notif?._id || notif?.id}
-  onClick={handleClick}
-  sx={{
-    px: 2,
-    py: 1,
-    mb: 1,
-    borderRadius: 2,
-    display: "flex",
-    alignItems: "center",
-    gap: 2,
-    bgcolor: isRead ? "background.paper" : "action.hover",
-    "&:hover": {
-      background: `linear-gradient(90deg, ${theme.palette.primary.light}20, ${theme.palette.primary.light}10)`,
-      boxShadow: "0px 2px 10px rgba(0,0,0,0.05)",
-    },
-  }}
->
-  {/* Avatar */}
-  <Avatar
-    sx={{
-      bgcolor: typeColors[notif.type] || theme.palette.primary.main,
-      width: 40,
-      height: 40,
-      fontSize: 16,
-    }}
-  >
-    {(notif.type || "·").charAt(0).toUpperCase()}
-  </Avatar>
+                    key={notif?._id || notif?.id}
+                    onClick={handleClick}
+                    sx={{
+                      px: 2,
+                      py: 1,
+                      mb: 1,
+                      borderRadius: 2,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 2,
+                      bgcolor: isRead ? "background.paper" : "action.hover",
+                      "&:hover": {
+                        background: `linear-gradient(90deg, ${theme.palette.primary.light}20, ${theme.palette.primary.light}10)`,
+                        boxShadow: "0px 2px 10px rgba(0,0,0,0.05)",
+                      },
+                    }}
+                  >
+                    {/* Avatar */}
+                    <Avatar
+                      sx={{
+                        bgcolor:
+                          typeColors[notif.type] || theme.palette.primary.main,
+                        width: 40,
+                        height: 40,
+                        fontSize: 16,
+                      }}
+                    >
+                      {(notif.type || "·").charAt(0).toUpperCase()}
+                    </Avatar>
 
-  {/* Text */}
-  <Box sx={{ flex: 1, minWidth: 0 }}>
-    <Typography
-      sx={{
-        fontWeight: isRead ? "normal" : "bold",
-        fontSize: 14,
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-      }}
-    >
-      {isArabic ? notif.title?.ar : notif.title?.en}
-    </Typography>
+                    {/* Text */}
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography
+                        sx={{
+                          fontWeight: isRead ? "normal" : "bold",
+                          fontSize: 14,
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {isArabic ? notif.title?.ar : notif.title?.en}
+                      </Typography>
 
-    <Typography
-      variant="body2"
-      sx={{
-        fontSize: 13,
-        color: "text.secondary",
-        display: "-webkit-box",
-        WebkitLineClamp: 2,
-        WebkitBoxOrient: "vertical",
-        overflow: "hidden",
-      }}
-    >
-      {isArabic ? notif.message?.ar : notif.message?.en}
-    </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontSize: 13,
+                          color: "text.secondary",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {isArabic ? notif.message?.ar : notif.message?.en}
+                      </Typography>
 
-    <Typography sx={{ fontSize: 11, color: "text.disabled", mt: 0.5 }}>
-      {timeAgo(notif.createdAt)}
-    </Typography>
-  </Box>
+                      <Typography
+                        sx={{ fontSize: 11, color: "text.disabled", mt: 0.5 }}
+                      >
+                        {timeAgo(notif.createdAt)}
+                      </Typography>
+                    </Box>
 
-  {/* Unread Dot */}
-  {!isRead && (
-    <Box
-      sx={{
-        width: 10,
-        height: 10,
-        borderRadius: "50%",
-        bgcolor: "error.main",
-      }}
-    />
-  )}
-</MenuItem>
-
+                    {/* Unread Dot */}
+                    {!isRead && (
+                      <Box
+                        sx={{
+                          width: 10,
+                          height: 10,
+                          borderRadius: "50%",
+                          bgcolor: "error.main",
+                        }}
+                      />
+                    )}
+                  </MenuItem>
                 );
               })
             )}
@@ -558,89 +572,89 @@ const Header = ({ onAction }) => {
 
         {/* Language Selector */}
         <ListItemButton onClick={(e) => setLangMenuAnchor(e.currentTarget)}>
-  <Box
-    sx={{
-      display: "flex",
-      alignItems: "center",
-      width: "100%",
-      flex: 0,
-    }}
-  >
-    <ListItemText
-      primary={
-        <Typography fontWeight="bold">
-          {i18n.language === "en" ? "English" : "العربية"}
-        </Typography>
-      }
-    />
-    <ExpandMore />
-  </Box>
-</ListItemButton>
-
-        <Menu
-            anchorEl={langMenuAnchor}
-            open={Boolean(langMenuAnchor)}
-            onClose={handleLangMenuClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: i18n.language === "ar" ? "right" : "left",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: i18n.language === "ar" ? "right" : "left",
-            }}
-            PaperProps={{
-              sx: {
-                minWidth: 140,
-                borderRadius: 1,
-                boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-                overflow: "hidden",
-                p: 0.5,
-                backgroundColor: theme.palette.background.paper,
-              },
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+              flex: 0,
             }}
           >
-            {["en", "ar"].map((lang) => (
-              <MenuItem
-                key={lang}
-                onClick={() => changeLanguage(lang)}
-                sx={{
-                  px: 2,
-                  py: 1,
-                  borderRadius: 1,
-                  mb: 0.5,
-                  backgroundColor:
-                    i18n.language === lang
-                      ? theme.palette.action.selected
-                      : "transparent",
-                  color:
-                    i18n.language === lang
-                      ? theme.palette.primary.main
-                      : "#000",
-                  "&:hover": {
-                    backgroundColor: theme.palette.action.hover,
-                  },
-                }}
-              >
-                <Typography
-                  fontWeight={i18n.language === lang ? "bold" : "normal"}
-                  fontSize={14}
-                >
-                  {lang === "en" ? "English" : "العربية"}
+            <ListItemText
+              primary={
+                <Typography fontWeight="bold">
+                  {i18n.language === "en" ? "English" : "العربية"}
                 </Typography>
-              </MenuItem>
-            ))}
-          </Menu>
+              }
+            />
+            <ExpandMore />
+          </Box>
+        </ListItemButton>
+
+        <Menu
+          anchorEl={langMenuAnchor}
+          open={Boolean(langMenuAnchor)}
+          onClose={handleLangMenuClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: i18n.language === "ar" ? "right" : "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: i18n.language === "ar" ? "right" : "left",
+          }}
+          PaperProps={{
+            sx: {
+              minWidth: 140,
+              borderRadius: 1,
+              boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+              overflow: "hidden",
+              p: 0.5,
+              backgroundColor: theme.palette.background.paper,
+            },
+          }}
+        >
+          {["en", "ar"].map((lang) => (
+            <MenuItem
+              key={lang}
+              onClick={() => changeLanguage(lang)}
+              sx={{
+                px: 2,
+                py: 1,
+                borderRadius: 1,
+                mb: 0.5,
+                backgroundColor:
+                  i18n.language === lang
+                    ? theme.palette.action.selected
+                    : "transparent",
+                color:
+                  i18n.language === lang ? theme.palette.primary.main : "#000",
+                "&:hover": {
+                  backgroundColor: theme.palette.action.hover,
+                },
+              }}
+            >
+              <Typography
+                fontWeight={i18n.language === lang ? "bold" : "normal"}
+                fontSize={14}
+              >
+                {lang === "en" ? "English" : "العربية"}
+              </Typography>
+            </MenuItem>
+          ))}
+        </Menu>
       </List>
 
       <Divider sx={{ my: 2 }} />
 
       <List>
         {/* Profile */}
-        <ListItemButton  onClick={()=>{
-          navigate("/profile")
-          setMobileOpen(false)
-          }}>
+        <ListItemButton
+          onClick={() => {
+            navigate("/profile");
+            setMobileOpen(false);
+          }}
+        >
           <Box
             sx={{
               display: "flex",
@@ -658,7 +672,9 @@ const Header = ({ onAction }) => {
         }}
       /> */}
             <ListItemText
-              onClick={()=>{navigate("/profile")}}
+              onClick={() => {
+                navigate("/profile");
+              }}
               primary={
                 <Typography
                   fontWeight="bold"
@@ -752,7 +768,12 @@ const Header = ({ onAction }) => {
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               {/* Language Switch */}
               <Box
-                sx={{ display: "flex", alignItems: "center", cursor: "pointer",  color:theme.palette.primary.main}}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  color: theme.palette.primary.main,
+                }}
                 onClick={handleLangMenuOpen}
               >
                 <LanguageIcon
@@ -760,13 +781,18 @@ const Header = ({ onAction }) => {
                     width: 28,
                     height: 28,
                     mr: 1,
-                    filter: theme.palette.mode === "dark" ? "invert(1)" : "none",
+                    filter:
+                      theme.palette.mode === "dark" ? "invert(1)" : "none",
                   }}
                 />
                 <Typography
                   variant="body1"
                   fontWeight="bold"
-                  sx={{ display: { xs: "none", sm: "block" }, mx: 1 , color:theme.palette.primary.main}}
+                  sx={{
+                    display: { xs: "none", sm: "block" },
+                    mx: 1,
+                    color: theme.palette.primary.main,
+                  }}
                 >
                   {i18n.language === "en" ? "EN" : "AR"}
                 </Typography>
@@ -778,8 +804,12 @@ const Header = ({ onAction }) => {
                 open={Boolean(langMenuAnchor)}
                 onClose={handleLangMenuClose}
               >
-                <MenuItem onClick={() => changeLanguage("en")}>English</MenuItem>
-                <MenuItem onClick={() => changeLanguage("ar")}>العربية</MenuItem>
+                <MenuItem onClick={() => changeLanguage("en")}>
+                  English
+                </MenuItem>
+                <MenuItem onClick={() => changeLanguage("ar")}>
+                  العربية
+                </MenuItem>
               </Menu>
 
               {/* Apply Button */}
@@ -848,7 +878,37 @@ const Header = ({ onAction }) => {
               </IconButton>
             </Hidden>
 
+            
+
             {/* Logo */}
+            <Box
+              component={Link}
+              to="/home" // المسار داخل المشروع
+              sx={{
+                display: "inline-block",
+              }}
+            >
+              <Box
+                component="img"
+                src={logo}
+                alt="Logo"
+                sx={{
+                  height: { xs: 40, md: 110 },
+                  ml: i18n.language === "ar" ? { xs: 1, md: 3 } : 0,
+                  mr: i18n.language === "ar" ? 0 : { xs: 1, md: 3 },
+                }}
+              />
+            </Box>
+          </Box>
+        </Hidden>
+        <Hidden mdDown>
+          <Box
+            component={Link}
+            to="/home" // المسار داخل المشروع
+            sx={{
+              display: "inline-block",
+            }}
+          >
             <Box
               component="img"
               src={logo}
@@ -860,18 +920,6 @@ const Header = ({ onAction }) => {
               }}
             />
           </Box>
-        </Hidden>
-        <Hidden mdDown>
-          <Box
-            component="img"
-            src={logo}
-            alt="Logo"
-            sx={{
-              height: { xs: 40, md: 110 },
-              ml: i18n.language === "ar" ? { xs: 1, md: 3 } : 0,
-              mr: i18n.language === "ar" ? 0 : { xs: 1, md: 3 },
-            }}
-          />
         </Hidden>
 
         <Box sx={{ flexGrow: 1 }} />
@@ -1104,7 +1152,7 @@ const Header = ({ onAction }) => {
                 fontWeight="bold"
                 sx={{ color: theme.palette.primary.main }}
               >
-                {user?.name}
+                {me?.username}
               </Typography>
               <Typography
                 variant="body2"
@@ -1167,10 +1215,10 @@ const Header = ({ onAction }) => {
                 }}
               >
                 <Typography fontWeight="bold" fontSize={16}>
-                  {user?.name}
+                  {me?.fullname}
                 </Typography>
                 <Typography fontSize={13} color="text.secondary">
-                  {user?.type}
+                  {me?.type}
                 </Typography>
               </Box>
             </Box>

@@ -10,34 +10,78 @@ import {
   Typography,
   ListItemIcon,
   Divider,
+  IconButton,
+  useMediaQuery,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, matchPath } from "react-router-dom";
 import getAccessibleRoutes from "../hooks/getAccessibleRoutes"; // ✅ الجديد
 
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+// import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import CloseIcon from "@mui/icons-material/Close";
+
 const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const theme = useTheme();
   const { i18n } = useTranslation();
   const location = useLocation();
+   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  
 
-  const menuItems = useMemo(() => getAccessibleRoutes("admin"), []);
+  const lang = i18n.language;
+
+  // const menuItems = useMemo(() => getAccessibleRoutes("admin"), []);
+  const menuItems = [
+    {
+      icon: AccountBalanceIcon,
+      key: "dashboard",
+      path: "/dashboard",
+      label: {
+        ar: "لوحة التحكم",
+        en: "Dashboard",
+      },
+    },
+    {
+      icon: PersonOutlineIcon,
+      key: "profile",
+      path: "/profile",
+      label: {
+        ar: "الصفحة الشخصية",
+        en: "Profile",
+      },
+    },
+
+    {
+      icon: MonetizationOnOutlinedIcon,
+      key: "FeePayment",
+      path: "/FeePayment",
+      label: {
+        ar: "المدفوعات",
+        en: "Fee Payments",
+      },
+    },
+  ];
   const [openKeys, setOpenKeys] = useState({});
 
-  useEffect(() => {
-    const newOpenKeys = {};
-    menuItems.forEach((item) => {
-      if (item.children) {
-        const isChildActive = item.children.some((child) =>
-          matchPath(child.path, location.pathname)
-        );
-        if (isChildActive) {
-          newOpenKeys[item.key] = true;
-        }
-      }
-    });
-    setOpenKeys((prev) => ({ ...prev, ...newOpenKeys }));
-  }, [location.pathname, menuItems]);
+  // useEffect(() => {
+  //   const newOpenKeys = {};
+  //   menuItems.forEach((item) => {
+  //     if (item.children) {
+  //       const isChildActive = item.children.some((child) =>
+  //         matchPath(child.path, location.pathname)
+  //       );
+  //       if (isChildActive) {
+  //         newOpenKeys[item.key] = true;
+  //       }
+  //     }
+  //   });
+  //   setOpenKeys((prev) => ({ ...prev, ...newOpenKeys }));
+  // }, [location.pathname, menuItems]);
+
+  console.log("menuItems", menuItems);
 
   const toggleOpen = (key) =>
     setOpenKeys((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -52,6 +96,21 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
         pt: 2,
       }}
     >
+       {/* Close Button */}
+          {
+            isMobile&&  <Box
+              sx={{
+                display: "flex",
+                justifyContent: lang === "ar" ? "flex-end" : "flex-start",
+                mb: 2,
+              }}
+            >
+              <IconButton onClick={() => onClose()}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          }
+          
       <List component="nav">
         {menuItems.map((item, index) => {
           const hasChildren = !!item.children;
@@ -79,10 +138,16 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
               (matchPath("/Wallet/AddTransaction", location.pathname) ||
                 matchPath("/walletDetails/:id", location.pathname))) ||
             (item.key === "PaymentMethods" &&
-              (matchPath("/PaymentMethod/AddPaymentMethod", location.pathname) ||
+              (matchPath(
+                "/PaymentMethod/AddPaymentMethod",
+                location.pathname
+              ) ||
                 matchPath("/paymentMethodDetails/:id", location.pathname))) ||
             (item.key === "PermissionGroups" &&
-              matchPath("/PermissionGroups/showpermissiongroup/:id", location.pathname)) ||
+              matchPath(
+                "/PermissionGroups/showpermissiongroup/:id",
+                location.pathname
+              )) ||
             (item.key === "TrafficTime" &&
               (matchPath("/TrafficTime/AddTrafficTime", location.pathname) ||
                 matchPath("/TrafficTimeDetails/:id", location.pathname))) ||
@@ -91,7 +156,10 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
             (item.key === "CommissionCategory" &&
               matchPath("/CommissionCategoryDetails/:id", location.pathname)) ||
             (item.key === "CommissionCategory" &&
-              matchPath("/CommissionCategory/AddCommissionCategory", location.pathname)) ||
+              matchPath(
+                "/CommissionCategory/AddCommissionCategory",
+                location.pathname
+              )) ||
             (item.key === "Coupons" &&
               matchPath("/couponDetails/:id", location.pathname)) ||
             (item.key === "Coupons" &&
@@ -103,13 +171,16 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
             (item.key === "Liqudation" &&
               matchPath("/LiqudationDetails/:id", location.pathname));
 
-          const isActiveParent =
-            !!(hasChildren &&
-              item.children.some((child) =>
-                matchPath(child.path, location.pathname)
-              ));
+          const isActiveParent = !!(
+            hasChildren &&
+            item.children.some((child) =>
+              matchPath(child.path, location.pathname)
+            )
+          );
 
           const IconComponent = item.icon;
+
+          console.log("IconComponent", IconComponent);
 
           return (
             <React.Fragment key={item.key}>
@@ -123,7 +194,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                     pl: 3,
                     mb: 0.5,
                     height: 40,
-                    gap:1,
+                    gap: 1,
                     "&.Mui-selected": {
                       backgroundColor: isDirectlyActive
                         ? theme.palette.primary.main
@@ -131,7 +202,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                       color: isDirectlyActive
                         ? theme.palette.background.secDefault
                         : theme.palette.primary.main,
-                        p:0
+                      p: 0,
                     },
                     "&.Mui-selected:hover": {
                       backgroundColor: isDirectlyActive
@@ -141,7 +212,8 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                     borderRadius: "8px",
                   }}
                 >
-                  {isDirectlyActive && <ListItemIcon sx={{ minWidth: 24 }}>
+                  {isDirectlyActive && (
+                    <ListItemIcon sx={{ minWidth: 24 }}>
                       <Box
                         sx={{
                           width: 6,
@@ -150,20 +222,28 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                           backgroundColor: theme.palette.info.main,
                         }}
                       />
-                    </ListItemIcon>}
-                    
+                    </ListItemIcon>
+                  )}
+
                   {IconComponent && (
-  <ListItemIcon sx={{ minWidth: 24, color: isDirectlyActive ? theme.palette.background.secDefault : theme.palette.primary.main }}>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 24,
+                        color: isDirectlyActive
+                          ? theme.palette.background.secDefault
+                          : theme.palette.primary.main,
+                      }}
+                    >
                       <IconComponent
                         sx={{
                           color: isDirectlyActive
                             ? theme.palette.background.secDefault
                             : theme.palette.primary.main,
-                            // mx:1
+                          // mx:1
                         }}
                       />
                     </ListItemIcon>
-                  ) }
+                  )}
 
                   <ListItemText
                     primary={
@@ -171,7 +251,9 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                         sx={{ display: "flex", alignItems: "start" }}
                         variant="body1"
                         fontWeight="bold"
-                        color={isDirectlyActive ? "background.secDefault" : "inherit"}
+                        color={
+                          isDirectlyActive ? "background.secDefault" : "inherit"
+                        }
                       >
                         {item.label[i18n.language]}
                       </Typography>
@@ -182,7 +264,11 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                 </ListItemButton>
 
                 {hasChildren && (
-                  <Collapse in={openKeys[item.key]} timeout="auto" unmountOnExit>
+                  <Collapse
+                    in={openKeys[item.key]}
+                    timeout="auto"
+                    unmountOnExit
+                  >
                     <List component="div" disablePadding>
                       {item.children.map((child) => {
                         const isChildActive = !!matchPath(
@@ -265,6 +351,8 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
     </Box>
   );
 
+  // console.log('sidebaaaaaaaaaaaaaaaar');
+
   return (
     <>
       <Box
@@ -280,7 +368,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       <Drawer
         variant="temporary"
         open={mobileOpen}
-        onClose={onClose}
+        onClose={()=>onClose()}
         ModalProps={{ keepMounted: true }}
         sx={{
           display: { xs: "block", md: "none" },

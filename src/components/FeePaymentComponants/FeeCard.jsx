@@ -21,6 +21,12 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
+
+import {
+ 
+
+  Close as CloseIcon
+} from "@mui/icons-material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DownloadIcon from "@mui/icons-material/Download";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -32,6 +38,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useTranslation } from "react-i18next";
 import money from "../../assets/money.png";
+import i18n from "../../i18n/i18n";
 
 export default function FeeCard({ data }) {
   const theme = useTheme();
@@ -40,8 +47,9 @@ export default function FeeCard({ data }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [method, setMethod] = useState("cash");
 
-  const isPaid = !!data.paid;
-
+  const isArabic = i18n.language === "ar";
+ // const isPaid = !!data?.is_paid;
+  const isPaid = !!data?.is_paid;
   return (
     <Paper sx={{ p: 2, mb: 2 }}>
       <Grid container alignItems="center" spacing={2}>
@@ -59,10 +67,13 @@ export default function FeeCard({ data }) {
         <Grid item xs>
           {/* Top row */}
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2, flexWrap: "wrap" }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              {t("fee.academicYear")}&nbsp;{data.academicYear}
-            </Typography>
 
+            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+              {/* {t("fee.academicYear")}&nbsp;{data.academicYear} */}
+              { isArabic ? data?.fees_types_id?.title_ar : data?.fees_types_id?.title_en }
+            </Typography>
+            
+            
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
               {isPaid ? (
                 <>
@@ -99,7 +110,7 @@ export default function FeeCard({ data }) {
                     onClick={() => setDialogOpen(true)}
                     sx={{ textTransform: "none" , gap:1}}
                   >
-                    {t("fee.pay", { price: data.price })}
+                    {t("fee.pay", { price: data?.fees_types_id?.inside_yemen_value })}
                   </Button>
                 </>
               )}
@@ -109,7 +120,10 @@ export default function FeeCard({ data }) {
           {/* Bottom row */}
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mt: 1, flexWrap: "wrap", gap: 1 }}>
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
-              {t("fee.feeTitle", { semester: data.semesterLabel })}
+              {t("fee.feeTitle",
+                 { semester: isArabic ? data?.fees_types_id?.title_ar : data?.fees_types_id?.title_en }
+                 )
+              }
             </Typography>
 
             <Box sx={{ display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}>
@@ -175,7 +189,7 @@ export default function FeeCard({ data }) {
               </TableRow>
             </TableHead>
             <TableBody sx={{ backgroundColor: theme.palette.background?.secDefault || "#fafafa" }}>
-              {data.items.map((it, idx) => (
+              {data?.items?.map((it, idx) => (
                 <TableRow key={idx}>
                   <TableCell sx={{ textAlign: "start" ,fontWeight: 600 }}>{it.reason}</TableCell>
                   <TableCell sx={{ textAlign: "start" }}>{it.amount}</TableCell>
@@ -190,7 +204,7 @@ export default function FeeCard({ data }) {
      {/* Payment Dialog */}
      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="xs" fullWidth>
   <DialogTitle>
-    {t("fee.payDialogTitle", { price: data.price })}
+    {t("fee.payDialogTitle", { price: data?.fees_types_id?.inside_yemen_value })}
   </DialogTitle>
   <DialogContent>
     <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -238,11 +252,11 @@ export default function FeeCard({ data }) {
     <Button
       variant="contained"
       onClick={() => {
-        alert(`${t("fee.payNow")} ${data.price} (${method})`);
+        alert(`${t("fee.payNow")} ${data?.fees_types_id?.inside_yemen_value} (${method})`);
         setDialogOpen(false);
       }}
     >
-      {t("fee.payNowBtn", { price: data.price })}
+      {t("fee.payNowBtn", { price: data?.fees_types_id?.inside_yemen_value })}
     </Button>
   </DialogActions>
 </Dialog>
