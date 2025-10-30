@@ -214,6 +214,7 @@
     "FacultyDepartment": "قسم الكلية"
   },
   "fee": {
+    "feePayment":"المدفوعات الدراسية",
     "academicYear": "السنة الدراسية",
     "showPaidDocument": "عرض سند الدفع",
     "downloadPayment": "تحميل سند الدفع",
@@ -229,9 +230,9 @@
     "pay": "ادفع {{price}}",
     "paymentMethodsTitle": "طرق الدفع",
     "method": {
-      "cash": "نقدًا",
-      "bank": "تحويل بنكي",
-      "online": "دفع إلكتروني"
+      "CASH": "نقدًا",
+      "BANK_TRANSFER": "تحويل بنكي",
+      "ONLINE": "دفع إلكتروني"
     },
     "payDialogTitle": "ادفع {{price}}",
     "payNowBtn": "ادفع {{price}}",

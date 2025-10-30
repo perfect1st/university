@@ -22,11 +22,7 @@ import {
   Radio,
 } from "@mui/material";
 
-import {
- 
-
-  Close as CloseIcon
-} from "@mui/icons-material";
+import { Close as CloseIcon } from "@mui/icons-material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DownloadIcon from "@mui/icons-material/Download";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -48,7 +44,7 @@ export default function FeeCard({ data }) {
   const [method, setMethod] = useState("cash");
 
   const isArabic = i18n.language === "ar";
- // const isPaid = !!data?.is_paid;
+  // const isPaid = !!data?.is_paid;
   const isPaid = !!data?.is_paid;
   return (
     <Paper sx={{ p: 2, mb: 2 }}>
@@ -66,37 +62,49 @@ export default function FeeCard({ data }) {
         {/* MAIN ROWS */}
         <Grid item xs>
           {/* Top row */}
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2, flexWrap: "wrap" }}>
-
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 2,
+              flexWrap: "wrap",
+            }}
+          >
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
               {/* {t("fee.academicYear")}&nbsp;{data.academicYear} */}
-              { isArabic ? data?.fees_types_id?.title_ar : data?.fees_types_id?.title_en }
+              {isArabic
+                ? data?.fees_types_id?.title_ar
+                : data?.fees_types_id?.title_en}
             </Typography>
-            
-            
+
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
               {isPaid ? (
                 <>
                   <Button
-                  variant="outlined"
+                    variant="outlined"
                     size="small"
                     startIcon={<VisibilityIcon />}
-                    onClick={() => window.open(data.paidDocument || "#", "_blank")}
-                    sx={{ textTransform: "none" , gap:1 }}
+                    onClick={() =>
+                      window.open(data.paidDocument || "#", "_blank")
+                    }
+                    sx={{ textTransform: "none", gap: 1 }}
                   >
                     {t("fee.showPaidDocument")}
                   </Button>
                   <Button
-                  variant="outlined"
+                    variant="outlined"
                     size="small"
                     startIcon={<DownloadIcon />}
                     onClick={() => {
                       const link = document.createElement("a");
                       link.href = data.paidDocument || "#";
-                      link.download = (data.paidDocument || "").split("/").pop();
+                      link.download = (data.paidDocument || "")
+                        .split("/")
+                        .pop();
                       link.click();
                     }}
-                    sx={{ textTransform: "none" , gap:1 }}
+                    sx={{ textTransform: "none", gap: 1 }}
                   >
                     {t("fee.downloadPayment")}
                   </Button>
@@ -104,13 +112,15 @@ export default function FeeCard({ data }) {
               ) : (
                 <>
                   <Button
-                  variant="outlined"
+                    variant="outlined"
                     size="small"
                     startIcon={<PaymentIcon />}
                     onClick={() => setDialogOpen(true)}
-                    sx={{ textTransform: "none" , gap:1}}
+                    sx={{ textTransform: "none", gap: 1 }}
                   >
-                    {t("fee.pay", { price: data?.fees_types_id?.inside_yemen_value })}
+                    {t("fee.pay", {
+                      price: data?.fees_types_id?.inside_yemen_value,
+                    })}
                   </Button>
                 </>
               )}
@@ -118,15 +128,32 @@ export default function FeeCard({ data }) {
           </Box>
 
           {/* Bottom row */}
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mt: 1, flexWrap: "wrap", gap: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              mt: 1,
+              flexWrap: "wrap",
+              gap: 1,
+            }}
+          >
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
-              {t("fee.feeTitle",
-                 { semester: isArabic ? data?.fees_types_id?.title_ar : data?.fees_types_id?.title_en }
-                 )
-              }
+              {t("fee.feeTitle", {
+                semester: isArabic
+                  ? data?.fees_types_id?.title_ar
+                  : data?.fees_types_id?.title_en,
+              })}
             </Typography>
 
-            <Box sx={{ display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}>
+            <Box
+              sx={{
+                display: "flex",
+                gap: 2,
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
               {isPaid && (
                 <>
                   <Typography variant="caption">
@@ -153,8 +180,16 @@ export default function FeeCard({ data }) {
                   border: `1px solid ${isPaid ? "#ABEFC6" : "#FECDCA"}`,
                 }}
               >
-                <FiberManualRecordIcon sx={{ fontSize: 10, color: isPaid ? "#085D3A" : "#912018" }} />
-                <Typography variant="caption" sx={{ color: isPaid ? "#085D3A" : "#912018", fontWeight: 700 }}>
+                <FiberManualRecordIcon
+                  sx={{ fontSize: 10, color: isPaid ? "#085D3A" : "#912018" }}
+                />
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: isPaid ? "#085D3A" : "#912018",
+                    fontWeight: 700,
+                  }}
+                >
                   {isPaid ? t("fee.paid") : t("fee.unpaid")}
                 </Typography>
               </Box>
@@ -182,16 +217,39 @@ export default function FeeCard({ data }) {
       <Collapse in={open} timeout="auto">
         <Box sx={{ mt: 2 }}>
           <Table size="small" component={Paper}>
-            <TableHead sx={{ backgroundColor: theme.palette.primary?.tabelHeader || "#e0e0e0" }}>
+            <TableHead
+              sx={{
+                backgroundColor:
+                  theme.palette.primary?.tabelHeader || "#e0e0e0",
+              }}
+            >
               <TableRow>
-                <TableCell sx={{ textAlign: "start" , fontWeight: 700 }}>{t("fee.table.reason")}</TableCell>
-                <TableCell sx={{ textAlign: "start" , fontWeight: 700, width: 140, textAlign: "right" }}>{t("fee.table.amount")}</TableCell>
+                <TableCell sx={{ textAlign: "start", fontWeight: 700 }}>
+                  {t("fee.table.reason")}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "start",
+                    fontWeight: 700,
+                    width: 140,
+                    textAlign: "right",
+                  }}
+                >
+                  {t("fee.table.amount")}
+                </TableCell>
               </TableRow>
             </TableHead>
-            <TableBody sx={{ backgroundColor: theme.palette.background?.secDefault || "#fafafa" }}>
+            <TableBody
+              sx={{
+                backgroundColor:
+                  theme.palette.background?.secDefault || "#fafafa",
+              }}
+            >
               {data?.items?.map((it, idx) => (
                 <TableRow key={idx}>
-                  <TableCell sx={{ textAlign: "start" ,fontWeight: 600 }}>{it.reason}</TableCell>
+                  <TableCell sx={{ textAlign: "start", fontWeight: 600 }}>
+                    {it.reason}
+                  </TableCell>
                   <TableCell sx={{ textAlign: "start" }}>{it.amount}</TableCell>
                 </TableRow>
               ))}
@@ -201,66 +259,95 @@ export default function FeeCard({ data }) {
       </Collapse>
 
       {/* Payment Dialog */}
-     {/* Payment Dialog */}
-     <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="xs" fullWidth>
-  <DialogTitle>
-    {t("fee.payDialogTitle", { price: data?.fees_types_id?.inside_yemen_value })}
-  </DialogTitle>
-  <DialogContent>
-    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-      {t("fee.paymentMethodsTitle")}
-    </Typography>
-
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-  {["cash", "bank", "online"].map((m) => {
-    let icon;
-    if (m === "cash") icon = <AttachMoneyIcon fontSize="small" />;
-    if (m === "bank") icon = <AccountBalanceIcon fontSize="small" />;
-    if (m === "online") icon = <PaymentIcon fontSize="small" />;
-
-    return (
-      <Button
-        key={m}
-        variant={"contained"}
-        onClick={() => setMethod(m)}
-        sx={{
-          backgroundColor: method === m ? "primary.main" : "background.gray",
-          borderColor: method === m ? "primary.main" : "background.gray",
-          color: method === m ? "text.sec" : "text.primary",
-          justifyContent: "space-between",
-          textTransform: "none",
-          display: "flex",
-          alignItems: "center",
-          px: 2,
-        }}
+      {/* Payment Dialog */}
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        maxWidth="xs"
+        fullWidth
       >
-        {/* Left: Icon + Label */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          {icon}
-          <Typography>{t(`fee.method.${m}`)}</Typography>
-        </Box>
+        <DialogTitle
+          sx={{ color: theme.palette.info.main, fontWeight: 700, mb: 1 }}
+        >
+          {t("fee.payDialogTitle", {
+            price: data?.fees_types_id?.inside_yemen_value,
+          })}
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 800 }}>
+            {t("fee.paymentMethodsTitle")}
+          </Typography>
 
-        {/* Right: Check icon if selected */}
-        {method === m && <CheckCircleIcon fontSize="small" sx={{ color: "green" }} />}
-      </Button>
-    );
-  })}
-</Box>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            {["CASH", "BANK_TRANSFER", "ONLINE"].map((m) => {
+              let icon;
+              if (m === "CASH") icon = <AttachMoneyIcon fontSize="small" />;
+              if (m === "BANK_TRANSFER") icon = <AccountBalanceIcon fontSize="small" />;
+              if (m === "ONLINE") icon = <PaymentIcon fontSize="small" />;
 
-  </DialogContent>
-  <DialogActions sx={{ px: 3, py: 2 }}>
-    <Button
-      variant="contained"
-      onClick={() => {
-        alert(`${t("fee.payNow")} ${data?.fees_types_id?.inside_yemen_value} (${method})`);
-        setDialogOpen(false);
-      }}
-    >
-      {t("fee.payNowBtn", { price: data?.fees_types_id?.inside_yemen_value })}
-    </Button>
-  </DialogActions>
-</Dialog>
+              return (
+                <Button
+                  key={m}
+                  variant={"contained"}
+                  onClick={() => {
+                    const paymentMethods = {
+                      cash: "CASH",
+                      bank: "BANK_TRANSFER",
+                      online: "ONLINE",
+                    };
 
+                    const paymentMethod = paymentMethods[m] || "";
+
+                    console.log('paymentMethod',paymentMethod);
+
+                    setMethod(m);
+                  }}
+                  sx={{
+                    backgroundColor:
+                      method === m ? "primary.main" : "background.gray",
+                    borderColor:
+                      method === m ? "primary.main" : "background.gray",
+                    color: method === m ? "text.sec" : "text.primary",
+                    justifyContent: "space-between",
+                    textTransform: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    px: 2,
+                  }}
+                >
+                  {/* Left: Icon + Label */}
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    {icon}
+                    <Typography>{t(`fee.method.${m}`)}</Typography>
+                  </Box>
+
+                  {/* Right: Check icon if selected */}
+                  {method === m && (
+                    <CheckCircleIcon fontSize="small" sx={{ color: "green" }} />
+                  )}
+                </Button>
+              );
+            })}
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              alert(
+                `${t("fee.payNow")} ${
+                  data?.fees_types_id?.inside_yemen_value
+                } (${method})`
+              );
+              setDialogOpen(false);
+            }}
+          >
+            {t("fee.payNowBtn", {
+              price: data?.fees_types_id?.inside_yemen_value,
+            })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 }

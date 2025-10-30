@@ -180,7 +180,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
 
           const IconComponent = item.icon;
 
-          console.log("IconComponent", IconComponent);
+          // console.log("IconComponent", IconComponent);
 
           return (
             <React.Fragment key={item.key}>

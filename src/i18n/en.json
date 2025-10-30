@@ -176,6 +176,7 @@
     "FacultyDepartment": "Faculty Department"
   },
   "fee": {
+    "feePayment":"Fee Payment",
     "academicYear": "Academic Year",
     "showPaidDocument": "Show Paid Document",
     "downloadPayment": "Download Payment",
@@ -191,9 +192,9 @@
     "pay": "Pay {{price}}",
     "paymentMethodsTitle": "Payment Methods",
     "method": {
-      "cash": "Cash",
-      "bank": "Bank Transfer",
-      "online": "Online Payment"
+      "CASH": "Cash",
+      "BANK_TRANSFER": "Bank Transfer",
+      "ONLINE": "Online Payment"
     },
     "payDialogTitle": "Pay {{price}}",
     "payNowBtn": "Pay {{price}}",

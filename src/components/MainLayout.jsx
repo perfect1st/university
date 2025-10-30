@@ -39,9 +39,9 @@ const MainLayout = ({ children }) => {
 
   console.log('isAuthenticated',isAuthenticated);
 
- // const hideSecandHeader = location.pathname == "/home" || location.pathname == "/visionsArticals" || location.pathname == "/news";
+  const hideSecandHeader = location.pathname == "/home" || location.pathname == "/visionsArticals" || location.pathname == "/news";
 
- const hideSecandHeader=false;
+// const hideSecandHeader=false;
 console.log("hideSecandHeader",!hideSecandHeader)
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
