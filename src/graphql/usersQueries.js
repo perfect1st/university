@@ -114,13 +114,13 @@ query GetUsersRequiredFeesByStudent($student_id: ID!) {
                 createdAt
                 updatedAt
             }
-            transactions_id {
+              transactions_id {
                 id
                 payment_method_type
-                transaction_type_id
-                user_id
-                fees_type_ids
+                amount
+                payment_document_file
                 transaction_date
+                transaction_serial
             }
         }
     }

@@ -89,8 +89,11 @@ export default function FeeCard({ data , is_inside_yemen }) {
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
               {/* {t("fee.academicYear")}&nbsp;{data.academicYear} */}
               {
-              isArabic ? data?.title_ar : data?.title_en
+                isArabic
+                  ? data?.title_ar
+                  : data?.title_en
               }
+              
             </Typography>
 
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
@@ -160,8 +163,8 @@ export default function FeeCard({ data , is_inside_yemen }) {
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
               {t("fee.feeTitle", {
                 semester: isArabic
-                  ? data?.fees_types_id?.title_ar
-                  : data?.fees_types_id?.title_en,
+                  ? data?.description_ar
+                  : data?.description_en,
               })}
             </Typography>
 
@@ -177,11 +180,11 @@ export default function FeeCard({ data , is_inside_yemen }) {
                 <>
                   <Typography variant="caption">
                     {t("fee.paymentDate")}:&nbsp;
-                    <strong>{data.paymentDate}</strong>
+                    <strong>{data?.transactions_id?.transaction_date}</strong>
                   </Typography>
                   <Typography variant="caption">
                     {t("fee.transactionSerial")}:&nbsp;
-                    <strong>{data.transactionSerial}</strong>
+                    <strong>{data?.transactions_id?.transaction_serial}</strong>
                   </Typography>
                 </>
               )}
@@ -273,7 +276,7 @@ export default function FeeCard({ data , is_inside_yemen }) {
                         : it?.title_en
                     }
                   </TableCell>
-                  <TableCell sx={{ textAlign: "start" }}>
+                  <TableCell sx={{ textAlign:   `${isArabic ? "end" : "start"}` }}>
                     {it.is_inside_yemen ? it.inside_yemen_value : it.outside_yemen_value}
                     </TableCell>
                 </TableRow>
@@ -295,7 +298,7 @@ export default function FeeCard({ data , is_inside_yemen }) {
           sx={{ color: theme.palette.info.main, fontWeight: 700, mb: 1 }}
         >
           {t("fee.payDialogTitle", {
-            price: data?.fees_types_id?.inside_yemen_value,
+            price: total_payment,
           })}
         </DialogTitle>
         <DialogContent>
