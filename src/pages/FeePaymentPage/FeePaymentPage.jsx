@@ -22,7 +22,7 @@ export default function FeePaymentPage() {
     
       const[GetUsersRequiredFeesByStudent,{data:{getUsersRequiredFeesByStudent}={},loading:getFeesLoading, error:getFeesError}]=useLazyQuery(GET_USER_REQUIRED_FEES_BY_STUDENT_ID , { fetchPolicy: "network-only" });
 
-      let sampleFees = [
+      let sampleFees = [ 
   {
     id: "fee1",
     title: "First Semester Fees",
