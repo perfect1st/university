@@ -290,15 +290,15 @@ export default function FeeCard({ data }) {
                   key={m}
                   variant={"contained"}
                   onClick={() => {
-                    const paymentMethods = {
-                      cash: "CASH",
-                      bank: "BANK_TRANSFER",
-                      online: "ONLINE",
-                    };
+                    // const paymentMethods = {
+                    //   cash: "CASH",
+                    //   bank: "BANK_TRANSFER",
+                    //   online: "ONLINE",
+                    // };
 
-                    const paymentMethod = paymentMethods[m] || "";
+                    // const paymentMethod = paymentMethods[m] || "";
 
-                    console.log('paymentMethod',paymentMethod);
+                    // console.log('paymentMethod',paymentMethod);
 
                     setMethod(m);
                   }}
