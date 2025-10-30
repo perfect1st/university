@@ -36,7 +36,7 @@ import { useTranslation } from "react-i18next";
 import money from "../../assets/money.png";
 import i18n from "../../i18n/i18n";
 
-export default function FeeCard({ data }) {
+export default function FeeCard({ data , is_inside_yemen }) {
   const theme = useTheme();
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -46,6 +46,21 @@ export default function FeeCard({ data }) {
   const isArabic = i18n.language === "ar";
   // const isPaid = !!data?.is_paid;
   const isPaid = !!data?.is_paid;
+
+  let total_payment=0;
+
+  console.log('is_inside_yemen',is_inside_yemen);
+  data?.fees_types_ids?.map((fee)=>{
+    if(is_inside_yemen==true){
+        total_payment+=fee?.inside_yemen_value;
+    }
+    else{
+        total_payment+=fee?.outside_yemen_value;
+    }
+  });
+
+  console.log('total_payment',total_payment);
+
   return (
     <Paper sx={{ p: 2, mb: 2 }}>
       <Grid container alignItems="center" spacing={2}>
@@ -73,9 +88,9 @@ export default function FeeCard({ data }) {
           >
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
               {/* {t("fee.academicYear")}&nbsp;{data.academicYear} */}
-              {isArabic
-                ? data?.fees_types_id?.title_ar
-                : data?.fees_types_id?.title_en}
+              {
+              isArabic ? data?.title_ar : data?.title_en
+              }
             </Typography>
 
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
@@ -118,9 +133,13 @@ export default function FeeCard({ data }) {
                     onClick={() => setDialogOpen(true)}
                     sx={{ textTransform: "none", gap: 1 }}
                   >
-                    {t("fee.pay", {
-                      price: data?.fees_types_id?.inside_yemen_value,
-                    })}
+                    {
+                    
+                    t("fee.pay", {
+                      price: total_payment,
+                    })
+                    
+                    }
                   </Button>
                 </>
               )}
@@ -245,12 +264,18 @@ export default function FeeCard({ data }) {
                   theme.palette.background?.secDefault || "#fafafa",
               }}
             >
-              {data?.items?.map((it, idx) => (
+              {data?.fees_types_ids?.map((it, idx) => (
                 <TableRow key={idx}>
                   <TableCell sx={{ textAlign: "start", fontWeight: 600 }}>
-                    {it.reason}
+                    {
+                      isArabic
+                        ? it?.title_ar
+                        : it?.title_en
+                    }
                   </TableCell>
-                  <TableCell sx={{ textAlign: "start" }}>{it.amount}</TableCell>
+                  <TableCell sx={{ textAlign: "start" }}>
+                    {it.is_inside_yemen ? it.inside_yemen_value : it.outside_yemen_value}
+                    </TableCell>
                 </TableRow>
               ))}
             </TableBody>

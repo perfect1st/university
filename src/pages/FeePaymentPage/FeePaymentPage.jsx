@@ -63,7 +63,10 @@ export default function FeePaymentPage() {
         }
       },[me]);
 
+      // const{required_fees,is_inside_yemen}=getUsersRequiredFeesByStudent;
       console.log('getUsersRequiredFeesByStudent',getUsersRequiredFeesByStudent);
+
+      // console.log('required_fees',required_fees);
       
        if(userLoading||getFeesLoading) return <LoadingPage />
   return (
@@ -73,8 +76,8 @@ export default function FeePaymentPage() {
           <Typography variant="h6" sx={{ color: theme.palette.info.main, fontWeight: 700, mb: 1 }}>
             {t("fee.feePayment")}
           </Typography>
-          {getUsersRequiredFeesByStudent&& getUsersRequiredFeesByStudent?.map((f) => (
-            <FeeCard key={f.id} data={f} />
+          {getUsersRequiredFeesByStudent&& getUsersRequiredFeesByStudent?.required_fees?.map((f) => (
+            <FeeCard key={f.id} data={f} is_inside_yemen={getUsersRequiredFeesByStudent?.is_inside_yemen} />
           ))}
         </Grid>
 

@@ -26,22 +26,24 @@ const MainLayout = ({ children }) => {
    // localStorage.setItem()
    searchParams.set("mobileOpen",false);
    setSearchParams(searchParams);
-   setIsMobileOpen(false);
+  // setIsMobileOpen(false);
  }
    const {
        data: {me}={},
        loading: userLoading,
        error: userError,
      } = useQuery(GET_LOGGED_USER_BY_TOKEN, { fetchPolicy: "network-only" });
-  const user = me;
 
-  const isAuthenticated = Boolean(me);
-
+  // const user = me;
+     const user = getUserCookie();
+     const isAuthenticated = Boolean(user);
+       
+     
   console.log('isAuthenticated',isAuthenticated);
 
   const hideSecandHeader = location.pathname == "/home" || location.pathname == "/visionsArticals" || location.pathname == "/news";
 
-// const hideSecandHeader=false;
+ // const hideSecandHeader=false;
 console.log("hideSecandHeader",!hideSecandHeader)
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
