@@ -67,27 +67,27 @@ export default function FeeCard({
     },
   ] = useMutation(PAY_USER_REQUIRED_FEES, { fetchPolicy: "network-only" });
 
-  const handleFileChange=async(e)=>{
+  const handleFileChange = async (e) => {
     const file = e.target.files?.[0] ?? null;
-    const formData=new FormData();
-    formData.append('file',file);
-     try {
-        //      const response = await fetch(`${baseURL}/api/forms/single`, {
-        //   method: "POST",
-        //   body: formData, // مهم جدًا ما تضيفش headers هنا
-        // });
-    
-        // if (!response.ok) {
-        //   throw new Error("Upload failed");
-        // }
-    
-        // const data = await response.json();
-        // console.log("Upload successful:", data);
-        
-        // console.log('ooooooooooooo',`${baseURL}${data?.url}`);
-        // setBankTransferDocument(`${baseURL}${data?.url}`);
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      //      const response = await fetch(`${baseURL}/api/forms/single`, {
+      //   method: "POST",
+      //   body: formData, // مهم جدًا ما تضيفش headers هنا
+      // });
 
-          setProgress(0);
+      // if (!response.ok) {
+      //   throw new Error("Upload failed");
+      // }
+
+      // const data = await response.json();
+      // console.log("Upload successful:", data);
+
+      // console.log('ooooooooooooo',`${baseURL}${data?.url}`);
+      // setBankTransferDocument(`${baseURL}${data?.url}`);
+
+      setProgress(0);
 
       const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
         headers: {
@@ -101,17 +101,16 @@ export default function FeeCard({
         },
       });
 
-      console.log('res',res?.data?.url);
+      console.log("res", res?.data?.url);
 
       setBankTransferDocument(`${baseURL}${res?.data?.url}`);
+    } catch (error) {
+      notify(t("errorUplaod"), "error");
+      console.log("error", error.message);
+    }
+  };
 
-        } catch (error) {
-            notify(t("errorUplaod"),"error");
-            console.log('error',error.message);
-        }
-  }
-
-  console.log("bankTransferDocument",bankTransferDocument);
+  console.log("bankTransferDocument", bankTransferDocument);
 
   const isArabic = i18n.language === "ar";
   // const isPaid = !!data?.is_paid;
@@ -170,9 +169,16 @@ export default function FeeCard({
                     variant="outlined"
                     size="small"
                     startIcon={<VisibilityIcon />}
-                    onClick={() =>
-                      window.open(data.paidDocument || "#", "_blank")
-                    }
+                    onClick={() => {
+                      try {
+                        window.open(
+                          data?.transactions_id?.payment_document_file || "#",
+                          "_blank"
+                        );
+                      } catch (error) {
+                        console.log("error", error);
+                      }
+                    }}
                     sx={{ textTransform: "none", gap: 1 }}
                   >
                     {t("fee.showPaidDocument")}
@@ -182,13 +188,28 @@ export default function FeeCard({
                     variant="outlined"
                     size="small"
                     startIcon={<DownloadIcon />}
-                    onClick={() => {
-                      const link = document.createElement("a");
-                      link.href = data.paidDocument || "#";
-                      link.download = (data.paidDocument || "")
-                        .split("/")
-                        .pop();
-                      link.click();
+                    onClick={async () => {
+                      try {
+                        let url = data?.transactions_id?.payment_document_file;
+
+                        if (!url) return;
+                        // تحميل الصورة كـ Blob
+                        const response = await fetch(url, { mode: "cors" });
+                        const blob = await response.blob();
+
+                        // إنشاء لينك مؤقت للتحميل
+                        const link = document.createElement("a");
+                        link.href = URL.createObjectURL(blob);
+                        link.download = url.split("/").pop(); // اسم الملف من آخر جزء في الرابط
+                        document.body.appendChild(link);
+                        link.click();
+
+                        // تنظيف الرابط بعد التحميل
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(link.href);
+                      } catch (error) {
+                        console.log("error", error);
+                      }
                     }}
                     sx={{ textTransform: "none", gap: 1 }}
                   >
@@ -423,17 +444,17 @@ export default function FeeCard({
                 <>
                   <Typography
                     variant="subtitle2"
-                    sx={{ fontWeight: 500, mt: 2 , mb:2 }}
+                    sx={{ fontWeight: 500, mt: 2, mb: 2 }}
                   >
                     {t("fee.documentRequired")}
                   </Typography>
-                  
+
                   <TextField
                     type="file"
                     fullWidth
                     inputProps={{ accept: "image/*" }}
                     variant="outlined"
-                    onChange={(e)=>handleFileChange(e)}
+                    onChange={(e) => handleFileChange(e)}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "& fieldset": { border: "none" }, // يشيل البوردر الخارجي
@@ -445,7 +466,9 @@ export default function FeeCard({
                     }}
                   />
 
-                 {progress >0&& <LinearProgress variant="determinate" value={progress} /> } 
+                  {progress > 0 && (
+                    <LinearProgress variant="determinate" value={progress} />
+                  )}
                 </>
               )}
             </Box>
@@ -454,7 +477,6 @@ export default function FeeCard({
             <Button
               variant="contained"
               onClick={async () => {
-                
                 console.log("paymentOBJ", data);
 
                 if (method == "")
@@ -472,7 +494,8 @@ export default function FeeCard({
 
                 console.log("paymentOBJ", paymentOBJ);
 
-                if(method == "BANK_TRANSFER") paymentOBJ.payment_document_file = bankTransferDocument
+                if (method == "BANK_TRANSFER")
+                  paymentOBJ.payment_document_file = bankTransferDocument;
 
                 const result = await PayUserRequiredFees({
                   variables: {
