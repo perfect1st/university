@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Box,
   Grid,
@@ -22,6 +23,7 @@ import {
   Radio,
   CircularProgress,
   TextField,
+  LinearProgress,
 } from "@mui/material";
 
 import { Close as CloseIcon } from "@mui/icons-material";
@@ -41,6 +43,7 @@ import { useMutation } from "@apollo/client/react";
 import { PAY_USER_REQUIRED_FEES } from "../../graphql/usersQueries";
 import notify from "../notify";
 import { paymentMethodsArr } from "../../constants";
+import { baseURL } from "../../Api/apolloClient";
 
 export default function FeeCard({
   data,
@@ -53,6 +56,7 @@ export default function FeeCard({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [method, setMethod] = useState("");
   const [bankTransferDocument, setBankTransferDocument] = useState(null);
+  const [progress, setProgress] = useState(0);
 
   const [
     PayUserRequiredFees,
@@ -62,6 +66,52 @@ export default function FeeCard({
       error: payFeesError,
     },
   ] = useMutation(PAY_USER_REQUIRED_FEES, { fetchPolicy: "network-only" });
+
+  const handleFileChange=async(e)=>{
+    const file = e.target.files?.[0] ?? null;
+    const formData=new FormData();
+    formData.append('file',file);
+     try {
+        //      const response = await fetch(`${baseURL}/api/forms/single`, {
+        //   method: "POST",
+        //   body: formData, // مهم جدًا ما تضيفش headers هنا
+        // });
+    
+        // if (!response.ok) {
+        //   throw new Error("Upload failed");
+        // }
+    
+        // const data = await response.json();
+        // console.log("Upload successful:", data);
+        
+        // console.log('ooooooooooooo',`${baseURL}${data?.url}`);
+        // setBankTransferDocument(`${baseURL}${data?.url}`);
+
+          setProgress(0);
+
+      const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setProgress(percent);
+        },
+      });
+
+      console.log('res',res?.data?.url);
+
+      setBankTransferDocument(`${baseURL}${res?.data?.url}`);
+
+        } catch (error) {
+            notify(t("errorUplaod"),"error");
+            console.log('error',error.message);
+        }
+  }
+
+  console.log("bankTransferDocument",bankTransferDocument);
 
   const isArabic = i18n.language === "ar";
   // const isPaid = !!data?.is_paid;
@@ -109,7 +159,6 @@ export default function FeeCard({
             }}
           >
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              {/* {t("fee.academicYear")}&nbsp;{data.academicYear} */}
               {isArabic ? data?.title_ar : data?.title_en}
             </Typography>
 
@@ -374,15 +423,17 @@ export default function FeeCard({
                 <>
                   <Typography
                     variant="subtitle2"
-                    sx={{ fontWeight: 500, mt: 2 }}
+                    sx={{ fontWeight: 500, mt: 2 , mb:2 }}
                   >
                     {t("fee.documentRequired")}
                   </Typography>
+                  
                   <TextField
                     type="file"
                     fullWidth
                     inputProps={{ accept: "image/*" }}
                     variant="outlined"
+                    onChange={(e)=>handleFileChange(e)}
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         "& fieldset": { border: "none" }, // يشيل البوردر الخارجي
@@ -393,6 +444,8 @@ export default function FeeCard({
                       },
                     }}
                   />
+
+                 {progress >0&& <LinearProgress variant="determinate" value={progress} /> } 
                 </>
               )}
             </Box>
@@ -401,11 +454,7 @@ export default function FeeCard({
             <Button
               variant="contained"
               onClick={async () => {
-                // alert(
-                //   `${t("fee.payNow")} ${
-                //     total_payment
-                //   } (${method})`
-                // );
+                
                 console.log("paymentOBJ", data);
 
                 if (method == "")
@@ -422,6 +471,8 @@ export default function FeeCard({
                 };
 
                 console.log("paymentOBJ", paymentOBJ);
+
+                if(method == "BANK_TRANSFER") paymentOBJ.payment_document_file = bankTransferDocument
 
                 const result = await PayUserRequiredFees({
                   variables: {

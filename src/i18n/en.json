@@ -244,5 +244,6 @@
    "Select Country":"Select Country",
    "Select Nationality":"Select Nationality",
    "Select Type":"Select Type",
-   "Back":"Back"
+   "Back":"Back",
+   "errorUplaod":"Error in uplaoding try again"
 }
