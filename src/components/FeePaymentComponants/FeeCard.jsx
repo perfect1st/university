@@ -325,7 +325,7 @@ export default function FeeCard({
       {/* Collapsible table */}
       <Collapse in={open} timeout="auto">
         <Box sx={{ mt: 2 }}>
-          <Table size="small" component={Paper}>
+          <Table size="small">
             <TableHead
               sx={{
                 backgroundColor:

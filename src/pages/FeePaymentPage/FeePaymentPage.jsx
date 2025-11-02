@@ -23,38 +23,7 @@ export default function FeePaymentPage() {
       const[GetUsersRequiredFeesByStudent,{data:{getUsersRequiredFeesByStudent}={},loading:getFeesLoading, error:getFeesError}]=useLazyQuery(GET_USER_REQUIRED_FEES_BY_STUDENT_ID , { fetchPolicy: "network-only" });
 
 
-      let sampleFees = [ 
-  {
-    id: "fee1",
-    title: "First Semester Fees",
-    image: "https://via.placeholder.com/66",
-    academicYear: 2024,
-    semesterLabel: "First Semester",
-    price: "2500 SAR",
-    paid: true,
-    paymentDate: "22 September 2024",
-    transactionSerial: "22154255",
-    paidDocument: "https://via.placeholder.com/400x300.png?text=Paid+Doc",
-    items: [
-      { reason: "Tuition Fee", amount: "2000 SAR" },
-      { reason: "Registration Fee", amount: "500 SAR" },
-    ],
-  },
-  {
-    id: "fee2",
-    title: "Second Semester Fees",
-    image: "https://via.placeholder.com/66",
-    academicYear: 2024,
-    semesterLabel: "Second Semester",
-    price: "2200 SAR",
-    paid: false,
-    items: [
-      { reason: "Tuition Fee", amount: "2000 SAR" },
-      { reason: "Service Fee", amount: "200 SAR" },
-    ],
-  },
-];
-
+    
     //  const sampleFees=getUsersRequiredFeesByStudent;
 
      useEffect(()=>{

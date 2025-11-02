@@ -198,7 +198,7 @@ function NewsCard({ item, i18n, theme }) {
           {i18n.language === "ar" ? item.desc_ar : item.desc_en}
         </Typography>
         <Typography
-          variant="body2"
+          variant="span"
           sx={{
             mt: 1,
             color: theme.palette.text.primary,
