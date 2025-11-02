@@ -16,17 +16,19 @@ const MainLayout = ({ children }) => {
  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
  useEffect(()=>{
+  console.log('uuuuuuuuuuuuuse');
   if(searchParams.get("mobileOpen")) setIsMobileOpen(searchParams.get("mobileOpen"));
  },[searchParams]);
+ 
 
 
  console.log('isMobile',isMobileOpen);
 
  const onClose=()=>{
    // localStorage.setItem()
-   searchParams.set("mobileOpen",false);
-   setSearchParams(searchParams);
-  // setIsMobileOpen(false);
+    searchParams.set("mobileOpen",false);
+    setSearchParams(searchParams);
+    setIsMobileOpen(false);
  }
    const {
        data: {me}={},
