@@ -20,6 +20,8 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  CircularProgress,
+  TextField,
 } from "@mui/material";
 
 import { Close as CloseIcon } from "@mui/icons-material";
@@ -35,32 +37,52 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useTranslation } from "react-i18next";
 import money from "../../assets/money.png";
 import i18n from "../../i18n/i18n";
+import { useMutation } from "@apollo/client/react";
+import { PAY_USER_REQUIRED_FEES } from "../../graphql/usersQueries";
+import notify from "../notify";
+import { paymentMethodsArr } from "../../constants";
 
-export default function FeeCard({ data , is_inside_yemen }) {
+export default function FeeCard({
+  data,
+  is_inside_yemen,
+  GetUsersRequiredFeesByStudent,
+}) {
   const theme = useTheme();
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [method, setMethod] = useState("cash");
+  const [method, setMethod] = useState("");
+  const [bankTransferDocument, setBankTransferDocument] = useState(null);
+
+  const [
+    PayUserRequiredFees,
+    {
+      data: { payUserRequiredFees } = {},
+      loading: payFeesLoading,
+      error: payFeesError,
+    },
+  ] = useMutation(PAY_USER_REQUIRED_FEES, { fetchPolicy: "network-only" });
 
   const isArabic = i18n.language === "ar";
   // const isPaid = !!data?.is_paid;
   const isPaid = !!data?.is_paid;
 
-  let total_payment=0;
+  let total_payment = 0;
 
-  console.log('is_inside_yemen',is_inside_yemen);
-  data?.fees_types_ids?.map((fee)=>{
-    if(is_inside_yemen==true){
-        total_payment+=fee?.inside_yemen_value;
-    }
-    else{
-        total_payment+=fee?.outside_yemen_value;
+  console.log("is_inside_yemen", is_inside_yemen);
+
+  data?.fees_types_ids?.map((fee) => {
+    if (is_inside_yemen == true) {
+      total_payment += fee?.inside_yemen_value;
+    } else {
+      total_payment += fee?.outside_yemen_value;
     }
   });
 
-  console.log('total_payment',total_payment);
+  total_payment = total_payment.toFixed(2);
 
+  console.log("total_payment", total_payment);
+  console.log("data", data);
   return (
     <Paper sx={{ p: 2, mb: 2 }}>
       <Grid container alignItems="center" spacing={2}>
@@ -88,16 +110,12 @@ export default function FeeCard({ data , is_inside_yemen }) {
           >
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
               {/* {t("fee.academicYear")}&nbsp;{data.academicYear} */}
-              {
-                isArabic
-                  ? data?.title_ar
-                  : data?.title_en
-              }
-              
+              {isArabic ? data?.title_ar : data?.title_en}
             </Typography>
 
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-              {isPaid ? (
+              {isPaid &&
+              data?.transactions_id.payment_method_type == "BANK_TRANSFER" ? (
                 <>
                   <Button
                     variant="outlined"
@@ -110,6 +128,7 @@ export default function FeeCard({ data , is_inside_yemen }) {
                   >
                     {t("fee.showPaidDocument")}
                   </Button>
+
                   <Button
                     variant="outlined"
                     size="small"
@@ -129,21 +148,19 @@ export default function FeeCard({ data , is_inside_yemen }) {
                 </>
               ) : (
                 <>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    startIcon={<PaymentIcon />}
-                    onClick={() => setDialogOpen(true)}
-                    sx={{ textTransform: "none", gap: 1 }}
-                  >
-                    {
-                    
-                    t("fee.pay", {
-                      price: total_payment,
-                    })
-                    
-                    }
-                  </Button>
+                  {!isPaid && (
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<PaymentIcon />}
+                      onClick={() => setDialogOpen(true)}
+                      sx={{ textTransform: "none", gap: 1 }}
+                    >
+                      {t("fee.pay", {
+                        price: total_payment,
+                      })}
+                    </Button>
+                  )}
                 </>
               )}
             </Box>
@@ -270,15 +287,15 @@ export default function FeeCard({ data , is_inside_yemen }) {
               {data?.fees_types_ids?.map((it, idx) => (
                 <TableRow key={idx}>
                   <TableCell sx={{ textAlign: "start", fontWeight: 600 }}>
-                    {
-                      isArabic
-                        ? it?.title_ar
-                        : it?.title_en
-                    }
+                    {isArabic ? it?.title_ar : it?.title_en}
                   </TableCell>
-                  <TableCell sx={{ textAlign:   `${isArabic ? "end" : "start"}` }}>
-                    {it.is_inside_yemen ? it.inside_yemen_value : it.outside_yemen_value}
-                    </TableCell>
+                  <TableCell
+                    sx={{ textAlign: `${isArabic ? "end" : "start"}` }}
+                  >
+                    {it.is_inside_yemen
+                      ? it.inside_yemen_value
+                      : it.outside_yemen_value}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -288,94 +305,156 @@ export default function FeeCard({ data , is_inside_yemen }) {
 
       {/* Payment Dialog */}
       {/* Payment Dialog */}
-      <Dialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogTitle
-          sx={{ color: theme.palette.info.main, fontWeight: 700, mb: 1 }}
+
+      {dialogOpen && (
+        <Dialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          maxWidth="xs"
+          fullWidth
         >
-          {t("fee.payDialogTitle", {
-            price: total_payment,
-          })}
-        </DialogTitle>
-        <DialogContent>
-          <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 800 }}>
-            {t("fee.paymentMethodsTitle")}
-          </Typography>
-
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            {["CASH", "BANK_TRANSFER", "ONLINE"].map((m) => {
-              let icon;
-              if (m === "CASH") icon = <AttachMoneyIcon fontSize="small" />;
-              if (m === "BANK_TRANSFER") icon = <AccountBalanceIcon fontSize="small" />;
-              if (m === "ONLINE") icon = <PaymentIcon fontSize="small" />;
-
-              return (
-                <Button
-                  key={m}
-                  variant={"contained"}
-                  onClick={() => {
-                    // const paymentMethods = {
-                    //   cash: "CASH",
-                    //   bank: "BANK_TRANSFER",
-                    //   online: "ONLINE",
-                    // };
-
-                    // const paymentMethod = paymentMethods[m] || "";
-
-                    // console.log('paymentMethod',paymentMethod);
-
-                    setMethod(m);
-                  }}
-                  sx={{
-                    backgroundColor:
-                      method === m ? "primary.main" : "background.gray",
-                    borderColor:
-                      method === m ? "primary.main" : "background.gray",
-                    color: method === m ? "text.sec" : "text.primary",
-                    justifyContent: "space-between",
-                    textTransform: "none",
-                    display: "flex",
-                    alignItems: "center",
-                    px: 2,
-                  }}
-                >
-                  {/* Left: Icon + Label */}
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    {icon}
-                    <Typography>{t(`fee.method.${m}`)}</Typography>
-                  </Box>
-
-                  {/* Right: Check icon if selected */}
-                  {method === m && (
-                    <CheckCircleIcon fontSize="small" sx={{ color: "green" }} />
-                  )}
-                </Button>
-              );
-            })}
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, py: 2 }}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              alert(
-                `${t("fee.payNow")} ${
-                  data?.fees_types_id?.inside_yemen_value
-                } (${method})`
-              );
-              setDialogOpen(false);
-            }}
+          <DialogTitle
+            sx={{ color: theme.palette.info.main, fontWeight: 700, mb: 1 }}
           >
-            {t("fee.payNowBtn", {
-              price: data?.fees_types_id?.inside_yemen_value,
+            {t("fee.payDialogTitle", {
+              price: total_payment,
             })}
-          </Button>
-        </DialogActions>
-      </Dialog>
+          </DialogTitle>
+          <DialogContent>
+            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 800 }}>
+              {t("fee.paymentMethodsTitle")}
+            </Typography>
+
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              {paymentMethodsArr.map((m) => {
+                let icon;
+                if (m === "CASH") icon = <AttachMoneyIcon fontSize="small" />;
+                if (m === "BANK_TRANSFER")
+                  icon = <AccountBalanceIcon fontSize="small" />;
+                if (m === "ONLINE") icon = <PaymentIcon fontSize="small" />;
+
+                // documentRequired
+                return (
+                  <Button
+                    key={m}
+                    variant={"contained"}
+                    onClick={() => {
+                      setMethod(m);
+                    }}
+                    sx={{
+                      backgroundColor:
+                        method === m ? "primary.main" : "background.gray",
+                      borderColor:
+                        method === m ? "primary.main" : "background.gray",
+                      color: method === m ? "text.sec" : "text.primary",
+                      justifyContent: "space-between",
+                      textTransform: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      px: 2,
+                    }}
+                  >
+                    {/* Left: Icon + Label */}
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      {icon}
+                      <Typography>{t(`fee.method.${m}`)}</Typography>
+                    </Box>
+
+                    {/* Right: Check icon if selected */}
+                    {method === m && (
+                      <CheckCircleIcon
+                        fontSize="small"
+                        sx={{ color: "green" }}
+                      />
+                    )}
+                  </Button>
+                );
+              })}
+              {method == "BANK_TRANSFER" && (
+                <>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ fontWeight: 500, mt: 2 }}
+                  >
+                    {t("fee.documentRequired")}
+                  </Typography>
+                  <TextField
+                    type="file"
+                    fullWidth
+                    inputProps={{ accept: "image/*" }}
+                    variant="outlined"
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { border: "none" }, // يشيل البوردر الخارجي
+                        padding: 0, // يشيل أي padding جوه الـ root
+                      },
+                      "& .MuiOutlinedInput-input": {
+                        padding: 0, // يشيل الـ padding الداخلي حوالين النص
+                      },
+                    }}
+                  />
+                </>
+              )}
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ px: 3, py: 2 }}>
+            <Button
+              variant="contained"
+              onClick={async () => {
+                // alert(
+                //   `${t("fee.payNow")} ${
+                //     total_payment
+                //   } (${method})`
+                // );
+                console.log("paymentOBJ", data);
+
+                if (method == "")
+                  return notify(t("fee.paymentRequired"), "error");
+
+                if (method == "BANK_TRANSFER" && bankTransferDocument == null)
+                  return notify(t("fee.documentRequired"), "error");
+
+                let paymentOBJ = {
+                  id: data.id,
+                  payment_method_type: method,
+                  transaction_type_id: "68fdce917bb1890cd9720a60",
+                  amount: parseFloat(total_payment),
+                };
+
+                console.log("paymentOBJ", paymentOBJ);
+
+                const result = await PayUserRequiredFees({
+                  variables: {
+                    // payUserRequiredFeesId: data.id,
+                    input: paymentOBJ,
+                  },
+                });
+
+                console.log("result", result);
+
+                await GetUsersRequiredFeesByStudent({
+                  variables: { student_id: data?.student_id?.id },
+                });
+
+                setDialogOpen(false);
+              }}
+            >
+              {payFeesLoading ? (
+                <CircularProgress
+                  size={25}
+                  sx={{
+                    color:
+                      theme.components.MuiButton.styleOverrides.containedPrimary
+                        .color,
+                  }}
+                />
+              ) : (
+                t("fee.payNowBtn", { price: total_payment })
+              )}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </Paper>
   );
 }

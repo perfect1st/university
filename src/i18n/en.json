@@ -198,7 +198,10 @@
     },
     "payDialogTitle": "Pay {{price}}",
     "payNowBtn": "Pay {{price}}",
-    "payNow": "Pay"
+    "payNow": "Pay",
+    "paymentError": "Payment Error try again later",
+    "paymentRequired":"you must choose payment method",
+    "documentRequired":"upload payment document"
   },
   "common": {
     "cancel": "Cancel"

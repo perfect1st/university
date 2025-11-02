@@ -128,4 +128,63 @@ query GetUsersRequiredFeesByStudent($student_id: ID!) {
 
 `;
 
+export const PAY_USER_REQUIRED_FEES=gql`
+mutation PayUserRequiredFees(
+$input: PayUserRequiredFeesInput!
+) {
+    payUserRequiredFees(input: $input) {
+        id
+        payment_method_type
+        amount
+        payment_document_file
+        transaction_date
+        transaction_serial
+        transaction_type_id {
+            id
+            operation_type
+            notes
+            status
+            createdAt
+            updatedAt
+        }
+        user_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            createdAt
+            updatedAt
+        }
+        fees_type_ids {
+            id
+            title_ar
+            title_en
+            inside_yemen_value
+            outside_yemen_value
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+`;
+
+// export const PAY_USER_REQUIRED_FEES = gql`
+//   mutation PayUserRequiredFees(
+//     $payUserRequiredFeesId: ID!
+//     $input: PayUserRequiredFeesInput!
+//   ) {
+//     payUserRequiredFees(id: $payUserRequiredFeesId, input: $input) {
+//       id
+//       user_id {
+//         fullname
+//       }
+//     }
+//   }
+// `;
 

@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { Box, Grid, Typography, useTheme } from "@mui/material";
 import FeeCard from "../../components/FeePaymentComponants/FeeCard";
 import RegistrationSteps from "../../components/studentDashboard/RegistrationSteps";
-import { useLazyQuery, useQuery } from "@apollo/client/react";
-import { GET_LOGGED_USER_BY_TOKEN, GET_USER_REQUIRED_FEES_BY_STUDENT_ID } from "../../graphql/usersQueries";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
+import { GET_LOGGED_USER_BY_TOKEN, GET_USER_REQUIRED_FEES_BY_STUDENT_ID , PAY_USER_REQUIRED_FEES } from "../../graphql/usersQueries";
 import LoadingPage from "../../components/LoadingComponent";
 import { useTranslation } from "react-i18next";
 
@@ -21,6 +21,7 @@ export default function FeePaymentPage() {
       } = useQuery(GET_LOGGED_USER_BY_TOKEN, { fetchPolicy: "network-only" });
     
       const[GetUsersRequiredFeesByStudent,{data:{getUsersRequiredFeesByStudent}={},loading:getFeesLoading, error:getFeesError}]=useLazyQuery(GET_USER_REQUIRED_FEES_BY_STUDENT_ID , { fetchPolicy: "network-only" });
+
 
       let sampleFees = [ 
   {
@@ -77,7 +78,7 @@ export default function FeePaymentPage() {
             {t("fee.feePayment")}
           </Typography>
           {getUsersRequiredFeesByStudent&& getUsersRequiredFeesByStudent?.required_fees?.map((f) => (
-            <FeeCard key={f.id} data={f} is_inside_yemen={getUsersRequiredFeesByStudent?.is_inside_yemen} />
+            <FeeCard key={f.id} data={f} is_inside_yemen={getUsersRequiredFeesByStudent?.is_inside_yemen} GetUsersRequiredFeesByStudent={GetUsersRequiredFeesByStudent} />
           ))}
         </Grid>
 

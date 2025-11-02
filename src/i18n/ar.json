@@ -236,7 +236,10 @@
     },
     "payDialogTitle": "ادفع {{price}}",
     "payNowBtn": "ادفع {{price}}",
-    "payNow": "ادفع"
+    "payNow": "ادفع",
+    "paymentError": "حدث خطأ في الدفع",
+    "paymentRequired":"يجب اختيار عملية الدفع ",
+    "documentRequired":"يجب رفع صورة من مستند الدفع"
   },
   "common": {
     "cancel": "إلغاء"
