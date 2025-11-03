@@ -283,6 +283,8 @@
    "Select Nationality":"من فضلك اختر الجنسية",
    "Select Type":"من فضلك اختر النوع",
    "Back":"رجوع",
-   "errorUplaod":"حدث خطأ اثناء الرفع حاول مرة اخري"
+   "errorUplaod":"حدث خطأ اثناء الرفع حاول مرة اخري",
+   "Nationalities":"الجنسيات",
+   "addItem":"اضافة {{item}}"
 
 }

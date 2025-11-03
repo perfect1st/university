@@ -33,14 +33,14 @@ const user = getUserCookie()
     <Box
       component="header"
       sx={{
-        direction: isRtl ? 'rtl' : 'ltr',
+        // direction: isRtl ? 'rtl' : 'ltr',
         display: 'flex',
         flexDirection: 'column',
         mb: 3,
         flexWrap: 'wrap',
       }}
     >
-      <Typography variant="h6">{title}</Typography>
+      <Typography variant="h6" sx={{color: theme.palette.info.secondary}}>{title}</Typography>
 
       <Box
         sx={{
@@ -51,25 +51,30 @@ const user = getUserCookie()
           flexWrap: 'wrap',
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+        <Typography variant="h5" sx={{ fontWeight: 'bold',color: theme.palette.info.main }}>
           {subtitle}
         </Typography>
 
-        <Box display="flex" alignItems="center" gap={1.5}>
+        <Box display="flex" alignItems="center" gap={1.5} >
           {haveBtn && (
          <Button
          variant="contained"
          endIcon={btnIcon}
+          //  endIcon={!isRtl && btnIcon  }
+          // startIcon={isRtl && btnIcon  }
          onClick={onSubmit}
          sx={{
+           direction: isRtl ?? "ltr",
            fontWeight: "bold",
-           whiteSpace: "nowrap",
+          whiteSpace: "nowrap",
            bgcolor: "secondary.main",
            borderRadius: 1,
            "&:hover": {
              bgcolor: "secondary.dark", // keeps a visible hover state
            },
+           gap:"10px"
          }}
+     
        >
          {btn}
        </Button>       

@@ -245,5 +245,7 @@
    "Select Nationality":"Select Nationality",
    "Select Type":"Select Type",
    "Back":"Back",
-   "errorUplaod":"Error in uplaoding try again"
+   "errorUplaod":"Error in uplaoding try again",
+   "Nationalities":"Nationalities",
+   "addItem":"Add {{item}}"
 }

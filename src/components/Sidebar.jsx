@@ -25,6 +25,7 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
+import FlagIcon from '@mui/icons-material/Flag';
 
 const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const theme = useTheme();
@@ -70,6 +71,35 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       },
     },
   ]
+
+  if(me?.role=="admin")menuItems=[{
+    icon: AccountBalanceIcon,
+    key: "dashboard",
+    path: "/dashboard",
+    label: {
+      ar: "لوحة التحكم",
+      en: "Dashboard",
+    },
+  },
+  {
+    icon: FlagIcon,
+    key: "nationality",
+    path: "/nationality",
+    label: {
+      ar: "الجنسيات",
+      en: "Nationality",
+    },
+  },
+  {
+    icon: PersonOutlineIcon,
+    key: "profile",
+    path: "/profile",
+    label: {
+      ar: "الصفحة الشخصية",
+      en: "Profile",
+    },
+  },
+]
 
   // useEffect(() => {
   //   const newOpenKeys = {};
@@ -357,7 +387,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   );
 
   // console.log('sidebaaaaaaaaaaaaaaaar');
-  
+
   if(me==null) return <CircularProgress />
   return (
     <>

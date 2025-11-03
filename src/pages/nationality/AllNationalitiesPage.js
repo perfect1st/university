@@ -1,0 +1,277 @@
+import {
+  Box,
+  Typography,
+  useTheme,
+  Grid,
+  Paper,
+  IconButton,
+  Button,
+} from "@mui/material";
+import { useTranslation } from "react-i18next";
+import i18n from "../../i18n/i18n";
+import { useSelector } from "react-redux";
+import { useMemo, useState } from "react";
+import TableComponent from "../../components/TableComponent/TableComponent";
+import { useNavigate, useSearchParams, Navigate } from "react-router-dom";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import Header from "../../components/PageHeader/header";
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
+
+
+// Dummy data for second project
+const DUMMY_USERS = [
+  {
+    _id: "u001",
+    serial_num: "001",
+    name: "Ali Hassan",
+    email: "ali@example.com",
+    mobile: "01000000001",
+    userType: "Admin",
+    status: "active",
+    super_admin: false,
+  },
+  {
+    _id: "u002",
+    serial_num: "002",
+    name: "Salma Farouk",
+    email: "salma@example.com",
+    mobile: "01000000002",
+    userType: "Customer",
+    status: "inActive",
+    super_admin: false,
+  },
+  {
+    _id: "u003",
+    serial_num: "003",
+    name: "Omar Nabil",
+    email: "omar@example.com",
+    mobile: "01000000003",
+    userType: "Driver",
+    status: "active",
+    super_admin: false,
+  },
+  {
+    _id: "u004",
+    serial_num: "004",
+    name: "Mona Khalid",
+    email: "mona@example.com",
+    mobile: "01000000004",
+    userType: "Customer",
+    status: "active",
+    super_admin: false,
+  },
+  {
+    _id: "u005",
+    serial_num: "005",
+    name: "Hany Adel",
+    email: "hany@example.com",
+    mobile: "01000000005",
+    userType: "Admin",
+    status: "inActive",
+    super_admin: true,
+  },
+  {
+    _id: "u006",
+    serial_num: "006",
+    name: "Rana Mahmoud",
+    email: "rana@example.com",
+    mobile: "01000000006",
+    userType: "Customer",
+    status: "active",
+    super_admin: false,
+  },
+  {
+    _id: "u007",
+    serial_num: "007",
+    name: "Karim Said",
+    email: "karim@example.com",
+    mobile: "01000000007",
+    userType: "Driver",
+    status: "inActive",
+    super_admin: false,
+  },
+  {
+    _id: "u008",
+    serial_num: "008",
+    name: "Dina Sami",
+    email: "dina@example.com",
+    mobile: "01000000008",
+    userType: "Customer",
+    status: "active",
+    super_admin: false,
+  },
+  {
+    _id: "u009",
+    serial_num: "009",
+    name: "Walid Fathy",
+    email: "walid@example.com",
+    mobile: "01000000009",
+    userType: "Admin",
+    status: "active",
+    super_admin: false,
+  },
+  {
+    _id: "u010",
+    serial_num: "010",
+    name: "Nada Yasser",
+    email: "nada@example.com",
+    mobile: "01000000010",
+    userType: "Customer",
+    status: "inActive",
+    super_admin: false,
+  },
+  // add more dummy rows as you like
+];
+
+export default function AllNationalitiesPage() {
+  const theme = useTheme();
+  const { t } = useTranslation();
+
+  const [allUsers, setAllUsers] = useState(DUMMY_USERS);
+  const isArabic = i18n.language === "ar";
+  const me = useSelector((state) => state.user.loggedUser);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const limit = parseInt(searchParams.get("limit") || "10", 10);
+  const keyword = searchParams.get("keyword") || "";
+  const userTypeParam = searchParams.get("userType") || "";
+  const statusParam = searchParams.get("status") || "";
+
+  // derive filtered list
+  const filteredUsers = useMemo(() => {
+    return allUsers.filter((u) => {
+      const matchesKeyword =
+        !keyword ||
+        u.name.toLowerCase().includes(keyword.toLowerCase()) ||
+        u.email.toLowerCase().includes(keyword.toLowerCase()) ||
+        u.mobile.toLowerCase().includes(keyword.toLowerCase()) ||
+        (u.serial_num && String(u.serial_num).includes(keyword));
+      const matchesType =
+        !userTypeParam ||
+        userTypeParam === "" ||
+        String(u.userType) === String(userTypeParam);
+      const matchesStatus =
+        !statusParam ||
+        statusParam === "" ||
+        String(u.status) === String(statusParam);
+      return matchesKeyword && matchesType && matchesStatus;
+    });
+  }, [allUsers, keyword, userTypeParam, statusParam]);
+
+  // pagination calculations
+  const totalUsers = filteredUsers.length;
+  const totalPages = Math.max(1, Math.ceil(totalUsers / limit));
+  const currentPage = Math.min(Math.max(1, page), totalPages);
+
+  const paginatedUsers = useMemo(() => {
+    const start = (currentPage - 1) * limit;
+    return filteredUsers.slice(start, start + limit);
+  }, [filteredUsers, currentPage, limit]);
+  // columns requested: ID, Full Name, Email, Mobile, User Type, Status
+  const rows = paginatedUsers.map((u) => ({
+    id: u._id,
+    ID: u.serial_num,
+    fullName: u.name,
+    email: u.email,
+    mobile: u.mobile,
+    userType: u.userType,
+    status: u.status,
+    superAdmin: u.super_admin ? t("Yes") : t("No"),
+  }));
+
+  const columns = [
+    { key: "ID", label: "ID" },
+    { key: "fullName", label: t("Full Name") },
+    { key: "email", label: t("Email") },
+    { key: "mobile", label: t("Mobile") },
+    { key: "userType", label: t("User Type") },
+    { key: "status", label: t("Status") },
+  ];
+
+   // Permissions: for the dummy page we allow viewing. Replace with your real permission check if needed.
+  const hasViewPermission = true;
+  const hasAddPermission = true;
+  if (!hasViewPermission) return <Navigate to="/profile" />;
+
+  let translateText= isArabic ? "جنسية":"Nationality";
+  return (
+    <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={12}>
+          {/* <Typography
+            variant="subtitle2"
+            sx={{ color: theme.palette.info.secondary, fontWeight: 700, mb: 1 }}
+          >
+            الجنسيات
+          </Typography> */}
+
+          {/* <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              my: 2,
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ color: theme.palette.info.main, fontWeight: 700, mb: 1 }}
+            >
+              الجنسيات
+            </Typography>
+
+            <Button
+              variant="contained"
+              endIcon={<AddCircleIcon />}
+              sx={{
+                fontWeight: "bold",
+                whiteSpace: "nowrap",
+                bgcolor: "secondary.main",
+                borderRadius: 1,
+                "&:hover": {
+                  bgcolor: "secondary.dark", // keeps a visible hover state
+                },
+              }}
+            >
+              add
+            </Button>
+          </Box> */}
+
+          <Header
+           title={t("Nationalities")}
+                  subtitle={t("Nationalities")}
+                  i18n={i18n}
+                  haveBtn={hasAddPermission}
+                  btn={t("addItem", { item: translateText })}
+                  btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
+                 // onSubmit={addUserSubmit}
+                  isExcel
+                  isPdf
+                  isPrinter
+                  // onExcel={() => fetchAndExport("excel")}
+                  // onPdf={() => fetchAndExport("pdf")}
+                  // onPrinter={() => fetchAndExport("print")}
+           />
+
+          <TableComponent
+            columns={columns}
+            data={rows}
+            // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
+            // loading={loading}
+            isUsers={true}
+            statusKey="status"
+            sx={{
+              flex: 1,
+              overflow: "auto",
+              boxShadow: 1,
+              borderRadius: 1,
+              width: "100%",
+            }}
+            // onStatusChange={onStatusChange}
+          />
+        </Grid>
+      </Grid>
+    </Box>
+  );
+}

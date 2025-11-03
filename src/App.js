@@ -28,6 +28,7 @@ import UserDetails from "./pages/Users/UserDetails";
 import VisionsArticlesPage from "./pages/Home/VisionsArticlesPage";
 import NewsPage from "./pages/Home/NewsPage";
 import ArticalDetails from "./pages/Home/ArticalDetails";
+import AllNationalitiesPage from "./pages/nationality/AllNationalitiesPage";
 
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
@@ -111,6 +112,7 @@ const cacheRtl = createCache({
           },
           info: {
             main: "#22ABCE",
+            secondary: "#384250",
           },
           background: {
             default: mode === "light" ? "#ffffff" : "#0f172a",
@@ -400,6 +402,16 @@ const isLoggedIn = Boolean(initialUser?.id);
                   </MainLayout>
                 }
               />
+
+              <Route
+                path="/nationality"
+                element={
+                  <MainLayout>
+                    <AllNationalitiesPage />
+                  </MainLayout>
+                }
+              />
+
             
     </Route>
 
