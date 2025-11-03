@@ -158,6 +158,7 @@
     "majorInformation": "Major Information",
     "Name": "Name",
     "NameInArabic": "Name In Arabic",
+     "NameInEnglish":"Name In English",
     "Gender": "Gender",
     "Nationality": "Nationality",
     "DateOfBirth": "Date Of Birth",
@@ -247,5 +248,10 @@
    "Back":"Back",
    "errorUplaod":"Error in uplaoding try again",
    "Nationalities":"Nationalities",
-   "addItem":"Add {{item}}"
+   "addItem":"Add {{item}}",
+   "Dashboard":{
+     "NameInArabic": "Name In Arabic",
+     "NameInEnglish":"Name In English",
+     "flag":"Country Flag"
+   }
 }

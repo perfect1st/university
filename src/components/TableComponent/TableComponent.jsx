@@ -119,6 +119,10 @@ const TableComponent = ({
             minWidth: 600,
             borderCollapse: "collapse",
             boxShadow: "none !important",
+            direction: isArabic ? "ltr" : "rtl",
+    "& .MuiTableCell-root": {
+      textAlign:  "start" ,
+    },
           }}
         >
           <TableHead>
@@ -131,6 +135,7 @@ const TableComponent = ({
                     border: "1px solid #F5F0F2",
                     fontWeight: "bold",
                     py: { xs: 1, sm: 1.5 },
+                    textAlign: isArabic ? "right" : "left",
                   }}
                 >
                   <Box
@@ -156,7 +161,7 @@ const TableComponent = ({
               ))}
               {!dontShowActions && (
                 <TableCell
-                  align={i18n.dir() === "rtl" ? "right" : "left"}
+                 // align={i18n.dir() === "rtl" ? "right" : "left"}
                   sx={{
                     backgroundColor: theme.palette.background.secDefault,
                     border: "1px solid #F5F0F2",
@@ -179,10 +184,11 @@ const TableComponent = ({
                   {visibleColumns?.map((column) => (
                     <TableCell
                       key={`${row.id}-${column.key}`}
-                      align={i18n.dir() === "rtl" ? "right" : "left"}
+                     // align={i18n.dir() === "rtl" ? "left" : "left"}
                       sx={{
                         border: "1px solid #e0e0e0",
                         py: { xs: 0.75, sm: 1.5 },
+                        textAlign: isArabic ? "right" : "left"
                       }}
                     >
                       {column.key === statusKey ? (
@@ -199,6 +205,7 @@ const TableComponent = ({
                             borderRadius: 1,
                             textTransform: "none",
                             py: 0.5,
+                            
                             "&:hover": showStatusChange
                               ? {
                                   opacity: 0.9,
@@ -221,6 +228,7 @@ const TableComponent = ({
                       sx={{
                         border: "1px solid #e0e0e0",
                         py: { xs: 0.75, sm: 1.5 },
+                        textAlign:isArabic ? "right" : "left",
                       }}
                     >
                       {actionIconType === "details" ? (

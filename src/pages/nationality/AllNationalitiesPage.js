@@ -20,6 +20,9 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useQuery } from "@apollo/client/react";
+import { GET_ALL_NATIONALITIES } from "../../graphql/nationalitiesQueries";
+import LoadingPage from "../../components/LoadingComponent";
 
 
 // Dummy data for second project
@@ -130,6 +133,18 @@ const DUMMY_USERS = [
 export default function AllNationalitiesPage() {
   const theme = useTheme();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+   // get all nationalities
+    const {
+      data: {nationalities}={},
+      loading: nationalitiesLoading,
+      error: nationalitiesError,
+    } = useQuery(GET_ALL_NATIONALITIES, {
+      fetchPolicy: "network-only",
+    });
+
+    console.log('nationalities',nationalities);
 
   const [allUsers, setAllUsers] = useState(DUMMY_USERS);
   const isArabic = i18n.language === "ar";
@@ -143,60 +158,59 @@ export default function AllNationalitiesPage() {
   const statusParam = searchParams.get("status") || "";
 
   // derive filtered list
-  const filteredUsers = useMemo(() => {
-    return allUsers.filter((u) => {
-      const matchesKeyword =
-        !keyword ||
-        u.name.toLowerCase().includes(keyword.toLowerCase()) ||
-        u.email.toLowerCase().includes(keyword.toLowerCase()) ||
-        u.mobile.toLowerCase().includes(keyword.toLowerCase()) ||
-        (u.serial_num && String(u.serial_num).includes(keyword));
-      const matchesType =
-        !userTypeParam ||
-        userTypeParam === "" ||
-        String(u.userType) === String(userTypeParam);
-      const matchesStatus =
-        !statusParam ||
-        statusParam === "" ||
-        String(u.status) === String(statusParam);
-      return matchesKeyword && matchesType && matchesStatus;
-    });
-  }, [allUsers, keyword, userTypeParam, statusParam]);
+  // const filteredUsers = useMemo(() => {
+  //   return allUsers.filter((u) => {
+  //     const matchesKeyword =
+  //       !keyword ||
+  //       u.name.toLowerCase().includes(keyword.toLowerCase()) ||
+  //       u.email.toLowerCase().includes(keyword.toLowerCase()) ||
+  //       u.mobile.toLowerCase().includes(keyword.toLowerCase()) ||
+  //       (u.serial_num && String(u.serial_num).includes(keyword));
+  //     const matchesType =
+  //       !userTypeParam ||
+  //       userTypeParam === "" ||
+  //       String(u.userType) === String(userTypeParam);
+  //     const matchesStatus =
+  //       !statusParam ||
+  //       statusParam === "" ||
+  //       String(u.status) === String(statusParam);
+  //     return matchesKeyword && matchesType && matchesStatus;
+  //   });
+  // }, [allUsers, keyword, userTypeParam, statusParam]);
 
   // pagination calculations
-  const totalUsers = filteredUsers.length;
-  const totalPages = Math.max(1, Math.ceil(totalUsers / limit));
-  const currentPage = Math.min(Math.max(1, page), totalPages);
+  // const totalUsers = filteredUsers.length;
+  // const totalPages = Math.max(1, Math.ceil(totalUsers / limit));
+  // const currentPage = Math.min(Math.max(1, page), totalPages);
 
-  const paginatedUsers = useMemo(() => {
-    const start = (currentPage - 1) * limit;
-    return filteredUsers.slice(start, start + limit);
-  }, [filteredUsers, currentPage, limit]);
+  // const paginatedUsers = useMemo(() => {
+  //   const start = (currentPage - 1) * limit;
+  //   return filteredUsers.slice(start, start + limit);
+  // }, [filteredUsers, currentPage, limit]);
+
   // columns requested: ID, Full Name, Email, Mobile, User Type, Status
-  const rows = paginatedUsers.map((u) => ({
-    id: u._id,
-    ID: u.serial_num,
-    fullName: u.name,
-    email: u.email,
-    mobile: u.mobile,
-    userType: u.userType,
-    status: u.status,
-    superAdmin: u.super_admin ? t("Yes") : t("No"),
-  }));
+  // const rows = paginatedUsers.map((u) => ({
+  //   id: u.id,
+  //   ID: u.id,
+  //   name_ar: u.name_ar,
+  //   name_en: u.name_en,
+  //   flag: u.flag,
+  // }));
 
-  const columns = [
-    { key: "ID", label: "ID" },
-    { key: "fullName", label: t("Full Name") },
-    { key: "email", label: t("Email") },
-    { key: "mobile", label: t("Mobile") },
-    { key: "userType", label: t("User Type") },
-    { key: "status", label: t("Status") },
+  let columns = [
+    // { key: "ID", label: "ID" },
+    { key: "name_ar", label: t("Dashboard.NameInArabic") },
+    { key: "name_en", label: t("Dashboard.NameInEnglish") },
+    { key: "flag", label: t("Dashboard.flag") },
+    // { key: "userType", label: t("User Type") },
+    // { key: "status", label: t("Status") },
   ];
+
 
    // export filtered data (all filteredUsers, not only page)
     const fetchAndExport = async (type) => {
       try {
-        const exportData = filteredUsers.map((user) => ({
+        const exportData = nationalities.map((user) => ({
           ID: user.serial_num,
           "Full Name": user.name,
           Email: user.email,
@@ -257,48 +271,13 @@ export default function AllNationalitiesPage() {
   if (!hasViewPermission) return <Navigate to="/profile" />;
 
   let translateText= isArabic ? "جنسية":"Nationality";
+
+    if(nationalitiesLoading) return <LoadingPage />
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={12}>
-          {/* <Typography
-            variant="subtitle2"
-            sx={{ color: theme.palette.info.secondary, fontWeight: 700, mb: 1 }}
-          >
-            الجنسيات
-          </Typography> */}
-
-          {/* <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              my: 2,
-            }}
-          >
-            <Typography
-              variant="h6"
-              sx={{ color: theme.palette.info.main, fontWeight: 700, mb: 1 }}
-            >
-              الجنسيات
-            </Typography>
-
-            <Button
-              variant="contained"
-              endIcon={<AddCircleIcon />}
-              sx={{
-                fontWeight: "bold",
-                whiteSpace: "nowrap",
-                bgcolor: "secondary.main",
-                borderRadius: 1,
-                "&:hover": {
-                  bgcolor: "secondary.dark", // keeps a visible hover state
-                },
-              }}
-            >
-              add
-            </Button>
-          </Box> */}
+         
 
           <Header
            title={t("Nationalities")}
@@ -318,11 +297,11 @@ export default function AllNationalitiesPage() {
 
           <TableComponent
             columns={columns}
-            data={rows}
+            data={nationalities}
             // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
-            // loading={loading}
-            isUsers={true}
-            statusKey="status"
+             loading={nationalitiesLoading}
+            // isUsers={true}
+           // statusKey="status"
             sx={{
               flex: 1,
               overflow: "auto",
