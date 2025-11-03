@@ -79,7 +79,8 @@ const user = getUserCookie()
          {btn}
        </Button>       
           )}
-{(user?.super_admin ||user?.has_report_actions) && <>
+{
+ <>
           {isExcel && (
             <IconButton color="primary" onClick={onExcel} sx={{ p: 0.25 }}>
               <ExcelIcon width={25} height={25} />
