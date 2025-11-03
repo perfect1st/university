@@ -8,6 +8,7 @@ const initialState = {
   loading: false,
   error: null,
   oneUser: null,
+  loggedUser: null
 };
 
 const userSlice = createSlice({
@@ -73,8 +74,12 @@ const userSlice = createSlice({
       });
   },
   reducers:{
-    
+    storeLoggedUser:(state,action)=>{
+     // console.log('action',action);
+      state.loggedUser = action.payload
+    }
   }
 });
 
+export const { storeLoggedUser } = userSlice.actions;
 export default userSlice.reducer;

@@ -5,6 +5,7 @@ import { getUserCookie } from "../hooks/authCookies";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { useQuery } from "@apollo/client/react";
 import { GET_LOGGED_USER_BY_TOKEN } from "../graphql/usersQueries";
+import { useSelector } from "react-redux";
 
 const MainLayout = ({ children }) => {
  const location = useLocation();
@@ -16,8 +17,7 @@ const MainLayout = ({ children }) => {
  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
  useEffect(()=>{
-  console.log('uuuuuuuuuuuuuse');
-  if(searchParams.get("mobileOpen")) setIsMobileOpen(searchParams.get("mobileOpen"));
+  if(searchParams.get("mobileOpen")) setIsMobileOpen(searchParams.get("mobileOpen")==="true");
  },[searchParams]);
  
 
@@ -30,11 +30,11 @@ const MainLayout = ({ children }) => {
     setSearchParams(searchParams);
     setIsMobileOpen(false);
  }
-   const {
-       data: {me}={},
-       loading: userLoading,
-       error: userError,
-     } = useQuery(GET_LOGGED_USER_BY_TOKEN, { fetchPolicy: "network-only" });
+  
+
+  const loggedUser=useSelector(state=>state.user.loggedUser);
+
+  console.log('loggedUser',loggedUser);
 
   // const user = me;
      const user = getUserCookie();

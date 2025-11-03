@@ -58,6 +58,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery } from "@apollo/client/react";
 import { GET_LOGGED_USER_BY_TOKEN } from "../graphql/usersQueries";
+import { storeLoggedUser } from "../redux/slices/user/userSlice";
 
 const typeColors = {
   new_driver: "#81C784",
@@ -73,6 +74,10 @@ const Header = ({ onAction }) => {
   const colorMode = useContext(ColorModeContext);
   const theme = useTheme();
   const dispatch = useDispatch();
+  const baseImageUrl = useBaseImageUrl();
+  const navigate = useNavigate();
+
+
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuAnchor, setUserMenuAnchor] = useState(null);
@@ -83,8 +88,7 @@ const Header = ({ onAction }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [settingMenuAnchor, setSettingMenuAnchor] = useState(null);
   const { Notifications, loading } = useSelector((state) => state.setting);
-  const baseImageUrl = useBaseImageUrl();
-  const navigate = useNavigate();
+  
 
   const handleSettingMenuOpen = (event) => {
     setSettingMenuAnchor(event.currentTarget);
@@ -163,6 +167,11 @@ const Header = ({ onAction }) => {
   const menuItems = useMemo(() => getAccessibleRoutes("admin"), []);
   const [openKeys, setOpenKeys] = useState({});
 
+  useEffect(() => {
+    if(me?.id){
+      dispatch(storeLoggedUser(me)); 
+    }
+  },[me]);
   useEffect(() => {
     const newOpenKeys = {};
     menuItems.forEach((item) => {

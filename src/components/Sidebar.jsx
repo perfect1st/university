@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation, matchPath , useSearchParams } from "react-router-dom";
+import { Link, useLocation, matchPath  } from "react-router-dom";
 import getAccessibleRoutes from "../hooks/getAccessibleRoutes"; // ✅ الجديد
 
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
@@ -28,8 +28,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const theme = useTheme();
   const { i18n } = useTranslation();
   const location = useLocation();
-  const[searchParams,setSearchParams]=useSearchParams();
-   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   
 
   const lang = i18n.language;

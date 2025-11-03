@@ -17,19 +17,13 @@ import { GET_LOGGED_USER_BY_TOKEN } from "../../graphql/usersQueries";
 import LoadingPage from "../../components/LoadingComponent";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
 import i18n from "../../i18n/i18n";
+import { useSelector } from "react-redux";
 
 export default function ProfilePage() {
   const theme = useTheme();
   const { t } = useTranslation();
   const isArabic = i18n.language === "ar";
-
-  
-  // get user token
-    const {
-      data: {me}={},
-      loading: userLoading,
-      error: userError,
-    } = useQuery(GET_LOGGED_USER_BY_TOKEN, { fetchPolicy: "network-only" });
+  const me=useSelector(state=>state.user.loggedUser);
 
   const[GetRegisterFormByUserId,{data:{getRegisterFormByUserId}={},loading:GetRegisterFormByUserIdLoading, error:GetRegisterFormByUserIdError}]=useLazyQuery(GET_REGISTERATION_FORM_BY_USER_ID , { fetchPolicy: "network-only" });
 
@@ -56,7 +50,7 @@ export default function ProfilePage() {
   const highSchoolFile =
     getRegisterFormByUserId?.high_school_certificate_file;
 
-    if(userLoading||GetRegisterFormByUserIdLoading) return <LoadingPage />
+    if(me==null||GetRegisterFormByUserIdLoading) return <LoadingPage />
 
     console.log('high_school_certificate_file',highSchoolFile);
 

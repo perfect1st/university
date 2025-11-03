@@ -6,21 +6,15 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import { GET_LOGGED_USER_BY_TOKEN, GET_USER_REQUIRED_FEES_BY_STUDENT_ID , PAY_USER_REQUIRED_FEES } from "../../graphql/usersQueries";
 import LoadingPage from "../../components/LoadingComponent";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 
 export default function FeePaymentPage() {
 
   const theme = useTheme();
-    const { t } = useTranslation();
-  
-  // get user token
-      const {
-        data: {me}={},
-        loading: userLoading,
-        error: userError,
-      } = useQuery(GET_LOGGED_USER_BY_TOKEN, { fetchPolicy: "network-only" });
-    
-      const[GetUsersRequiredFeesByStudent,{data:{getUsersRequiredFeesByStudent}={},loading:getFeesLoading, error:getFeesError}]=useLazyQuery(GET_USER_REQUIRED_FEES_BY_STUDENT_ID , { fetchPolicy: "network-only" });
+  const { t } = useTranslation();
+  const me=useSelector(state=>state.user.loggedUser);   
+  const[GetUsersRequiredFeesByStudent,{data:{getUsersRequiredFeesByStudent}={},loading:getFeesLoading, error:getFeesError}]=useLazyQuery(GET_USER_REQUIRED_FEES_BY_STUDENT_ID , { fetchPolicy: "network-only" });
 
 
     
@@ -38,7 +32,8 @@ export default function FeePaymentPage() {
 
       // console.log('required_fees',required_fees);
       
-       if(userLoading||getFeesLoading) return <LoadingPage />
+       if(me==null||getFeesLoading) return <LoadingPage />
+
   return (
     <Box sx={{ p: 3 }}>
       <Grid container spacing={3}>
