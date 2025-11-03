@@ -12,6 +12,7 @@ import {
   Divider,
   IconButton,
   useMediaQuery,
+  CircularProgress,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
@@ -23,19 +24,24 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 // import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import CloseIcon from "@mui/icons-material/Close";
+import { useSelector } from "react-redux";
 
 const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const theme = useTheme();
   const { i18n } = useTranslation();
   const location = useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const [openKeys, setOpenKeys] = useState({});
+  const me=useSelector(state=>state.user.loggedUser);
   
 
   const lang = i18n.language;
 
-  // const menuItems = useMemo(() => getAccessibleRoutes("admin"), []);
-  const menuItems = [
-    {
+  // const menuItems = useMemo(() => getAccessibleRoutes("admin"), []);  .role
+  let menuItems = [];
+
+  if(me?.role=="student")menuItems=[{
       icon: AccountBalanceIcon,
       key: "dashboard",
       path: "/dashboard",
@@ -63,8 +69,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
         en: "Fee Payments",
       },
     },
-  ];
-  const [openKeys, setOpenKeys] = useState({});
+  ]
 
   // useEffect(() => {
   //   const newOpenKeys = {};
@@ -352,7 +357,8 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   );
 
   // console.log('sidebaaaaaaaaaaaaaaaar');
-
+  
+  if(me==null) return <CircularProgress />
   return (
     <>
       <Box
