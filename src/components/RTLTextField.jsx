@@ -52,7 +52,7 @@ const PhoneNumberInput = ({ personal, setPersonal, errors, handlePersonalBlur })
 
         // إذا personal.countryCode موجود نعيّن الاختيار الافتراضي
         if (personal?.countryCode) {
-          const found = prioritized.find((o) => o.value === personal.countryCode);
+          const found = prioritized.find((o) => o.value === personal?.countryCode);
           if (found) setSelected(found);
         } else {
           // ممكن نعطي افتراضي +966 لو تحب (تعليق السطر التالي لو مش عايز افتراضي)
@@ -180,7 +180,7 @@ const PhoneNumberInput = ({ personal, setPersonal, errors, handlePersonalBlur })
     <CustomTextField
       placeholder="5XXXXXXXX"
       type="text"
-      value={personal.phoneNumber || ""}
+      value={personal?.phoneNumber || ""}
       onChange={(e) =>
         setPersonal((p) => ({
           ...p,
@@ -188,8 +188,8 @@ const PhoneNumberInput = ({ personal, setPersonal, errors, handlePersonalBlur })
         }))
       }
       onBlur={() => handlePersonalBlur("phoneNumber")}
-      error={!!errors.phoneNumber}
-      helperText={errors.phoneNumber || ""}
+      error={!!errors?.phoneNumber}
+      helperText={errors?.phoneNumber || ""}
       InputProps={{
         startAdornment,
       }}

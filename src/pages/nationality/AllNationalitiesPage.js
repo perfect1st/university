@@ -6,6 +6,9 @@ import {
   Paper,
   IconButton,
   Button,
+  TextField,
+  InputAdornment,
+  MenuItem,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n/i18n";
@@ -23,130 +26,74 @@ import autoTable from "jspdf-autotable";
 import { useQuery } from "@apollo/client/react";
 import { GET_ALL_NATIONALITIES } from "../../graphql/nationalitiesQueries";
 import LoadingPage from "../../components/LoadingComponent";
+import FilterComponent from "../../components/FilterComponent/FilterComponent";
+import SearchIcon from "@mui/icons-material/Search";
+import CustomTextFieldAdmin, { CustomSelect } from "../../components/Utilities/CustomTextField";
+// import CustomTextField from "../RTLTextField";
 
+function CustomTextField(props) {
+  const theme = useTheme();
+  // const { placeholder, helperText, error, ...rest } = props;
 
-// Dummy data for second project
-const DUMMY_USERS = [
-  {
-    _id: "u001",
-    serial_num: "001",
-    name: "Ali Hassan",
-    email: "ali@example.com",
-    mobile: "01000000001",
-    userType: "Admin",
-    status: "active",
-    super_admin: false,
-  },
-  {
-    _id: "u002",
-    serial_num: "002",
-    name: "Salma Farouk",
-    email: "salma@example.com",
-    mobile: "01000000002",
-    userType: "Customer",
-    status: "inActive",
-    super_admin: false,
-  },
-  {
-    _id: "u003",
-    serial_num: "003",
-    name: "Omar Nabil",
-    email: "omar@example.com",
-    mobile: "01000000003",
-    userType: "Driver",
-    status: "active",
-    super_admin: false,
-  },
-  {
-    _id: "u004",
-    serial_num: "004",
-    name: "Mona Khalid",
-    email: "mona@example.com",
-    mobile: "01000000004",
-    userType: "Customer",
-    status: "active",
-    super_admin: false,
-  },
-  {
-    _id: "u005",
-    serial_num: "005",
-    name: "Hany Adel",
-    email: "hany@example.com",
-    mobile: "01000000005",
-    userType: "Admin",
-    status: "inActive",
-    super_admin: true,
-  },
-  {
-    _id: "u006",
-    serial_num: "006",
-    name: "Rana Mahmoud",
-    email: "rana@example.com",
-    mobile: "01000000006",
-    userType: "Customer",
-    status: "active",
-    super_admin: false,
-  },
-  {
-    _id: "u007",
-    serial_num: "007",
-    name: "Karim Said",
-    email: "karim@example.com",
-    mobile: "01000000007",
-    userType: "Driver",
-    status: "inActive",
-    super_admin: false,
-  },
-  {
-    _id: "u008",
-    serial_num: "008",
-    name: "Dina Sami",
-    email: "dina@example.com",
-    mobile: "01000000008",
-    userType: "Customer",
-    status: "active",
-    super_admin: false,
-  },
-  {
-    _id: "u009",
-    serial_num: "009",
-    name: "Walid Fathy",
-    email: "walid@example.com",
-    mobile: "01000000009",
-    userType: "Admin",
-    status: "active",
-    super_admin: false,
-  },
-  {
-    _id: "u010",
-    serial_num: "010",
-    name: "Nada Yasser",
-    email: "nada@example.com",
-    mobile: "01000000010",
-    userType: "Customer",
-    status: "inActive",
-    super_admin: false,
-  },
-  // add more dummy rows as you like
-];
+  const { placeholder, helperText, error, children, ...rest } = props;
+  const { i18n } = useTranslation();
+  const isArabic = i18n.language == "ar";
+
+  return (
+    <TextField
+      fullWidth
+      variant="outlined"
+      size="small"
+      placeholder={placeholder}
+      error={error}
+      helperText={helperText}
+      {...rest}
+      sx={{
+        background: theme.palette.primary?.textField ?? "transparent",
+        color: theme.palette.primary?.textFieldText ?? "inherit",
+        "& .MuiInputBase-input": {
+          color: theme.palette.primary?.textFieldText ?? "inherit",
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderColor: "rgba(0,0,0,0.12)",
+        },
+        "& .MuiFormHelperText-root": {
+          color: "error",
+          fontFamily: "Cairo, Arial, sans-serif",
+          fontWeight: 400,
+          fontSize: "0.75rem",
+          textAlign: isArabic ? "right" : "left",
+          marginTop: 0,
+          marginBottom: 0,
+          marginRight: 0,
+          marginLeft: 0,
+          background: theme.palette.background.paper, // ✅ نفس لون خلفية الـ paper
+        },
+        ...props.sx,
+      }}
+    >
+      {children}
+    </TextField>
+  );
+}
 
 export default function AllNationalitiesPage() {
   const theme = useTheme();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-   // get all nationalities
-    const {
-      data: {nationalities}={},
-      loading: nationalitiesLoading,
-      error: nationalitiesError,
-    } = useQuery(GET_ALL_NATIONALITIES, {
-      fetchPolicy: "network-only",
-    });
+  // get all nationalities
+  const {
+    data: { nationalities } = {},
+    loading: nationalitiesLoading,
+    error: nationalitiesError,
+  } = useQuery(GET_ALL_NATIONALITIES, {
+    fetchPolicy: "network-only",
+  });
 
-    console.log('nationalities',nationalities);
+  console.log("nationalities", nationalities);
 
-  const [allUsers, setAllUsers] = useState(DUMMY_USERS);
+  // const [allUsers, setAllUsers] = useState(DUMMY_USERS);
   const isArabic = i18n.language === "ar";
   const me = useSelector((state) => state.user.loggedUser);
 
@@ -203,41 +150,42 @@ export default function AllNationalitiesPage() {
     { key: "name_en", label: t("Dashboard.NameInEnglish") },
     { key: "flag", label: t("Dashboard.flag") },
     // { key: "userType", label: t("User Type") },
-    // { key: "status", label: t("Status") },
+    { key: "status", label: t("Status") },
   ];
 
+  // export filtered data (all filteredUsers, not only page)
+  const fetchAndExport = async (type) => {
+    try {
+      const exportData = nationalities.map((user) => ({
+        ID: user.serial_num,
+        "Full Name": user.name,
+        Email: user.email,
+        Mobile: user.mobile,
+        "User Type": user.userType,
+        Status: user.status,
+      }));
 
-   // export filtered data (all filteredUsers, not only page)
-    const fetchAndExport = async (type) => {
-      try {
-        const exportData = nationalities.map((user) => ({
-          ID: user.serial_num,
-          "Full Name": user.name,
-          Email: user.email,
-          Mobile: user.mobile,
-          "User Type": user.userType,
-          Status: user.status,
-        }));
-  
-        if (type === "excel") {
-          const ws = XLSX.utils.json_to_sheet(exportData);
-          const wb = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(wb, ws, "Users");
-          const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-          const data = new Blob([excelBuffer], { type: "application/octet-stream" });
-          saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-        } else if (type === "pdf") {
-          const doc = new jsPDF();
-          doc.text("Users Report", 14, 10);
-          autoTable(doc, {
-            startY: 20,
-            head: [Object.keys(exportData[0] || {})],
-            body: exportData.map((row) => Object.values(row)),
-          });
-          doc.save(`Users_${new Date().toISOString()}.pdf`);
-        } else if (type === "print") {
-          const printableWindow = window.open("", "_blank");
-          const htmlContent = `
+      if (type === "excel") {
+        const ws = XLSX.utils.json_to_sheet(exportData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Users");
+        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const data = new Blob([excelBuffer], {
+          type: "application/octet-stream",
+        });
+        saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
+      } else if (type === "pdf") {
+        const doc = new jsPDF();
+        doc.text("Users Report", 14, 10);
+        autoTable(doc, {
+          startY: 20,
+          head: [Object.keys(exportData[0] || {})],
+          body: exportData.map((row) => Object.values(row)),
+        });
+        doc.save(`Users_${new Date().toISOString()}.pdf`);
+      } else if (type === "print") {
+        const printableWindow = window.open("", "_blank");
+        const htmlContent = `
             <html>
               <head>
                 <title>Users Report</title>
@@ -250,58 +198,82 @@ export default function AllNationalitiesPage() {
               <body>
                 <h2>Users Report</h2>
                 <table>
-                  <thead><tr>${Object.keys(exportData[0] || {}).map((k) => `<th>${k}</th>`).join("")}</tr></thead>
-                  <tbody>${exportData.map((row) => `<tr>${Object.values(row).map((v) => `<td>${v}</td>`).join("")}</tr>`).join("")}</tbody>
+                  <thead><tr>${Object.keys(exportData[0] || {})
+                    .map((k) => `<th>${k}</th>`)
+                    .join("")}</tr></thead>
+                  <tbody>${exportData
+                    .map(
+                      (row) =>
+                        `<tr>${Object.values(row)
+                          .map((v) => `<td>${v}</td>`)
+                          .join("")}</tr>`
+                    )
+                    .join("")}</tbody>
                 </table>
               </body>
             </html>
           `;
-          printableWindow.document.write(htmlContent);
-          printableWindow.document.close();
-          printableWindow.print();
-        }
-      } catch (err) {
-        console.error("Export error:", err);
+        printableWindow.document.write(htmlContent);
+        printableWindow.document.close();
+        printableWindow.print();
       }
-    };
+    } catch (err) {
+      console.error("Export error:", err);
+    }
+  };
 
-   // Permissions: for the dummy page we allow viewing. Replace with your real permission check if needed.
+  // Permissions: for the dummy page we allow viewing. Replace with your real permission check if needed.
   const hasViewPermission = true;
   const hasAddPermission = true;
   if (!hasViewPermission) return <Navigate to="/profile" />;
 
-  let translateText= isArabic ? "جنسية":"Nationality";
+  let translateText = isArabic ? "جنسية" : "Nationality";
 
-    if(nationalitiesLoading) return <LoadingPage />
+  if (nationalitiesLoading) return <LoadingPage />;
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={12}>
-         
-
+        <Grid item 
+        sm={12} md={12}  
+        sx={{
+      overflowX: "auto", // ✅ مهم جدًا عشان الجدول يعمل scroll داخل الـ Grid
+    }}
+    >
           <Header
-           title={t("Nationalities")}
-                  subtitle={t("Nationalities")}
-                  i18n={i18n}
-                  haveBtn={hasAddPermission}
-                  btn={t("addItem", { item: translateText })}
-                  btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
-                 // onSubmit={addUserSubmit}
-                  isExcel
-                  isPdf
-                  isPrinter
-                   onExcel={() => fetchAndExport("excel")}
-                   onPdf={() => fetchAndExport("pdf")}
-                   onPrinter={() => fetchAndExport("print")}
-           />
+            title={t("Nationalities")}
+            subtitle={t("Nationalities")}
+            i18n={i18n}
+            haveBtn={hasAddPermission}
+            btn={t("addItem", { item: translateText })}
+            btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
+            // onSubmit={addUserSubmit}
+            isExcel
+            isPdf
+            isPrinter
+            onExcel={() => fetchAndExport("excel")}
+            onPdf={() => fetchAndExport("pdf")}
+            onPrinter={() => fetchAndExport("print")}
+          />
+          <Grid container sx={{ my: 2, gap: 1 , maxWidth: "100%" }}>
+            <Grid item sm={12} md={6}>
+              <CustomTextFieldAdmin searchKey={"name_ar"} height={"40px"} />
+            </Grid>
 
+            <Grid item xs={6} md={2}>
+            <CustomSelect t={t} label={t("Status")} height={"40px"} />
+            </Grid>
+
+
+          </Grid>
+
+          
           <TableComponent
             columns={columns}
             data={nationalities}
             // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
-             loading={nationalitiesLoading}
+            loading={nationalitiesLoading}
             // isUsers={true}
-           // statusKey="status"
+            // statusKey="status"
             sx={{
               flex: 1,
               overflow: "auto",

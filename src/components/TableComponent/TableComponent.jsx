@@ -108,22 +108,49 @@ const TableComponent = ({
   return (
     <TableContainer 
       component={Paper}  
-      PaperProps={{
-        sx: { boxShadow: "none !important" }
-      }} 
-      sx={{ width: "100%", boxShadow: "none !important" }}
+      // PaperProps={{
+      //   sx: { boxShadow: "none !important" , width:"50%", }
+      // }} 
+      // sx={{ width: "100%", boxShadow: "none !important" ,maxWidth: "100%",overflowX: "auto" }}
+      sx={{
+        width: "100%",
+    maxWidth: "100%",
+    overflowX: "auto", // ✅ لو الأعمدة كتيرة بيعمل scroll تلقائي
+    boxShadow: "none"
+      }}
     >
-      <Box sx={{ overflowX: "auto", width: "100%", boxShadow: "none !important" }}>
-        <Table
-          sx={{
-            minWidth: 600,
-            borderCollapse: "collapse",
-            boxShadow: "none !important",
-            direction: isArabic ? "ltr" : "rtl",
-    "& .MuiTableCell-root": {
-      textAlign:  "start" ,
+      <Box sx={{ 
+        overflowX: "auto", 
+        // width: "100%",
+        boxShadow: "none !important",
+        
+    width: "100%", // 👈 العرض اللي عايزه
+    [theme.breakpoints.down("sm")]: {
+      width: "80%", // 👈 للموبايل
     },
-          }}
+  
+          }}>
+        <Table
+         sx={{
+     
+      minWidth: 600, // ✅ يحافظ على شكل الأعمدة لكن يظل مرن
+      borderCollapse: "collapse",
+      direction: isArabic ? "ltr" : "rtl",
+      "& .MuiTableCell-root": {
+        textAlign: "start",
+      },
+    }}
+    //       sx={{
+    //         minWidth: 600,
+    //         borderCollapse: "collapse",
+    //         boxShadow: "none !important",
+    //         direction: isArabic ? "ltr" : "rtl",
+    //         overflowX: "auto",
+            
+    // "& .MuiTableCell-root": {
+    //   textAlign:  "start" ,
+    // },
+    //       }}
         >
           <TableHead>
             <TableRow>

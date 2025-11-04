@@ -4,6 +4,7 @@ import {
   Typography,
   Button,
   IconButton,
+  useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { ReactComponent as ExcelIcon } from "../../assets/xsl-02.svg";
@@ -28,7 +29,9 @@ const Header = ({
 }) => {
   const theme = useTheme();
   const isRtl = i18n.language === 'ar';
-const user = getUserCookie()
+const user = getUserCookie();
+
+const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   return (
     <Box
       component="header"
@@ -45,8 +48,10 @@ const user = getUserCookie()
       <Box
         sx={{
           display: 'flex',
-          alignItems: 'center',
+          flexDirection:  isMobile ? 'column' : 'row',
+          alignItems:  isMobile ? 'start' : 'center',
           justifyContent: 'space-between',
+          gap: 2,
           mt: 1,
           flexWrap: 'wrap',
         }}

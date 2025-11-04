@@ -42,16 +42,16 @@ const FilterComponent = ({
     status: initialFilters.status || "",
   });
 
-  // sync from URL on mount / location change
-  useEffect(() => {
-    const q = new URLSearchParams(location.search);
-    setFilters({
-      search: q.get("keyword") || initialFilters.keyword || "",
-      user_type: q.get("user_type") || initialFilters.userType || "",
-      status: q.get("status") || initialFilters.status || "",
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search]);
+  // // sync from URL on mount / location change
+  // useEffect(() => {
+  //   const q = new URLSearchParams(location.search);
+  //   setFilters({
+  //     search: q.get("keyword") || initialFilters.keyword || "",
+  //     user_type: q.get("user_type") || initialFilters.userType || "",
+  //     status: q.get("status") || initialFilters.status || "",
+  //   });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [location.search]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -86,7 +86,7 @@ const FilterComponent = ({
     <Box sx={{ mb: 3, px: { xs: 1, sm: 2 } }}>
       <Grid container spacing={2} alignItems="center">
         {/* Search Field */}
-        <Grid item xs={12} sm={6} md={6}>
+        {/* <Grid item xs={12} sm={6} md={6}>
           <CustomTextField
             fullWidth
             size="small"
@@ -107,10 +107,10 @@ const FilterComponent = ({
               ),
             }}
           />
-        </Grid>
+        </Grid> */}
 
         {/* User Type Select */}
-        <Grid item xs={12} sm={3} md={2}>
+        {/* <Grid item xs={12} sm={3} md={2}>
           <CustomTextField
             select
             fullWidth
@@ -140,7 +140,7 @@ const FilterComponent = ({
               )
             )}
           </CustomTextField>
-        </Grid>
+        </Grid> */}
 
         {/* Status Select */}
         <Grid item xs={12} sm={3} md={2}>
