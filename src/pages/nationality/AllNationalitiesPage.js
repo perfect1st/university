@@ -9,6 +9,7 @@ import {
   TextField,
   InputAdornment,
   MenuItem,
+  useMediaQuery,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n/i18n";
@@ -29,58 +30,16 @@ import LoadingPage from "../../components/LoadingComponent";
 import FilterComponent from "../../components/FilterComponent/FilterComponent";
 import SearchIcon from "@mui/icons-material/Search";
 import CustomTextFieldAdmin, { CustomSelect } from "../../components/Utilities/CustomTextField";
+import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
 // import CustomTextField from "../RTLTextField";
 
-function CustomTextField(props) {
-  const theme = useTheme();
-  // const { placeholder, helperText, error, ...rest } = props;
 
-  const { placeholder, helperText, error, children, ...rest } = props;
-  const { i18n } = useTranslation();
-  const isArabic = i18n.language == "ar";
-
-  return (
-    <TextField
-      fullWidth
-      variant="outlined"
-      size="small"
-      placeholder={placeholder}
-      error={error}
-      helperText={helperText}
-      {...rest}
-      sx={{
-        background: theme.palette.primary?.textField ?? "transparent",
-        color: theme.palette.primary?.textFieldText ?? "inherit",
-        "& .MuiInputBase-input": {
-          color: theme.palette.primary?.textFieldText ?? "inherit",
-        },
-        "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: "rgba(0,0,0,0.12)",
-        },
-        "& .MuiFormHelperText-root": {
-          color: "error",
-          fontFamily: "Cairo, Arial, sans-serif",
-          fontWeight: 400,
-          fontSize: "0.75rem",
-          textAlign: isArabic ? "right" : "left",
-          marginTop: 0,
-          marginBottom: 0,
-          marginRight: 0,
-          marginLeft: 0,
-          background: theme.palette.background.paper, // ✅ نفس لون خلفية الـ paper
-        },
-        ...props.sx,
-      }}
-    >
-      {children}
-    </TextField>
-  );
-}
 
 export default function AllNationalitiesPage() {
   const theme = useTheme();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   // get all nationalities
   const {
@@ -254,17 +213,9 @@ export default function AllNationalitiesPage() {
             onPdf={() => fetchAndExport("pdf")}
             onPrinter={() => fetchAndExport("print")}
           />
-          <Grid container sx={{ my: 2, gap: 1 , maxWidth: "100%" }}>
-            <Grid item sm={12} md={6}>
-              <CustomTextFieldAdmin searchKey={"name_ar"} height={"40px"} />
-            </Grid>
 
-            <Grid item xs={6} md={2}>
-            <CustomSelect t={t} label={t("Status")} height={"40px"} />
-            </Grid>
-
-
-          </Grid>
+       
+          <DashboardFilterComponent t={t} />
 
           
           <TableComponent

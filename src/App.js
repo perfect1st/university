@@ -1,5 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { CssBaseline, ThemeProvider, Toolbar, createTheme, useMediaQuery } from "@mui/material";
+import {
+  CssBaseline,
+  ThemeProvider,
+  Toolbar,
+  createTheme,
+  useMediaQuery,
+} from "@mui/material";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Header from "./components/Header";
@@ -14,7 +20,10 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 
 import { getUserCookie } from "./hooks/authCookies";
 
-import { getAllNotifications, getAllSetting } from "./redux/slices/setting/thunk";
+import {
+  getAllNotifications,
+  getAllSetting,
+} from "./redux/slices/setting/thunk";
 import { useDispatch } from "react-redux";
 import ProtectedRoute from "./Auth/ProtectedRoute";
 import SecondHeader from "./components/SecondHeader/SecondHeader";
@@ -47,10 +56,10 @@ function App() {
   const isArabic = i18n.language === "ar";
 
   // إنشاء cache يدعم RTL
-const cacheRtl = createCache({
-  key: "mui-rtl",
-  stylisPlugins: [prefixer, rtlPlugin],
-});
+  const cacheRtl = createCache({
+    key: "mui-rtl",
+    stylisPlugins: [prefixer, rtlPlugin],
+  });
 
   // Update direction and language in localStorage
   useEffect(() => {
@@ -102,9 +111,9 @@ const cacheRtl = createCache({
             main: mode === "light" ? "#095690" : "#22ABCE",
             textField: "#E8EDF2",
             textFieldText: "#4D7399",
-            gray:"#F9FAFB",
+            gray: "#F9FAFB",
             contrastText: "#ffffff",
-            tabelHeader:"#D2D6DB",
+            tabelHeader: "#D2D6DB",
           },
           secondary: {
             main: mode === "light" ? "#F39A15" : "#F39A15",
@@ -202,9 +211,7 @@ const cacheRtl = createCache({
             styleOverrides: {
               root: {
                 backgroundColor:
-                  mode === "light"
-                    ? "#ffffff"
-                    : "rgba(30, 41, 59, 0.9)",
+                  mode === "light" ? "#ffffff" : "rgba(30, 41, 59, 0.9)",
                 backdropFilter: "blur(8px)",
                 boxShadow:
                   mode === "light"
@@ -237,9 +244,7 @@ const cacheRtl = createCache({
             styleOverrides: {
               root: {
                 backgroundColor:
-                  mode === "light"
-                    ? "#ffffff"
-                    : "rgba(30, 41, 59, 0.8)",
+                  mode === "light" ? "#ffffff" : "rgba(30, 41, 59, 0.8)",
                 borderRadius: "8px",
               },
             },
@@ -248,192 +253,184 @@ const cacheRtl = createCache({
       }),
     [mode, i18n.language]
   );
-  
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const user = getUserCookie();
 
- // ======= Replace the old polling block with this =======
+  // ======= Replace the old polling block with this =======
 
-// read cookie once at mount to avoid unstable deps
-const initialUser = useMemo(() => getUserCookie(), []);
-const isLoggedIn = Boolean(initialUser?.id); 
+  // read cookie once at mount to avoid unstable deps
+  const initialUser = useMemo(() => getUserCookie(), []);
+  const isLoggedIn = Boolean(initialUser?.id);
 
+  // useEffect(() => {
+  //   if (!isLoggedIn) return;
 
+  //   dispatch(getAllNotifications());
 
+  //   const interval = setInterval(() => {
+  //     dispatch(getAllNotifications());
+  //   }, 60000);
 
-// useEffect(() => {
-//   if (!isLoggedIn) return; 
-
-//   dispatch(getAllNotifications());
-
-//   const interval = setInterval(() => {
-//     dispatch(getAllNotifications());
-//   }, 60000); 
-
-//   return () => clearInterval(interval);
-// }, [dispatch, isLoggedIn]);
-
+  //   return () => clearInterval(interval);
+  // }, [dispatch, isLoggedIn]);
 
   const hideHeader = location.pathname != "/login";
-  const hideSecandHeader = location.pathname == "/home" || location.pathname == "/visionsArticals" || location.pathname == "/news";
+  const hideSecandHeader =
+    location.pathname == "/home" ||
+    location.pathname == "/visionsArticals" ||
+    location.pathname == "/news";
 
   return (
     <ColorModeContext.Provider value={colorMode}>
       <CacheProvider value={cacheRtl}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <div
-          className="App"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            minHeight: "100vh",
-          }}
-        >
-          {hideHeader && <Header />}
-           <SecondHeader />
-          {/* {isMobile && !isArabic && hideSecandHeader &&<Toolbar sx={{ width: "100%" }}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <div
+            className="App"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              minHeight: "100vh",
+            }}
+          >
+            {hideHeader && <Header />}
+            <SecondHeader />
+            {/* {isMobile && !isArabic && hideSecandHeader &&<Toolbar sx={{ width: "100%" }}>
 </Toolbar>} */}
-          {/* Modals */}
+            {/* Modals */}
 
-          <main style={{ flex: 1 }}>
-            <Routes>
-              {/* المسارات العامة */}
-              <Route
-                path="/"
-                element={
-                 <Navigate to="/home" />
-                }
-              />
-              {/* <Route path="/login" element={<LoginScreen />} /> */}
+            <main style={{ flex: 1 }}>
+              <Routes>
+                {/* المسارات العامة */}
+                <Route path="/" element={<Navigate to="/home" />} />
+                {/* <Route path="/login" element={<LoginScreen />} /> */}
 
-              {/* المسارات الخاصة التي تظهر فيها Sidebar */}
-              <Route
-                path="/login"
-                element={
-                  // <MainLayout>
-                  <LoginPage />
-                  // </MainLayout>
-                }
-              />
-                  <Route element={<ProtectedRoute />}>
-
-              <Route
-                path="/VisionsArticles"
-                element={
-                  <MainLayout>
-                    <VisionsArticlesPage />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/news"
-                element={
-                  <MainLayout>
-                    <NewsPage />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/home"
-                element={
-                  <MainLayout>
-                    <Home />
-                  </MainLayout>
-                }
-              />
-                <Route path="/ArticalDetails/:id" 
+                {/* المسارات الخاصة التي تظهر فيها Sidebar */}
+                <Route
+                  path="/login"
                   element={
-                    <MainLayout>
-                      <ArticalDetails />
-                    </MainLayout>
+                    // <MainLayout>
+                    <LoginPage />
+                    // </MainLayout>
                   }
+                />
+                <Route element={<ProtectedRoute />}>
+                  <Route
+                    path="/VisionsArticles"
+                    element={
+                      <MainLayout>
+                        <VisionsArticlesPage />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/news"
+                    element={
+                      <MainLayout>
+                        <NewsPage />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/home"
+                    element={
+                      <MainLayout>
+                        <Home />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/ArticalDetails/:id"
+                    element={
+                      <MainLayout>
+                        <ArticalDetails />
+                      </MainLayout>
+                    }
+                  />
 
-                 />
+                  <Route
+                    path="/Admissions"
+                    element={
+                      <MainLayout>
+                        <Admissions />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/StudentDashboard"
+                    element={
+                      <MainLayout>
+                        <StudentDashboard />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/profile"
+                    element={
+                      <MainLayout>
+                        <ProfilePage />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/FeePayment"
+                    element={
+                      <MainLayout>
+                        <FeePaymentPage />
+                      </MainLayout>
+                    }
+                  />
 
-              <Route
-                path="/Admissions"
-                element={
-                  <MainLayout>
-                    <Admissions />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/StudentDashboard"
-                element={
-                  <MainLayout>
-                    <StudentDashboard />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <MainLayout>
-                    <ProfilePage />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/FeePayment"
-                element={
-                  <MainLayout>
-                    <FeePaymentPage />
-                  </MainLayout>
-                }
-              />
-            
-              <Route
-                path="/Users"
-                element={
-                  <MainLayout>
-                    <UsersPage />
-                  </MainLayout>
-                }
-              />
-              <Route
-                path="/UserDetails/:id"
-                element={
-                  <MainLayout>
-                    <UserDetails />
-                  </MainLayout>
-                }
-              />
+                  <Route
+                    path="/Users"
+                    element={
+                      <MainLayout>
+                        <UsersPage />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/UserDetails/:id"
+                    element={
+                      <MainLayout>
+                        <UserDetails />
+                      </MainLayout>
+                    }
+                  />
 
-              <Route
-                path="/nationality"
-                element={
-                  <MainLayout>
-                    <AllNationalitiesPage />
-                  </MainLayout>
-                }
-              />
+                  <Route path="/nationality">
+                    <Route
+                      index
+                      element={
+                        <MainLayout>
+                          <AllNationalitiesPage />
+                        </MainLayout>
+                      }
+                    />
+                  </Route>
+                </Route>
 
-            
-    </Route>
-
-              <Route path="/Maintenance" element={<Maintenance />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={i18n.language === "ar"}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme={mode}
-        />
-      </ThemeProvider>
+                <Route path="/Maintenance" element={<Maintenance />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={i18n.language === "ar"}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme={mode}
+          />
+        </ThemeProvider>
       </CacheProvider>
     </ColorModeContext.Provider>
   );
