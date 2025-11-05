@@ -162,7 +162,8 @@
     "onlinePayment":"دفع اونلاين",
     "Pay":"دفع",
     "paymentMethods":"طرق الدفع",
-    "paymentSuccess":"تم دفع الطلب بنجاح"
+    "paymentSuccess":"تم دفع الطلب بنجاح",
+    "departmentTerm":"السنة الدراسية"
   },
   "studentDashboard": {
     "majorInformation": "المعلومات الأساسية",

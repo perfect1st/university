@@ -124,7 +124,8 @@
     "onlinePayment":"Online Payment",
     "Pay": "Pay",
     "paymentMethods":"Payment Methods",
-    "paymentSuccess":"Payment successful"
+    "paymentSuccess":"Payment successful",
+    "departmentTerm":"Department Term"
   },
   "studentDashboard": {
     "majorInformation": "Major Information",

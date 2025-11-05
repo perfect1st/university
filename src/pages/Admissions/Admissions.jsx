@@ -22,7 +22,7 @@ import {
   DialogActions,
   FormLabel,
   RadioGroup,
-  Radio
+  Radio,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AdmissionsHero from "../../components/AdmissionsComponents/AdmissionsHero";
@@ -46,12 +46,10 @@ import {
 } from "../../graphql/facultyQuiries.js";
 import { CREATE_REGISTERATION_FORM } from "../../graphql/registerationFormQueries.js";
 import { CREATE_REGISTERATION_FORM_TRANSACTION } from "../../graphql/transactionQueries.js";
-
 import notify from "../../components/notify.js";
-import {baseURL} from "../../Api/apolloClient.js";
+import { baseURL } from "../../Api/apolloClient.js";
 import formatDateToString from "../../components/Utilities/FormatDateToString.js";
-
-
+import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/departmentsQueries.js";
 
 // CustomTextField wrapper (keeps placeholder support + helperText)
 function CustomTextField(props) {
@@ -106,11 +104,12 @@ export default function Admissions() {
   const theme = useTheme();
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [step, setStep] = useState(1);
-  const[showPaymentModal, setShowPaymentModal] = useState(false);
- // const[registerationFees,setRegisterationFees] = useState(0);
-  const[registerationFeesResults,setRegisterationFeesResults] = useState(null);
-  const[selectedPaymnetMethod, setSelectedPaymentMethod] = useState(null);
-  const[selectedFile,setSelectedFile] = useState(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  // const[registerationFees,setRegisterationFees] = useState(0);
+  const [registerationFeesResults, setRegisterationFeesResults] =
+    useState(null);
+  const [selectedPaymnetMethod, setSelectedPaymentMethod] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const {
     data: ArticalesData,
     loading: ArticalesLoading,
@@ -160,6 +159,16 @@ export default function Admissions() {
   ] = useLazyQuery(GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, {
     fetchPolicy: "network-only",
   });
+
+  // تجيب الترمات بتاعة القسم
+  const [
+    getAcademyTermsByFacultyDepartment,
+    { data: { getAcademyTermsByFacultyDepartment: termsData } = {}, loading: termsLoading, error: termsError },
+  ] = useLazyQuery(GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID, {
+    fetchPolicy: "network-only",
+  });
+
+
   // create registeration form
   const [
     createRegisterForm,
@@ -169,12 +178,17 @@ export default function Admissions() {
   // CREATE NEW tRANSACTION
   const [
     createTransaction,
-    { data: transactionResponse, loading: transactionLoading, error: transactionError },
+    {
+      data: transactionResponse,
+      loading: transactionLoading,
+      error: transactionError,
+    },
   ] = useMutation(CREATE_REGISTERATION_FORM_TRANSACTION);
 
   console.log("ArticalesData", ArticalesData);
   console.log("countriesData", countriesData);
   console.log("faculitiesData", faculitiesData);
+  console.log("termsData",termsData);
 
   // step1 state
   const [personal, setPersonal] = useState({
@@ -207,10 +221,11 @@ export default function Admissions() {
     high_school_certificate_file: null,
     faculty_id: "",
     faculty_department_id: "",
+    academyTerm_id:""
   });
   const [acadErrors, setAcadErrors] = useState({});
 
-  const[isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -222,11 +237,10 @@ export default function Admissions() {
     { value: "female", label: t("admissions.female") },
   ];
 
-  const paymentMethods=[
-    {value:"CASH", label:t("admissions.cash")},
-    {value:"BANK_TRANSFER", label:t("admissions.bankTransfer")},
-    {value:"ONLINE", label:t("admissions.onlinePayment")}
-
+  const paymentMethods = [
+    { value: "CASH", label: t("admissions.cash") },
+    { value: "BANK_TRANSFER", label: t("admissions.bankTransfer") },
+    { value: "ONLINE", label: t("admissions.onlinePayment") },
   ];
   const nationalities = nationalitiesData?.nationalities;
 
@@ -268,7 +282,7 @@ export default function Admissions() {
         //   return value ? "" : t("admissions.errors.required") || "Required";
         case "gender":
           return value ? "" : t("admissions.errors.required") || "Required";
-        
+
         case "nationality_id":
           return value ? "" : t("admissions.errors.required") || "Required";
         case "birthdate":
@@ -279,12 +293,12 @@ export default function Admissions() {
             return t("admissions.errors.invalidEmail") || "Invalid email";
           return "";
         case "mobile":
-         // return value ? "" : t("admissions.errors.invalidPhone") || "Required";
-         if (!value) return t("admissions.errors.required") || "Required";
+          // return value ? "" : t("admissions.errors.invalidPhone") || "Required";
+          if (!value) return t("admissions.errors.required") || "Required";
           if (!phoneRegex.test(value))
             return t("admissions.errors.invalidPhone") || "Invalid phone";
           return "";
-        
+
         case "home_tel":
           return value ? "" : t("admissions.errors.required") || "Required";
         case "national_id":
@@ -313,6 +327,8 @@ export default function Admissions() {
         case "faculty_id":
         case "faculty_department_id":
           return value ? "" : t("admissions.errors.required") || "Required";
+        case "academyTerm_id":
+          return value ? "" : t("admissions.errors.required") || "Required";
         case "gpa":
           if (!value) return t("admissions.errors.required") || "Required";
           // allow decimal like 3.25 and check range 0-4
@@ -326,10 +342,10 @@ export default function Admissions() {
             );
           return "";
         case "high_school_certificate_file":
-        return value
-          ? ""
-          : t("admissions.errors.requiredFile") ||
-              "Please attach certificate file";
+          return value
+            ? ""
+            : t("admissions.errors.requiredFile") ||
+                "Please attach certificate file";
         default:
           return "";
       }
@@ -350,7 +366,7 @@ export default function Admissions() {
       "mobile",
       "national_id",
       "national_id_type",
-      "home_tel"
+      "home_tel",
     ];
     const newErrors = {};
 
@@ -365,7 +381,8 @@ export default function Admissions() {
     console.log("personal error", newErrors);
 
     // newErrors?.national_id_type
-    if (newErrors?.national_id_type) notify(newErrors?.national_id_type, "error");
+    if (newErrors?.national_id_type)
+      notify(newErrors?.national_id_type, "error");
 
     return Object.keys(newErrors).length === 0;
   };
@@ -382,6 +399,7 @@ export default function Admissions() {
       "high_school_certificate_file",
       "faculty_id",
       "faculty_department_id",
+      "academyTerm_id"
     ];
     const newErrors = {};
     keys.forEach((k) => {
@@ -417,11 +435,10 @@ export default function Admissions() {
   };
 
   const handleFinish = async () => {
-
     // try {
 
-      // return setShowPaymentModal(true);
-      console.log("finish", validateStep2());
+    // return setShowPaymentModal(true);
+    console.log("finish", validateStep2());
     if (validateStep2()) {
       // console.log('oooooooooooooooo');
       const formData = new FormData();
@@ -429,7 +446,7 @@ export default function Admissions() {
       // Append personal data
       Object.entries(personal).forEach(([key, value]) => {
         // لو قيمة Boolean زي checkboxes نخليها string
-        if(key=="countryCode") return;
+        if (key == "countryCode") return;
         formData.append(
           key,
           typeof value === "boolean" ? String(value) : value
@@ -452,9 +469,8 @@ export default function Admissions() {
       //   .then(res => console.log("Submitted successfully"))
       //   .catch(err => console.error(err));
 
-
-      let objToSend={
-        address:"aaaaaaaaaaaaaa"
+      let objToSend = {
+        address: "aaaaaaaaaaaaaa",
       };
       // Debug
       for (let [key, value] of formData.entries()) {
@@ -462,113 +478,100 @@ export default function Admissions() {
         objToSend[key] = value;
       }
 
-      console.log('objToSend',objToSend);
+      console.log("objToSend", objToSend);
 
       // try {
-        setIsLoading(true);
-       const result=await createRegisterForm({
-          variables:{
-            input:objToSend
-          }
-        });
-        setIsLoading(false);
-         console.log("result",result?.data?.createRegisterForm);
-         // registration_Fees_Value
-        if(result?.data?.createRegisterForm?.success){
-          setRegisterationFeesResults(result?.data?.createRegisterForm);
+      setIsLoading(true);
+      const result = await createRegisterForm({
+        variables: {
+          input: objToSend,
+        },
+      });
+      setIsLoading(false);
+      console.log("result", result?.data?.createRegisterForm);
+      // registration_Fees_Value
+      if (result?.data?.createRegisterForm?.success) {
+        setRegisterationFeesResults(result?.data?.createRegisterForm);
 
-           // setRegisterationFees(result?.data?.createRegisterForm?.registration_Fees_Value);
-            setShowPaymentModal(true);
-        }
-        else{
-          notify(result?.data?.createRegisterForm?.message,"error");
-        }
-         
+        // setRegisterationFees(result?.data?.createRegisterForm?.registration_Fees_Value);
+        setShowPaymentModal(true);
+      } else {
+        notify(result?.data?.createRegisterForm?.message, "error");
+      }
 
-        // notify(t("admissions.success"),"success");
+      // notify(t("admissions.success"),"success");
       // } catch (error) {
-      //   console.log('error',error); 
+      //   console.log('error',error);
       // }
       // finally{
       //   setIsLoading(false);
       // }
-        
 
-         
-     // alert("Application submitted (demo)");
-  //   }
-  //   } catch (error) {
-  //       console.log('error',error);
-  // //        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-  // //        console.error("🧩 GraphQL Errors:", error.graphQLErrors);
-  // // }
-  //      // console.log('error.networkError.result.errors',error.networkError.result.errors);
-  //        notify(t("admissions.error"),"error");
-  //   }
-    // finally{
-    //   setIsLoading(false);
-    // }
+      // alert("Application submitted (demo)");
+      //   }
+      //   } catch (error) {
+      //       console.log('error',error);
+      // //        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+      // //        console.error("🧩 GraphQL Errors:", error.graphQLErrors);
+      // // }
+      //      // console.log('error.networkError.result.errors',error.networkError.result.errors);
+      //        notify(t("admissions.error"),"error");
+      //   }
+      // finally{
+      //   setIsLoading(false);
+      // }
     }
   };
 
-  const handleSubmitPayment=async()=>{
+  const handleSubmitPayment = async () => {
     try {
-        // in transaction type id 
-    const transaction_type_id="68fdce917bb1890cd9720a60";
-    let transactionObj={
-      payment_method_type: selectedPaymnetMethod,
-      transaction_type_id,
-      user_id:registerationFeesResults?.user?.id,
-      fees_type_ids: registerationFeesResults?.registration_Fees_Id,
-      transaction_date:formatDateToString(new Date())
-    //   payment_method_type: "BANK_TRANSFER",
-    // transaction_type_id: "68fdce917bb1890cd9720a60",
-    // user_id: "68fdf94b0e57e6fb0218cf66",
-    // fees_type_ids: "68ee0bfaecbf2bab51f44db5",
-    // transaction_date: "2025-10-26"
-    };
+      // in transaction type id
+      const transaction_type_id = "68fdce917bb1890cd9720a60";
+      let transactionObj = {
+        payment_method_type: selectedPaymnetMethod,
+        transaction_type_id,
+        user_id: registerationFeesResults?.user?.id,
+        fees_type_ids: registerationFeesResults?.registration_Fees_Id,
+        transaction_date: formatDateToString(new Date()),
+        amount:registerationFeesResults?.registration_Fees_Value
+      };
 
-    
-
-    console.log('transactionObj',transactionObj);
-      const result=await createTransaction({
-        variables:{
-          input:transactionObj
-        }
+      console.log("transactionObj", transactionObj);
+      const result = await createTransaction({
+        variables: {
+          input: transactionObj,
+        },
       });
 
-      console.log('payment result',result?.data?.createTransaction);
-      
-      notify(t("admissions.paymentSuccess"),"success");
+      console.log("payment result", result?.data?.createTransaction);
+
+      notify(t("admissions.paymentSuccess"), "success");
 
       setShowPaymentModal(false);
     } catch (error) {
-      console.log('error',error);
-      notify(t("admissions.error"),"error");
-
+      console.log("error", error);
+      notify(t("admissions.error"), "error");
     }
-    
-  }
-
+  };
 
   // File handling
   const handlePickFile = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
-  const handleFileChange = async(e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files?.[0] ?? null;
     setAcademic((a) => ({ ...a, high_school_certificate_file: file }));
     // validate file right away
     const msg = validateField("high_school_certificate_file", file, true);
     setAcadErrors((prev) => ({ ...prev, high_school_certificate_file: msg }));
 
-    console.log('ppppppppppppppppppppppp',file);
+    console.log("ppppppppppppppppppppppp", file);
 
-   // fileInputRef.current=file?.name;
+    // fileInputRef.current=file?.name;
 
     setSelectedFile(file?.name);
-    const formData=new FormData();
-    formData.append('file',file);
+    const formData = new FormData();
+    formData.append("file", file);
 
     // const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
     //     headers: {
@@ -578,108 +581,112 @@ export default function Admissions() {
 
     //   console.log(res.data);
     try {
-         const response = await fetch(`${baseURL}/api/forms/single`, {
-      method: "POST",
-      body: formData, // مهم جدًا ما تضيفش headers هنا
-    });
+      const response = await fetch(`${baseURL}/api/forms/single`, {
+        method: "POST",
+        body: formData, // مهم جدًا ما تضيفش headers هنا
+      });
 
-    if (!response.ok) {
-      throw new Error("Upload failed");
-    }
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
 
-    const data = await response.json();
-    console.log("Upload successful:", data);
-    // data?.url
+      const data = await response.json();
+      console.log("Upload successful:", data);
+      // data?.url
 
-    console.log('ooooooooooooo',`${baseURL}${data?.url}`);
+      console.log("ooooooooooooo", `${baseURL}${data?.url}`);
 
-    setAcademic((a) => ({ ...a, high_school_certificate_file:`${baseURL}${data?.url}`  }));
-   
+      setAcademic((a) => ({
+        ...a,
+        high_school_certificate_file: `${baseURL}${data?.url}`,
+      }));
     } catch (error) {
-        notify("admissions.errorUplaod","error");
-        console.log('error',error.message);
+      notify("admissions.errorUplaod", "error");
+      console.log("error", error.message);
     }
-       // console.log('formData',formData);
+    // console.log('formData',formData);
   };
 
   console.log("i18n ", i18n.language);
 
   console.log("academic.city", academic.city);
 
-  console.log('setSelectedPaymentMethod',selectedPaymnetMethod);
+  console.log("setSelectedPaymentMethod", selectedPaymnetMethod);
 
-  console.log('fileInputRef',fileInputRef);
+  console.log("fileInputRef", fileInputRef);
 
   return (
     <Box>
-        {
-          showPaymentModal&&<Dialog 
-      open={showPaymentModal} 
-      onClose={() => setShowPaymentModal(false)}
-      PaperProps={{
-          sx: {
-            position: "absolute",
-            top: 20, // المسافة من أعلى الصفحة
-            margin: 0,
-          },
-        }}
+      {showPaymentModal && (
+        <Dialog
+          open={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          PaperProps={{
+            sx: {
+              position: "absolute",
+              top: 20, // المسافة من أعلى الصفحة
+              margin: 0,
+            },
+          }}
+          fullWidth // يخليه ياخد 100% من maxWidth
+          maxWidth="xs"
+        >
+          <DialogTitle
+            sx={{
+              color: theme.palette.primary.main,
+              fontWeight: 800,
+            }}
+          >
+            {t("admissions.Pay")}:{" "}
+            {registerationFeesResults?.registration_Fees_Value}
+          </DialogTitle>
+          <Box sx={{ mx: 3 }}>
+            <FormControl sx={{ width: "100%" }}>
+              <FormLabel
+                variant="contained"
+                sx={{ display: "block", fontWeight: 800, mb: 2 }}
+                id="demo-radio-buttons-group-label"
+              >
+                {t("admissions.paymentMethods")}
+              </FormLabel>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="female"
+                name="radio-buttons-group"
+              >
+                {paymentMethods?.map((el, i) => (
+                  <FormControlLabel
+                    sx={{
+                      backgroundColor: "#E5E5E5",
+                      m: 0, // يشيل الـ margin الخارجي
+                      p: 0, // يشيل الـ padding الداخلي
+                      "& .MuiFormControlLabel-label": {
+                        fontWeight: 500, // ← هنا تغيّر السماكة (400 عادي - 500 متوسط - 700 عريض)
+                      },
+                    }}
+                    key={i}
+                    value={el?.value}
+                    control={<Radio />}
+                    onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                    label={el?.label}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </Box>
 
-        fullWidth     // يخليه ياخد 100% من maxWidth
-        maxWidth="xs"
-      >
-        <DialogTitle sx={{
-          color: theme.palette.primary.main
-          , fontWeight: 800 
-        }}>{t("admissions.Pay")}: {registerationFeesResults?.registration_Fees_Value}</DialogTitle>
-        <Box sx={{mx: 3}}>
-         
-
-        <FormControl sx={{width:"100%"}}>
-  <FormLabel
-  variant="contained"
-  sx={{ display: "block",fontWeight:800 ,mb:2  }} 
-   id="demo-radio-buttons-group-label"
-  >{t("admissions.paymentMethods")}</FormLabel>
-  <RadioGroup
-    aria-labelledby="demo-radio-buttons-group-label"
-    defaultValue="female"
-    name="radio-buttons-group"
-    
-  >
-    {
-      paymentMethods?.map((el,i)=>(
-        <FormControlLabel 
-        sx={{backgroundColor:"#E5E5E5",
-          m: 0,          // يشيل الـ margin الخارجي
-          p: 0,          // يشيل الـ padding الداخلي
-         '& .MuiFormControlLabel-label': {
-      fontWeight: 500, // ← هنا تغيّر السماكة (400 عادي - 500 متوسط - 700 عريض)
-    },
-        }}
-        key={i}
-        value={el?.value}
-        control={<Radio />}
-        onChange={(e)=>setSelectedPaymentMethod(e.target.value)}
-        label={el?.label} />
-      ))
-    }
-  
-  </RadioGroup>
-
-  
-</FormControl>
-        </Box>
-        
-
-        <DialogActions sx={{mx:1}}>
-          {/* <Button onClick={() => setShowPaymentModal(false)}>إلغاء</Button> */}
-          <Button variant="contained"  sx={{width:"100%",mt:1}} onClick={() => handleSubmitPayment()}>
-            تأكيد
-          </Button>
-        </DialogActions>
-      </Dialog>
-        }
-      
+          <DialogActions sx={{ mx: 1 }}>
+            {/* <Button onClick={() => setShowPaymentModal(false)}>إلغاء</Button> */}
+            <Button
+              variant="contained"
+              sx={{ width: "100%", mt: 1 }}
+              onClick={() => handleSubmitPayment()}
+            >
+              تأكيد
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
 
       <AdmissionsHero data={ArticalesData?.getArticlesByDepartment?.[0]} />
 
@@ -846,21 +853,28 @@ export default function Admissions() {
                       onBlur={() => handlePersonalBlur("nationality_id")}
                       error={!!errors.nationality_id}
                       helperText={errors.nationality_id || ""}
-                       SelectProps={{
-                      displayEmpty: true,
-                      renderValue: (selected) => {
-                        if (!selected) {
-                          return <>{t("Select Nationality")}</>;
-                        }
-                        return (
-                          <>{i18n.language === "ar" ? nationalities?.find((city) => city?.id === selected)?.name_ar : cities?.find((city) => city?.id === selected)?.name_en}</>
-                        );
-                      },
-                      MenuProps: {
-                        // optional: keep menu within viewport
-                        PaperProps: { style: { maxHeight: 320 } },
-                      },
-                    }}
+                      SelectProps={{
+                        displayEmpty: true,
+                        renderValue: (selected) => {
+                          if (!selected) {
+                            return <>{t("Select Nationality")}</>;
+                          }
+                          return (
+                            <>
+                              {i18n.language === "ar"
+                                ? nationalities?.find(
+                                    (city) => city?.id === selected
+                                  )?.name_ar
+                                : cities?.find((city) => city?.id === selected)
+                                    ?.name_en}
+                            </>
+                          );
+                        },
+                        MenuProps: {
+                          // optional: keep menu within viewport
+                          PaperProps: { style: { maxHeight: 320 } },
+                        },
+                      }}
                     >
                       {nationalities?.map((n) => (
                         <MenuItem key={n?.id} value={n?.id}>
@@ -1129,7 +1143,10 @@ export default function Admissions() {
                       placeholder={t("admissions.country")}
                       value={academic.country_id}
                       onChange={(e) => {
-                        setAcademic((a) => ({ ...a, country_id: e.target.value }));
+                        setAcademic((a) => ({
+                          ...a,
+                          country_id: e.target.value,
+                        }));
                         // get cities in selected country
                         if (e.target.value != "") {
                           // 44444444444444444444444444
@@ -1191,7 +1208,10 @@ export default function Admissions() {
                         placeholder={t("admissions.city")}
                         value={academic.city_id || ""}
                         onChange={(e) =>
-                          setAcademic((a) => ({ ...a, city_id: e.target.value }))
+                          setAcademic((a) => ({
+                            ...a,
+                            city_id: e.target.value,
+                          }))
                         }
                         onBlur={() => handleAcademicBlur("city_id")}
                         error={!!acadErrors.city_id}
@@ -1250,7 +1270,9 @@ export default function Admissions() {
                           high_school_student_number: e.target.value,
                         }))
                       }
-                      onBlur={() => handleAcademicBlur("high_school_student_number")}
+                      onBlur={() =>
+                        handleAcademicBlur("high_school_student_number")
+                      }
                       error={!!acadErrors.high_school_student_number}
                       helperText={acadErrors.high_school_student_number || ""}
                     />
@@ -1329,7 +1351,7 @@ export default function Admissions() {
                           type="file"
                           hidden
                           onChange={handleFileChange}
-                         // value={selectedFile}
+                          // value={selectedFile}
                         />
                         <Button
                           variant="contained"
@@ -1446,20 +1468,27 @@ export default function Admissions() {
                       error={!!acadErrors.faculty_id}
                       helperText={acadErrors.faculty_id || ""}
                       SelectProps={{
-                      displayEmpty: true,
-                      renderValue: (selected) => {
-                        if (!selected) {
-                          return <>{t("admissions.faculty")}</>;
-                        }
-                        return (
-                          <>{i18n.language === "ar" ? faculties?.find((city) => city?.id === selected)?.title_ar : cities?.find((city) => city?.id === selected)?.title_en}</>
-                        );
-                      },
-                      MenuProps: {
-                        // optional: keep menu within viewport
-                        PaperProps: { style: { maxHeight: 320 } },
-                      },
-                    }}
+                        displayEmpty: true,
+                        renderValue: (selected) => {
+                          if (!selected) {
+                            return <>{t("admissions.faculty")}</>;
+                          }
+                          return (
+                            <>
+                              {i18n.language === "ar"
+                                ? faculties?.find(
+                                    (city) => city?.id === selected
+                                  )?.title_ar
+                                : cities?.find((city) => city?.id === selected)
+                                    ?.title_en}
+                            </>
+                          );
+                        },
+                        MenuProps: {
+                          // optional: keep menu within viewport
+                          PaperProps: { style: { maxHeight: 320 } },
+                        },
+                      }}
                     >
                       {faculties?.map((faculty) => (
                         <MenuItem key={faculty?.id} value={faculty?.id}>
@@ -1484,31 +1513,46 @@ export default function Admissions() {
                       value={academic.faculty_department_id}
                       onChange={(e) => {
                         // 44444444444444444444444444444
-                        setAcademic((a) => ({
+                        if(e.target.value != "") {
+                          console.log("nnnnnnnnnnnnn",e.target.value);
+                            getAcademyTermsByFacultyDepartment({
+                              variables:{
+                                faculty_department_id:e.target.value
+                              }
+                            });
+                          
+                           setAcademic((a) => ({
                           ...a,
                           faculty_department_id: e.target.value,
                         }));
+                        }
+                       
                       }}
                       onBlur={() => handleAcademicBlur("faculty_department_id")}
                       error={!!acadErrors.faculty_department_id}
                       helperText={acadErrors.faculty_department_id || ""}
-
-                       SelectProps={{
-                      displayEmpty: true,
-                      renderValue: (selected) => {
-                        if (!selected) {
-                          return <>{t("admissions.facultyDepartment")}</>;
-                        }
-                        return (
-                          <>{i18n.language === "ar" ? departments?.find((city) => city?.id === selected)?.title_ar : cities?.find((city) => city?.id === selected)?.title_en}</>
-                        );
-                      },
-                      MenuProps: {
-                        // optional: keep menu within viewport
-                        PaperProps: { style: { maxHeight: 320 } },
-                      },
-                    }}
-
+                      SelectProps={{
+                        displayEmpty: true,
+                        renderValue: (selected) => {
+                          if (!selected) {
+                            return <>{t("admissions.facultyDepartment")}</>;
+                          }
+                          return (
+                            <>
+                              {i18n.language === "ar"
+                                ? departments?.find(
+                                    (city) => city?.id === selected
+                                  )?.title_ar
+                                : cities?.find((city) => city?.id === selected)
+                                    ?.title_en}
+                            </>
+                          );
+                        },
+                        MenuProps: {
+                          // optional: keep menu within viewport
+                          PaperProps: { style: { maxHeight: 320 } },
+                        },
+                      }}
                     >
                       <MenuItem value="">
                         {i18n.language === "ar"
@@ -1525,17 +1569,82 @@ export default function Admissions() {
                       ))}
                     </CustomTextField>
                   </Grid>
+
+
+                      {/* الترم */}
+                    <Grid item xs={12}>
+                    <Typography
+                      variant="body2"
+                      sx={{ display: "block", mb: 0.5 }}
+                    >
+                      {t("admissions.departmentTerm")}
+                    </Typography>
+                    <CustomTextField
+                      select
+                      placeholder={t("admissions.departmentTerm")}
+                      value={academic.academyTerm_id}
+                      onChange={(e) => {
+                        // 44444444444444444444444444444
+                        if(e.target.value != "") 
+                          {
+                       
+                           setAcademic((a) => ({
+                          ...a,
+                          academyTerm_id: e.target.value,
+                        }));
+                        }
+                       
+                      }}
+                      onBlur={() => handleAcademicBlur("academyTerm_id")}
+                      error={!!acadErrors.academyTerm_id}
+                      helperText={acadErrors.academyTerm_id || ""}
+                      SelectProps={{
+                        displayEmpty: true,
+                        renderValue: (selected) => {
+                          if (!selected) {
+                            return <>{t("admissions.departmentTerm")}</>;
+                          }
+                          return (
+                            <>
+                              {i18n.language === "ar"
+                                ? termsData?.find(
+                                    (city) => city?.id === selected
+                                  )?.title_ar
+                                : termsData?.find((city) => city?.id === selected)
+                                    ?.title_en}
+                            </>
+                          );
+                        },
+                        MenuProps: {
+                          // optional: keep menu within viewport
+                          PaperProps: { style: { maxHeight: 320 } },
+                        },
+                      }}
+                    >
+                      <MenuItem value="">
+                        {i18n.language === "ar"
+                          ? "اختر السنة الدراسية"
+                          : "Select Study Year"}
+                      </MenuItem>
+
+                      {termsData?.map((dept) => (
+                        <MenuItem key={dept?.id} value={dept?.id}>
+                          {i18n.language === "ar"
+                            ? dept?.title_ar
+                            : dept?.title_en}
+                        </MenuItem>
+                      ))}
+                    </CustomTextField>
+                  </Grid>
+
                 </Grid>
               </Paper>
               <Grid
                 item
                 xs={12}
                 sx={{ display: "flex", justifyContent: "space-between", my: 2 }}
-                
               >
-
-                 <Button
-                  
+                <Button
                   variant="contained"
                   size="large"
                   endIcon={
@@ -1548,7 +1657,7 @@ export default function Admissions() {
                     />
                   }
                   sx={{ background: theme.palette.info?.main, gap: 1 }}
-                  onClick={()=>setStep(1)}
+                  onClick={() => setStep(1)}
                 >
                   {t("Back")}
                 </Button>
@@ -1569,10 +1678,12 @@ export default function Admissions() {
                   sx={{ background: theme.palette.info?.main, gap: 1 }}
                   onClick={handleFinish}
                 >
-                  {isLoading ? <CircularProgress size={25} /> :t("admissions.finish")}
+                  {isLoading ? (
+                    <CircularProgress size={25} />
+                  ) : (
+                    t("admissions.finish")
+                  )}
                 </Button>
-
-                 
               </Grid>
             </Grid>
           )}
