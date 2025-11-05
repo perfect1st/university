@@ -44,11 +44,11 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
 
   if(me?.role=="student")menuItems=[{
       icon: AccountBalanceIcon,
-      key: "dashboard",
-      path: "/dashboard",
+      key: "StudentDashboard",
+      path: "/StudentDashboard",
       label: {
         ar: "لوحة التحكم",
-        en: "Dashboard",
+        en: "StudentDashboard",
       },
     },
     {

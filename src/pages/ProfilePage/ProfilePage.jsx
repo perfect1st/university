@@ -50,7 +50,7 @@ export default function ProfilePage() {
   const highSchoolFile =
     getRegisterFormByUserId?.high_school_certificate_file;
 
-    if(me==null||GetRegisterFormByUserIdLoading) return <LoadingPage />
+    
 
     console.log('high_school_certificate_file',highSchoolFile);
 
@@ -67,6 +67,7 @@ export default function ProfilePage() {
 
   let gender=genderTransArr.find(gender=>gender.en===getRegisterFormByUserId?.gender);
 
+  if(me==null||GetRegisterFormByUserIdLoading) return <LoadingPage />
  // console.log('genderrrrr',gender)
   return (
     <Box sx={{ p: 3 , backgroundColor:"background.paper"}}>

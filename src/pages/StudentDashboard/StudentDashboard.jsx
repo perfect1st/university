@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Typography,
@@ -14,10 +14,27 @@ import {
 import { useTranslation } from "react-i18next";
 import LabelValueRow from "../../components/LabelValueRow"; // adjust path if needed
 import RegistrationSteps from "../../components/studentDashboard/RegistrationSteps";
+import { useSelector } from "react-redux";
+import i18n from "../../i18n/i18n";
+import { useLazyQuery } from "@apollo/client/react";
+import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
+import LoadingPage from "../../components/LoadingComponent";
+
 
 export default function StudentDashboard() {
   const theme = useTheme();
   const { t } = useTranslation();
+  const isArabic = i18n.language === "ar";
+  const me=useSelector(state=>state.user.loggedUser);
+
+    const[GetRegisterFormByUserId,{data:{getRegisterFormByUserId}={},loading:GetRegisterFormByUserIdLoading, error:GetRegisterFormByUserIdError}]=useLazyQuery(GET_REGISTERATION_FORM_BY_USER_ID , { fetchPolicy: "network-only" });
+
+    useEffect(()=>{
+      if(me?.id){
+        console.log('meeeee');
+        GetRegisterFormByUserId({variables:{user_id:me?.id}});
+      }
+    },[me]);
 
   const subjects = [
     { title: "Mathematics", fullMark: 100, successDegree: 50 },
@@ -25,6 +42,7 @@ export default function StudentDashboard() {
     { title: "Programming", fullMark: 100, successDegree: 60 },
   ];
 
+  if(me==null||GetRegisterFormByUserIdLoading) return <LoadingPage />
   return (
     <Box sx={{ p: 3 }}>
       <Grid container spacing={3}>
