@@ -42,6 +42,8 @@ export default function StudentDashboard() {
     { title: "Programming", fullMark: 100, successDegree: 60 },
   ];
 
+  console.log('getRegisterFormByUserId',getRegisterFormByUserId);
+
   if(me==null||GetRegisterFormByUserIdLoading) return <LoadingPage />
   return (
     <Box sx={{ p: 3 }}>
@@ -65,13 +67,13 @@ export default function StudentDashboard() {
               <Grid item xs={12}>
                 <LabelValueRow
                   label={t("studentDashboard.faculty")}
-                  value="Engineering"
+                  value={isArabic ? getRegisterFormByUserId?.faculty_id?.title_ar : getRegisterFormByUserId?.faculty_id?.title_en}
                 />
               </Grid>
               <Grid item xs={12}>
                 <LabelValueRow
                   label={t("studentDashboard.facultyDepartment")}
-                  value="Computer Engineering"
+                  value={isArabic ? getRegisterFormByUserId?.faculty_department_id?.title_ar : getRegisterFormByUserId?.faculty_department_id?.title_en}
                 />
               </Grid>
             </Grid>
@@ -94,19 +96,19 @@ export default function StudentDashboard() {
               <Grid item xs={12}>
                 <LabelValueRow
                   label={t("studentDashboard.yearOfEducation")}
-                  value="3rd Year"
+                  value={getRegisterFormByUserId?.academyTerm_id?.study_year}
                 />
               </Grid>
               <Grid item xs={12}>
                 <LabelValueRow
                   label={t("studentDashboard.studyYear")}
-                  value="2025"
+                  value={getRegisterFormByUserId?.academyTerm_id?.current_year}
                 />
               </Grid>
               <Grid item xs={12}>
                 <LabelValueRow
                   label={t("studentDashboard.semester")}
-                  value="First"
+                  value={isArabic ? getRegisterFormByUserId?.academyTerm_id?.title_ar : getRegisterFormByUserId?.academyTerm_id?.title_en}
                 />
               </Grid>
             </Grid>
