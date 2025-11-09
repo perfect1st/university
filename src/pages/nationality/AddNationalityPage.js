@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/PageHeader/header";
 import i18n from "../../i18n/i18n";
+import SaveIcon from '@mui/icons-material/Save';
 
 export default function AddNationalityPage() {
   const theme = useTheme();
@@ -117,7 +118,7 @@ export default function AddNationalityPage() {
           type="submit"
           variant="contained"
           fullWidth
-          sx={{ mt: 1, mb: 2, py: 1.5 }}
+          sx={{ mt: 1, mb: 2, py: 1.5 , display: "flex", gap: 0.5 }}
         >
           {/* {isLoading ? (
               <CircularProgress
@@ -128,7 +129,8 @@ export default function AddNationalityPage() {
             ) : (
               t("form.loginButton")
             )} */}
-          {t("form.loginButton")}
+          {t("form.save")}
+          <SaveIcon sx={{  }} />
         </Button>
 
         {/* Forgot Password */}

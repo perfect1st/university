@@ -72,11 +72,11 @@ const isMobile = useMediaQuery(theme.breakpoints.down("md"));
           alignItems:  isMobile ? 'start' : 'center',
           justifyContent: 'space-between',
           gap: 2,
-          mt: 1,
+          my: 1,
           flexWrap: 'wrap',
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: 'bold',color: theme.palette.info.main }}>
+        <Typography variant="h5" sx={{ fontWeight: 'bold',color: theme.palette.info.main, my:1 }}>
           {subtitle}
         </Typography>
 

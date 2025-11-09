@@ -215,7 +215,9 @@
     "password":"Enter Your Password",
     "loginButton":"Login",
     "name_ar":"Name in Arabic",
-    "name_en":"Name in English"
+    "name_en":"Name in English",
+    "flag":"Flag",
+    "save":"Save"
   },
   "Users": "Users",
   "Users Details": "Users Details",
