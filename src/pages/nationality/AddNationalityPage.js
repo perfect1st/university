@@ -2,6 +2,8 @@ import { useTheme } from "@emotion/react";
 import {
   Box,
   Button,
+  Grid,
+  LinearProgress,
   TextField,
   Typography,
   useMediaQuery,
@@ -13,6 +15,12 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../components/PageHeader/header";
 import i18n from "../../i18n/i18n";
 import SaveIcon from '@mui/icons-material/Save';
+import { useRef, useState } from "react";
+import notify from "../../components/notify";
+import { baseURL } from "../../Api/apolloClient";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import axios from "axios";
+
 
 export default function AddNationalityPage() {
   const theme = useTheme();
@@ -20,6 +28,79 @@ export default function AddNationalityPage() {
   const isArabic = i18n.language === "ar";
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const fileInputRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [progress, setProgress] = useState(0);
+
+   // File handling
+    const handlePickFile = () => {
+      if (fileInputRef.current) fileInputRef.current.click();
+    };
+    const handleFileChange = async (e) => {
+      const file = e.target.files?.[0] ?? null;
+   
+  
+      console.log("ppppppppppppppppppppppp", file);
+  
+      // fileInputRef.current=file?.name;
+  
+      
+      const formData = new FormData();
+      formData.append("file", file);
+      
+        try {
+           
+            setProgress(0);
+      
+            const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+              onUploadProgress: (progressEvent) => {
+                const percent = Math.round(
+                  (progressEvent.loaded * 100) / progressEvent.total
+                );
+                setProgress(percent);
+              },
+            });
+      
+            console.log("res", res?.data?.url);
+            setSelectedFile(res?.data?.url);
+           // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
+          } catch (error) {
+            notify(t("errorUplaod"), "error");
+            console.log("error", error.message);
+          }
+     
+      // try {
+      //   const response = await fetch(`${baseURL}/api/forms/single`, {
+      //     method: "POST",
+      //     body: formData, // مهم جدًا ما تضيفش headers هنا
+      //   });
+  
+      //   if (!response.ok) {
+      //     throw new Error("Upload failed");
+      //   }
+  
+      //   const data = await response.json();
+      //   console.log("Upload successful:", data);
+      //   // data?.url
+  
+      //   console.log("ooooooooooooo", `${baseURL}${data?.url}`);
+  
+      //   // setAcademic((a) => ({
+      //   //   ...a,
+      //   //   high_school_certificate_file: `${baseURL}${data?.url}`,
+      //   // }));
+      // } catch (error) {
+      //   notify("admissions.errorUplaod", "error");
+      //   console.log("error", error.message);
+      // }
+      // console.log('formData',formData);
+    };
+
+    console.log('selectedFile',selectedFile);
 
   const formik = useFormik({
     initialValues: {
@@ -50,7 +131,7 @@ export default function AddNationalityPage() {
     },
   });
 
-   let translateText = isArabic ? "جنسية" : "Nationality";
+  let translateText = isArabic ? "جنسية" : "Nationality";
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Header
@@ -67,18 +148,11 @@ export default function AddNationalityPage() {
         isExcel={false}
         isPdf={false}
         isPrinter={false}
-        // onExcel={() => fetchAndExport("excel")}
-        // onPdf={() => fetchAndExport("pdf")}
-        // onPrinter={() => fetchAndExport("print")}
+      // onExcel={() => fetchAndExport("excel")}
+      // onPdf={() => fetchAndExport("pdf")}
+      // onPrinter={() => fetchAndExport("print")}
       />
       <Box component="form" onSubmit={formik.handleSubmit} fullWidth>
-        {/* <Typography
-            variant="h4"
-            gutterBottom
-            sx={{ fontWeight: "bold", mb: 4 }}
-          >
-            {t("form.login")}
-          </Typography> */}
 
         {/* Username */}
         <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
@@ -113,12 +187,84 @@ export default function AddNationalityPage() {
           sx={{ mb: 3 }}
         />
 
+        <Grid item xs={12} sx={{my:5}}>
+          <Typography variant="subtitle2">
+            {t("admissions.addFile")}
+          </Typography>
+
+          <Box
+            sx={{
+              width: "100%",
+              border: `2px dashed ${theme.palette.secondary.main}`,
+              p: 2,
+              mt: 1,
+              borderRadius: 1,
+            }}
+          >
+            <Typography variant="body2">
+              {/* {t("admissions.certificateDescription")} */}
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                mt: 2,
+                gap: 2,
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                hidden
+                onChange={handleFileChange}
+              // value={selectedFile}
+              />
+              <Button
+                variant="contained"
+                sx={{
+                  background: theme.palette.secondary.main,
+                  width: "150px",
+                  gap: 1,
+                }}
+                endIcon={
+                  <AddCircleOutlineIcon
+                    sx={{
+                      transform:
+                        i18n.language === "ar"
+                          ? "rotate(180deg)"
+                          : "none",
+                      transition: "transform 0.3s ease",
+                    }}
+                  />
+                }
+                onClick={handlePickFile}
+              >
+                {t("admissions.addFile")}
+              </Button>
+              <Typography
+                variant="body2"
+                sx={{ alignSelf: "center" }}
+              >
+                {selectedFile ? selectedFile : ""}
+              </Typography>
+
+            </Box>
+
+              {progress > 0 && (
+                                <LinearProgress variant="determinate" value={progress} />
+                              )}
+          
+          </Box>
+        </Grid>
+
         {/* Submit Button */}
         <Button
           type="submit"
           variant="contained"
           fullWidth
-          sx={{ mt: 1, mb: 2, py: 1.5 , display: "flex", gap: 0.5 }}
+          sx={{ mt: 1, mb: 2, py: 1.5, display: "flex", gap: 0.5 }}
         >
           {/* {isLoading ? (
               <CircularProgress
@@ -130,7 +276,7 @@ export default function AddNationalityPage() {
               t("form.loginButton")
             )} */}
           {t("form.save")}
-          <SaveIcon sx={{  }} />
+          <SaveIcon sx={{}} />
         </Button>
 
         {/* Forgot Password */}

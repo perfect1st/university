@@ -72,21 +72,7 @@ export default function FeeCard({
     const formData = new FormData();
     formData.append("file", file);
     try {
-      //      const response = await fetch(`${baseURL}/api/forms/single`, {
-      //   method: "POST",
-      //   body: formData, // مهم جدًا ما تضيفش headers هنا
-      // });
-
-      // if (!response.ok) {
-      //   throw new Error("Upload failed");
-      // }
-
-      // const data = await response.json();
-      // console.log("Upload successful:", data);
-
-      // console.log('ooooooooooooo',`${baseURL}${data?.url}`);
-      // setBankTransferDocument(`${baseURL}${data?.url}`);
-
+     
       setProgress(0);
 
       const res = await axios.post(`${baseURL}/api/forms/single`, formData, {

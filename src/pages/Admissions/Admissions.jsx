@@ -1388,6 +1388,7 @@ export default function Admissions() {
                         >
                           {selectedFile ? selectedFile : ""}
                         </Typography>
+                        
                       </Box>
                       {acadErrors.high_school_certificate_file && (
                         <Typography
