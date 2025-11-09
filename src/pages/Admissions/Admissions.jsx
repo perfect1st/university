@@ -103,7 +103,7 @@ export default function Admissions() {
   const isArabic = i18n.language === "ar";
   const theme = useTheme();
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   // const[registerationFees,setRegisterationFees] = useState(0);
   const [registerationFeesResults, setRegisterationFeesResults] =
@@ -263,6 +263,11 @@ export default function Admissions() {
   const departments = departmentsInFaculty?.getFacultyDepartmentsByFaculty
     ? departmentsInFaculty?.getFacultyDepartmentsByFaculty
     : null;
+
+    // FIRST term data
+    let firstTermData=termsData?.filter(el=>el.term_number==1);
+
+    console.log('firstTermData',firstTermData);
 
   // --- validation helpers (returns message or empty string) ---
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -614,6 +619,8 @@ export default function Admissions() {
   console.log("setSelectedPaymentMethod", selectedPaymnetMethod);
 
   console.log("fileInputRef", fileInputRef);
+
+  console.log('countriesLoading',countriesLoading);
 
   return (
     <Box>
@@ -1685,6 +1692,12 @@ export default function Admissions() {
                   )}
                 </Button>
               </Grid>
+
+           {
+            (countriesLoading||citiesLoading||faculitiesLoading||departmentsLoading||termsLoading)
+            && <CircularProgress size={25} />
+           } 
+           
             </Grid>
           )}
         </Box>
