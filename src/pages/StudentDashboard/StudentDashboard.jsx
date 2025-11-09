@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -10,6 +10,8 @@ import {
   TableCell,
   Paper,
   Grid,
+  Checkbox,
+  Button,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import LabelValueRow from "../../components/LabelValueRow"; // adjust path if needed
@@ -19,32 +21,64 @@ import i18n from "../../i18n/i18n";
 import { useLazyQuery } from "@apollo/client/react";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
 import LoadingPage from "../../components/LoadingComponent";
-
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
 export default function StudentDashboard() {
   const theme = useTheme();
   const { t } = useTranslation();
   const isArabic = i18n.language === "ar";
-  const me=useSelector(state=>state.user.loggedUser);
 
-    const[GetRegisterFormByUserId,{data:{getRegisterFormByUserId}={},loading:GetRegisterFormByUserIdLoading, error:GetRegisterFormByUserIdError}]=useLazyQuery(GET_REGISTERATION_FORM_BY_USER_ID , { fetchPolicy: "network-only" });
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
 
-    useEffect(()=>{
-      if(me?.id){
-        console.log('meeeee');
-        GetRegisterFormByUserId({variables:{user_id:me?.id}});
-      }
-    },[me]);
+  const handleChange = (e) => {
+    let isChecked=e.target.checked;
+    if(isChecked){
+        setSelectedSubjects((prev) => [...prev, e.target.value]);
+    }
+    else{
+        setSelectedSubjects((prev) => prev.filter((item) => item !== e.target.value));
+    }
+   // console.log("subj",e.target.value,e.target.checked);
+    // setChecked(event.target.checked);
+  };
+
+  console.log('selectedSubjects',selectedSubjects);
+
+  const me = useSelector((state) => state.user.loggedUser);
+
+  const [
+    GetRegisterFormByUserId,
+    {
+      data: { getRegisterFormByUserId } = {},
+      loading: GetRegisterFormByUserIdLoading,
+      error: GetRegisterFormByUserIdError,
+    },
+  ] = useLazyQuery(GET_REGISTERATION_FORM_BY_USER_ID, {
+    fetchPolicy: "network-only",
+  });
+
+  useEffect(() => {
+    if (me?.id) {
+      console.log("meeeee");
+      GetRegisterFormByUserId({ variables: { user_id: me?.id } });
+    }
+  }, [me]);
 
   const subjects = [
-    { title: "Mathematics", fullMark: 100, successDegree: 50 },
-    { title: "Physics", fullMark: 100, successDegree: 50 },
-    { title: "Programming", fullMark: 100, successDegree: 60 },
+    {   id:1, title: "Mathematics", fullmark_degree: 100, success_degree: 50 },
+    {   id:2, title: "Physics", fullmark_degree: 100, success_degree: 50 },
+    {   id:3,title: "Programming", fullmark_degree: 100, success_degree: 60 },
   ];
 
-  console.log('getRegisterFormByUserId',getRegisterFormByUserId);
+  console.log("getRegisterFormByUserId", getRegisterFormByUserId);
 
-  if(me==null||GetRegisterFormByUserIdLoading) return <LoadingPage />
+  console.log("academyTerm_id", getRegisterFormByUserId?.status);
+
+  const isPending = getRegisterFormByUserId?.status == "pending";
+
+  console.log("isPending", isPending);
+
+  if (me == null || GetRegisterFormByUserIdLoading) return <LoadingPage />;
   return (
     <Box sx={{ p: 3 }}>
       <Grid container spacing={3}>
@@ -67,13 +101,21 @@ export default function StudentDashboard() {
               <Grid item xs={12}>
                 <LabelValueRow
                   label={t("studentDashboard.faculty")}
-                  value={isArabic ? getRegisterFormByUserId?.faculty_id?.title_ar : getRegisterFormByUserId?.faculty_id?.title_en}
+                  value={
+                    isArabic
+                      ? getRegisterFormByUserId?.faculty_id?.title_ar
+                      : getRegisterFormByUserId?.faculty_id?.title_en
+                  }
                 />
               </Grid>
               <Grid item xs={12}>
                 <LabelValueRow
                   label={t("studentDashboard.facultyDepartment")}
-                  value={isArabic ? getRegisterFormByUserId?.faculty_department_id?.title_ar : getRegisterFormByUserId?.faculty_department_id?.title_en}
+                  value={
+                    isArabic
+                      ? getRegisterFormByUserId?.faculty_department_id?.title_ar
+                      : getRegisterFormByUserId?.faculty_department_id?.title_en
+                  }
                 />
               </Grid>
             </Grid>
@@ -108,7 +150,11 @@ export default function StudentDashboard() {
               <Grid item xs={12}>
                 <LabelValueRow
                   label={t("studentDashboard.semester")}
-                  value={isArabic ? getRegisterFormByUserId?.academyTerm_id?.title_ar : getRegisterFormByUserId?.academyTerm_id?.title_en}
+                  value={
+                    isArabic
+                      ? getRegisterFormByUserId?.academyTerm_id?.title_ar
+                      : getRegisterFormByUserId?.academyTerm_id?.title_en
+                  }
                 />
               </Grid>
             </Grid>
@@ -125,43 +171,116 @@ export default function StudentDashboard() {
           >
             {t("studentDashboard.subjects")}
           </Typography>
+          {isPending ? (
+            <>
+              <Paper sx={{ overflowX: "auto" }}>
+                <Table>
+                  <TableHead
+                    sx={{
+                      backgroundColor:
+                        theme.palette.primary?.tabelHeader || "#e0e0e0",
+                    }}
+                  >
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
+                        {t("studentDashboard.subjectTitle")}
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
+                        {t("studentDashboard.fullmarkDegree")}
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
+                        {t("studentDashboard.successDegree")}
+                      </TableCell>
 
-          <Paper sx={{ overflowX: "auto" }}>
-            <Table>
-              <TableHead
-                sx={{
-                  backgroundColor:
-                    theme.palette.primary?.tabelHeader || "#e0e0e0",
-                }}
+                      <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
+                        {t("studentDashboard.chooseMaterial")}
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody
+                    sx={{
+                      backgroundColor:
+                        theme.palette.background?.secDefault || "#fafafa",
+                    }}
+                  >
+                    {subjects.map((subj, idx) => (
+                      <TableRow key={idx}>
+                        <TableCell sx={{ textAlign: "start" }}>
+                          {subj.title}
+                        </TableCell>
+                        <TableCell sx={{ textAlign: "start" }}>
+                          {subj.fullmark_degree}
+                        </TableCell>
+                        <TableCell sx={{ textAlign: "start" }}>
+                          {subj.success_degree}
+                        </TableCell>
+
+                        <TableCell sx={{ textAlign: "start" }}>
+                          <Checkbox
+                            // checked={checked}
+                            value={subj?.id}
+                             onChange={(e)=>handleChange(e)}
+                            inputProps={{ "aria-label": "controlled" }}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Paper>
+
+              <Button
+                variant="contained"
+                sx={{ width: "10%", my: 4 , textAlign:"start", justifyContent:"start",gap:1 }}
+                // onClick={() => handleSubmitPayment()}
               >
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 700  , textAlign:"start"}}>
-                    {t("studentDashboard.subjectTitle")}
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 700 , textAlign:"start"}}>
-                    {t("studentDashboard.fullmarkDegree")}
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 700 , textAlign:"start"}}>
-                    {t("studentDashboard.successDegree")}
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody
-                sx={{
-                  backgroundColor:
-                    theme.palette.background?.secDefault || "#fafafa",
-                }}
-              >
-                {subjects.map((subj, idx) => (
-                  <TableRow key={idx}>
-                    <TableCell sx={{textAlign:"start"}}>{subj.title}</TableCell>
-                    <TableCell sx={{textAlign:"start"}}>{subj.fullMark}</TableCell>
-                    <TableCell sx={{textAlign:"start"}}>{subj.successDegree}</TableCell>
+                 <CheckCircleRoundedIcon /> {t("submit")}
+              </Button>
+            </>
+          ) : (
+            <Paper sx={{ overflowX: "auto" }}>
+              <Table>
+                <TableHead
+                  sx={{
+                    backgroundColor:
+                      theme.palette.primary?.tabelHeader || "#e0e0e0",
+                  }}
+                >
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
+                      {t("studentDashboard.subjectTitle")}
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
+                      {t("studentDashboard.fullmarkDegree")}
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
+                      {t("studentDashboard.successDegree")}
+                    </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Paper>
+                </TableHead>
+                <TableBody
+                  sx={{
+                    backgroundColor:
+                      theme.palette.background?.secDefault || "#fafafa",
+                  }}
+                >
+                  {subjects.map((subj, idx) => (
+                    <TableRow key={idx}>
+                      <TableCell sx={{ textAlign: "start" }}>
+                        {subj.title}
+                      </TableCell>
+                      <TableCell sx={{ textAlign: "start" }}>
+                        {subj.fullmark_degree}
+                      </TableCell>
+                      <TableCell sx={{ textAlign: "start" }}>
+                        {subj.success_degree}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Paper>
+          )}
         </Grid>
 
         {/* Right Side - Registration Steps (3 Columns) */}

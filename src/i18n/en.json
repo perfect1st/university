@@ -138,7 +138,8 @@
     "subjects": "Subjects",
     "subjectTitle": "Subject Title",
     "fullmarkDegree": "Fullmark Degree",
-    "successDegree": "Success Degree"
+    "successDegree": "Success Degree",
+    "chooseMaterial":"Choose Material"
   },
   "registrationSteps": {
     "title": "Registration Steps",
@@ -212,7 +213,9 @@
     "login":"login Form",
     "phoneOrEmail":"Enter your Phone Or Email",
     "password":"Enter Your Password",
-    "loginButton":"Login"
+    "loginButton":"Login",
+    "name_ar":"Name in Arabic",
+    "name_en":"Name in English"
   },
   "Users": "Users",
   "Users Details": "Users Details",
@@ -254,5 +257,6 @@
      "NameInArabic": "Name In Arabic",
      "NameInEnglish":"Name In English",
      "flag":"Country Flag"
-   }
+   },
+    "submit":"Submit"
 }

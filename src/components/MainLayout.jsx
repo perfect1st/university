@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { getUserCookie } from "../hooks/authCookies";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { Outlet, useLocation, useSearchParams } from "react-router-dom";
 import { useQuery } from "@apollo/client/react";
 import { GET_LOGGED_USER_BY_TOKEN } from "../graphql/usersQueries";
 import { useSelector } from "react-redux";
@@ -57,7 +57,7 @@ console.log("hideSecandHeader",!hideSecandHeader)
         </Box>
       </Box>
 
-
+      <Outlet />
     </Box>
   );
 };

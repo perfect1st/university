@@ -181,6 +181,7 @@ export default function AllNationalitiesPage() {
     }
   };
 
+  const addUserNavigate=()=>navigate('add');
   // Permissions: for the dummy page we allow viewing. Replace with your real permission check if needed.
   const hasViewPermission = true;
   const hasAddPermission = true;
@@ -205,7 +206,7 @@ export default function AllNationalitiesPage() {
             haveBtn={hasAddPermission}
             btn={t("addItem", { item: translateText })}
             btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
-            // onSubmit={addUserSubmit}
+             onSubmit={addUserNavigate}
             isExcel
             isPdf
             isPrinter

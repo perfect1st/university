@@ -689,7 +689,7 @@ export default function Admissions() {
               sx={{ width: "100%", mt: 1 }}
               onClick={() => handleSubmitPayment()}
             >
-              تأكيد
+              {t("submit")}
             </Button>
           </DialogActions>
         </Dialog>

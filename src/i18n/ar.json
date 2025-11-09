@@ -176,7 +176,8 @@
     "subjects": "المواد الدراسية",
     "subjectTitle": "اسم المادة",
     "fullmarkDegree": "الدرجة الكاملة",
-    "successDegree": "درجة النجاح"
+    "successDegree": "درجة النجاح",
+    "chooseMaterial":"اختر المادة"
   },
   "registrationSteps": {
     "title": "خطوات التسجيل",
@@ -250,7 +251,9 @@
     "login":"تسجيل الدخول",
     "phoneOrEmail":"ادخل رقم الجوال او البريد الالكتروني",
     "password":"ادخل كلمة المرور",
-    "loginButton":"تسجيل الدخول"
+    "loginButton":"تسجيل الدخول",
+    "name_ar":"الاسم بالعربية",
+    "name_en":"الاسم بالانجليزية"
   },
   "Users": "المستخدمون",
   "Users Details": "تفاصيل المستخدمين",
@@ -292,5 +295,7 @@
      "NameInArabic": "الاسم بالعربية",
      "NameInEnglish":"الاسم بالانجليزية",
      "flag":"علم الدولة"
-   }
+   },
+
+  "submit":"تأكيد"
 }

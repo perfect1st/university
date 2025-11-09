@@ -11,6 +11,9 @@ import { ReactComponent as ExcelIcon } from "../../assets/xsl-02.svg";
 import { ReactComponent as PdfIcon } from "../../assets/pdf-02.svg";
 import { ReactComponent as PrinterIcon } from "../../assets/printer.svg";
 import { getUserCookie } from '../../hooks/authCookies';
+import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
+import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
+import { useNavigate } from 'react-router-dom';
 
 const Header = ({
   title,
@@ -23,13 +26,17 @@ const Header = ({
   isExcel = false,
   isPdf = false,
   isPrinter = false,
+  hasAddOrEditBtn=false,
   onExcel,
   onPdf,
-  onPrinter
+  onPrinter,
+  sub2,
+  hasNavigate=false
 }) => {
   const theme = useTheme();
   const isRtl = i18n.language === 'ar';
 const user = getUserCookie();
+const navigate = useNavigate();
 
 const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   return (
@@ -43,7 +50,20 @@ const isMobile = useMediaQuery(theme.breakpoints.down("md"));
         flexWrap: 'wrap',
       }}
     >
-      <Typography variant="h6" sx={{color: theme.palette.info.secondary}}>{title}</Typography>
+      <Typography  variant="h6" sx={{color: theme.palette.info.secondary, gap: 0.5,fontSize:14, display:"flex"}}>
+
+        <Typography component={"span"} onClick={() => hasNavigate && navigate(-1)} sx={{cursor:"pointer"}}>
+          {title}
+        </Typography>
+         
+        { hasAddOrEditBtn && (isRtl ?
+           <ArrowBackIosNewRoundedIcon sx={{ fontSize: 15 , fontWeight: 'bold', height:'20px' }} /> : <ArrowForwardIosRoundedIcon sx={{ fontSize: 16 , fontWeight: 'bold' , my:"auto" }} />) }
+        {hasAddOrEditBtn &&
+        <Typography component="span"  fontSize={13}  sx={{color: theme.palette.info.subtitle,my:0.5}}>
+          {sub2}
+        </Typography>
+        }
+      </Typography>
 
       <Box
         sx={{
