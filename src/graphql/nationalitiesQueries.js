@@ -12,3 +12,16 @@ export const GET_ALL_NATIONALITIES=gql`
     }
 }
 `;
+
+export const CREATE_NEW_NATIONALITY=gql`
+mutation CreateNationality($input:CreateNationalityInput!) {
+    createNationality(input: $input) {
+        id
+        name_ar
+        name_en
+        flag
+        createdAt
+        updatedAt
+    }
+}
+`;

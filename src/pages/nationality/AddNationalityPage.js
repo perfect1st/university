@@ -20,6 +20,9 @@ import notify from "../../components/notify";
 import { baseURL } from "../../Api/apolloClient";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import axios from "axios";
+import { CREATE_NEW_NATIONALITY } from "../../graphql/nationalitiesQueries";
+import { useMutation } from "@apollo/client/react";
+
 
 
 export default function AddNationalityPage() {
@@ -29,6 +32,19 @@ export default function AddNationalityPage() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+  const[
+    createNationality,
+    {
+      data,
+      loading,
+      error
+    }
+  ]=useMutation(
+    CREATE_NEW_NATIONALITY,
+    {
+      fetchPolicy:"network-only"
+    }
+  );
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [progress, setProgress] = useState(0);
@@ -73,31 +89,7 @@ export default function AddNationalityPage() {
             console.log("error", error.message);
           }
      
-      // try {
-      //   const response = await fetch(`${baseURL}/api/forms/single`, {
-      //     method: "POST",
-      //     body: formData, // مهم جدًا ما تضيفش headers هنا
-      //   });
-  
-      //   if (!response.ok) {
-      //     throw new Error("Upload failed");
-      //   }
-  
-      //   const data = await response.json();
-      //   console.log("Upload successful:", data);
-      //   // data?.url
-  
-      //   console.log("ooooooooooooo", `${baseURL}${data?.url}`);
-  
-      //   // setAcademic((a) => ({
-      //   //   ...a,
-      //   //   high_school_certificate_file: `${baseURL}${data?.url}`,
-      //   // }));
-      // } catch (error) {
-      //   notify("admissions.errorUplaod", "error");
-      //   console.log("error", error.message);
-      // }
-      // console.log('formData',formData);
+    
     };
 
     console.log('selectedFile',selectedFile);
@@ -108,13 +100,10 @@ export default function AddNationalityPage() {
       name_en: "",
       flag: "",
     },
-    // t("admissions.errors.required")
+    
     validationSchema: Yup.object({
       name_ar: Yup.string().required(t("admissions.errors.required")),
       name_en: Yup.string().required(t("admissions.errors.required")),
-      //  password: Yup.string()
-      //    .min(6, t("validation.passwordMin"))
-      //    .required(t("validation.passwordRequired")),
     }),
     onSubmit: async (values) => {
       const data = {
