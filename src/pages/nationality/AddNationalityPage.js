@@ -130,7 +130,7 @@ export default function AddNationalityPage() {
         notify(t("success"),"success");
 
         navigate('/nationality');
-        
+
       } catch (error) {
         console.error("Error logging in:", error);
          notify(t("error"), "error");
