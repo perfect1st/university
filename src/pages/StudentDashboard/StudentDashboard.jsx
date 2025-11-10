@@ -142,9 +142,14 @@ export default function StudentDashboard() {
   console.log("getRegisterFormByUserId", getRegisterFormByUserId);
 
 
+  // لو مفيش مواد مسجل فيها
   const isPending = getUserStudyMaterialsByUser ? true : false;
 
+  // في مواد و ب انتظار موافقة المشرف
+  const isDisabled= getUserStudyMaterialsByUser && (getUserStudyMaterialsByUser[0]?.status=="pending" ? true : false)
+
   console.log("isPending", isPending);
+  console.log("isDisabled",isDisabled);
 
   console.log("getUserStudyMaterialsByUser",getUserStudyMaterialsByUser);
 
@@ -309,6 +314,7 @@ export default function StudentDashboard() {
                           <Checkbox
                             // checked={checked}
                              value={subj?.id}
+                             disabled={isDisabled}
                              onChange={(e)=>handleChange(e)}
                             inputProps={{ "aria-label": "controlled" }}
                           />
@@ -319,13 +325,18 @@ export default function StudentDashboard() {
                 </Table>
               </Paper>
 
-              <Button
+                  {
+                    !isDisabled &&<>
+                      <Button
                 variant="contained"
                 sx={{ width: "10%", my: 4 , textAlign:"start", justifyContent:"start",gap:1 }}
                  onClick={() => handleSubmitMaterials()}
               >
               { creatingUserSubjects ? <CircularProgress size={25} sx={{color:"white"}} /> : <> <CheckCircleRoundedIcon /> {t("submit")}</>}   
               </Button>
+                    </>
+                  }
+            
             </>
           ) : (
             <Paper sx={{ overflowX: "auto" }}>
