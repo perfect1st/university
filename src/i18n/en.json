@@ -260,5 +260,8 @@
      "NameInEnglish":"Name In English",
      "flag":"Country Flag"
    },
-    "submit":"Submit"
+    "submit":"Submit",
+    "error":"Error happened try again later",
+    "success":"success",
+    "dataNotFound":"Not Found"
 }

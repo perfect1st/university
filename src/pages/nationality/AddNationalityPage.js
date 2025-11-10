@@ -2,6 +2,7 @@ import { useTheme } from "@emotion/react";
 import {
   Box,
   Button,
+  CircularProgress,
   Grid,
   LinearProgress,
   TextField,
@@ -47,12 +48,14 @@ export default function AddNationalityPage() {
   );
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedToShowFile, setSelectedToShowFile] = useState(null);
   const [progress, setProgress] = useState(0);
 
    // File handling
     const handlePickFile = () => {
       if (fileInputRef.current) fileInputRef.current.click();
     };
+
     const handleFileChange = async (e) => {
       const file = e.target.files?.[0] ?? null;
    
@@ -61,7 +64,8 @@ export default function AddNationalityPage() {
   
       // fileInputRef.current=file?.name;
   
-      
+      setSelectedToShowFile(file?.name);
+
       const formData = new FormData();
       formData.append("file", file);
       
@@ -98,7 +102,7 @@ export default function AddNationalityPage() {
     initialValues: {
       name_ar: "",
       name_en: "",
-      flag: "",
+      // flag: "",
     },
     
     validationSchema: Yup.object({
@@ -107,13 +111,30 @@ export default function AddNationalityPage() {
     }),
     onSubmit: async (values) => {
       const data = {
-        identifier: values.username,
-        password: values.password,
+        name_ar:values?.name_ar,
+        name_en: values.name_en,
+        flag:selectedFile
       };
       try {
         console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+        console.log(data);
+
+        const result=await createNationality({
+          variables:{
+            input:data
+          }
+        });
+
+        console.log('result',result);
+
+        notify(t("success"),"success");
+
+        navigate('/nationality');
+        
       } catch (error) {
         console.error("Error logging in:", error);
+         notify(t("error"), "error");
+        
       } finally {
         //  setIsLoading(false);
       }
@@ -121,6 +142,9 @@ export default function AddNationalityPage() {
   });
 
   let translateText = isArabic ? "جنسية" : "Nationality";
+
+ // console.log("fileInputRef",fileInputRef);
+
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Header
@@ -236,7 +260,7 @@ export default function AddNationalityPage() {
                 variant="body2"
                 sx={{ alignSelf: "center" }}
               >
-                {selectedFile ? selectedFile : ""}
+                {selectedToShowFile ? selectedToShowFile : ""}
               </Typography>
 
             </Box>
@@ -264,8 +288,18 @@ export default function AddNationalityPage() {
             ) : (
               t("form.loginButton")
             )} */}
-          {t("form.save")}
-          <SaveIcon sx={{}} />
+        {
+          loading ? <CircularProgress
+                size={26}
+                thickness={8}
+                sx={{ color: "#fff" }}
+              />
+              :
+              <>
+              {t("form.save")} <SaveIcon sx={{}} />
+              </>
+        }  
+          
         </Button>
 
         {/* Forgot Password */}

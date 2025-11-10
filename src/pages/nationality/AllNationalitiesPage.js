@@ -109,7 +109,7 @@ export default function AllNationalitiesPage() {
     { key: "name_en", label: t("Dashboard.NameInEnglish") },
     { key: "flag", label: t("Dashboard.flag") },
     // { key: "userType", label: t("User Type") },
-    { key: "status", label: t("Status") },
+    // { key: "status", label: t("Status") },
   ];
 
   // export filtered data (all filteredUsers, not only page)

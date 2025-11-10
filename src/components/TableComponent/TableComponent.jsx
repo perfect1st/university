@@ -21,6 +21,7 @@ import { ReactComponent as SortIcon } from "../../assets/Sort-icon.svg";
 import { ReactComponent as InfoIcon } from "../../assets/InfoIcon.svg";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { baseURL } from "../../Api/apolloClient";
 
 // Define only necessary status styles
 const statusStyles = {
@@ -218,7 +219,8 @@ const TableComponent = ({
                         textAlign: isArabic ? "right" : "left"
                       }}
                     >
-                      {column.key === statusKey ? (
+                      {/* {
+                      column.key === statusKey ? (
                         <Chip
                           label={t(status)}
                           ref={(el) => (chipRefs.current[row.id] = el)}
@@ -245,7 +247,32 @@ const TableComponent = ({
                         column.render(row)
                       ) : (
                         row[column.key]
-                      )}
+                      )} */}
+                      {
+                        // /uploads/
+                      row[column.key]?.includes("/uploads/") 
+                      ?
+                      
+                      <Box
+      component="img"
+      src={`${baseURL}${row[column.key]}`}
+      alt="وصف الصورة"
+      loading="lazy"
+      sx={{
+        width: 100,          // ثابت أو '100%' للعرض الكامل
+        height: "auto",
+        objectFit: 'cover',  // contain, cover, fill
+        borderRadius: 2,     // زوايا مدورة
+        boxShadow: 1,
+      }}
+    />
+    :  
+    !row[column.key] || row[column.key] === "null" ?
+     t("dataNotFound") 
+     :
+
+        row[column.key]
+                      }
                     </TableCell>
                   ))}
 
