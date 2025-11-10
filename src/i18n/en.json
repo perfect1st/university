@@ -136,10 +136,16 @@
     "studyYear": "Study Year",
     "semester": "Semester",
     "subjects": "Subjects",
-    "subjectTitle": "Subject Title",
+    "subjectTitleAr": "Subject Title in Arabic",
+    "subjectTitleEn": "Subject Title in English",
     "fullmarkDegree": "Fullmark Degree",
     "successDegree": "Success Degree",
-    "chooseMaterial":"Choose Material"
+    "chooseMaterial":"Choose Material",
+    "materialHours":"Material Hours",
+    "minAcademyHours":"Minimum Hours",
+    "maxAcademyHours":"Maximum Hours",
+    "hoursError":"The number of hours must be greater than the minimum limit and less than the maximum limit For Term"
+
   },
   "registrationSteps": {
     "title": "Registration Steps",

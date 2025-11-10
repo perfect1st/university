@@ -119,7 +119,18 @@ query GetRegisterFormByUserId($user_id : ID!) {
             min_study_hours
             max_study_hours
             faculty_department_id
-            materials_array
+            materials_array{
+          id
+        title_ar
+        title_en
+        status
+        fullmark_degree
+        success_degree
+        faculty_department_id
+        material_hours
+        createdAt
+        updatedAt
+        }
         }
 
             }

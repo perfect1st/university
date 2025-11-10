@@ -174,10 +174,15 @@
     "studyYear": "سنة الدراسة",
     "semester": "الفصل الدراسي",
     "subjects": "المواد الدراسية",
-    "subjectTitle": "اسم المادة",
+    "subjectTitleAr": "اسم المادة بالعربية",
+    "subjectTitleEn": "اسم المادة بالانجليزية",
     "fullmarkDegree": "الدرجة الكاملة",
     "successDegree": "درجة النجاح",
-    "chooseMaterial":"اختر المادة"
+    "chooseMaterial":"اختر المادة",
+    "materialHours":"عدد الساعات",
+    "minAcademyHours":"اقل عدد ساعات",
+    "maxAcademyHours":"اقصي عدد ساعات",
+    "hoursError":" يجب ان يكون عدد الساعات اكبر من الحد الادني واقل من الحد الاقصي للترم"
   },
   "registrationSteps": {
     "title": "خطوات التسجيل",

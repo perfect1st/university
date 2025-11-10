@@ -22,6 +22,7 @@ import { setToken, setUserCookie } from "../../hooks/authCookies";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LOGIN_USER } from "../../graphql/usersQueries";
 import { useMutation } from "@apollo/client/react";
+import notify from "../../components/notify";
 
 
 const LoginPage = () => {
@@ -119,6 +120,7 @@ const LoginPage = () => {
         // }
       } catch (error) {
         console.error("Error logging in:", error);
+        notify("invalid Credentials","error");
       } finally {
         setIsLoading(false);
       }

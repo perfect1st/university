@@ -174,17 +174,15 @@ $input: PayUserRequiredFeesInput!
 
 `;
 
-// export const PAY_USER_REQUIRED_FEES = gql`
-//   mutation PayUserRequiredFees(
-//     $payUserRequiredFeesId: ID!
-//     $input: PayUserRequiredFeesInput!
-//   ) {
-//     payUserRequiredFees(id: $payUserRequiredFeesId, input: $input) {
-//       id
-//       user_id {
-//         fullname
-//       }
-//     }
-//   }
-// `;
+// الطالب بيخنار المواد الل عاوز ياخدها ف الترم 
+export const CREATE_USER_STUDY_MATERIAL=gql`
+mutation CreateUserStudyMaterial($input:UserStudyMaterialInput!) {
+    createUserStudyMaterial(input: $input) {
+        id
+        status
+        createdAt
+        updatedAt
+    }
+}
+`;
 

@@ -12,16 +12,20 @@ import {
   Grid,
   Checkbox,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import LabelValueRow from "../../components/LabelValueRow"; // adjust path if needed
 import RegistrationSteps from "../../components/studentDashboard/RegistrationSteps";
 import { useSelector } from "react-redux";
 import i18n from "../../i18n/i18n";
-import { useLazyQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
 import LoadingPage from "../../components/LoadingComponent";
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import { CREATE_USER_STUDY_MATERIAL } from "../../graphql/usersQueries";
+import notify from "../../components/notify";
+
 
 export default function StudentDashboard() {
   const theme = useTheme();
@@ -46,6 +50,12 @@ export default function StudentDashboard() {
 
   const me = useSelector((state) => state.user.loggedUser);
 
+  const[CreateUserStudyMaterial,{
+    data:{createUserStudyMaterial}={},
+    loading:creatingUserSubjects,
+    error:creatingMaterialError
+  }]=useMutation(CREATE_USER_STUDY_MATERIAL,{fetchPolicy:"network-only"});
+
   const [
     GetRegisterFormByUserId,
     {
@@ -57,6 +67,7 @@ export default function StudentDashboard() {
     fetchPolicy: "network-only",
   });
 
+
   useEffect(() => {
     if (me?.id) {
       console.log("meeeee");
@@ -64,11 +75,50 @@ export default function StudentDashboard() {
     }
   }, [me]);
 
-  const subjects = [
-    {   id:1, title: "Mathematics", fullmark_degree: 100, success_degree: 50 },
-    {   id:2, title: "Physics", fullmark_degree: 100, success_degree: 50 },
-    {   id:3,title: "Programming", fullmark_degree: 100, success_degree: 60 },
-  ];
+  const subjects = getRegisterFormByUserId?.academyTerm_id?.materials_array || [];
+
+  const handleSubmitMaterials=async()=>{
+    try {
+      // الاول اعمل check علي عدد الساعات
+      let selectedMaterialsArr=selectedSubjects?.map(el=>subjects?.find(ele=>ele?.id==el));
+      console.log('selectedMaterialsArr',selectedMaterialsArr);
+
+      let totalMaterialHours=0;
+      let academyMinHours=getRegisterFormByUserId?.academyTerm_id?.min_study_hours;
+      let academyMaxHours=getRegisterFormByUserId?.academyTerm_id?.max_study_hours;
+
+      selectedMaterialsArr?.map(el=>totalMaterialHours+=el?.material_hours);
+
+      console.log('totalMaterialHours',totalMaterialHours);
+
+      if(totalMaterialHours>=academyMinHours && totalMaterialHours<=academyMaxHours){
+         
+
+          let data={
+              user_id: me?.id,
+              academyTerm_id:getRegisterFormByUserId?.academyTerm_id?.id,
+              material_id:selectedSubjects
+          }
+     const result=await CreateUserStudyMaterial({
+      variables:{
+        input: data
+      }
+     });
+
+     console.log("result",result);
+     notify(t("success"),"success");
+      }
+      else{
+        notify(t("studentDashboard.hoursError"),"error");
+      }
+
+    } catch (error) {
+      console.log('error',error);
+      notify(t("error"),"error");
+    }
+  }
+
+  console.log('subjects',subjects);
 
   console.log("getRegisterFormByUserId", getRegisterFormByUserId);
 
@@ -157,6 +207,24 @@ export default function StudentDashboard() {
                   }
                 />
               </Grid>
+
+              <Grid item xs={12}>
+                <LabelValueRow
+                  label={t("studentDashboard.minAcademyHours")}
+                  value={
+                     getRegisterFormByUserId?.academyTerm_id?.min_study_hours
+                  }
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <LabelValueRow
+                  label={t("studentDashboard.maxAcademyHours")}
+                  value={
+                     getRegisterFormByUserId?.academyTerm_id?.max_study_hours
+                  }
+                />
+              </Grid>
             </Grid>
           </Paper>
 
@@ -183,13 +251,14 @@ export default function StudentDashboard() {
                   >
                     <TableRow>
                       <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
-                        {t("studentDashboard.subjectTitle")}
+                        {t("studentDashboard.subjectTitleAr")}
                       </TableCell>
-                      <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
-                        {t("studentDashboard.fullmarkDegree")}
+                       <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
+                        {t("studentDashboard.subjectTitleEn")}
                       </TableCell>
+                     
                       <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
-                        {t("studentDashboard.successDegree")}
+                        {t("studentDashboard.materialHours")}
                       </TableCell>
 
                       <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
@@ -203,22 +272,23 @@ export default function StudentDashboard() {
                         theme.palette.background?.secDefault || "#fafafa",
                     }}
                   >
-                    {subjects.map((subj, idx) => (
+                    {subjects?.map((subj, idx) => (
                       <TableRow key={idx}>
                         <TableCell sx={{ textAlign: "start" }}>
-                          {subj.title}
+                          {  subj?.title_ar  }
                         </TableCell>
                         <TableCell sx={{ textAlign: "start" }}>
-                          {subj.fullmark_degree}
+                          {  subj?.title_en  }
                         </TableCell>
+                       
                         <TableCell sx={{ textAlign: "start" }}>
-                          {subj.success_degree}
+                          {subj.material_hours}
                         </TableCell>
 
                         <TableCell sx={{ textAlign: "start" }}>
                           <Checkbox
                             // checked={checked}
-                            value={subj?.id}
+                             value={subj?.id}
                              onChange={(e)=>handleChange(e)}
                             inputProps={{ "aria-label": "controlled" }}
                           />
@@ -232,9 +302,9 @@ export default function StudentDashboard() {
               <Button
                 variant="contained"
                 sx={{ width: "10%", my: 4 , textAlign:"start", justifyContent:"start",gap:1 }}
-                // onClick={() => handleSubmitPayment()}
+                 onClick={() => handleSubmitMaterials()}
               >
-                 <CheckCircleRoundedIcon /> {t("submit")}
+              { creatingUserSubjects ? <CircularProgress size={25} sx={{color:"white"}} /> : <> <CheckCircleRoundedIcon /> {t("submit")}</>}   
               </Button>
             </>
           ) : (
@@ -264,7 +334,7 @@ export default function StudentDashboard() {
                       theme.palette.background?.secDefault || "#fafafa",
                   }}
                 >
-                  {subjects.map((subj, idx) => (
+                  {subjects?.map((subj, idx) => (
                     <TableRow key={idx}>
                       <TableCell sx={{ textAlign: "start" }}>
                         {subj.title}
