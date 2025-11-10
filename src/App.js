@@ -422,6 +422,15 @@ function App() {
                       }
                     />
 
+                    <Route
+                      path="details/:id"
+                      element={
+                        <MainLayout>
+                          <AddNationalityPage />
+                        </MainLayout>
+                      }
+                    />
+
                   </Route>
 
                

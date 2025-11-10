@@ -20,7 +20,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { ReactComponent as SortIcon } from "../../assets/Sort-icon.svg";
 import { ReactComponent as InfoIcon } from "../../assets/InfoIcon.svg";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { baseURL } from "../../Api/apolloClient";
 
 // Define only necessary status styles
@@ -49,6 +49,7 @@ const TableComponent = ({
   dontShowActions = false,
   onActionClick,
   onSortClick,
+  handleDetailsClick
 }) => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
@@ -57,6 +58,7 @@ const TableComponent = ({
   const [selectedRow, setSelectedRow] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
+  const location=useLocation();
   
   const chipRefs = useRef({});
   const [maxChipWidth, setMaxChipWidth] = useState(0);
@@ -80,12 +82,12 @@ const TableComponent = ({
     setSelectedRow(null);
   };
 
-  const handleDetailsClick = () => {
-    if (onViewDetails && selectedRow) {
-      onViewDetails(selectedRow);
-    }
-    handleClose();
-  };
+  // const handleDetailsClick = () => {
+  //   if (onViewDetails && selectedRow) {
+  //     onViewDetails(selectedRow);
+  //   }
+  //   handleClose();
+  // };
 
   const handleStatusSelect = (newStatus) => {
     if (onStatusChange && selectedRow) {
@@ -289,7 +291,10 @@ const TableComponent = ({
                         <Button
                           variant="contained"
                           color="primary"
-                          onClick={(e) => onActionClick?.(e, row)}
+                          onClick={(e) =>{
+                            console.log('uuuuuuuuuuuuuu');
+                            onActionClick?.(e, row);
+                          } }
                           sx={{
                             textTransform: "none",
                             fontWeight: "bold",
@@ -305,7 +310,10 @@ const TableComponent = ({
                       ) : actionIconType === "info" ? (
                         <IconButton
                           size="small"
-                          onClick={(e) => onActionClick?.(e, row)}
+                          onClick={(e) => {
+                            onActionClick?.(e, row)
+                           // navigate();
+                          }}
                           sx={{
                             border: `1px solid ${theme.palette.primary.main}`,
                             borderRadius: 1,
@@ -319,7 +327,10 @@ const TableComponent = ({
                       ) : (
                         <IconButton
                           size="small"
-                          onClick={(e) => handleClick(e, row)}
+                          onClick={(e) =>{
+                            // console.log('llllllllllllllllllllllllll');
+                              handleClick(e, row);
+                          } }
                           sx={{
                             border: `1px solid ${theme.palette.info.main}`,
                             borderRadius: 1,
@@ -360,7 +371,11 @@ const TableComponent = ({
         {/* Details */}
         {!isInDetails && (
           <MenuItem
-            onClick={handleDetailsClick}
+            onClick={()=>{
+              handleDetailsClick(selectedRow);
+
+           // console.log('handleDetailsClick',selectedRow);
+            }}
             sx={{
               borderLeft: isArabic
                 ? ""

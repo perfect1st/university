@@ -16,7 +16,7 @@ import i18n from "../../i18n/i18n";
 import { useSelector } from "react-redux";
 import { useMemo, useState } from "react";
 import TableComponent from "../../components/TableComponent/TableComponent";
-import { useNavigate, useSearchParams, Navigate } from "react-router-dom";
+import { useNavigate, useSearchParams, Navigate, useLocation } from "react-router-dom";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Header from "../../components/PageHeader/header";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
@@ -40,7 +40,9 @@ export default function AllNationalitiesPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const location=useLocation();
 
+ // console.log('location',location);
   // get all nationalities
   const {
     data: { nationalities } = {},
@@ -182,6 +184,15 @@ export default function AllNationalitiesPage() {
   };
 
   const addUserNavigate=()=>navigate('add');
+
+  const handleDetailsClick=(selectedRow)=>{
+    console.log('handleDetailsClick',selectedRow);
+    navigate(`details/${selectedRow?.id}`,{
+      state:selectedRow
+    });
+  }
+
+  // const onActionClick=()=>navigate('details')
   // Permissions: for the dummy page we allow viewing. Replace with your real permission check if needed.
   const hasViewPermission = true;
   const hasAddPermission = true;
@@ -233,6 +244,7 @@ export default function AllNationalitiesPage() {
               borderRadius: 1,
               width: "100%",
             }}
+            handleDetailsClick={handleDetailsClick}
             // onStatusChange={onStatusChange}
           />
         </Grid>
