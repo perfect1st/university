@@ -23,7 +23,7 @@ import { useLazyQuery, useMutation } from "@apollo/client/react";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
 import LoadingPage from "../../components/LoadingComponent";
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
-import { CREATE_USER_STUDY_MATERIAL } from "../../graphql/usersQueries";
+import { CREATE_USER_STUDY_MATERIAL , GET_USER_STUDY_MATERIALS_BY_USER_ID } from "../../graphql/usersQueries";
 import notify from "../../components/notify";
 
 
@@ -67,12 +67,31 @@ export default function StudentDashboard() {
     fetchPolicy: "network-only",
   });
 
+  // المواد الل المشرف وافق عليها
+  const[GetUserStudyMaterialsByUser,{
+    data:{ getUserStudyMaterialsByUser}={},
+    loading:getUserStudyMaterialsLoading,
+    error: getUserStudyMaterialError
+  }]=useLazyQuery(GET_USER_STUDY_MATERIALS_BY_USER_ID,{
+    fetchPolicy:"network-only"
+  })
+
 
   useEffect(() => {
-    if (me?.id) {
-      console.log("meeeee");
-      GetRegisterFormByUserId({ variables: { user_id: me?.id } });
+    const get=async()=>{
+
+         if (me?.id) {
+      console.log("meeeee",me?.id);
+      await Promise.all([
+          GetRegisterFormByUserId({ variables: { user_id: me?.id } }),
+          GetUserStudyMaterialsByUser({ variables: { user_id: me?.id } })
+      ])
+
     }
+    }
+
+   get();
+
   }, [me]);
 
   const subjects = getRegisterFormByUserId?.academyTerm_id?.materials_array || [];
@@ -122,13 +141,14 @@ export default function StudentDashboard() {
 
   console.log("getRegisterFormByUserId", getRegisterFormByUserId);
 
-  console.log("academyTerm_id", getRegisterFormByUserId?.status);
 
-  const isPending = getRegisterFormByUserId?.status == "pending";
+  const isPending = getUserStudyMaterialsByUser ? true : false;
 
   console.log("isPending", isPending);
 
-  if (me == null || GetRegisterFormByUserIdLoading) return <LoadingPage />;
+  console.log("getUserStudyMaterialsByUser",getUserStudyMaterialsByUser);
+
+  if (me == null || GetRegisterFormByUserIdLoading || getUserStudyMaterialsLoading) return <LoadingPage />;
   return (
     <Box sx={{ p: 3 }}>
       <Grid container spacing={3}>

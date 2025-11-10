@@ -186,3 +186,27 @@ mutation CreateUserStudyMaterial($input:UserStudyMaterialInput!) {
 }
 `;
 
+export const GET_USER_STUDY_MATERIALS_BY_USER_ID=gql`
+query GetUserStudyMaterialsByUser($user_id : ID!) {
+    getUserStudyMaterialsByUser(user_id: $user_id) {
+        id
+        status
+        createdAt
+        updatedAt
+        academyTerm_id {
+            id
+            title_ar
+            title_en
+            status
+            study_year
+            current_year
+            term_number
+            min_study_hours
+            max_study_hours
+            faculty_department_id
+        }
+    }
+}
+
+`;
+
