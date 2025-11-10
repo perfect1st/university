@@ -78,19 +78,16 @@ export default function StudentDashboard() {
 
 
   useEffect(() => {
-    const get=async()=>{
-
-         if (me?.id) {
+      if (me?.id) {
       console.log("meeeee",me?.id);
-      await Promise.all([
-          GetRegisterFormByUserId({ variables: { user_id: me?.id } }),
-          GetUserStudyMaterialsByUser({ variables: { user_id: me?.id } })
-      ])
+      // await Promise.all([
+      //     GetRegisterFormByUserId({ variables: { user_id: me?.id } }),
+      //     GetUserStudyMaterialsByUser({ variables: { user_id: me?.id } })
+      // ])
 
+        GetRegisterFormByUserId({ variables: { user_id: me?.id } });
+        GetUserStudyMaterialsByUser({ variables: { user_id: me?.id } });
     }
-    }
-
-   get();
 
   }, [me]);
 
