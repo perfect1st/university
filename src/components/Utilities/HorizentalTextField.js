@@ -19,10 +19,17 @@ export default function HorizentalTextField({
 }) {
   const theme = useTheme();
   const fileInputRef = useRef();
+  const inputRef = useRef(null);
 
   const handleClick = () => {
     // تفتح نافذة اختيار الملفات
     fileInputRef.current.click();
+  };
+
+  const handleFocus = () => {
+    if (inputRef.current) {
+      inputRef.current.focus(); // يعمل focus على الـ input
+    }
   };
   //     font-family: Arial;
   // font-weight: 400;
@@ -40,62 +47,63 @@ export default function HorizentalTextField({
 
       {
         type == "file" ?
-        <Box sx={{display:"flex" , flexWrap:"wrap" , justifyContent:"space-between", flexGrow:"1"}}>
-             <Box
-            component="img"
-            src={`${baseURL}${value}`}
-            alt="وصف الصورة"
-            loading="lazy"
+          <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", flexGrow: "1" }}>
+            <Box
+              component="img"
+              src={`${baseURL}${value}`}
+              alt="وصف الصورة"
+              loading="lazy"
+              sx={{
+                width: 100,          // ثابت أو '100%' للعرض الكامل
+                height: "auto",
+                objectFit: 'cover',  // contain, cover, fill
+                borderRadius: 2,     // زوايا مدورة
+                boxShadow: 1,
+              }}
+            />
+
+            <CreateIcon color="action" sx={{ margin: "15px", cursor: "pointer" }} onClick={handleClick} />
+
+            {/* Input مخفي */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }} // المخفي
+              onChange={handleChange}
+            />
+          </Box>
+
+          :
+          <TextField
+            id={fieldID}
+            name={fieldName}
+            placeholder={placeholder}
+            value={value}
+            onChange={onChange}
+            inputRef={inputRef} // مهم جدًا
+            error={error}
+            helperText={helperText}
+            variant="outlined"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <CreateIcon color="action" sx={{ cursor: "pointer" }} onClick={handleFocus} />
+                </InputAdornment>
+              ),
+            }}
             sx={{
-              width: 100,          // ثابت أو '100%' للعرض الكامل
-              height: "auto",
-              objectFit: 'cover',  // contain, cover, fill
-              borderRadius: 2,     // زوايا مدورة
-              boxShadow: 1,
+              backgroundColor: theme.palette.primary?.gray,
+              flexGrow: 1,
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  border: "none", // بدون border افتراضي
+                },
+                "&.Mui-focused fieldset": {
+                  border: `2px solid ${theme.palette.primary.main}`, // يظهر عند focus
+                },
+              },
             }}
           />
-
-          <CreateIcon color="action" sx={{margin:"15px", cursor:"pointer"}} onClick={handleClick} />
-
-          {/* Input مخفي */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        style={{ display: "none" }} // المخفي
-        onChange={handleChange}
-      />
-        </Box>
-         
-          :
-       <TextField
-  id={fieldID}
-  name={fieldName}
-  placeholder={placeholder}
-  value={value}
-  onChange={onChange}
-  error={error}
-  helperText={helperText}
-  variant="outlined"
-  InputProps={{
-    endAdornment: (
-      <InputAdornment position="end">
-        <CreateIcon color="action" sx={{cursor:"pointer"}} />
-      </InputAdornment>
-    ),
-  }}
-  sx={{
-    backgroundColor: theme.palette.primary?.gray,
-    flexGrow: 1,
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        border: "none", // بدون border افتراضي
-      },
-      "&.Mui-focused fieldset": {
-        border: `2px solid ${theme.palette.primary.main}`, // يظهر عند focus
-      },
-    },
-  }}
-/>
 
 
       }

@@ -13,7 +13,7 @@ import SubmitButton from "../../components/Utilities/SubmitButton";
 
 
 
-export default function AddOrEditCountryPage() {
+export default function AddCountryPage() {
 
     const theme = useTheme();
     const { t } = useTranslation();

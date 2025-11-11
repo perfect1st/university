@@ -164,7 +164,7 @@ export default function NationalityDetailsPage() {
 
   let translateText = isArabic ? "الجنسية" : "Nationality";
 
-  // console.log("fileInputRef",fileInputRef);
+ 
 
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
@@ -186,10 +186,10 @@ export default function NationalityDetailsPage() {
       <Box component="form" onSubmit={formik.handleSubmit} fullWidth>
 
         <HorizentalTextField
-          title={t("form.name_ar")}
+          title={t("form.name_ar", { item: translateText })}
           fieldID={"name_ar"}
           fieldName={"name_ar"}
-          placeholder={t("form.name_ar")}
+          placeholder={t("form.name_ar", { item: translateText })}
           value={formik.values.name_ar}
           onChange={formik.handleChange}
           error={formik.touched.name_ar && Boolean(formik.errors.name_ar)}
@@ -198,10 +198,10 @@ export default function NationalityDetailsPage() {
 
 
         <HorizentalTextField
-          title={t("form.name_en")}
+          title={t("form.name_en" , { item: translateText })}
           fieldID={"name_en"}
           fieldName={"name_en"}
-          placeholder={t("form.name_en")}
+          placeholder={t("form.name_en" , { item: translateText })}
           value={formik.values.name_en}
           onChange={formik.handleChange}
           error={formik.touched.name_en && Boolean(formik.errors.name_en)}

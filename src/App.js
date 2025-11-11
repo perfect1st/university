@@ -46,7 +46,8 @@ import { CacheProvider } from "@emotion/react";
 import AddNationalityPage from "./pages/nationality/AddNationalityPage";
 import NationalityDetailsPage from "./pages/nationality/NationalityDetailsPage";
 import AllCountriesPage from "./pages/Countries/AllCountriesPage";
-import AddOrEditCountryPage from "./pages/Countries/AddOrEditCountryPage";
+import AddCountryPage from "./pages/Countries/AddCountryPage";
+import CountryDetailsPage from "./pages/Countries/CountryDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -452,7 +453,16 @@ function App() {
                         path="add" 
                         element={
                           <MainLayout>
-                            <AddOrEditCountryPage />
+                            <AddCountryPage />
+                          </MainLayout>
+                        }
+                         />
+
+                          <Route 
+                        path="details/:id" 
+                        element={
+                          <MainLayout>
+                            <CountryDetailsPage />
                           </MainLayout>
                         }
                          />

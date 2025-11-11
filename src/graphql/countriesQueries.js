@@ -39,7 +39,7 @@ mutation CreateCountry($input:CreateCountryInput!) {
 
 export const UPDATE_COUNTRY_BY_ID=gql`
 mutation UpdateCountry($id:ID!, $input:UpdateCountryInput!) {
-    updateCountry(id: null, input: $input) {
+    updateCountry(id: $id, input: $input) {
         id
         name_ar
         name_en
