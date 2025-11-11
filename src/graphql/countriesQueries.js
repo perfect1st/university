@@ -25,3 +25,28 @@ query GetCitiesByCountry($country_id:ID!) {
 }
 `;
 
+export const CREATE_NEW_COUNTRY=gql`
+mutation CreateCountry($input:CreateCountryInput!) {
+    createCountry(input: $input) {
+        id
+        name_ar
+        name_en
+        createdAt
+        updatedAt
+    }
+}
+`;
+
+export const UPDATE_COUNTRY_BY_ID=gql`
+mutation UpdateCountry($id:ID!, $input:UpdateCountryInput!) {
+    updateCountry(id: null, input: $input) {
+        id
+        name_ar
+        name_en
+        createdAt
+        updatedAt
+    }
+}
+
+`;
+

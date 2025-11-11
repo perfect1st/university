@@ -169,10 +169,10 @@ export default function AddNationalityPage() {
 
 
         <VerticalTextField
-          title={t("form.name_ar")}
+          title={t("form.name_ar", { item: translateText })}
           fieldID={"name_ar"}
           fieldName={"name_ar"}
-          placeholder={t("form.name_ar")}
+          placeholder={t("form.name_ar", { item: translateText })}
           value={formik.values.name_ar}
           onChange={formik.handleChange}
           error={formik.touched.name_ar && Boolean(formik.errors.name_ar)}
@@ -180,10 +180,10 @@ export default function AddNationalityPage() {
         />
 
         <VerticalTextField
-          title={t("form.name_en")}
+          title={t("form.name_en", { item: translateText })}
           fieldID={"name_en"}
           fieldName={"name_en"}
-          placeholder={t("form.name_en")}
+          placeholder={t("form.name_en", { item: translateText })}
           value={formik.values.name_en}
           onChange={formik.handleChange}
           error={formik.touched.name_en && Boolean(formik.errors.name_en)}

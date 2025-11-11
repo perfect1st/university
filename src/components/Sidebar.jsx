@@ -72,7 +72,8 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
     },
   ]
 
-  if(me?.role=="admin")menuItems=[{
+  if(me?.role=="admin")menuItems=[
+    {
     icon: AccountBalanceIcon,
     key: "dashboard",
     path: "/dashboard",
@@ -82,7 +83,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
     },
   },
   {
-    icon: FlagIcon,
+    // icon: FlagIcon,
     key: "nationality",
     path: "/nationality",
     label: {
@@ -91,7 +92,16 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
     },
   },
   {
-    icon: PersonOutlineIcon,
+    // icon: FlagIcon,
+    key: "countries",
+    path: "/countries",
+    label: {
+      ar: "الدول",
+      en: "Countries",
+    },
+  },
+  {
+    // icon: PersonOutlineIcon,
     key: "profile",
     path: "/profile",
     label: {

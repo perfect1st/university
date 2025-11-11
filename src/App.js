@@ -45,6 +45,8 @@ import { prefixer } from "stylis";
 import { CacheProvider } from "@emotion/react";
 import AddNationalityPage from "./pages/nationality/AddNationalityPage";
 import NationalityDetailsPage from "./pages/nationality/NationalityDetailsPage";
+import AllCountriesPage from "./pages/Countries/AllCountriesPage";
+import AddOrEditCountryPage from "./pages/Countries/AddOrEditCountryPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -435,6 +437,27 @@ function App() {
                   </Route>
 
 
+                      <Route path="/countries">
+
+                        <Route 
+                        index 
+                        element={
+                          <MainLayout>
+                            <AllCountriesPage />
+                          </MainLayout>
+                        }
+                         />
+                        
+                        <Route 
+                        path="add" 
+                        element={
+                          <MainLayout>
+                            <AddOrEditCountryPage />
+                          </MainLayout>
+                        }
+                         />
+
+                      </Route>
 
                 </Route>
 
