@@ -25,3 +25,16 @@ mutation CreateNationality($input:CreateNationalityInput!) {
     }
 }
 `;
+
+export const UPDATE_NATIONALITY_BY_ID=gql`
+mutation UpdateNationality($id:ID!,$input:UpdateNationalityInput!) {
+    updateNationality(id: $id, input: $input) {
+        id
+        name_ar
+        name_en
+        flag
+        createdAt
+        updatedAt
+    }
+}
+`;
