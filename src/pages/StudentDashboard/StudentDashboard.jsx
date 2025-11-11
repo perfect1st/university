@@ -121,6 +121,9 @@ export default function StudentDashboard() {
 
      console.log("result",result);
      notify(t("success"),"success");
+
+     window.location.reload();
+     
       }
       else{
         notify(t("studentDashboard.hoursError"),"error");
@@ -312,7 +315,7 @@ export default function StudentDashboard() {
                         <TableCell sx={{ textAlign: "start" }}>
                           <Checkbox
                           //checked={false}
-                             checked={isDisabled=="true" ?
+                             checked={isDisabled ?
                               prevSelectedMaterialsByStudent?.find(el=>el.id==subj?.id) 
                               :
                               selectedSubjects?.find(el=>el==subj?.id)
