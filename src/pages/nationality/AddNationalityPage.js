@@ -144,7 +144,7 @@ export default function AddNationalityPage() {
     },
   });
 
-  let translateText = isArabic ? "جنسية" : "Nationality";
+  let translateText = isArabic ? "الجنسية" : "Nationality";
 
   // console.log("fileInputRef",fileInputRef);
 
