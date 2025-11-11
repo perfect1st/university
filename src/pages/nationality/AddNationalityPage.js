@@ -23,6 +23,9 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import axios from "axios";
 import { CREATE_NEW_NATIONALITY } from "../../graphql/nationalitiesQueries";
 import { useMutation } from "@apollo/client/react";
+import VerticalTextField from "../../components/Utilities/VerticalTextField";
+import SubmitButton from "../../components/Utilities/SubmitButton";
+import UploadFileField from "../../components/Utilities/UploadFileField";
 
 
 
@@ -33,17 +36,17 @@ export default function AddNationalityPage() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const[
+  const [
     createNationality,
     {
       data,
       loading,
       error
     }
-  ]=useMutation(
+  ] = useMutation(
     CREATE_NEW_NATIONALITY,
     {
-      fetchPolicy:"network-only"
+      fetchPolicy: "network-only"
     }
   );
   const fileInputRef = useRef(null);
@@ -51,52 +54,52 @@ export default function AddNationalityPage() {
   const [selectedToShowFile, setSelectedToShowFile] = useState(null);
   const [progress, setProgress] = useState(0);
 
-   // File handling
-    const handlePickFile = () => {
-      if (fileInputRef.current) fileInputRef.current.click();
-    };
+  // File handling
+  const handlePickFile = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
 
-    const handleFileChange = async (e) => {
-      const file = e.target.files?.[0] ?? null;
-   
-  
-      console.log("ppppppppppppppppppppppp", file);
-  
-      // fileInputRef.current=file?.name;
-  
-      setSelectedToShowFile(file?.name);
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0] ?? null;
 
-      const formData = new FormData();
-      formData.append("file", file);
-      
-        try {
-           
-            setProgress(0);
-      
-            const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-              onUploadProgress: (progressEvent) => {
-                const percent = Math.round(
-                  (progressEvent.loaded * 100) / progressEvent.total
-                );
-                setProgress(percent);
-              },
-            });
-      
-            console.log("res", res?.data?.url);
-            setSelectedFile(res?.data?.url);
-           // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
-          } catch (error) {
-            notify(t("errorUplaod"), "error");
-            console.log("error", error.message);
-          }
-     
-    
-    };
 
-    console.log('selectedFile',selectedFile);
+    console.log("ppppppppppppppppppppppp", file);
+
+    // fileInputRef.current=file?.name;
+
+    setSelectedToShowFile(file?.name);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+
+      setProgress(0);
+
+      const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setProgress(percent);
+        },
+      });
+
+      console.log("res", res?.data?.url);
+      setSelectedFile(res?.data?.url);
+      // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
+    } catch (error) {
+      notify(t("errorUplaod"), "error");
+      console.log("error", error.message);
+    }
+
+
+  };
+
+  console.log('selectedFile', selectedFile);
 
   const formik = useFormik({
     initialValues: {
@@ -104,37 +107,37 @@ export default function AddNationalityPage() {
       name_en: "",
       // flag: "",
     },
-    
+
     validationSchema: Yup.object({
       name_ar: Yup.string().required(t("admissions.errors.required")),
       name_en: Yup.string().required(t("admissions.errors.required")),
     }),
     onSubmit: async (values) => {
       const data = {
-        name_ar:values?.name_ar,
+        name_ar: values?.name_ar,
         name_en: values.name_en,
-        flag:selectedFile
+        flag: selectedFile
       };
       try {
         console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
         console.log(data);
 
-        const result=await createNationality({
-          variables:{
-            input:data
+        const result = await createNationality({
+          variables: {
+            input: data
           }
         });
 
-        console.log('result',result);
+        console.log('result', result);
 
-        notify(t("success"),"success");
+        notify(t("success"), "success");
 
         navigate('/nationality');
 
       } catch (error) {
         console.error("Error logging in:", error);
-         notify(t("error"), "error");
-        
+        notify(t("error"), "error");
+
       } finally {
         //  setIsLoading(false);
       }
@@ -143,7 +146,7 @@ export default function AddNationalityPage() {
 
   let translateText = isArabic ? "جنسية" : "Nationality";
 
- // console.log("fileInputRef",fileInputRef);
+  // console.log("fileInputRef",fileInputRef);
 
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
@@ -161,156 +164,49 @@ export default function AddNationalityPage() {
         isExcel={false}
         isPdf={false}
         isPrinter={false}
-      // onExcel={() => fetchAndExport("excel")}
-      // onPdf={() => fetchAndExport("pdf")}
-      // onPrinter={() => fetchAndExport("print")}
       />
       <Box component="form" onSubmit={formik.handleSubmit} fullWidth>
 
-        {/* Username */}
-        <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
-          {t("form.name_ar")}
-        </Typography>
-        <TextField
-          fullWidth
-          id="name_ar"
-          name="name_ar"
+
+        <VerticalTextField
+          title={t("form.name_ar")}
+          fieldID={"name_ar"}
+          fieldName={"name_ar"}
           placeholder={t("form.name_ar")}
           value={formik.values.name_ar}
           onChange={formik.handleChange}
           error={formik.touched.name_ar && Boolean(formik.errors.name_ar)}
           helperText={formik.touched.name_ar && formik.errors.name_ar}
-          variant="outlined"
-          sx={{ mb: 3 }}
         />
 
-        <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
-          {t("form.name_en")}
-        </Typography>
-        <TextField
-          fullWidth
-          id="name_en"
-          name="name_en"
+        <VerticalTextField
+          title={t("form.name_en")}
+          fieldID={"name_en"}
+          fieldName={"name_en"}
           placeholder={t("form.name_en")}
           value={formik.values.name_en}
           onChange={formik.handleChange}
           error={formik.touched.name_en && Boolean(formik.errors.name_en)}
           helperText={formik.touched.name_en && formik.errors.name_en}
-          variant="outlined"
-          sx={{ mb: 3 }}
         />
 
-        <Grid item xs={12} sx={{my:5}}>
-          <Typography variant="subtitle2">
-            {t("admissions.addFile")}
-          </Typography>
 
-          <Box
-            sx={{
-              width: "100%",
-              border: `2px dashed ${theme.palette.secondary.main}`,
-              p: 2,
-              mt: 1,
-              borderRadius: 1,
-            }}
-          >
-            <Typography variant="body2">
-              {/* {t("admissions.certificateDescription")} */}
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                mt: 2,
-                gap: 2,
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <input
-                ref={fileInputRef}
-                type="file"
-                hidden
-                onChange={handleFileChange}
-              // value={selectedFile}
-              />
-              <Button
-                variant="contained"
-                sx={{
-                  background: theme.palette.secondary.main,
-                  width: "150px",
-                  gap: 1,
-                }}
-                endIcon={
-                  <AddCircleOutlineIcon
-                    sx={{
-                      transform:
-                        i18n.language === "ar"
-                          ? "rotate(180deg)"
-                          : "none",
-                      transition: "transform 0.3s ease",
-                    }}
-                  />
-                }
-                onClick={handlePickFile}
-              >
-                {t("admissions.addFile")}
-              </Button>
-              <Typography
-                variant="body2"
-                sx={{ alignSelf: "center" }}
-              >
-                {selectedToShowFile ? selectedToShowFile : ""}
-              </Typography>
 
-            </Box>
+      
 
-              {progress > 0 && (
-                                <LinearProgress variant="determinate" value={progress} />
-                              )}
-          
-          </Box>
-        </Grid>
+        <UploadFileField
+          title={t("admissions.addFile")}
+          subTitle={t("admissions.addFile")}
+          fileInputRef={fileInputRef}
+          handleFileChange={handleFileChange}
+          handlePickFile={handlePickFile}
+          selectedToShowFile={selectedToShowFile}
+          progress={progress}
+        />
 
-        {/* Submit Button */}
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          sx={{ mt: 1, mb: 2, py: 1.5, display: "flex", gap: 0.5 }}
-        >
-          {/* {isLoading ? (
-              <CircularProgress
-                size={26}
-                thickness={8}
-                sx={{ color: "#fff" }}
-              />
-            ) : (
-              t("form.loginButton")
-            )} */}
-        {
-          loading ? <CircularProgress
-                size={26}
-                thickness={8}
-                sx={{ color: "#fff" }}
-              />
-              :
-              <>
-              {t("form.save")} <SaveIcon sx={{}} />
-              </>
-        }  
-          
-        </Button>
+        <SubmitButton loading={loading} t={t} />
 
-        {/* Forgot Password */}
-        {/* <Link
-            href="#"
-            variant="body2"
-            underline="hover"
-            sx={{ display: 'block', textAlign: 'center' }}
-          >
-            {t('form.forgotPassword')}
-          </Link> */}
+
       </Box>
     </Box>
   );

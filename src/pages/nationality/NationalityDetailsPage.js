@@ -182,9 +182,6 @@ export default function NationalityDetailsPage() {
         isExcel={false}
         isPdf={false}
         isPrinter={false}
-      // onExcel={() => fetchAndExport("excel")}
-      // onPdf={() => fetchAndExport("pdf")}
-      // onPrinter={() => fetchAndExport("print")}
       />
       <Box component="form" onSubmit={formik.handleSubmit} fullWidth>
 
