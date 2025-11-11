@@ -298,6 +298,7 @@
    "errorUplaod":"حدث خطأ اثناء الرفع حاول مرة اخري",
    "Nationalities":"الجنسيات",
    "addItem":"اضافة {{item}}",
+   "detailsItem":"تفاصيل {{item}}",
     "Dashboard":{
      "NameInArabic": "الاسم بالعربية",
      "NameInEnglish":"الاسم بالانجليزية",

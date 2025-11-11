@@ -45,7 +45,6 @@ query GetAcademyTermsByFacultyDepartment($faculty_department_id:ID!) {
         min_study_hours
         max_study_hours
         faculty_department_id
-        materials_array
     }
 }
 

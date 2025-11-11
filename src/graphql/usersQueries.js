@@ -205,6 +205,18 @@ query GetUserStudyMaterialsByUser($user_id : ID!) {
             max_study_hours
             faculty_department_id
         }
+         material_id {
+            id
+            title_ar
+            title_en
+            status
+            fullmark_degree
+            success_degree
+            faculty_department_id
+            material_hours
+            createdAt
+            updatedAt
+        }
     }
 }
 

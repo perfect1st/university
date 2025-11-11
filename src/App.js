@@ -44,9 +44,10 @@ import rtlPlugin from "stylis-plugin-rtl";
 import { prefixer } from "stylis";
 import { CacheProvider } from "@emotion/react";
 import AddNationalityPage from "./pages/nationality/AddNationalityPage";
+import NationalityDetailsPage from "./pages/nationality/NationalityDetailsPage";
 
 export const ColorModeContext = React.createContext({
-  toggleColorMode: () => {},
+  toggleColorMode: () => { },
 });
 
 function App() {
@@ -123,8 +124,8 @@ function App() {
           info: {
             main: "#22ABCE",
             secondary: "#384250",
-           // title:"#384250",
-            subtitle:"#9DA4AE"
+            // title:"#384250",
+            subtitle: "#9DA4AE"
           },
           background: {
             default: mode === "light" ? "#ffffff" : "#0f172a",
@@ -413,7 +414,7 @@ function App() {
                       }
                     />
 
-                       <Route
+                    <Route
                       path="add"
                       element={
                         <MainLayout>
@@ -426,15 +427,15 @@ function App() {
                       path="details/:id"
                       element={
                         <MainLayout>
-                          <AddNationalityPage />
+                          <NationalityDetailsPage />
                         </MainLayout>
                       }
                     />
 
                   </Route>
 
-               
-                 
+
+
                 </Route>
 
                 <Route path="/Maintenance" element={<Maintenance />} />

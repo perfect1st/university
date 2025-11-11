@@ -261,6 +261,7 @@
    "errorUplaod":"Error in uplaoding try again",
    "Nationalities":"Nationalities",
    "addItem":"Add {{item}}",
+   "detailsItem":"{{item}} Details",
    "Dashboard":{
      "NameInArabic": "Name In Arabic",
      "NameInEnglish":"Name In English",

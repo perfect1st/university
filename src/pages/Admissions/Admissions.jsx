@@ -50,6 +50,7 @@ import notify from "../../components/notify.js";
 import { baseURL } from "../../Api/apolloClient.js";
 import formatDateToString from "../../components/Utilities/FormatDateToString.js";
 import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/departmentsQueries.js";
+import { useNavigate } from "react-router-dom";
 
 // CustomTextField wrapper (keeps placeholder support + helperText)
 function CustomTextField(props) {
@@ -102,8 +103,10 @@ export default function Admissions() {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
   const theme = useTheme();
+  const navigate=useNavigate();
+
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   // const[registerationFees,setRegisterationFees] = useState(0);
   const [registerationFeesResults, setRegisterationFeesResults] =
@@ -551,8 +554,10 @@ export default function Admissions() {
       console.log("payment result", result?.data?.createTransaction);
 
       notify(t("admissions.paymentSuccess"), "success");
-
       setShowPaymentModal(false);
+
+      setTimeout(()=> navigate('/login'),2000);
+      
     } catch (error) {
       console.log("error", error);
       notify(t("admissions.error"), "error");

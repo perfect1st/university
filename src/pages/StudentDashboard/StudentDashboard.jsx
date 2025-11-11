@@ -42,6 +42,8 @@ export default function StudentDashboard() {
     else{
         setSelectedSubjects((prev) => prev.filter((item) => item !== e.target.value));
     }
+
+    //e.target.checked = true;
    // console.log("subj",e.target.value,e.target.checked);
     // setChecked(event.target.checked);
   };
@@ -80,11 +82,7 @@ export default function StudentDashboard() {
   useEffect(() => {
       if (me?.id) {
       console.log("meeeee",me?.id);
-      // await Promise.all([
-      //     GetRegisterFormByUserId({ variables: { user_id: me?.id } }),
-      //     GetUserStudyMaterialsByUser({ variables: { user_id: me?.id } })
-      // ])
-
+      
         GetRegisterFormByUserId({ variables: { user_id: me?.id } });
         GetUserStudyMaterialsByUser({ variables: { user_id: me?.id } });
     }
@@ -143,14 +141,18 @@ export default function StudentDashboard() {
   const isPending = getUserStudyMaterialsByUser ? true : false;
 
   // في مواد و ب انتظار موافقة المشرف
-  const isDisabled= getUserStudyMaterialsByUser && (getUserStudyMaterialsByUser[0]?.status=="pending" ? true : false)
+  const isDisabled= getUserStudyMaterialsByUser?.length>0 && (getUserStudyMaterialsByUser[0]?.status=="pending" ? true : false)
 
   console.log("isPending", isPending);
   console.log("isDisabled",isDisabled);
 
-  console.log("getUserStudyMaterialsByUser",getUserStudyMaterialsByUser);
+  console.log("getUserStudyMaterialsByUser",getUserStudyMaterialsByUser?.length>0 &&getUserStudyMaterialsByUser[0]?.material_id);
 
+
+  let prevSelectedMaterialsByStudent=getUserStudyMaterialsByUser?.length>0 &&getUserStudyMaterialsByUser[0]?.material_id;
   if (me == null || GetRegisterFormByUserIdLoading || getUserStudyMaterialsLoading) return <LoadingPage />;
+
+  console.log('prevSelectedMaterialsByStudent?.find(el=>el.id==subj?.id)',prevSelectedMaterialsByStudent&& prevSelectedMaterialsByStudent?.find(el=>el?.id=="690b32d1ae33204319ed82ad"));
   return (
     <Box sx={{ p: 3 }}>
       <Grid container spacing={3}>
@@ -309,7 +311,12 @@ export default function StudentDashboard() {
 
                         <TableCell sx={{ textAlign: "start" }}>
                           <Checkbox
-                            // checked={checked}
+                          //checked={false}
+                             checked={isDisabled=="true" ?
+                              prevSelectedMaterialsByStudent?.find(el=>el.id==subj?.id) 
+                              :
+                              selectedSubjects?.find(el=>el==subj?.id)
+                            }
                              value={subj?.id}
                              disabled={isDisabled}
                              onChange={(e)=>handleChange(e)}
