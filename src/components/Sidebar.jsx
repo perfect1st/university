@@ -159,7 +159,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       <List component="nav">
         {menuItems.map((item, index) => {
           const hasChildren = !!item.children;
-          const isDirectlyActive =
+          let isDirectlyActive =
             (!hasChildren && matchPath(item.path, location.pathname)) ||
             (item.key === "Passengers" &&
               matchPath("/riderDetails/:id", location.pathname)) ||
@@ -223,6 +223,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
             )
           );
 
+           isDirectlyActive=location.pathname?.includes(item.path);
           const IconComponent = item.icon;
 
           // console.log("IconComponent", IconComponent);
