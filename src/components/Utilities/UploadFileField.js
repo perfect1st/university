@@ -7,6 +7,7 @@ import i18n from "../../i18n/i18n";
 export default function UploadFileField({
     title,
     subTitle,
+    description,
     fileInputRef,
     handleFileChange,
     handlePickFile,
@@ -31,6 +32,7 @@ export default function UploadFileField({
                }}
              >
                <Typography variant="body2">
+                {description}
                  {/* {t("admissions.certificateDescription")} */}
                </Typography>
                <Box
@@ -71,7 +73,6 @@ export default function UploadFileField({
                    onClick={handlePickFile}
                  >
                     {subTitle}
-                   {/* {t("admissions.addFile")} */}
                  </Button>
                  <Typography
                    variant="body2"
