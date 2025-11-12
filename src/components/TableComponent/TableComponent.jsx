@@ -213,7 +213,7 @@ const TableComponent = ({
               const styles = getStatusStyles(status);
                // console.log("row[column.key]",visibleColumns[visibleColumns?.length-1].key);
 
-               console.log("styles.bgColor",styles.bgColor);
+              // console.log("styles.bgColor",styles.bgColor);
 
               return (
                 <TableRow key={row.id} hover>
@@ -254,17 +254,20 @@ const TableComponent = ({
                         // />
                         <Chip
                           label={t(status)}
-                          color="success"      // primary | secondary | success | error | info | warning
+                          color={status==true ? "success" : "error"}      // primary | secondary | success | error | info | warning
                           variant="filled"     // filled | outlined
                              sx={{
                             cursor: showStatusChange ? "pointer" : "default",
-                            color:"success",
                             fontWeight: "bold",
-                            minWidth: maxChipWidth,
+                            // display:"inline-flex",
+                            width:"100px",
                             borderRadius: 2,
                             textTransform: "none",
-                            py: 1,
-                            
+                            py: 2,
+                            "& .MuiChip-label": {
+      width: "100%",
+      textAlign: "center",
+    },
                             "&:hover": showStatusChange
                               ? {
                                   opacity: 0.9,
@@ -320,7 +323,7 @@ const TableComponent = ({
                     {navigateBtnTitle}
                   </Button>
     :
-     t("dataNotFound") 
+    column.key !== statusKey &&  t("dataNotFound")   
      :
 
         row[column.key]

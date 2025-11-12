@@ -128,13 +128,21 @@ export default function AllfaculitiesPage() {
         });
     }
 
+    const onStatusChange=async(selectedRow, newStatus)=>{
+        try {
+            console.log("selectedRow",selectedRow,newStatus);
+        } catch (error) {
+            
+        }
+    }
+
     console.log("faculties", faculties);
 
     const hasViewPermission = true;
     const hasAddPermission = true;
 
     if (!hasViewPermission) return <Navigate to="/profile" />;
-    
+
     let translateText = isArabic ? "كلية" : "Faculity";
 
     if (faculitiesLoading) return <LoadingPage />;
@@ -186,7 +194,7 @@ export default function AllfaculitiesPage() {
               width: "100%",
             }}
             handleDetailsClick={handleDetailsClick}
-            // onStatusChange={onStatusChange}
+            onStatusChange={onStatusChange}
           />
         </Grid>
       </Grid>

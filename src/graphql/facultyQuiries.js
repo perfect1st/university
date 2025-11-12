@@ -31,8 +31,21 @@ mutation CreateFaculty($input:CreateFacultyInput!) {
 }
 `;
 
-// export const UPDATE_FACULITY_BY_ID=gql`
-// `;
+export const UPDATE_FACULITY_BY_ID=gql`
+mutation UpdateFaculty($id:ID!,$input:UpdateFacultyInput!) {
+    updateFaculty(id: $id, input: $input) {
+        id
+        title_ar
+        title_en
+        status
+        required_dep
+        study_years_count
+        createdAt
+        updatedAt
+    }
+}
+
+`;
 
 
 
