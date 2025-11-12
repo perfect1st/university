@@ -1,8 +1,8 @@
 import { useTheme } from "@emotion/react";
-import { Box, Grid, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { useLazyQuery, useQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import LoadingPage from "../../components/LoadingComponent";
 import * as XLSX from "xlsx";
@@ -13,8 +13,9 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
-import { GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
+import { GET_ALL_FACULITIES, UPDATE_FACULITY_BY_ID } from "../../graphql/facultyQuiries";
 import { useEffect } from "react";
+import notify from "../../components/notify";
 
 export default function AllfaculitiesPage() {
     const theme = useTheme();
@@ -29,60 +30,66 @@ export default function AllfaculitiesPage() {
         Faculties,
         {
             data: { faculties } = {},
-            loading:faculitiesLoading,
+            loading: faculitiesLoading,
             error
         }
-    ]= useLazyQuery(GET_ALL_FACULITIES, {
-            fetchPolicy: "network-only"
-        });
+    ] = useLazyQuery(GET_ALL_FACULITIES, {
+        fetchPolicy: "network-only"
+    });
 
-    useEffect(()=>{
+    const [UpdateFaculty, {
+        data,
+        loading: updatingStatus,
+        error: updaingError
+    }] = useMutation(UPDATE_FACULITY_BY_ID, { fetchPolicy: "network-only" });
+
+    useEffect(() => {
         Faculties();
-    },[]);
+    }, []);
 
     let columns = [
         // { key: "ID", label: "ID" },
         { key: "title_ar", label: t("Dashboard.NameInArabic") },
         { key: "title_en", label: t("Dashboard.NameInEnglish") },
-        {key:"study_years_count" , label:t("Dashboard.yearsofstudy")},
+        { key: "study_years_count", label: t("Dashboard.yearsofstudy") },
         { key: "navigate", label: t("departments") },
         { key: "status", label: t("Status") }
         //  { key: "userType", label: t("User Type") }
-        
+
     ];
 
-     const fetchAndExport = async (type) => {
-            try {
-                const exportData = faculties.map((user) => ({
-                    ID: user.serial_num,
-                    "Full Name": user.name,
-                    Email: user.email,
-                    Mobile: user.mobile,
-                    "User Type": user.userType,
-                    Status: user.status,
-                }));
-    
-                if (type === "excel") {
-                    const ws = XLSX.utils.json_to_sheet(exportData);
-                    const wb = XLSX.utils.book_new();
-                    XLSX.utils.book_append_sheet(wb, ws, "Users");
-                    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-                    const data = new Blob([excelBuffer], {
-                        type: "application/octet-stream",
-                    });
-                    saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-                } else if (type === "pdf") {
-                    const doc = new jsPDF();
-                    doc.text("Users Report", 14, 10);
-                    autoTable(doc, {
-                        startY: 20,
-                        head: [Object.keys(exportData[0] || {})],
-                        body: exportData.map((row) => Object.values(row)),
-                    });
-                    doc.save(`Users_${new Date().toISOString()}.pdf`);
-                } else if (type === "print") {
-                    const printableWindow = window.open("", "_blank");
-                    const htmlContent = `
+    const fetchAndExport = async (type) => {
+        try {
+            const exportData = faculties.map((user) => ({
+                ID: user.serial_num,
+                "Full Name": user.name,
+                Email: user.email,
+                Mobile: user.mobile,
+                "User Type": user.userType,
+                Status: user.status,
+            }));
+
+            if (type === "excel") {
+                const ws = XLSX.utils.json_to_sheet(exportData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Users");
+                const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+                const data = new Blob([excelBuffer], {
+                    type: "application/octet-stream",
+                });
+                saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
+            } else if (type === "pdf") {
+                const doc = new jsPDF();
+                doc.text("Users Report", 14, 10);
+                autoTable(doc, {
+                    startY: 20,
+                    head: [Object.keys(exportData[0] || {})],
+                    body: exportData.map((row) => Object.values(row)),
+                });
+                doc.save(`Users_${new Date().toISOString()}.pdf`);
+            } else if (type === "print") {
+                const printableWindow = window.open("", "_blank");
+                const htmlContent = `
                      <html>
                        <head>
                          <title>Users Report</title>
@@ -96,43 +103,58 @@ export default function AllfaculitiesPage() {
                          <h2>Users Report</h2>
                          <table>
                            <thead><tr>${Object.keys(exportData[0] || {})
-                            .map((k) => `<th>${k}</th>`)
-                            .join("")}</tr></thead>
+                        .map((k) => `<th>${k}</th>`)
+                        .join("")}</tr></thead>
                            <tbody>${exportData
-                            .map(
-                                (row) =>
-                                    `<tr>${Object.values(row)
-                                        .map((v) => `<td>${v}</td>`)
-                                        .join("")}</tr>`
-                            )
-                            .join("")}</tbody>
+                        .map(
+                            (row) =>
+                                `<tr>${Object.values(row)
+                                    .map((v) => `<td>${v}</td>`)
+                                    .join("")}</tr>`
+                        )
+                        .join("")}</tbody>
                          </table>
                        </body>
                      </html>
                    `;
-                    printableWindow.document.write(htmlContent);
-                    printableWindow.document.close();
-                    printableWindow.print();
-                }
-            } catch (err) {
-                console.error("Export error:", err);
+                printableWindow.document.write(htmlContent);
+                printableWindow.document.close();
+                printableWindow.print();
             }
-        };
-        
-        const addFaculityNavigate = () => navigate('add');
+        } catch (err) {
+            console.error("Export error:", err);
+        }
+    };
 
-        const handleDetailsClick = (selectedRow) => {
+    const addFaculityNavigate = () => navigate('add');
+
+    const handleDetailsClick = (selectedRow) => {
         console.log('handleDetailsClick', selectedRow);
         navigate(`details/${selectedRow?.id}`, {
             state: selectedRow
         });
     }
 
-    const onStatusChange=async(selectedRow, newStatus)=>{
+    const onStatusChange = async (selectedRow, newStatus) => {
         try {
-            console.log("selectedRow",selectedRow,newStatus);
+            console.log("selectedRow", selectedRow, newStatus);
+            // return;
+            let data={
+                status:newStatus=="inActive" ? false :true
+            }
+            const result=await UpdateFaculty({
+                variables:{
+                    id:selectedRow?.id,
+                    input:data
+                }
+            });
+
+            console.log("reeesult",result);
+
+             notify(t("success"), "success");
+
         } catch (error) {
-            
+                notify(t("error"), "error");
         }
     }
 
@@ -148,56 +170,65 @@ export default function AllfaculitiesPage() {
     if (faculitiesLoading) return <LoadingPage />;
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
-      <Grid container spacing={3}>
-        <Grid item 
-        sm={12} md={12}  
-        sx={{
-      overflowX: "auto", // ✅ مهم جدًا عشان الجدول يعمل scroll داخل الـ Grid
-    }}
-    >
-          <Header
-            title={t("faculties")}
-            subtitle={t("faculties")}
-            i18n={i18n}
-            haveBtn={hasAddPermission}
-            btn={t("addItem", { item: translateText })}
-            btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
-             onSubmit={addFaculityNavigate}
-            isExcel
-            isPdf
-            isPrinter
-            onExcel={() => fetchAndExport("excel")}
-            onPdf={() => fetchAndExport("pdf")}
-            onPrinter={() => fetchAndExport("print")}
-          />
 
-       
-          <DashboardFilterComponent t={t} />
+            {
+                updatingStatus && <CircularProgress
+                    size={26}
+                    thickness={8}
+                    sx={{ color: "black" }}
+                />
+            }
 
-          
-          <TableComponent
-            columns={columns}
-            hasNavigateBtn={true}
-            navigateTo={'departments'}
-            navigateBtnTitle={t("departments")}
-            data={faculties}
-            statusKey={"status"}
-            // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
-            loading={faculitiesLoading}
-            // isUsers={true}
-            // statusKey="status"
-            sx={{
-              flex: 1,
-              overflow: "auto",
-              boxShadow: 1,
-              borderRadius: 1,
-              width: "100%",
-            }}
-            handleDetailsClick={handleDetailsClick}
-            onStatusChange={onStatusChange}
-          />
-        </Grid>
-      </Grid>
-    </Box>
+            <Grid container spacing={3}>
+                <Grid item
+                    sm={12} md={12}
+                    sx={{
+                        overflowX: "auto", // ✅ مهم جدًا عشان الجدول يعمل scroll داخل الـ Grid
+                    }}
+                >
+                    <Header
+                        title={t("faculties")}
+                        subtitle={t("faculties")}
+                        i18n={i18n}
+                        haveBtn={hasAddPermission}
+                        btn={t("addItem", { item: translateText })}
+                        btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
+                        onSubmit={addFaculityNavigate}
+                        isExcel
+                        isPdf
+                        isPrinter
+                        onExcel={() => fetchAndExport("excel")}
+                        onPdf={() => fetchAndExport("pdf")}
+                        onPrinter={() => fetchAndExport("print")}
+                    />
+
+
+                    <DashboardFilterComponent t={t} />
+
+
+                    <TableComponent
+                        columns={columns}
+                        hasNavigateBtn={true}
+                        navigateTo={'departments'}
+                        navigateBtnTitle={t("departments")}
+                        data={faculties}
+                        statusKey={"status"}
+                        // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
+                        loading={faculitiesLoading}
+                        // isUsers={true}
+                        // statusKey="status"
+                        sx={{
+                            flex: 1,
+                            overflow: "auto",
+                            boxShadow: 1,
+                            borderRadius: 1,
+                            width: "100%",
+                        }}
+                        handleDetailsClick={handleDetailsClick}
+                        onStatusChange={onStatusChange}
+                    />
+                </Grid>
+            </Grid>
+        </Box>
     )
 }

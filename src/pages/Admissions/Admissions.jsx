@@ -258,7 +258,7 @@ export default function Admissions() {
     : null;
 
   const faculties = faculitiesData?.faculties
-    ? faculitiesData?.faculties
+    ? faculitiesData?.faculties?.filter(el=>el.status)
     : null;
 
   console.log("departmentsInFaculty", departmentsInFaculty);
