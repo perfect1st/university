@@ -263,7 +263,7 @@ const TableComponent = ({
                             minWidth: maxChipWidth,
                             borderRadius: 2,
                             textTransform: "none",
-                            py: 0.5,
+                            py: 1,
                             
                             "&:hover": showStatusChange
                               ? {
@@ -310,7 +310,7 @@ const TableComponent = ({
                     })}
                     sx={{
                       borderRadius: 2,
-                      px: 3,
+                      // px: 3,
                       py: 1,
                       textTransform: "none",
                       fontWeight: "bold",
