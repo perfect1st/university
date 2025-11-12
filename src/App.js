@@ -48,6 +48,8 @@ import NationalityDetailsPage from "./pages/nationality/NationalityDetailsPage";
 import AllCountriesPage from "./pages/Countries/AllCountriesPage";
 import AddCountryPage from "./pages/Countries/AddCountryPage";
 import CountryDetailsPage from "./pages/Countries/CountryDetailsPage";
+import AllCitiesInOneCountryPage from "./pages/Countries/AllCitiesInOneCountryPage";
+import AddCityPage from "./pages/Countries/AddCityPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -466,6 +468,27 @@ function App() {
                           </MainLayout>
                         }
                          />
+
+                         <Route
+                         path="cities/:id"
+                         element={
+                          <MainLayout>
+                            <AllCitiesInOneCountryPage />
+                          </MainLayout>
+                         }
+                         />
+
+                        <Route
+                         path="cities/:id/add"
+                         element={
+                          <MainLayout>
+                            <AddCityPage />
+                          </MainLayout>
+                         }
+                         />
+                         
+
+
 
                       </Route>
 

@@ -17,7 +17,6 @@ import Header from "../../components/PageHeader/header";
 
 
 
-// GET_ALL_COUNTRIES
 export default function AllCountriesPage() {
 
     const theme = useTheme();
