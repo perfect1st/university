@@ -214,7 +214,7 @@ const TableComponent = ({
                // console.log("row[column.key]",visibleColumns[visibleColumns?.length-1].key);
 
                console.log("styles.bgColor",styles.bgColor);
-               
+
               return (
                 <TableRow key={row.id} hover>
                   {visibleColumns?.map((column) => (
@@ -229,17 +229,39 @@ const TableComponent = ({
                     >
                       {
                       column.key === statusKey && (
+                        // <Chip
+                        //   label={t(status)}
+                        //   ref={(el) => (chipRefs.current[row.id] = el)}
+                        //   sx={{
+                        //     cursor: showStatusChange ? "pointer" : "default",
+                        //     color:"success",
+                        //     variant:"filled",
+                        //     backgroundColor: styles.bgColor,
+                        //     border: `1px solid ${styles.borderColor}`,
+                        //     fontWeight: "bold",
+                        //     minWidth: maxChipWidth,
+                        //     borderRadius: 1,
+                        //     textTransform: "none",
+                        //     py: 0.5,
+                            
+                        //     "&:hover": showStatusChange
+                        //       ? {
+                        //           opacity: 0.9,
+                        //           transform: "scale(1.02)",
+                        //         }
+                        //       : {},
+                        //   }}
+                        // />
                         <Chip
                           label={t(status)}
-                          ref={(el) => (chipRefs.current[row.id] = el)}
-                          sx={{
+                          color="success"      // primary | secondary | success | error | info | warning
+                          variant="filled"     // filled | outlined
+                             sx={{
                             cursor: showStatusChange ? "pointer" : "default",
-                            color: styles.textColor,
-                            backgroundColor: styles.bgColor,
-                            border: `1px solid ${styles.borderColor}`,
+                            color:"success",
                             fontWeight: "bold",
                             minWidth: maxChipWidth,
-                            borderRadius: 1,
+                            borderRadius: 2,
                             textTransform: "none",
                             py: 0.5,
                             

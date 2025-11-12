@@ -134,6 +134,7 @@ export default function AllfaculitiesPage() {
     const hasAddPermission = true;
 
     if (!hasViewPermission) return <Navigate to="/profile" />;
+    
     let translateText = isArabic ? "كلية" : "Faculity";
 
     if (faculitiesLoading) return <LoadingPage />;

@@ -52,6 +52,7 @@ import AllCitiesInOneCountryPage from "./pages/Countries/AllCitiesInOneCountryPa
 import AddCityPage from "./pages/Countries/AddCityPage";
 import CityDetailsPage from "./pages/Countries/CityDetailsPage";
 import AllfaculitiesPage from "./pages/Faculities/AllfaculitiesPage";
+import AddFaculityPage from "./pages/Faculities/AddFaculityPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -139,6 +140,7 @@ function App() {
             paper: mode === "light" ? "#ffffff" : "#1e293b",
             secDefault: mode === "light" ? "#CFDBE8" : "#1f2937",
             gray: mode === "light" ? "#E5E5E5" : "#334155",
+            green: ""
           },
           text: {
             primary: mode === "light" ? "#0f172a" : "#f1f5f9",
@@ -504,12 +506,21 @@ function App() {
                   </Route>
 
                   <Route path="/faculities">
-                      <Route index element={
-                         <MainLayout>
-                          <AllfaculitiesPage />
-                        </MainLayout>
-                      } />
+                    <Route index element={
+                      <MainLayout>
+                        <AllfaculitiesPage />
+                      </MainLayout>
+                    } />
+
+                    <Route path="add" element={
+                      <MainLayout>
+                        <AddFaculityPage />
+                      </MainLayout>
+                    } />
+
                   </Route>
+
+
 
                 </Route>
 

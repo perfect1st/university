@@ -9,6 +9,7 @@ export default function SubmitButton({loading,t}) {
               variant="contained"
               fullWidth
               sx={{ mt: 1, mb: 2, py: 1.5, display: "flex", gap: 0.5 }}
+              disabled={loading}
             >
     
               {
