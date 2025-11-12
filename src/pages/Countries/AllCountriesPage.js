@@ -41,7 +41,8 @@ export default function AllCountriesPage() {
         // { key: "ID", label: "ID" },
         { key: "name_ar", label: t("Dashboard.NameInArabic") },
         { key: "name_en", label: t("Dashboard.NameInEnglish") },
-        // { key: "userType", label: t("User Type") },
+        {key:"navigate" , label:t("cities")},
+        //  { key: "userType", label: t("User Type") }
         // { key: "status", label: t("Status") },
     ];
     // const location=useLocation();
@@ -164,6 +165,9 @@ export default function AllCountriesPage() {
           
           <TableComponent
             columns={columns}
+            hasNavigateBtn={true}
+            navigateTo={'cities'}
+            navigateBtnTitle={t("cities")}
             data={countries}
             // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
             loading={countriesLoading}

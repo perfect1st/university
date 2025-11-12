@@ -39,6 +39,9 @@ const statusStyles = {
 
 const TableComponent = ({
   columns,
+  hasNavigateBtn=false,
+  navigateBtnTitle,
+  navigateTo,
   data,
   onStatusChange,
   onViewDetails,
@@ -177,7 +180,7 @@ const TableComponent = ({
                     }}
                   >
                     {column.label}
-                    {false && column.label !== t("Account status") &&
+                    {/* {false && column.label !== t("Account status") &&
                       column.label !== t("Trip status") && (
                         <IconButton
                           size="small"
@@ -185,7 +188,7 @@ const TableComponent = ({
                         >
                           <SortIcon width={20} height={20} />
                         </IconButton>
-                      )}
+                      )} */}
                   </Box>
                 </TableCell>
               ))}
@@ -208,7 +211,7 @@ const TableComponent = ({
             {data?.map((row) => {
               const status = row[statusKey];
               const styles = getStatusStyles(status);
-
+                console.log("row[column.key]",visibleColumns[visibleColumns?.length-1].key);
               return (
                 <TableRow key={row.id} hover>
                   {visibleColumns?.map((column) => (
@@ -251,6 +254,7 @@ const TableComponent = ({
                         row[column.key]
                       )} */}
                       {
+                      
                         // /uploads/
                       row[column.key]?.includes("/uploads/") 
                       ?
@@ -270,6 +274,22 @@ const TableComponent = ({
     />
     :  
     !row[column.key] || row[column.key] === "null" ?
+    hasNavigateBtn && column.key=="navigate" ? 
+      <Button
+                    variant="contained"
+                    onClick={() => navigate(`${navigateTo}/${row?.id}`)}
+                    sx={{
+                      borderRadius: 1,
+                      px: 3,
+                      py: 1,
+                      textTransform: "none",
+                      fontWeight: "bold",
+                    }}
+                    aria-label="سجل الآن"
+                  >
+                    {navigateBtnTitle}
+                  </Button>
+    :
      t("dataNotFound") 
      :
 
