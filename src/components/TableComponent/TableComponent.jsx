@@ -309,7 +309,7 @@ const TableComponent = ({
                       state:row
                     })}
                     sx={{
-                      borderRadius: 1,
+                      borderRadius: 2,
                       px: 3,
                       py: 1,
                       textTransform: "none",
