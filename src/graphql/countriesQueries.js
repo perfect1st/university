@@ -12,6 +12,18 @@ query Countries {
 }
 `;
 
+export const GET_COUNTRY_BY_ID=gql`
+query Country($id:ID!) {
+    country(id: $id) {
+        id
+        name_ar
+        name_en
+        createdAt
+        updatedAt
+    }
+}
+`;
+
 
 
 export const CREATE_NEW_COUNTRY=gql`

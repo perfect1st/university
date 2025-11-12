@@ -277,7 +277,9 @@ const TableComponent = ({
     hasNavigateBtn && column.key=="navigate" ? 
       <Button
                     variant="contained"
-                    onClick={() => navigate(`${navigateTo}/${row?.id}`)}
+                    onClick={() => navigate(`${navigateTo}/${row?.id}`,{
+                      state:row
+                    })}
                     sx={{
                       borderRadius: 1,
                       px: 3,

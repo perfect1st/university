@@ -1,8 +1,8 @@
 import { useTheme } from "@emotion/react";
 import { Box, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { GET_CITIES_BY_COUNTRY_ID } from "../../graphql/countriesQueries";
+import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { GET_CITIES_BY_COUNTRY_ID , GET_COUNTRY_BY_ID } from "../../graphql/countriesQueries";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import LoadingPage from "../../components/LoadingComponent";
@@ -22,10 +22,13 @@ export default function AllCitiesInOneCountryPage() {
   const theme = useTheme();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location=useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
   const isArabic = i18n.language === "ar";
+
+  console.log("location",location.state);
 
   const [
     GetCitiesByCountry
@@ -39,13 +42,38 @@ export default function AllCitiesInOneCountryPage() {
     { fetchPolicy: "network-only" }
   );
 
+  const [
+    Country
+    ,
+    {
+      data: { country } = {},
+      loading: countryLoading,
+      error: countryError
+    }
+  ] = useLazyQuery(GET_COUNTRY_BY_ID,
+    { fetchPolicy: "network-only" }
+  );
+
+
+
   useEffect(() => {
-    if (id) GetCitiesByCountry({
+    if (id){
+        GetCitiesByCountry({
       variables:{
         country_id:id
       }
-    })
+    });
+
+    Country({
+      variables:{
+        id:id
+      }
+    });
+
+    } 
   }, []);
+
+
   let columns = [
     // { key: "ID", label: "ID" },
     { key: "name_ar", label: t("Dashboard.NameInArabic") },
@@ -55,6 +83,8 @@ export default function AllCitiesInOneCountryPage() {
 
   // console.log("id",id);
   console.log("data", getCitiesByCountry);
+
+  console.log("country",country);
 
   const fetchAndExport = async (type) => {
     try {
@@ -138,7 +168,7 @@ export default function AllCitiesInOneCountryPage() {
   if (!hasViewPermission) return <Navigate to="/profile" />;
 
   let translateText = isArabic ? "مدينة" : "City";
-  if (citiesLoading) return <LoadingPage />;
+  if (citiesLoading || countryLoading) return <LoadingPage />;
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Grid container spacing={3}>
@@ -150,7 +180,7 @@ export default function AllCitiesInOneCountryPage() {
         >
           <Header
             title={t("cities")}
-            subtitle={t("cities")}
+            subtitle={`${t("cities")} (${isArabic ? country?.name_ar : country?.name_en})`}
             i18n={i18n}
             haveBtn={hasAddPermission}
             btn={t("addItem", { item: translateText })}
