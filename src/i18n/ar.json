@@ -302,7 +302,8 @@
     "Dashboard":{
      "NameInArabic": "الاسم بالعربية",
      "NameInEnglish":"الاسم بالانجليزية",
-     "flag":"علم الدولة"
+     "flag":"علم الدولة",
+     "yearsofstudy":"عدد سنوات الدراسة"
    },
 
   "submit":"تأكيد",
@@ -310,5 +311,7 @@
   "success":"تمت العملية بنجاح",
   "dataNotFound":"لا يوجد",
   "cities":"المدن",
-  "countries":"الدول"
+  "countries":"الدول",
+  "faculties":"الكليات",
+  "departments":"الاقسام"
 }

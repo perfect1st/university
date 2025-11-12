@@ -211,7 +211,10 @@ const TableComponent = ({
             {data?.map((row) => {
               const status = row[statusKey];
               const styles = getStatusStyles(status);
-                console.log("row[column.key]",visibleColumns[visibleColumns?.length-1].key);
+               // console.log("row[column.key]",visibleColumns[visibleColumns?.length-1].key);
+
+               console.log("styles.bgColor",styles.bgColor);
+               
               return (
                 <TableRow key={row.id} hover>
                   {visibleColumns?.map((column) => (
@@ -224,8 +227,8 @@ const TableComponent = ({
                         textAlign: isArabic ? "right" : "left"
                       }}
                     >
-                      {/* {
-                      column.key === statusKey ? (
+                      {
+                      column.key === statusKey && (
                         <Chip
                           label={t(status)}
                           ref={(el) => (chipRefs.current[row.id] = el)}
@@ -248,15 +251,18 @@ const TableComponent = ({
                               : {},
                           }}
                         />
-                      ) : column.render ? (
-                        column.render(row)
-                      ) : (
-                        row[column.key]
-                      )} */}
+                      ) 
+                      // : 
+                      // column.render ? (
+                      //   column.render(row)
+                      // ) : (
+                      //   row[column.key]
+                      // )
+                      }
                       {
                       
                         // /uploads/
-                      row[column.key]?.includes("/uploads/") 
+                     typeof row[column.key] === "string"&& row[column.key]?.includes("/uploads/") 
                       ?
                       
                       <Box

@@ -101,6 +101,15 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
     },
   },
   {
+    // icon: FlagIcon,
+    key: "faculities",
+    path: "/faculities",
+    label: {
+      ar: "الكليات",
+      en: "Faculities",
+    },
+  },
+  {
     // icon: PersonOutlineIcon,
     key: "profile",
     path: "/profile",

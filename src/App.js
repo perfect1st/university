@@ -51,6 +51,7 @@ import CountryDetailsPage from "./pages/Countries/CountryDetailsPage";
 import AllCitiesInOneCountryPage from "./pages/Countries/AllCitiesInOneCountryPage";
 import AddCityPage from "./pages/Countries/AddCityPage";
 import CityDetailsPage from "./pages/Countries/CityDetailsPage";
+import AllfaculitiesPage from "./pages/Faculities/AllfaculitiesPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -441,66 +442,74 @@ function App() {
                   </Route>
 
 
-                      <Route path="/countries">
+                  <Route path="/countries">
 
-                        <Route 
-                        index 
-                        element={
-                          <MainLayout>
-                            <AllCountriesPage />
-                          </MainLayout>
-                        }
-                         />
-                        
-                        <Route 
-                        path="add" 
-                        element={
-                          <MainLayout>
-                            <AddCountryPage />
-                          </MainLayout>
-                        }
-                         />
+                    <Route
+                      index
+                      element={
+                        <MainLayout>
+                          <AllCountriesPage />
+                        </MainLayout>
+                      }
+                    />
 
-                          <Route 
-                        path="details/:id" 
-                        element={
-                          <MainLayout>
-                            <CountryDetailsPage />
-                          </MainLayout>
-                        }
-                         />
+                    <Route
+                      path="add"
+                      element={
+                        <MainLayout>
+                          <AddCountryPage />
+                        </MainLayout>
+                      }
+                    />
 
-                         <Route
-                         path="cities/:id"
-                         element={
-                          <MainLayout>
-                            <AllCitiesInOneCountryPage />
-                          </MainLayout>
-                         }
-                         />
+                    <Route
+                      path="details/:id"
+                      element={
+                        <MainLayout>
+                          <CountryDetailsPage />
+                        </MainLayout>
+                      }
+                    />
 
-                        <Route
-                         path="cities/:id/add"
-                         element={
-                          <MainLayout>
-                            <AddCityPage />
-                          </MainLayout>
-                         }
-                         />
+                    <Route
+                      path="cities/:id"
+                      element={
+                        <MainLayout>
+                          <AllCitiesInOneCountryPage />
+                        </MainLayout>
+                      }
+                    />
 
-                          <Route
-                         path="cities/:id/details/:cityId"
-                         element={
-                          <MainLayout>
-                            <CityDetailsPage />
-                          </MainLayout>
-                         }
-                         />
-                         
+                    <Route
+                      path="cities/:id/add"
+                      element={
+                        <MainLayout>
+                          <AddCityPage />
+                        </MainLayout>
+                      }
+                    />
 
+                    <Route
+                      path="cities/:id/details/:cityId"
+                      element={
+                        <MainLayout>
+                          <CityDetailsPage />
+                        </MainLayout>
+                      }
+                    />
 
 
-                      </Route>
+
+
+                  </Route>
+
+                  <Route path="/faculities">
+                      <Route index element={
+                         <MainLayout>
+                          <AllfaculitiesPage />
+                        </MainLayout>
+                      } />
+                  </Route>
 
                 </Route>
 

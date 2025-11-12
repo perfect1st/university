@@ -265,12 +265,15 @@
    "Dashboard":{
      "NameInArabic": "Name In Arabic",
      "NameInEnglish":"Name In English",
-     "flag":"Country Flag"
+     "flag":"Country Flag",
+     "yearsofstudy":"Years Of Study"
    },
     "submit":"Submit",
     "error":"Error happened try again later",
     "success":"success",
     "dataNotFound":"Not Found",
     "cities":"Cities",
-     "countries":"Countries"
+    "countries":"Countries",
+    "faculties":"Faculities",
+    "departments":"Departments"
 }
