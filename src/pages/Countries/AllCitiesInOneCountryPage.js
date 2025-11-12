@@ -3,7 +3,7 @@ import { Box, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { GET_CITIES_BY_COUNTRY_ID } from "../../graphql/countriesQueries";
-import { useQuery } from "@apollo/client/react";
+import { useLazyQuery, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import LoadingPage from "../../components/LoadingComponent";
 import * as XLSX from "xlsx";
@@ -14,6 +14,7 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
+import { useEffect } from "react";
 
 // GET_CITIES_BY_COUNTRY_ID
 export default function AllCitiesInOneCountryPage() {
@@ -26,17 +27,25 @@ export default function AllCitiesInOneCountryPage() {
   const { id } = useParams();
   const isArabic = i18n.language === "ar";
 
-  const {
-    data: { getCitiesByCountry } = {},
-    loading: citiesLoading,
-    error: citiesError
-  } = useQuery(GET_CITIES_BY_COUNTRY_ID, {
-    variables: {
-      country_id: id
-    },
-    skip: !id, // عشان ما يشتغلش لو مفيش ID
-  });
+  const [
+    GetCitiesByCountry
+    ,
+    {
+      data: { getCitiesByCountry } = {},
+      loading: citiesLoading,
+      error: citiesError
+    }
+  ] = useLazyQuery(GET_CITIES_BY_COUNTRY_ID,
+    { fetchPolicy: "network-only" }
+  );
 
+  useEffect(() => {
+    if (id) GetCitiesByCountry({
+      variables:{
+        country_id:id
+      }
+    })
+  }, []);
   let columns = [
     // { key: "ID", label: "ID" },
     { key: "name_ar", label: t("Dashboard.NameInArabic") },
@@ -118,11 +127,11 @@ export default function AllCitiesInOneCountryPage() {
   const addCityNavigate = () => navigate("add");
 
   const handleDetailsClick = (selectedRow) => {
-        console.log('handleDetailsClick', selectedRow);
-        navigate(`details/${selectedRow?.id}`, {
-            state: selectedRow
-        });
-    }
+    console.log('handleDetailsClick', selectedRow);
+    navigate(`details/${selectedRow?.id}`, {
+      state: selectedRow
+    });
+  }
 
   const hasViewPermission = true;
   const hasAddPermission = true;
@@ -156,25 +165,25 @@ export default function AllCitiesInOneCountryPage() {
           />
 
           <DashboardFilterComponent t={t} />
-          
-                    
-                    <TableComponent
-                      columns={columns}
-                      data={getCitiesByCountry}
-                      // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
-                      loading={citiesLoading}
-                      // isUsers={true}
-                      // statusKey="status"
-                      sx={{
-                        flex: 1,
-                        overflow: "auto",
-                        boxShadow: 1,
-                        borderRadius: 1,
-                        width: "100%",
-                      }}
-                      handleDetailsClick={handleDetailsClick}
-                      // onStatusChange={onStatusChange}
-                    />
+
+
+          <TableComponent
+            columns={columns}
+            data={getCitiesByCountry}
+            // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
+            loading={citiesLoading}
+            // isUsers={true}
+            // statusKey="status"
+            sx={{
+              flex: 1,
+              overflow: "auto",
+              boxShadow: 1,
+              borderRadius: 1,
+              width: "100%",
+            }}
+            handleDetailsClick={handleDetailsClick}
+          // onStatusChange={onStatusChange}
+          />
         </Grid>
       </Grid>
     </Box>

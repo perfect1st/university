@@ -12,18 +12,7 @@ query Countries {
 }
 `;
 
-export const GET_CITIES_BY_COUNTRY_ID=gql`
-query GetCitiesByCountry($country_id:ID!) {
-    getCitiesByCountry(country_id: $country_id) {
-        id
-        name_ar
-        name_en
-        country_id
-        createdAt
-        updatedAt
-    }
-}
-`;
+
 
 export const CREATE_NEW_COUNTRY=gql`
 mutation CreateCountry($input:CreateCountryInput!) {
@@ -50,3 +39,31 @@ mutation UpdateCountry($id:ID!, $input:UpdateCountryInput!) {
 
 `;
 
+
+//////////////  cities //////////////////////////
+export const GET_CITIES_BY_COUNTRY_ID=gql`
+query GetCitiesByCountry($country_id:ID!) {
+    getCitiesByCountry(country_id: $country_id) {
+        id
+        name_ar
+        name_en
+        country_id
+        createdAt
+        updatedAt
+    }
+}
+`;
+
+export const CREATE_NEW_CITY=gql`
+mutation CreateCity($input:CreateCityInput!) {
+    createCity(input: $input) {
+        id
+        name_ar
+        name_en
+        country_id
+        createdAt
+        updatedAt
+    }
+}
+
+`;
