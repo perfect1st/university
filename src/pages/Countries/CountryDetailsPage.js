@@ -39,8 +39,7 @@ export default function CountryDetailsPage() {
          const formik = useFormik({
             initialValues: {
               name_ar: location?.state?.name_ar,
-              name_en: location?.state?.name_en,
-              flag: location?.state?.flag,
+              name_en: location?.state?.name_en
             },
         
             validationSchema: Yup.object({

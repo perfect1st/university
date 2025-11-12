@@ -67,3 +67,17 @@ mutation CreateCity($input:CreateCityInput!) {
 }
 
 `;
+
+export const UPDATE_CITY_BY_ID=gql`
+mutation UpdateCity($id:ID!,$input:UpdateCityInput!) {
+    updateCity(id: $id , input: $input) {
+        id
+        name_ar
+        name_en
+        country_id
+        createdAt
+        updatedAt
+    }
+}
+
+`;
