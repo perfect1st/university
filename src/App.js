@@ -53,6 +53,7 @@ import AddCityPage from "./pages/Countries/AddCityPage";
 import CityDetailsPage from "./pages/Countries/CityDetailsPage";
 import AllfaculitiesPage from "./pages/Faculities/AllfaculitiesPage";
 import AddFaculityPage from "./pages/Faculities/AddFaculityPage";
+import FaculityDetailsPage from "./pages/Faculities/FaculityDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -515,6 +516,12 @@ function App() {
                     <Route path="add" element={
                       <MainLayout>
                         <AddFaculityPage />
+                      </MainLayout>
+                    } />
+
+                    <Route path="details/:id" element={
+                      <MainLayout>
+                        <FaculityDetailsPage />
                       </MainLayout>
                     } />
 
