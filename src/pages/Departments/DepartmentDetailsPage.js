@@ -14,7 +14,7 @@ import {  GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import LoadingPage from "../../components/LoadingComponent";
 import { useEffect, useState } from "react";
 import { UPDATE_FACULITY_DEPARTMENT_BY_ID } from "../../graphql/facultyQuiries"
-import HorizentalTextField from "../../components/Utilities/HorizentalTextField";
+import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
 
 // UPDATE_FACULITY_DEPARTMENT_BY_ID
 export default function DepartmentDetailsPage() {
@@ -151,7 +151,7 @@ export default function DepartmentDetailsPage() {
                     helperText={formik.touched.title_en && formik.errors.title_en}
                 />
 
-                <VerticalTextFieldSelect
+                <HorizentalTextFieldSelect
                     t={t}
                     title={'الكلية'} defaultOptionLabel={t("select")}
                     backgroundColor={theme.palette.background.inputBackGround}
@@ -165,7 +165,7 @@ export default function DepartmentDetailsPage() {
                     {
                         faculties?.map(el => <MenuItem key={el?.id} value={el?.id}>{isArabic ? el?.title_ar : el?.title_en}</MenuItem>)
                     }
-                </VerticalTextFieldSelect>
+                </HorizentalTextFieldSelect>
 
 
                 <SubmitButton loading={loading} t={t} />

@@ -2,6 +2,7 @@ import { Box, InputAdornment, TextField, Typography, useTheme } from '@mui/mater
 import CreateIcon from '@mui/icons-material/Create';
 import { baseURL } from '../../Api/apolloClient';
 import { useRef } from 'react';
+import { CustomSelect } from './CustomTextField';
 
 
 export default function HorizentalTextField({
@@ -41,7 +42,7 @@ export default function HorizentalTextField({
   return (
     <Box sx={{ display: "flex", flexWrap: "wrap", mb: 4, alignItems: "center", backgroundColor: theme.palette.primary?.gray, gap: 3, p: 1 }}>
 
-      <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+      <Typography variant="subtitle2" sx={{ fontWeight: "bold"  }}>
         {title}
       </Typography>
 
@@ -110,4 +111,26 @@ export default function HorizentalTextField({
 
     </Box>
   )
+}
+
+
+export const HorizentalTextFieldSelect = ({ t, backgroundColor, title , defaultOptionLabel,children, value , setValue , error , setError }) => {
+  const theme = useTheme();
+  return (
+    <Box sx={{ display: "flex", flexWrap: "wrap", mb: 4, backgroundColor: theme.palette.primary?.gray, gap: 3, p: 1 , height:"50px" }}>
+
+      <Typography variant="subtitle2" sx={{ fontWeight: "bold" , height:"50px" ,display:"flex" , flexDirection:"column" , alignItems:"center" , justifyContent:"center" }}>
+        {title}
+      </Typography>
+
+      <Box sx={{  flexGrow:1 , display:"flex", alignItems:"center" , justifyContent:"center" , flexDirection:"column" }}>
+        <CustomSelect t={t} label={defaultOptionLabel}  backgroundColor={theme.palette.primary?.gray} value={value} setValue={setValue} error={error} setError={setError}  >
+          {children}
+        </CustomSelect>
+
+      </Box>
+
+    </Box>
+
+  );
 }

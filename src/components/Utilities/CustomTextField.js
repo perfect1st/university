@@ -368,6 +368,7 @@ function CustomSelect({ children, t, height, label, backgroundColor, value, setV
       }}
       sx={{
         direction: isArabic ? "rtl" : "ltr",
+        my:"auto",
         width: "100%",
         minWidth: "160px",
         "& .MuiInputBase-root": {
