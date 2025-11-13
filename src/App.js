@@ -55,6 +55,7 @@ import AllfaculitiesPage from "./pages/Faculities/AllfaculitiesPage";
 import AddFaculityPage from "./pages/Faculities/AddFaculityPage";
 import FaculityDetailsPage from "./pages/Faculities/FaculityDetailsPage";
 import AllDepartmentsInFaculityPage from "./pages/Faculities/AllDepartmentsInFaculityPage";
+import AddDepartmentPage from "./pages/Faculities/AddDepartmentPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -529,6 +530,12 @@ function App() {
                     <Route path="departments/:id" element={
                       <MainLayout isLoggedIn={true}>
                         <AllDepartmentsInFaculityPage />
+                      </MainLayout>
+                    } />
+
+                    <Route path="departments/:id/add" element={
+                      <MainLayout isLoggedIn={true}>
+                        <AddDepartmentPage />
                       </MainLayout>
                     } />
 

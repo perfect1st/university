@@ -79,6 +79,22 @@ query GetFacultyDepartmentsByFaculty($faculty_id:ID!) {
 }
 `;
 
+export const CREATE_FACULITY_DEPARTMENT=gql`
+mutation CreateFacultyDepartment($input : CreateFacultyDepartmentInput!) {
+    createFacultyDepartment(input: $input) {
+        id
+        title_ar
+        title_en
+        status
+        faculty_id
+        createdAt
+        updatedAt
+    }
+}
+
+`;
+
+
 export const UPDATE_FACULITY_DEPARTMENT_BY_ID=gql`
 mutation UpdateFacultyDepartment($id:ID!,$input:UpdateFacultyDepartmentInput!) {
     updateFacultyDepartment(id: $id, input: $input) {
