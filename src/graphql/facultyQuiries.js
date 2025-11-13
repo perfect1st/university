@@ -110,7 +110,6 @@ mutation CreateFacultyDepartment($input : CreateFacultyDepartmentInput!) {
         title_ar
         title_en
         status
-        faculty_id
         createdAt
         updatedAt
     }

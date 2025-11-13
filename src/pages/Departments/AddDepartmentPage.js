@@ -24,6 +24,7 @@ export default function AddDepartmentPage() {
     const location = useLocation();
 
     const [selected, setSelected] = useState(0);
+    const[selectError,setSelectError]=useState("");
 
     const [
         Faculties, {
@@ -49,29 +50,39 @@ export default function AddDepartmentPage() {
     const formik = useFormik({
         initialValues: {
             title_ar: "",
-            title_en: "",
-            faculty_id: ""
+            title_en: ""
+            // faculty_id: ""
             // flag: "",
         },
 
         validationSchema: Yup.object({
             title_ar: Yup.string().required(t("admissions.errors.required")),
             title_en: Yup.string().required(t("admissions.errors.required")),
-            faculty_id: Yup.string().required(t("admissions.errors.required")),
+            // faculty_id: Yup.string().required(t("admissions.errors.required")),
 
         }),
         onSubmit: async (values) => {
+
+            // ✅ التحقق اليدوي قبل الإرسال
+            if (selected==0) {
+                // console.log('rrrrrrrrrrrrrrrrrrrrrrr');
+                // formik.setFieldError("faculty_id", t("admissions.errors.required"));
+
+                setSelectError(t("admissions.errors.required"));
+                return; // وقف الإرسال لحد ما المستخدم يختار
+            }
             console.log('xxxxxxxxxxxxxxxxxxxxxxx');
             const data = {
                 title_ar: values?.title_ar,
                 title_en: values.title_en,
-                faculty_id: ""
+                faculty_id: selected
 
             };
             try {
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
                 console.log(data);
 
+                // return;
                 const result = await CreateFacultyDepartment({
                     variables: {
                         input: data
@@ -138,16 +149,19 @@ export default function AddDepartmentPage() {
                     helperText={formik.touched.title_en && formik.errors.title_en}
                 />
 
-                <VerticalTextFieldSelect 
-                t={t} 
-                title={'الكلية'} defaultOptionLabel={t("select")} 
-                backgroundColor={theme.palette.background.inputBackGround}
-                value={selected}
-                setValue={setSelected}
+                <VerticalTextFieldSelect
+                    t={t}
+                    title={'الكلية'} defaultOptionLabel={t("select")}
+                    backgroundColor={theme.palette.background.inputBackGround}
+                    value={selected}
+                    setValue={setSelected}
+                    error={selectError}
+                    setError={setSelectError}
+                    
                 >
-                    <MenuItem  value={0} selected>{t("select")}</MenuItem>
+                    <MenuItem value={0} selected>{t("select")}</MenuItem>
                     {
-                        faculties?.map(el=> <MenuItem key={el?.id} value={el?.id}>{isArabic ? el?.title_ar : el?.title_en }</MenuItem>)
+                        faculties?.map(el => <MenuItem key={el?.id} value={el?.id}>{isArabic ? el?.title_ar : el?.title_en}</MenuItem>)
                     }
                 </VerticalTextFieldSelect>
 

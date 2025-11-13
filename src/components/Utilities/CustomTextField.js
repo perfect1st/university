@@ -6,7 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowDropDownCircleOutlined } from "@mui/icons-material";
 
-export default function CustomTextFieldAdmin({ searchKey, width = "100%" ,  height }) {
+export default function CustomTextFieldAdmin({ searchKey, width = "100%", height }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const theme = useTheme();
   const isArabic = i18n.language === "ar";
@@ -220,7 +220,7 @@ export default function CustomTextFieldAdmin({ searchKey, width = "100%" ,  heig
 //   // //     backgroundColor: "transparent !important",
 //   // //   },
 
-    
+
 //   // // }}
 
 //   //  sx={{
@@ -335,7 +335,7 @@ export default function CustomTextFieldAdmin({ searchKey, width = "100%" ,  heig
 //             sx={{
 //               position: "absolute",
 //               right: isArabic && "8px", // 👈 السهم دايمًا في أقصى اليمين
-              
+
 //               color: theme.palette.info.main,
 //               pointerEvents: "none",
 //             }}
@@ -343,17 +343,17 @@ export default function CustomTextFieldAdmin({ searchKey, width = "100%" ,  heig
 //         ),
 //       }}
 //     >
-   
+
 //       {children}
 //     </TextField>
 //   );
 // }
 
-function CustomSelect({ children, t, height , label , backgroundColor , value , setValue }) {
+function CustomSelect({ children, t, height, label, backgroundColor, value, setValue ,error,setError }) {
   const theme = useTheme();
   // const { placeholder, helperText, error, ...rest } = props;
 
- // const { placeholder, helperText, error, children, ...rest } = props;
+  // const { placeholder, helperText, error, children, ...rest } = props;
   const { i18n } = useTranslation();
   const isArabic = i18n.language == "ar";
 
@@ -366,10 +366,10 @@ function CustomSelect({ children, t, height , label , backgroundColor , value , 
         // renderValue: (selected) => (!selected ? label : selected),
         MenuProps: { disableScrollLock: true },
       }}
-     sx={{
-       direction: isArabic ? "rtl" : "ltr",
+      sx={{
+        direction: isArabic ? "rtl" : "ltr",
         width: "100%",
-        minWidth:"160px",
+        minWidth: "160px",
         "& .MuiInputBase-root": {
           height: height || "45px",
           backgroundColor: backgroundColor ? backgroundColor : theme.palette.background.gray,
@@ -384,7 +384,7 @@ function CustomSelect({ children, t, height , label , backgroundColor , value , 
           padding: "10px 12px",
           display: "flex",
           alignItems: "center",
-          justifyContent: "flex-end" , // 👈 اتجاه النص
+          justifyContent: "flex-end", // 👈 اتجاه النص
           color: "#6C737F",
           fontWeight: 500,
         },
@@ -399,12 +399,17 @@ function CustomSelect({ children, t, height , label , backgroundColor , value , 
           border: "none !important",
         },
 
-     }}
-   
-     value={value}
-     onChange={(e)=>setValue(e.target.value)}
+      }}
+
+      value={value}
+      onChange={(e) => {
+          setValue(e.target.value);
+          setError("");
+      }}
+      error={error}
+      helperText={error}
     >
-     
+
       {children}
     </TextField>
 
