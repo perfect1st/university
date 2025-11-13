@@ -56,7 +56,7 @@ export default function AllDepartmnentsPage() {
         // { key: "ID", label: "ID" },
         { key: "title_ar", label: t("Dashboard.NameInArabic") },
         { key: "title_en", label: t("Dashboard.NameInEnglish") },
-        { key: "navigate", label: t("admissions.faculty") },
+        { key: "faculty_id", label: t("admissions.faculty") },
         { key: "status", label: t("Status") }
         //  { key: "userType", label: t("User Type") }
 
@@ -212,6 +212,8 @@ export default function AllDepartmnentsPage() {
                         loading={departmentsLoading}
                         // isUsers={true}
                         statusKey="status"
+                        arPopulateKey={"title_ar"}
+                        enPopulateKey={"title_en"}
                         sx={{
                             flex: 1,
                             overflow: "auto",

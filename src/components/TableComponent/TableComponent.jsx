@@ -47,6 +47,9 @@ const TableComponent = ({
   onViewDetails,
   statusKey = "accountStatus",
   showStatusChange = true,
+  hasObject=false,
+  arPopulateKey,
+  enPopulateKey,
   actionIconType = "more",
   isInDetails = false,
   dontShowActions = false,
@@ -326,7 +329,13 @@ const TableComponent = ({
     column.key !== statusKey &&  t("dataNotFound")   
      :
 
-        row[column.key]
+      // hasObject ? isArabic ? 
+      // row[column.key]?.arPopulateKey : row[column.key]?.enPopulateKey
+      // :row[column.key]
+      row[column.key]?.id ?
+      isArabic ? row[column.key]?.[arPopulateKey] : row[column.key]?.[enPopulateKey]
+      :
+      row[column.key]
                       }
                     </TableCell>
                   ))}
