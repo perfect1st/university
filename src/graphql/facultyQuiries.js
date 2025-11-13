@@ -65,6 +65,30 @@ mutation UpdateFaculty($id:ID!,$input:UpdateFacultyInput!) {
 
 
 //////////////Departments///////////////
+
+export const GET_ALL_DEPARTMENTS=gql`
+query FacultyDepartments {
+    facultyDepartments {
+        id
+        title_ar
+        title_en
+        status
+        createdAt
+        updatedAt
+        faculty_id {
+            id
+            title_ar
+            title_en
+            status
+            required_dep
+            study_years_count
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+`;
 export const GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID=gql`
 query GetFacultyDepartmentsByFaculty($faculty_id:ID!) {
     getFacultyDepartmentsByFaculty(faculty_id: $faculty_id) {
@@ -102,7 +126,6 @@ mutation UpdateFacultyDepartment($id:ID!,$input:UpdateFacultyDepartmentInput!) {
         title_ar
         title_en
         status
-        faculty_id
         createdAt
         updatedAt
     }

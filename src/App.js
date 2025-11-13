@@ -54,8 +54,8 @@ import CityDetailsPage from "./pages/Countries/CityDetailsPage";
 import AllfaculitiesPage from "./pages/Faculities/AllfaculitiesPage";
 import AddFaculityPage from "./pages/Faculities/AddFaculityPage";
 import FaculityDetailsPage from "./pages/Faculities/FaculityDetailsPage";
-import AllDepartmentsInFaculityPage from "./pages/Faculities/AllDepartmentsInFaculityPage";
-import AddDepartmentPage from "./pages/Faculities/AddDepartmentPage";
+
+import AllDepartmnentsPage from "./pages/Departments/AllDepartmnentsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -527,18 +527,19 @@ function App() {
                       </MainLayout>
                     } />
 
-                    <Route path="departments/:id" element={
+                   
+
+                  </Route>
+
+                      {/* الاقسام للكليات */}
+                  <Route path="/departments">
+                      <Route index element={
                       <MainLayout isLoggedIn={true}>
-                        <AllDepartmentsInFaculityPage />
+                        <AllDepartmnentsPage />
                       </MainLayout>
                     } />
 
-                    <Route path="departments/:id/add" element={
-                      <MainLayout isLoggedIn={true}>
-                        <AddDepartmentPage />
-                      </MainLayout>
-                    } />
-
+                    
                   </Route>
 
 

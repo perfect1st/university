@@ -52,7 +52,7 @@ export default function AllfaculitiesPage() {
         { key: "title_ar", label: t("Dashboard.NameInArabic") },
         { key: "title_en", label: t("Dashboard.NameInEnglish") },
         { key: "study_years_count", label: t("Dashboard.yearsofstudy") },
-        { key: "navigate", label: t("departments") },
+        // { key: "navigate", label: t("departments") },
         { key: "status", label: t("Status") }
         //  { key: "userType", label: t("User Type") }
 

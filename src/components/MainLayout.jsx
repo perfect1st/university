@@ -5,20 +5,34 @@ import { getUserCookie } from "../hooks/authCookies";
 import { Navigate, Outlet, useLocation, useSearchParams } from "react-router-dom";
 import { useQuery } from "@apollo/client/react";
 import { GET_LOGGED_USER_BY_TOKEN } from "../graphql/usersQueries";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { storeLoggedUser } from "../redux/slices/user/userSlice";
 
 const MainLayout = ({ isLoggedIn=false ,children }) => {
  const location = useLocation();
   const theme = useTheme();
+   const dispatch = useDispatch();
 
  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const[searchParams,setSearchParams]=useSearchParams();
 
  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+ const {
+     data: { me } = {},
+     loading: userLoading,
+     error: userError,
+   } = useQuery(GET_LOGGED_USER_BY_TOKEN, { fetchPolicy: "network-only" });
+
  useEffect(()=>{
   if(searchParams.get("mobileOpen")) setIsMobileOpen(searchParams.get("mobileOpen")==="true");
  },[searchParams]);
+
+  useEffect(() => {
+     if(me?.id){
+       dispatch(storeLoggedUser(me)); 
+     }
+   },[me]);
  
 
 
@@ -34,13 +48,15 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
 
   const loggedUser=useSelector(state=>state.user.loggedUser);
 
-  console.log('loggedUser',loggedUser);
+  console.log('me',me);
 
-  if(isLoggedIn &&loggedUser==null) return <Navigate to="/home" />
+  // if(isLoggedIn && !me && !userLoading  ) return <Navigate to="/home" />
 
   // const user = me;
      const user = getUserCookie();
      const isAuthenticated = Boolean(user);
+
+     if(isLoggedIn && !isAuthenticated) return <Navigate to="/home" />
        
      
   console.log('isAuthenticated',isAuthenticated);
