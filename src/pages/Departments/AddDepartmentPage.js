@@ -13,7 +13,7 @@ import SubmitButton from "../../components/Utilities/SubmitButton";
 import { CREATE_FACULITY_DEPARTMENT, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import LoadingPage from "../../components/LoadingComponent";
 import { useEffect, useState } from "react";
-import { CustomSelect } from "../../components/Utilities/CustomTextField";
+
 
 export default function AddDepartmentPage() {
     const theme = useTheme();
