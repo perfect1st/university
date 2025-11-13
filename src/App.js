@@ -54,6 +54,7 @@ import CityDetailsPage from "./pages/Countries/CityDetailsPage";
 import AllfaculitiesPage from "./pages/Faculities/AllfaculitiesPage";
 import AddFaculityPage from "./pages/Faculities/AddFaculityPage";
 import FaculityDetailsPage from "./pages/Faculities/FaculityDetailsPage";
+import AllDepartmentsInFaculityPage from "./pages/Faculities/AllDepartmentsInFaculityPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -375,7 +376,7 @@ function App() {
                   <Route
                     path="/StudentDashboard"
                     element={
-                      <MainLayout>
+                      <MainLayout isLoggedIn={true}>
                         <StudentDashboard />
                       </MainLayout>
                     }
@@ -383,7 +384,7 @@ function App() {
                   <Route
                     path="/profile"
                     element={
-                      <MainLayout>
+                      <MainLayout isLoggedIn={true}>
                         <ProfilePage />
                       </MainLayout>
                     }
@@ -391,7 +392,7 @@ function App() {
                   <Route
                     path="/FeePayment"
                     element={
-                      <MainLayout>
+                      <MainLayout isLoggedIn={true}>
                         <FeePaymentPage />
                       </MainLayout>
                     }
@@ -418,7 +419,7 @@ function App() {
                     <Route
                       index
                       element={
-                        <MainLayout>
+                        <MainLayout isLoggedIn={true}>
                           <AllNationalitiesPage />
                         </MainLayout>
                       }
@@ -427,7 +428,7 @@ function App() {
                     <Route
                       path="add"
                       element={
-                        <MainLayout>
+                        <MainLayout isLoggedIn={true}>
                           <AddNationalityPage />
                         </MainLayout>
                       }
@@ -436,7 +437,7 @@ function App() {
                     <Route
                       path="details/:id"
                       element={
-                        <MainLayout>
+                        <MainLayout isLoggedIn={true}>
                           <NationalityDetailsPage />
                         </MainLayout>
                       }
@@ -450,7 +451,7 @@ function App() {
                     <Route
                       index
                       element={
-                        <MainLayout>
+                        <MainLayout isLoggedIn={true}>
                           <AllCountriesPage />
                         </MainLayout>
                       }
@@ -459,7 +460,7 @@ function App() {
                     <Route
                       path="add"
                       element={
-                        <MainLayout>
+                        <MainLayout isLoggedIn={true}>
                           <AddCountryPage />
                         </MainLayout>
                       }
@@ -468,7 +469,7 @@ function App() {
                     <Route
                       path="details/:id"
                       element={
-                        <MainLayout>
+                        <MainLayout isLoggedIn={true}>
                           <CountryDetailsPage />
                         </MainLayout>
                       }
@@ -477,7 +478,7 @@ function App() {
                     <Route
                       path="cities/:id"
                       element={
-                        <MainLayout>
+                        <MainLayout isLoggedIn={true}>
                           <AllCitiesInOneCountryPage />
                         </MainLayout>
                       }
@@ -486,7 +487,7 @@ function App() {
                     <Route
                       path="cities/:id/add"
                       element={
-                        <MainLayout>
+                        <MainLayout isLoggedIn={true}>
                           <AddCityPage />
                         </MainLayout>
                       }
@@ -495,7 +496,7 @@ function App() {
                     <Route
                       path="cities/:id/details/:cityId"
                       element={
-                        <MainLayout>
+                        <MainLayout isLoggedIn={true}>
                           <CityDetailsPage />
                         </MainLayout>
                       }
@@ -508,20 +509,26 @@ function App() {
 
                   <Route path="/faculities">
                     <Route index element={
-                      <MainLayout>
+                      <MainLayout isLoggedIn={true}>
                         <AllfaculitiesPage />
                       </MainLayout>
                     } />
 
                     <Route path="add" element={
-                      <MainLayout>
+                      <MainLayout isLoggedIn={true}>
                         <AddFaculityPage />
                       </MainLayout>
                     } />
 
                     <Route path="details/:id" element={
-                      <MainLayout>
+                      <MainLayout isLoggedIn={true}>
                         <FaculityDetailsPage />
+                      </MainLayout>
+                    } />
+
+                    <Route path="departments/:id" element={
+                      <MainLayout isLoggedIn={true}>
+                        <AllDepartmentsInFaculityPage />
                       </MainLayout>
                     } />
 

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { getUserCookie } from "../hooks/authCookies";
-import { Outlet, useLocation, useSearchParams } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useSearchParams } from "react-router-dom";
 import { useQuery } from "@apollo/client/react";
 import { GET_LOGGED_USER_BY_TOKEN } from "../graphql/usersQueries";
 import { useSelector } from "react-redux";
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ isLoggedIn=false ,children }) => {
  const location = useLocation();
   const theme = useTheme();
 
@@ -35,6 +35,8 @@ const MainLayout = ({ children }) => {
   const loggedUser=useSelector(state=>state.user.loggedUser);
 
   console.log('loggedUser',loggedUser);
+
+  if(isLoggedIn &&loggedUser==null) return <Navigate to="/home" />
 
   // const user = me;
      const user = getUserCookie();

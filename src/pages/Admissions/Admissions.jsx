@@ -257,14 +257,16 @@ export default function Admissions() {
     ? citiesInCountry?.getCitiesByCountry
     : null;
 
+    // show only active faculties
   const faculties = faculitiesData?.faculties
     ? faculitiesData?.faculties?.filter(el=>el.status)
     : null;
 
   console.log("departmentsInFaculty", departmentsInFaculty);
 
+  //  // show only active departments
   const departments = departmentsInFaculty?.getFacultyDepartmentsByFaculty
-    ? departmentsInFaculty?.getFacultyDepartmentsByFaculty
+    ? departmentsInFaculty?.getFacultyDepartmentsByFaculty?.filter(el=>el.status)
     : null;
 
     // FIRST term data
