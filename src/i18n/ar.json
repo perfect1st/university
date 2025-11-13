@@ -316,5 +316,6 @@
   "faculties":"الكليات",
   "departments":"الاقسام",
   "true":"نشط",
-  "false":"غير نشط"
+  "false":"غير نشط",
+  "select":"اختر"
 }

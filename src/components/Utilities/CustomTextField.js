@@ -349,7 +349,7 @@ export default function CustomTextFieldAdmin({ searchKey, width = "100%" ,  heig
 //   );
 // }
 
-function CustomSelect({ children, t, height , label }) {
+function CustomSelect({ children, t, height , label , backgroundColor , value , setValue }) {
   const theme = useTheme();
   // const { placeholder, helperText, error, ...rest } = props;
 
@@ -363,7 +363,7 @@ function CustomSelect({ children, t, height , label }) {
       size="small"
       SelectProps={{
         displayEmpty: true,
-        renderValue: (selected) => (!selected ? label : selected),
+        // renderValue: (selected) => (!selected ? label : selected),
         MenuProps: { disableScrollLock: true },
       }}
      sx={{
@@ -372,7 +372,7 @@ function CustomSelect({ children, t, height , label }) {
         minWidth:"160px",
         "& .MuiInputBase-root": {
           height: height || "45px",
-          backgroundColor: theme.palette.background.gray,
+          backgroundColor: backgroundColor ? backgroundColor : theme.palette.background.gray,
           color: "#6C737F",
           borderRadius: "8px",
           display: "flex",
@@ -401,6 +401,8 @@ function CustomSelect({ children, t, height , label }) {
 
      }}
    
+     value={value}
+     onChange={(e)=>setValue(e.target.value)}
     >
      
       {children}

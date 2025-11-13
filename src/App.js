@@ -144,7 +144,8 @@ function App() {
             paper: mode === "light" ? "#ffffff" : "#1e293b",
             secDefault: mode === "light" ? "#CFDBE8" : "#1f2937",
             gray: mode === "light" ? "#E5E5E5" : "#334155",
-            green: ""
+            green: "",
+            inputBackGround:"#E8EDF2"
           },
           text: {
             primary: mode === "light" ? "#0f172a" : "#f1f5f9",

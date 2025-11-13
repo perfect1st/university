@@ -278,5 +278,6 @@
     "faculties":"Faculities",
     "departments":"Departments",
     "true":"Active",
-    "false":"in Active"
+    "false":"in Active",
+    "select":"Select"
 }

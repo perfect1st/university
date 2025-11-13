@@ -64,7 +64,7 @@ mutation UpdateFaculty($id:ID!,$input:UpdateFacultyInput!) {
 
 
 
-//////////////Departments///////////////
+//////////////Departments اقسام الكلية///////////////
 
 export const GET_ALL_DEPARTMENTS=gql`
 query FacultyDepartments {
