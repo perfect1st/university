@@ -187,12 +187,25 @@ mutation CreateUserStudyMaterial($input:UserStudyMaterialInput!) {
 `;
 
 export const GET_USER_STUDY_MATERIALS_BY_USER_ID=gql`
-query GetUserStudyMaterialsByUser($user_id : ID!) {
-    getUserStudyMaterialsByUser(user_id: $user_id) {
+query GetUserStudyMaterialsByUser($user_id:ID!) {
+    getUserStudyMaterialsByUser(user_id:  $user_id) {
         id
         status
         createdAt
         updatedAt
+        user_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            createdAt
+            updatedAt
+        }
         academyTerm_id {
             id
             title_ar
@@ -203,9 +216,28 @@ query GetUserStudyMaterialsByUser($user_id : ID!) {
             term_number
             min_study_hours
             max_study_hours
-            faculty_department_id
+            faculty_department_id {
+                id
+                title_ar
+                title_en
+                status
+                createdAt
+                updatedAt
+            }
+            materials_array {
+                id
+                title_ar
+                title_en
+                status
+                fullmark_degree
+                success_degree
+                faculty_department_id
+                material_hours
+                createdAt
+                updatedAt
+            }
         }
-         material_id {
+        material_id {
             id
             title_ar
             title_en
@@ -219,6 +251,40 @@ query GetUserStudyMaterialsByUser($user_id : ID!) {
         }
     }
 }
+`
 
-`;
+// export const GET_USER_STUDY_MATERIALS_BY_USER_ID=gql`
+// query GetUserStudyMaterialsByUser($user_id : ID!) {
+//     getUserStudyMaterialsByUser(user_id: $user_id) {
+//         id
+//         status
+//         createdAt
+//         updatedAt
+//         academyTerm_id {
+//             id
+//             title_ar
+//             title_en
+//             status
+//             study_year
+//             current_year
+//             term_number
+//             min_study_hours
+//             max_study_hours
+//             faculty_department_id
+//         }
+//          material_id {
+//             id
+//             title_ar
+//             title_en
+//             status
+//             fullmark_degree
+//             success_degree
+//             material_hours
+//             createdAt
+//             updatedAt
+//         }
+//     }
+// }
+
+// `;
 

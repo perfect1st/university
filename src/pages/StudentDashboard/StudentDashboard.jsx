@@ -140,6 +140,7 @@ export default function StudentDashboard() {
   console.log("getRegisterFormByUserId", getRegisterFormByUserId);
 
 
+  console.log('getUserStudyMaterialsByUser',getUserStudyMaterialsByUser);
   // لو مفيش مواد مسجل فيها
   const isPending = getUserStudyMaterialsByUser ? true : false;
 
