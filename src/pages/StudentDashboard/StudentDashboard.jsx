@@ -356,8 +356,11 @@ export default function StudentDashboard() {
                 >
                   <TableRow>
                     <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
-                      {t("studentDashboard.subjectTitle")}
+                      {t("studentDashboard.subjectTitleAr")}
                     </TableCell>
+                     <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
+                        {t("studentDashboard.subjectTitleEn")}
+                      </TableCell>
                     <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
                       {t("studentDashboard.fullmarkDegree")}
                     </TableCell>
@@ -375,7 +378,10 @@ export default function StudentDashboard() {
                   {subjects?.map((subj, idx) => (
                     <TableRow key={idx}>
                       <TableCell sx={{ textAlign: "start" }}>
-                        {subj.title}
+                        {subj.title_ar}
+                      </TableCell>
+                       <TableCell sx={{ textAlign: "start" }}>
+                        {subj.title_en}
                       </TableCell>
                       <TableCell sx={{ textAlign: "start" }}>
                         {subj.fullmark_degree}
