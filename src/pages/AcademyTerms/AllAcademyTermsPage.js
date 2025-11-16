@@ -16,7 +16,7 @@ import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import { useEffect } from "react";
 import notify from "../../components/notify";
-import { GET_ALL_ACADEMY_TERMS } from "../../graphql/AcademyTerms";
+import { GET_ALL_ACADEMY_TERMS , UPDATE_ACADEMY_TERM_BY_ID } from "../../graphql/AcademyTerms";
 import { GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 
 
@@ -35,6 +35,11 @@ export default function AllAcademyTermsPage() {
         data: { getAcademyTerms } = {},
         loading: getAcademyLoading
     }] = useLazyQuery(GET_ALL_ACADEMY_TERMS, { fetchPolicy: "network-only" });
+
+    const[UpdateAcademyTerm,{
+        data,
+        loading:updatingStatus
+    }]=useMutation(UPDATE_ACADEMY_TERM_BY_ID,{fetchPolicy:"network-only"})
 
     const [
         Faculties,
@@ -153,19 +158,28 @@ export default function AllAcademyTermsPage() {
 
     const onStatusChange = async (selectedRow, newStatus) => {
         try {
-            console.log("selectedRow", selectedRow, newStatus);
+          //  console.log("selectedRow", selectedRow, newStatus);
             // return;
+            // let row={...selectedRow}:{faculty_department_id,faculty_id}
+        //    let { faculty_department_id, faculty_id,__typename,id ,...row } = selectedRow;
+        //     console.log('row',row);
+
             let data = {
+                // ...row,
+                title_ar:selectedRow?.title_ar,
+                title_en:selectedRow?.title_en,
+                min_study_hours:selectedRow?.min_study_hours,
+                max_study_hours:selectedRow?.max_study_hours,
                 status: newStatus == "inActive" ? false : true
             }
-            // const result=await UpdateFacultyDepartment({
-            //     variables:{
-            //         id:selectedRow?.id,
-            //         input:data
-            //     }
-            // });
+            const result=await UpdateAcademyTerm({
+                variables:{
+                    id:selectedRow?.id,
+                    input:data
+                }
+            });
 
-            // console.log("reeesult",result);
+            console.log("reeesult",result);
 
             notify(t("success"), "success");
 
@@ -187,13 +201,13 @@ export default function AllAcademyTermsPage() {
 
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
-            {/* {
+            {
                 updatingStatus && <CircularProgress
                     size={26}
                     thickness={8}
                     sx={{ color: "black" }}
                 />
-            } */}
+            }
             <Grid container spacing={3}>
                 <Grid item
                     sm={12} md={12}

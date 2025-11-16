@@ -59,6 +59,7 @@ import AllDepartmnentsPage from "./pages/Departments/AllDepartmnentsPage";
 import AddDepartmentPage from "./pages/Departments/AddDepartmentPage";
 import DepartmentDetailsPage from "./pages/Departments/DepartmentDetailsPage";
 import AllAcademyTermsPage from "./pages/AcademyTerms/AllAcademyTermsPage";
+import AddAcademyTermPage from "./pages/AcademyTerms/AddAcademyTermPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -566,6 +567,13 @@ function App() {
                         <AllAcademyTermsPage />
                       </MainLayout>
                       } />
+
+                      <Route path="add" element={
+                        <MainLayout isLoggedIn={true}>
+                        <AddAcademyTermPage />
+                      </MainLayout>
+                      } />
+
                     </Route>
 
                 </Route>
