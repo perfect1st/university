@@ -49,7 +49,7 @@ import { CREATE_REGISTERATION_FORM_TRANSACTION } from "../../graphql/transaction
 import notify from "../../components/notify.js";
 import { baseURL } from "../../Api/apolloClient.js";
 import formatDateToString from "../../components/Utilities/FormatDateToString.js";
-import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/departmentsQueries.js";
+import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms.js";
 import { useNavigate } from "react-router-dom";
 
 // CustomTextField wrapper (keeps placeholder support + helperText)

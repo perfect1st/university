@@ -164,7 +164,7 @@
     "Pay":"دفع",
     "paymentMethods":"طرق الدفع",
     "paymentSuccess":"تم دفع الطلب بنجاح",
-    "departmentTerm":"السنة الدراسية"
+    "departmentTerm":"الفصول التعليمية"
   },
   "studentDashboard": {
     "majorInformation": "المعلومات الأساسية",
