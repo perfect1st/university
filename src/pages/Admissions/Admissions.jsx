@@ -106,7 +106,7 @@ export default function Admissions() {
   const navigate=useNavigate();
 
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   // const[registerationFees,setRegisterationFees] = useState(0);
   const [registerationFeesResults, setRegisterationFeesResults] =
@@ -269,8 +269,8 @@ export default function Admissions() {
     ? departmentsInFaculty?.getFacultyDepartmentsByFaculty?.filter(el=>el.status)
     : null;
 
-    // FIRST term data
-    let firstTermData=termsData?.filter(el=>el.term_number==1);
+    // FIRST term data and active terms
+    let firstTermData=termsData?.filter(el=>(el.term_number==1 && el.status));
 
     console.log('firstTermData',firstTermData);
 

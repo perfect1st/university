@@ -96,7 +96,6 @@ query GetFacultyDepartmentsByFaculty($faculty_id:ID!) {
         title_ar
         title_en
         status
-        faculty_id
         createdAt
         updatedAt
     }
