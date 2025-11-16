@@ -220,7 +220,7 @@ const TableComponent = ({
                // console.log("row[column.key]",visibleColumns[visibleColumns?.length-1].key);
 
               // console.log("styles.bgColor",styles.bgColor);
-
+              console.log('rrrrrrrr',visibleColumns[2]?.nested ==true);
               return (
                 <TableRow key={row.id} hover>
                   {visibleColumns?.map((column) => (
@@ -334,9 +334,9 @@ const TableComponent = ({
 
       // hasObject ? isArabic ? 
       // row[column.key]?.arPopulateKey : row[column.key]?.enPopulateKey
-      // :row[column.key]
+      // :row[column.key]  visibleColumns[2]?.nested
       row[column.key]?.id ?
-      // row[column.key]?.[nestedPopulateKey]  ?
+      // row[column.key]?.id[nestedPopulateKey] && column?.nested == "true" ?
       // isArabic ? row[column.key]?.[nestedPopulateKey]?.[nestedArPopulateKey] : row[column.key]?.[nestedPopulateKey]?.[nestedEnPopulateKey]
       // :
       isArabic ? row[column.key]?.[arPopulateKey] : row[column.key]?.[enPopulateKey]

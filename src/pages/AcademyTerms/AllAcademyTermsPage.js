@@ -52,12 +52,21 @@ export default function AllAcademyTermsPage() {
         Faculties();
     }, []);
 
+    let getAcademyTermsToShow=getAcademyTerms?.map(el=>{
+        return{
+            ...el,
+            faculty_id:el?.faculty_department_id?.faculty_id
+        }
+    });
+
+    console.log('getAcademyTermsToShow',getAcademyTermsToShow);
+
     let columns = [
         // { key: "ID", label: "ID" },
         { key: "title_ar", label: t("Dashboard.NameInArabic") },
         { key: "title_en", label: t("Dashboard.NameInEnglish") },
         { key: "current_year", label: t("Dashboard.AcademicYear") },
-        { key: "faculty_department_id.faculty_id", label: t("admissions.faculty") ,nested:true },
+        { key: "faculty_id", label: t("admissions.faculty")  },
         { key: "faculty_department_id", label: t("admissions.facultyDepartment") },
         { key: "term_number", label: t("Dashboard.semester") },
         { key: "status", label: t("Status") }
@@ -213,7 +222,7 @@ export default function AllAcademyTermsPage() {
 
                     <TableComponent
                         columns={columns}
-                        data={getAcademyTerms}
+                        data={getAcademyTermsToShow}
                         // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
                         loading={getAcademyLoading}
                         // isUsers={true}
