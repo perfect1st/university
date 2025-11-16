@@ -106,7 +106,7 @@ export default function Admissions() {
   const navigate=useNavigate();
 
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   // const[registerationFees,setRegisterationFees] = useState(0);
   const [registerationFeesResults, setRegisterationFeesResults] =

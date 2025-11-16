@@ -267,7 +267,9 @@
      "NameInArabic": "Name In Arabic",
      "NameInEnglish":"Name In English",
      "flag":"Country Flag",
-     "yearsofstudy":"Years Of Study"
+     "yearsofstudy":"Years Of Study",
+     "AcademicYear":"Academic Year",
+     "semester":"Semester"
    },
     "submit":"Submit",
     "error":"Error happened try again later",

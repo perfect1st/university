@@ -164,7 +164,7 @@
     "Pay":"دفع",
     "paymentMethods":"طرق الدفع",
     "paymentSuccess":"تم دفع الطلب بنجاح",
-    "departmentTerm":"الفصول التعليمية"
+    "departmentTerm":"الفصول الدراسية"
   },
   "studentDashboard": {
     "majorInformation": "المعلومات الأساسية",
@@ -304,7 +304,9 @@
      "NameInArabic": "الاسم بالعربية",
      "NameInEnglish":"الاسم بالانجليزية",
      "flag":"علم الدولة",
-     "yearsofstudy":"عدد سنوات الدراسة"
+     "yearsofstudy":"عدد سنوات الدراسة",
+     "AcademicYear":"الفصل الدراسي",
+      "semester":"الترم"
    },
 
   "submit":"تأكيد",

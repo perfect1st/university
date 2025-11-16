@@ -50,6 +50,9 @@ const TableComponent = ({
   hasObject=false,
   arPopulateKey,
   enPopulateKey,
+  nestedPopulateKey,
+  nestedArPopulateKey,
+  nestedEnPopulateKey,
   actionIconType = "more",
   isInDetails = false,
   dontShowActions = false,
@@ -333,6 +336,9 @@ const TableComponent = ({
       // row[column.key]?.arPopulateKey : row[column.key]?.enPopulateKey
       // :row[column.key]
       row[column.key]?.id ?
+      // row[column.key]?.[nestedPopulateKey]  ?
+      // isArabic ? row[column.key]?.[nestedPopulateKey]?.[nestedArPopulateKey] : row[column.key]?.[nestedPopulateKey]?.[nestedEnPopulateKey]
+      // :
       isArabic ? row[column.key]?.[arPopulateKey] : row[column.key]?.[enPopulateKey]
       :
       row[column.key]
