@@ -269,7 +269,8 @@
      "flag":"Country Flag",
      "yearsofstudy":"Years Of Study",
      "AcademicYear":"Academic Year",
-     "semester":"Semester"
+     "semester":"Semester",
+     "studyYear":"Study Year"
    },
     "submit":"Submit",
     "error":"Error happened try again later",

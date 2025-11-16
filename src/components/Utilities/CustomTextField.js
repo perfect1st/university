@@ -349,7 +349,7 @@ export default function CustomTextFieldAdmin({ searchKey, width = "100%", height
 //   );
 // }
 
-function CustomSelect({ children, t, height, label, backgroundColor, value, setValue ,error,setError }) {
+function CustomSelect({ children, t, height, label, backgroundColor, value, setValue ,error,setError , onChange }) {
   const theme = useTheme();
   // const { placeholder, helperText, error, ...rest } = props;
 
@@ -404,8 +404,17 @@ function CustomSelect({ children, t, height, label, backgroundColor, value, setV
 
       value={value}
       onChange={(e) => {
+        if(onChange){
           setValue(e.target.value);
-          setError("");
+          onChange(e);
+          
+        }
+        else{
+           setValue(e.target.value);
+        }
+
+        setError("");
+         
       }}
       error={error}
       helperText={error}

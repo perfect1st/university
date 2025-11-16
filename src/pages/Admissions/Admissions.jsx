@@ -1703,7 +1703,9 @@ export default function Admissions() {
 
            {
             (countriesLoading||citiesLoading||faculitiesLoading||departmentsLoading||termsLoading)
-            && <CircularProgress size={25} />
+            && <CircularProgress  size={26}
+                    thickness={8}
+                    sx={{ color: "black" }} />
            } 
            
             </Grid>

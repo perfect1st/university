@@ -306,7 +306,8 @@
      "flag":"علم الدولة",
      "yearsofstudy":"عدد سنوات الدراسة",
      "AcademicYear":"الفصل الدراسي",
-      "semester":"الترم"
+      "semester":"الترم",
+      "studyYear":"السنة الدراسية"
    },
 
   "submit":"تأكيد",

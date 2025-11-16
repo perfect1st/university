@@ -37,7 +37,7 @@ export default function VerticalTextField({
 }
 
 
-export const VerticalTextFieldSelect = ({ t, backgroundColor, title , defaultOptionLabel,children, value , setValue , error , setError }) => {
+export const VerticalTextFieldSelect = ({ t, backgroundColor, title , defaultOptionLabel,children, value , setValue , error , setError , onChange }) => {
   const theme = useTheme();
   return (
     <>
@@ -46,7 +46,7 @@ export const VerticalTextFieldSelect = ({ t, backgroundColor, title , defaultOpt
       </Typography>
 
       <Box sx={{ mb: 3 }}>
-        <CustomSelect t={t} label={defaultOptionLabel} height={"56px"} backgroundColor={backgroundColor} value={value} setValue={setValue} error={error} setError={setError}  >
+        <CustomSelect t={t} label={defaultOptionLabel} height={"56px"} backgroundColor={backgroundColor} value={value} setValue={setValue} error={error} setError={setError} onChange={onChange}  >
           {children}
         </CustomSelect>
 
