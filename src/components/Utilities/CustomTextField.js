@@ -349,7 +349,7 @@ export default function CustomTextFieldAdmin({ searchKey, width = "100%", height
 //   );
 // }
 
-function CustomSelect({ children, t, height, label, backgroundColor, value, setValue ,error,setError , onChange }) {
+function CustomSelect({ children, t, height, label, backgroundColor, value, setValue ,error,setError , onChange , fieldID, fieldName }) {
   const theme = useTheme();
   // const { placeholder, helperText, error, ...rest } = props;
 
@@ -359,6 +359,8 @@ function CustomSelect({ children, t, height, label, backgroundColor, value, setV
 
   return (
     <TextField
+    id={fieldID}
+    name={fieldName}
       select
       size="small"
       SelectProps={{
@@ -413,7 +415,7 @@ function CustomSelect({ children, t, height, label, backgroundColor, value, setV
            setValue(e.target.value);
         }
 
-        setError("");
+       setError && setError("");
          
       }}
       error={error}

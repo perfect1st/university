@@ -62,7 +62,7 @@ export default function AddAcademyTermPage() {
     Faculties();
   }, []);
 
-  console.log("getFacultyDepartmentsByFaculty",getFacultyDepartmentsByFaculty);
+  console.log("getFacultyDepartmentsByFaculty", getFacultyDepartmentsByFaculty);
   // useEffect(()=>{
   //   if(selectedFaculity && selectedFaculity!=0){
 
@@ -77,7 +77,7 @@ export default function AddAcademyTermPage() {
       study_year: "",   // -> study year
       // term_number: "0",
       min_study_hours: "",
-      max_study_hours: ""
+      max_study_hours: "",
       // faculty_id: ""
       // flag: "",
     },
@@ -90,14 +90,25 @@ export default function AddAcademyTermPage() {
       term_number: Yup.string().required(t("admissions.errors.required")),
       min_study_hours: Yup.string().required(t("admissions.errors.required")),
       max_study_hours: Yup.string().required(t("admissions.errors.required")),
+      selectedFaculity: Yup.string()
+        .required(t("admissions.errors.required"))
+        .notOneOf(["0"], t("admissions.errors.required")),
+      selectedSemester: Yup.string()
+        .required(t("admissions.errors.required"))
+        .notOneOf(["0"], t("admissions.errors.required")),
+      selectedDepartment: Yup.string()
+        .required(t("admissions.errors.required"))
+        .notOneOf(["0"], t("admissions.errors.required")),
       // faculty_id: Yup.string().required(t("admissions.errors.required")),
 
     }),
     onSubmit: async (values) => {
 
       // // ✅ التحقق اليدوي قبل الإرسال
-      if ((selectedFaculity || selectedSemester || selectedDepartment) == 0) {
-        // console.log('rrrrrrrrrrrrrrrrrrrrrrr');
+      // selectedFaculity || selectedSemester || selectedDepartment
+      console.log('ppppppppppppp')
+      if ((selectedSemester) == 0) {
+        console.log('rrrrrrrrrrrrrrrrrrrrrrr');
         // formik.setFieldError("faculty_id", t("admissions.errors.required"));
 
         setSelectError(t("admissions.errors.required"));
@@ -105,7 +116,7 @@ export default function AddAcademyTermPage() {
       }
       // console.log('xxxxxxxxxxxxxxxxxxxxxxx');
 
-      return;
+      // return;
       const data = {
         title_ar: values?.title_ar,
         title_en: values.title_en,
@@ -148,9 +159,10 @@ export default function AddAcademyTermPage() {
   let translateText = isArabic ? "فصل دراسي" : "AcademyTerm";
   let translateText2 = isArabic ? "الفصل الدراسي" : "AcademyTerm";
 
+  console.log('formik.touched.selectedFaculity', formik.errors);
   if (faculitiesLoading) return <LoadingPage />;
   return (
-    <Box sx={{ p: 3, backgroundColor: "background.paper" , maxWidth:"100%" }}>
+    <Box sx={{ p: 3, backgroundColor: "background.paper", maxWidth: "100%" }}>
       <Header
         title={t("admissions.departmentTerm")}
         subtitle={t("addItem", { item: translateText })}
@@ -164,9 +176,11 @@ export default function AddAcademyTermPage() {
         isPrinter={false}
       />
 
-      <Box component="form" onSubmit={formik.handleSubmit} sx={{width:"100%",[theme.breakpoints.down("sm")]: {
-      width: "60%", // 👈 للموبايل
-    },}}>
+      <Box component="form" onSubmit={formik.handleSubmit} sx={{
+        width: "100%", [theme.breakpoints.down("sm")]: {
+          width: "60%", // 👈 للموبايل
+        },
+      }}>
 
         <VerticalTextField
           title={t("form.name_ar", { item: translateText2 })}
@@ -192,6 +206,7 @@ export default function AddAcademyTermPage() {
 
         <VerticalTextField
           title={t("Dashboard.AcademicYear", { item: translateText2 })}
+          type={"number"}
           fieldID={"current_year"}
           fieldName={"current_year"}
           placeholder={t("Dashboard.AcademicYear")}
@@ -220,8 +235,8 @@ export default function AddAcademyTermPage() {
           backgroundColor={theme.palette.background.inputBackGround}
           value={selectedSemester}
           setValue={setSelectedSemester}
-          error={selectError}
-          setError={setSelectError}
+          error={formik.errors.selectedSemester && t("admissions.errors.required")}
+          helperText={formik.errors.selectedSemester && t("admissions.errors.required")}
 
         >
           <MenuItem value={0} selected>{t("select")}</MenuItem>
@@ -233,20 +248,25 @@ export default function AddAcademyTermPage() {
         {/* الكلية */}
 
         <VerticalTextFieldSelect
+          fieldID={"selectedFaculity"}
+          fieldName={"selectedFaculity"}
           t={t}
           title={t("admissions.faculty")} defaultOptionLabel={t("select")}
           backgroundColor={theme.palette.background.inputBackGround}
           value={selectedFaculity}
           setValue={setSelectedFaculity}
-          onChange={async(e) => {
-          await  GetFacultyDepartmentsByFaculty({
+          onChange={async (e) => {
+            await GetFacultyDepartmentsByFaculty({
               variables: {
                 faculty_id: e.target.value,
               },
             });
           }}
-          error={selectError}
-          setError={setSelectError}
+
+          error={formik.errors.selectedFaculity && t("admissions.errors.required")}
+          helperText={formik.errors.selectedFaculity && t("admissions.errors.required")}
+        // error={selectError}
+        // setError={setSelectError}
 
         >
           <MenuItem value={0} selected>{t("select")}</MenuItem>
@@ -262,9 +282,8 @@ export default function AddAcademyTermPage() {
           backgroundColor={theme.palette.background.inputBackGround}
           value={selectedDepartment}
           setValue={setSelectedDepartment}
-          error={selectError}
-          setError={setSelectError}
-
+           error={formik.errors.selectedDepartment && t("admissions.errors.required")}
+          helperText={formik.errors.selectedDepartment && t("admissions.errors.required")}
         >
           <MenuItem value={0} selected>{t("select")}</MenuItem>
           {
