@@ -13,6 +13,7 @@ import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../
 import LoadingPage from "../../components/LoadingComponent";
 import { useEffect, useState } from "react";
 import { CREATE_ACADEMY_TERM } from "../../graphql/AcademyTerms";
+import MaterialArrComponent from "./MaterialArrComponent";
 
 export default function AddAcademyTermPage() {
 
@@ -103,6 +104,8 @@ export default function AddAcademyTermPage() {
         return; // وقف الإرسال لحد ما المستخدم يختار
       }
       // console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+
+      return;
       const data = {
         title_ar: values?.title_ar,
         title_en: values.title_en,
@@ -147,7 +150,7 @@ export default function AddAcademyTermPage() {
 
   if (faculitiesLoading) return <LoadingPage />;
   return (
-    <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
+    <Box sx={{ p: 3, backgroundColor: "background.paper" , maxWidth:"100%" }}>
       <Header
         title={t("admissions.departmentTerm")}
         subtitle={t("addItem", { item: translateText })}
@@ -161,7 +164,9 @@ export default function AddAcademyTermPage() {
         isPrinter={false}
       />
 
-      <Box component="form" onSubmit={formik.handleSubmit} fullWidth>
+      <Box component="form" onSubmit={formik.handleSubmit} sx={{width:"100%",[theme.breakpoints.down("sm")]: {
+      width: "60%", // 👈 للموبايل
+    },}}>
 
         <VerticalTextField
           title={t("form.name_ar", { item: translateText2 })}
@@ -266,6 +271,8 @@ export default function AddAcademyTermPage() {
             getFacultyDepartmentsByFaculty?.map(el => <MenuItem key={el?.id} value={el?.id}>{isArabic ? el?.title_ar : el?.title_en}</MenuItem>)
           }
         </VerticalTextFieldSelect>
+
+        <MaterialArrComponent />
 
         <SubmitButton loading={creatingAcademyTerm} t={t} />
 

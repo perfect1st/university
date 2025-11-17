@@ -270,7 +270,8 @@
      "yearsofstudy":"Years Of Study",
      "AcademicYear":"Academic Year",
      "semester":"Semester",
-     "studyYear":"Study Year"
+     "studyYear":"Study Year",
+     "addSubject":"Add Subject"
    },
     "submit":"Submit",
     "error":"Error happened try again later",

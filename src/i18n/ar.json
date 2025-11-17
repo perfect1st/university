@@ -307,7 +307,8 @@
      "yearsofstudy":"عدد سنوات الدراسة",
      "AcademicYear":"الفصل الدراسي",
       "semester":"الترم",
-      "studyYear":"السنة الدراسية"
+      "studyYear":"السنة الدراسية",
+      "addSubject":"اضافة المادة"
    },
 
   "submit":"تأكيد",

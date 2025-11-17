@@ -128,7 +128,8 @@ const TableComponent = ({
         width: "100%",
     maxWidth: "100%",
     overflowX: "auto", // ✅ لو الأعمدة كتيرة بيعمل scroll تلقائي
-    boxShadow: "none"
+    boxShadow: "none",
+      whiteSpace: "nowrap" // يمنع تكسير الصفوف
       }}
     >
       <Box sx={{ 
@@ -138,7 +139,7 @@ const TableComponent = ({
         
     width: "100%", // 👈 العرض اللي عايزه
     [theme.breakpoints.down("sm")]: {
-      width: "80%", // 👈 للموبايل
+      width: "60%", // 👈 للموبايل
       overflow:"scroll"
     },
   
