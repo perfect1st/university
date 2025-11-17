@@ -132,6 +132,7 @@ export default function AddAcademyTermPage() {
       }
       // console.log('xxxxxxxxxxxxxxxxxxxxxxx');
 
+      // شيل ال index قبل متبعت
       //  return;
       const data = {
         title_ar: values?.title_ar,
@@ -257,7 +258,7 @@ export default function AddAcademyTermPage() {
 
         <VerticalTextField
           title={t("studentDashboard.minAcademyHours")}
-          // type={"number"}
+           type={"number"}
           fieldID={"min_study_hours"}
           fieldName={"min_study_hours"}
           placeholder={t("studentDashboard.minAcademyHours")}
@@ -269,7 +270,7 @@ export default function AddAcademyTermPage() {
 
         <VerticalTextField
           title={t("studentDashboard.maxAcademyHours")}
-          // type={"number"}
+           type={"number"}
           fieldID={"max_study_hours"}
           fieldName={"max_study_hours"}
           placeholder={t("studentDashboard.maxAcademyHours")}
