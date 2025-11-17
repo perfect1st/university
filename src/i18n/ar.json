@@ -308,7 +308,8 @@
      "AcademicYear":"العام الاكاديمي",
       "semester":"الترم",
       "studyYear":"السنة الدراسية",
-      "addSubject":"اضافة المادة"
+      "addSubject":"اضافة المادة",
+      "greaterThanError":" يجب ان يكون {{more}}  اكبر من {{less}}  "
    },
 
   "submit":"تأكيد",

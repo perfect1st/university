@@ -75,51 +75,73 @@ export default function AddAcademyTermPage() {
       title_en: "",
       current_year: "", // -> academic year
       study_year: "",   // -> study year
-      // term_number: "0",
+      //  term_number: "0",
       min_study_hours: "",
       max_study_hours: "",
       // faculty_id: ""
       // flag: "",
     },
 
-    validationSchema: Yup.object({
-      title_ar: Yup.string().required(t("admissions.errors.required")),
-      title_en: Yup.string().required(t("admissions.errors.required")),
-      current_year: Yup.string().required(t("admissions.errors.required")),
-      study_year: Yup.string().required(t("admissions.errors.required")),
-      term_number: Yup.string().required(t("admissions.errors.required")),
-      min_study_hours: Yup.string().required(t("admissions.errors.required")),
-      max_study_hours: Yup.string().required(t("admissions.errors.required")),
-      selectedFaculity: Yup.string()
-        .required(t("admissions.errors.required"))
-        .notOneOf(["0"], t("admissions.errors.required")),
-      selectedSemester: Yup.string()
-        .required(t("admissions.errors.required"))
-        .notOneOf(["0"], t("admissions.errors.required")),
-      selectedDepartment: Yup.string()
-        .required(t("admissions.errors.required"))
-        .notOneOf(["0"], t("admissions.errors.required")),
-      // faculty_id: Yup.string().required(t("admissions.errors.required")),
+  //   validationSchema: Yup.object({
+  //     title_ar: Yup.string().required(t("admissions.errors.required")),
+  //     title_en: Yup.string().required(t("admissions.errors.required")),
+  //     current_year: Yup.string().required(t("admissions.errors.required")),
+  //     study_year: Yup.string().required(t("admissions.errors.required")),
+  //     term_number: Yup.string().required(t("admissions.errors.required")),
+  //     min_study_hours: Yup.string().required(t("admissions.errors.required"))
+  // .test(
+  //   "greater-than-zero",
+  //   t("admissions.errors.required"),
+  //   (value) => Number(value) > 0
+  // ),
+  //     max_study_hours: Yup.string()
+  // .required(t("admissions.errors.required"))
+  // .test(
+  //   "greater-than-zero",
+  //   t("admissions.errors.required"),
+  //   (value) => Number(value) > 0
+  // ),
+  //     selectedFaculity: Yup.string()
+  //       .required(t("admissions.errors.required"))
+  //       .notOneOf(["0"], t("admissions.errors.required")),
+  //     selectedSemester: Yup.string()
+  //       .required(t("admissions.errors.required"))
+  //       .notOneOf(["0"], t("admissions.errors.required")),
+  //     selectedDepartment: Yup.string()
+  //       .required(t("admissions.errors.required"))
+  //       .notOneOf(["0"], t("admissions.errors.required")),
+  //     // faculty_id: Yup.string().required(t("admissions.errors.required")),
 
-    }),
+  //   }),
     onSubmit: async (values) => {
 
+      console.log("suuuubmit");
+     
       // // ✅ التحقق اليدوي قبل الإرسال
       // selectedFaculity || selectedSemester || selectedDepartment
-      console.log('ppppppppppppp')
-      if ((selectedSemester) == 0) {
+      console.log('ppppppppppppp',values?.min_study_hours)
+      if ( Number(values?.min_study_hours)  > Number(values?.max_study_hours) ) {
         console.log('rrrrrrrrrrrrrrrrrrrrrrr');
-        // formik.setFieldError("faculty_id", t("admissions.errors.required"));
-
-        setSelectError(t("admissions.errors.required"));
+        
+        notify(t("Dashboard.greaterThanError",{
+          more:t("studentDashboard.maxAcademyHours"),
+          less:t("studentDashboard.minAcademyHours")
+        }),"error");
+       
         return; // وقف الإرسال لحد ما المستخدم يختار
       }
       // console.log('xxxxxxxxxxxxxxxxxxxxxxx');
 
-      // return;
+      //  return;
       const data = {
         title_ar: values?.title_ar,
-        title_en: values.title_en,
+        title_en: values?.title_en,
+        term_number:selectedSemester,
+        faculty_department_id:selectedDepartment,
+        current_year:values?.current_year,
+        study_year:values?.study_year,
+        min_study_hours:values?.min_study_hours,
+        max_study_hours:values?.max_study_hours
         // faculty_id: selected
 
       };
@@ -159,7 +181,7 @@ export default function AddAcademyTermPage() {
   let translateText = isArabic ? "فصل دراسي" : "AcademyTerm";
   let translateText2 = isArabic ? "الفصل الدراسي" : "AcademyTerm";
 
-  console.log('formik.touched.selectedFaculity', formik.errors);
+  console.log('formik.touched.selectedFaculity', formik.touched);
   if (faculitiesLoading) return <LoadingPage />;
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper", maxWidth: "100%" }}>
@@ -176,11 +198,18 @@ export default function AddAcademyTermPage() {
         isPrinter={false}
       />
 
-      <Box component="form" onSubmit={formik.handleSubmit} sx={{
-        width: "100%", [theme.breakpoints.down("sm")]: {
-          width: "60%", // 👈 للموبايل
-        },
-      }}>
+      <Box component="form" 
+      onSubmit={(e)=>{
+        e.preventDefault();
+        // console.log('sssssssssssssss',e);
+         formik.handleSubmit();
+      }} 
+      // sx={{
+      //   width: "100%", [theme.breakpoints.down("sm")]: {
+      //     width: "60%", // 👈 للموبايل
+      //   },
+      // }}
+      >
 
         <VerticalTextField
           title={t("form.name_ar", { item: translateText2 })}
@@ -206,7 +235,6 @@ export default function AddAcademyTermPage() {
 
         <VerticalTextField
           title={t("Dashboard.AcademicYear", { item: translateText2 })}
-          type={"number"}
           fieldID={"current_year"}
           fieldName={"current_year"}
           placeholder={t("Dashboard.AcademicYear")}
@@ -227,6 +255,30 @@ export default function AddAcademyTermPage() {
           helperText={formik.touched.study_year && formik.errors.study_year}
         />
 
+        <VerticalTextField
+          title={t("studentDashboard.minAcademyHours")}
+          // type={"number"}
+          fieldID={"min_study_hours"}
+          fieldName={"min_study_hours"}
+          placeholder={t("studentDashboard.minAcademyHours")}
+          value={formik.values.min_study_hours}
+          onChange={formik.handleChange}
+          error={formik.touched.min_study_hours && Boolean(formik.errors.min_study_hours)}
+          helperText={formik.touched.min_study_hours && formik.errors.min_study_hours}
+        />
+
+        <VerticalTextField
+          title={t("studentDashboard.maxAcademyHours")}
+          // type={"number"}
+          fieldID={"max_study_hours"}
+          fieldName={"max_study_hours"}
+          placeholder={t("studentDashboard.maxAcademyHours")}
+          value={formik.values.max_study_hours}
+          onChange={formik.handleChange}
+          error={formik.touched.max_study_hours && Boolean(formik.errors.max_study_hours)}
+          helperText={formik.touched.max_study_hours && formik.errors.max_study_hours}
+        />
+
         {/* الترم */}
 
         <VerticalTextFieldSelect
@@ -234,9 +286,11 @@ export default function AddAcademyTermPage() {
           title={t("Dashboard.semester")} defaultOptionLabel={t("select")}
           backgroundColor={theme.palette.background.inputBackGround}
           value={selectedSemester}
-          setValue={setSelectedSemester}
-          error={formik.errors.selectedSemester && t("admissions.errors.required")}
-          helperText={formik.errors.selectedSemester && t("admissions.errors.required")}
+           setValue={setSelectedSemester}
+         // onChange={setSelectedSemester}
+          // onBlur={formik.handleBlur}
+          error={ formik.errors.selectedSemester && t("admissions.errors.required")}
+          helperText={ formik.errors.selectedSemester && t("admissions.errors.required")}
 
         >
           <MenuItem value={0} selected>{t("select")}</MenuItem>
@@ -248,8 +302,6 @@ export default function AddAcademyTermPage() {
         {/* الكلية */}
 
         <VerticalTextFieldSelect
-          fieldID={"selectedFaculity"}
-          fieldName={"selectedFaculity"}
           t={t}
           title={t("admissions.faculty")} defaultOptionLabel={t("select")}
           backgroundColor={theme.palette.background.inputBackGround}

@@ -15,6 +15,8 @@ export default function VerticalTextField({
 }) {
 
   const theme = useTheme();
+
+  console.log("fieldID",fieldID);
   return (
     <>
       <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
@@ -47,8 +49,9 @@ export default function VerticalTextField({
             helperText={helperText}
             variant="outlined"
             inputProps={{
+                formNoValidate: true,  
               inputMode: "numeric",
-              pattern: "[0-9]*",
+              // pattern: "[0-9]*",
             }}
             onKeyDown={(e) => {
               if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -72,7 +75,7 @@ export default function VerticalTextField({
 }
 
 
-export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange , fieldID, fieldName }) => {
+export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange , fieldID, fieldName , onBlur }) => {
   const theme = useTheme();
   return (
     <>
@@ -81,7 +84,7 @@ export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOpti
       </Typography>
 
       <Box sx={{ mb: 3 }}>
-        <CustomSelect t={t} label={defaultOptionLabel} height={"56px"} backgroundColor={backgroundColor} value={value} setValue={setValue} error={error} setError={setError} onChange={onChange} fieldID={fieldID} fieldName={fieldName}  >
+        <CustomSelect t={t} label={defaultOptionLabel} height={"56px"} backgroundColor={backgroundColor} value={value} setValue={setValue} error={error} setError={setError} onChange={onChange} fieldID={fieldID} fieldName={fieldName} onBlur={onBlur}  >
           {children}
         </CustomSelect>
 

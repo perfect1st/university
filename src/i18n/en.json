@@ -271,7 +271,8 @@
      "AcademicYear":"Academic Year",
      "semester":"Semester",
      "studyYear":"Study Year",
-     "addSubject":"Add Subject"
+     "addSubject":"Add Subject",
+     "greaterThanError":"{{more}} must be greater than {{less}}"
    },
     "submit":"Submit",
     "error":"Error happened try again later",
