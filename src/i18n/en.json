@@ -272,7 +272,8 @@
      "semester":"Semester",
      "studyYear":"Study Year",
      "addSubject":"Add Subject",
-     "greaterThanError":"{{more}} must be greater than {{less}}"
+     "greaterThanError":"{{more}} must be greater than {{less}}",
+     "allFieldsRequired":"You must Enter All fields in {{item}}"
    },
     "submit":"Submit",
     "error":"Error happened try again later",

@@ -309,7 +309,8 @@
       "semester":"الترم",
       "studyYear":"السنة الدراسية",
       "addSubject":"اضافة المادة",
-      "greaterThanError":" يجب ان يكون {{more}}  اكبر من {{less}}  "
+      "greaterThanError":" يجب ان يكون {{more}}  اكبر من {{less}}  ",
+      "allFieldsRequired":"يجب ادخال جميع الحقول  داخل {{item}}"
    },
 
   "submit":"تأكيد",

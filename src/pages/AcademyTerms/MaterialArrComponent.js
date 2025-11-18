@@ -6,12 +6,11 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 
 
-export default function MaterialArrComponent() {
+export default function MaterialArrComponent({rows,setRows}) {
     const theme = useTheme();
     const { t } = useTranslation();
     const isArabic = i18n.language === "ar";
 
-    const [rows, setRows] = useState([]);
 
     const onInputChange = (e, index) => {
         console.log('eeee', e.target.value, index, e.target.name);
