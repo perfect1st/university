@@ -2,8 +2,7 @@ import { useTheme } from "@emotion/react";
 import { Box, CircularProgress, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { GET_CITIES_BY_COUNTRY_ID, GET_COUNTRY_BY_ID } from "../../graphql/countriesQueries";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import LoadingPage from "../../components/LoadingComponent";
 import * as XLSX from "xlsx";
@@ -41,6 +40,7 @@ export default function AllAcademyTermsPage() {
         loading:updatingStatus
     }]=useMutation(UPDATE_ACADEMY_TERM_BY_ID,{fetchPolicy:"network-only"})
 
+    // get all faculities
     const [
         Faculties,
         {

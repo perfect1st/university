@@ -60,6 +60,8 @@ import AddDepartmentPage from "./pages/Departments/AddDepartmentPage";
 import DepartmentDetailsPage from "./pages/Departments/DepartmentDetailsPage";
 import AllAcademyTermsPage from "./pages/AcademyTerms/AllAcademyTermsPage";
 import AddAcademyTermPage from "./pages/AcademyTerms/AddAcademyTermPage";
+import AllMaterialsPage from "./pages/Materials/AllMaterialsPage";
+import AddMaterialPage from "./pages/Materials/AddMaterialPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -559,6 +561,23 @@ function App() {
 
 
                   </Route>
+
+                    {/* المواد */}
+                    <Route path="/materials">
+                      <Route index element={
+                        <MainLayout isLoggedIn={true}>
+                        <AllMaterialsPage />
+                      </MainLayout>
+                      } />
+
+                      <Route path="add" element={
+                        <MainLayout isLoggedIn={true}>
+                        <AddMaterialPage />
+                      </MainLayout>
+                      } />
+
+                    </Route>
+
 
                     {/* الفصول الدراسية */}
                     <Route path="/academyTerms">

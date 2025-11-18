@@ -127,6 +127,16 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       en: "Academy Terms",
     },
   },
+
+  {
+    // icon: FlagIcon,
+    key: "materials",
+    path: "/materials",
+    label: {
+      ar: "المواد الدراسية",
+      en: "Subjects",
+    },
+  },
   {
     // icon: PersonOutlineIcon,
     key: "profile",

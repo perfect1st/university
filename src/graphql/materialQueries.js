@@ -9,10 +9,27 @@ query Materials {
         status
         fullmark_degree
         success_degree
-        faculty_department_id
         material_hours
         createdAt
         updatedAt
+        faculty_department_id {
+            id
+            title_ar
+            title_en
+            status
+            createdAt
+            updatedAt
+            faculty_id {
+                id
+                title_ar
+                title_en
+                status
+                required_dep
+                study_years_count
+                createdAt
+                updatedAt
+            }
+        }
     }
 }
 `;
@@ -26,7 +43,6 @@ mutation CreateMaterial($input:MaterialInput!) {
         status
         fullmark_degree
         success_degree
-        faculty_department_id
         material_hours
         createdAt
         updatedAt
@@ -34,7 +50,7 @@ mutation CreateMaterial($input:MaterialInput!) {
 }
 `;
 
-export const UPDATE_MATERIAL=gql`
+export const UPDATE_MATERIAL_BY_ID=gql`
 mutation UpdateMaterial($id:ID!,$input:MaterialInput!) {
     updateMaterial(id: $id, input: $input) {
         id
@@ -43,7 +59,6 @@ mutation UpdateMaterial($id:ID!,$input:MaterialInput!) {
         status
         fullmark_degree
         success_degree
-        faculty_department_id
         material_hours
         createdAt
         updatedAt
