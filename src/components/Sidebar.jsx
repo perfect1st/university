@@ -136,6 +136,14 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       en: "Academy Terms",
     },
   },
+  {
+     key: "feesTypes",
+    path: "/feesTypes",
+    label: {
+      ar: "انواع الرسوم",
+      en: "Fees Types",
+    },
+  },
 
   
   {

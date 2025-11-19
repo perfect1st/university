@@ -273,7 +273,10 @@
      "studyYear":"Study Year",
      "addSubject":"Add Subject",
      "greaterThanError":"{{more}} must be greater than {{less}}",
-     "allFieldsRequired":"You must Enter All fields in {{item}}"
+     "allFieldsRequired":"You must Enter All fields in {{item}}",
+     "feesTypes" : "Fees Types",
+     "inside_yemen":"Inside Yemen",
+      "outside_yemen":"Outside Yemen"
    },
     "submit":"Submit",
     "error":"Error happened try again later",

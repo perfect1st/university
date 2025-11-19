@@ -63,6 +63,9 @@ import AddAcademyTermPage from "./pages/AcademyTerms/AddAcademyTermPage";
 import AllMaterialsPage from "./pages/Materials/AllMaterialsPage";
 import AddMaterialPage from "./pages/Materials/AddMaterialPage";
 import MaterialDetailsPage from "./pages/Materials/MaterialDetailsPage";
+import AllFeesTypesPage from "./pages/FeesTypes/AllFeesTypesPage";
+import AddFeesTypesPage from "./pages/FeesTypes/AddFeesTypesPage";
+import FeeDetailsPage from "./pages/FeesTypes/FeeDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -516,6 +519,7 @@ function App() {
 
                   </Route>
 
+                      {/* الكليات */}
                   <Route path="/faculities">
                     <Route index element={
                       <MainLayout isLoggedIn={true}>
@@ -587,7 +591,6 @@ function App() {
 
 
                     {/* الفصول الدراسية */}
-
                     <Route path="/academyTerms">
                       <Route index element={
                         <MainLayout isLoggedIn={true}>
@@ -602,6 +605,30 @@ function App() {
                       } />
 
                     </Route>
+
+                    <Route path="/feesTypes">
+                      <Route index element={
+                          <MainLayout isLoggedIn={true}>
+                        <AllFeesTypesPage />
+                      </MainLayout>
+                      } />
+
+                      <Route path="add" element={
+                          <MainLayout isLoggedIn={true}>
+                        <AddFeesTypesPage />
+                      </MainLayout>
+                      } />
+
+                      <Route path="details/:id" element={
+                          <MainLayout isLoggedIn={true}>
+                        <FeeDetailsPage />
+                      </MainLayout>
+                      } />
+
+                    </Route>
+
+                    
+    
 
                 </Route>
 
