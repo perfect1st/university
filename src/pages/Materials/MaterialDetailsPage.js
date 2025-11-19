@@ -171,9 +171,6 @@ export default function MaterialDetailsPage() {
                 hasAddOrEditBtn={true}
                 sub2={t("detailsItem", { item: translateText })}
                 hasNavigate={true}
-                // btn={t("addItem", { item: translateText })}
-                // btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
-                //  onSubmit={addUserNavigate}
                 isExcel={false}
                 isPdf={false}
                 isPrinter={false}
