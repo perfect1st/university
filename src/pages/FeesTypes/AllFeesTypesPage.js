@@ -40,13 +40,23 @@ export default function AllFeesTypesPage() {
         GetFeesTypes();
     }, []);
 
+    // // inActive
+    //  let feesTypesToShow=getFeesTypes?.map(el=>{
+    //     return{
+    //         ...el,
+    //         status:el?.status=="true" ? "Active" :"inActive"
+    //     }
+    //  });
+
+    // console.log('feesTypesToShow',feesTypesToShow);
+
     let columns = [
         // { key: "ID", label: "ID" },
         { key: "title_ar", label: t("Dashboard.NameInArabic") },
         { key: "title_en", label: t("Dashboard.NameInEnglish") },
         { key: "inside_yemen_value", label: t("Dashboard.inside_yemen") },
         { key: "outside_yemen_value", label: t("Dashboard.outside_yemen") },
-        // { key: "status", label: t("Status") }
+        { key: "status", label: t("Status") }
         //  { key: "userType", label: t("User Type") }
 
     ];
@@ -133,7 +143,11 @@ export default function AllFeesTypesPage() {
             console.log("selectedRow", selectedRow, newStatus);
             // return;
             let data = {
-                status: newStatus == "inActive" ? false : true
+                status: newStatus == "inActive" ? false : true,
+                title_ar:selectedRow?.title_ar,
+                title_en: selectedRow?.title_en,
+                inside_yemen_value:selectedRow?.inside_yemen_value,
+                outside_yemen_value:selectedRow?.outside_yemen_value
             }
             const result = await UpdateFeesType({
                 variables: {
@@ -217,7 +231,7 @@ export default function AllFeesTypesPage() {
                                         width: "100%",
                                     }}
                                     handleDetailsClick={handleDetailsClick}
-                                    // onStatusChange={onStatusChange}
+                                     onStatusChange={onStatusChange}
                                 />
                             </Grid>
                         </Grid>

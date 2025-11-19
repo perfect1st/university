@@ -313,7 +313,8 @@
       "allFieldsRequired":"يجب ادخال جميع الحقول  داخل {{item}}",
       "feesTypes" : "انواع الرسوم",
       "inside_yemen":"السعر داخل اليمن",
-      "outside_yemen":" السعر خارج اليمن"
+      "outside_yemen":" السعر خارج اليمن",
+      "transactions":"المعاملات المالية"
    },
 
   "submit":"تأكيد",

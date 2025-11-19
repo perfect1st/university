@@ -8,6 +8,7 @@ query GetFeesTypes {
         title_en
         inside_yemen_value
         outside_yemen_value
+        status
         createdAt
         updatedAt
     }
@@ -22,6 +23,7 @@ mutation CreateFeesType($input:FeesTypeInput!) {
         title_en
         inside_yemen_value
         outside_yemen_value
+        status
         createdAt
         updatedAt
     }
@@ -36,6 +38,7 @@ mutation UpdateFeesType($id:ID!,$input:FeesTypeInput!) {
         title_en
         inside_yemen_value
         outside_yemen_value
+        status
         createdAt
         updatedAt
     }

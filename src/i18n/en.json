@@ -276,7 +276,8 @@
      "allFieldsRequired":"You must Enter All fields in {{item}}",
      "feesTypes" : "Fees Types",
      "inside_yemen":"Price  Inside Yemen",
-      "outside_yemen":"Price Outside Yemen"
+      "outside_yemen":"Price Outside Yemen",
+      "transactions":"Transactions"
    },
     "submit":"Submit",
     "error":"Error happened try again later",

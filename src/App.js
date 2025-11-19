@@ -66,6 +66,7 @@ import MaterialDetailsPage from "./pages/Materials/MaterialDetailsPage";
 import AllFeesTypesPage from "./pages/FeesTypes/AllFeesTypesPage";
 import AddFeesTypesPage from "./pages/FeesTypes/AddFeesTypesPage";
 import FeeDetailsPage from "./pages/FeesTypes/FeeDetailsPage";
+import AllTransactionsPage from "./pages/Transactions/AllTransactionsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -606,6 +607,7 @@ function App() {
 
                     </Route>
 
+                      {/* انواع الرسوم */}
                     <Route path="/feesTypes">
                       <Route index element={
                           <MainLayout isLoggedIn={true}>
@@ -625,6 +627,14 @@ function App() {
                       </MainLayout>
                       } />
 
+                    </Route>
+
+                    <Route path="/transactions">
+                      <Route index  element={
+                        <MainLayout isLoggedIn={true}>
+                        <AllTransactionsPage />
+                      </MainLayout>
+                      } />
                     </Route>
 
                     
