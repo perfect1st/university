@@ -10,8 +10,31 @@ mutation CreateTransaction($input:TransactionInput!) {
 
 `;
 
-// export const GET_ALL_TRANSACTIONS=gql`
-// `;
+export const GET_ALL_TRANSACTIONS=gql`
+query GetTransactions {
+    getTransactions {
+        id
+        payment_method_type
+        amount
+        payment_document_file
+        transaction_date
+        transaction_serial
+        user_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            createdAt
+            updatedAt
+        }
+    }
+}
+`;
 
 export const CREATE_NEW_TRANSACTION=gql`
 mutation CreateTransaction($input:TransactionInput!) {

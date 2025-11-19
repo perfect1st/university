@@ -67,6 +67,8 @@ import AllFeesTypesPage from "./pages/FeesTypes/AllFeesTypesPage";
 import AddFeesTypesPage from "./pages/FeesTypes/AddFeesTypesPage";
 import FeeDetailsPage from "./pages/FeesTypes/FeeDetailsPage";
 import AllTransactionsPage from "./pages/Transactions/AllTransactionsPage";
+import AddTransactionPage from "./pages/Transactions/AddTransactionPage";
+import TransactionDetailsPage from "./pages/Transactions/TransactionDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -635,6 +637,16 @@ function App() {
                         <AllTransactionsPage />
                       </MainLayout>
                       } />
+                      <Route path="add" element={
+                        <MainLayout isLoggedIn={true}>
+                        <AddTransactionPage />
+                      </MainLayout>
+                      }/>
+                      <Route path="details/:id" element={
+                        <MainLayout isLoggedIn={true}>
+                        <TransactionDetailsPage />
+                      </MainLayout>
+                      }/>
                     </Route>
 
                     
