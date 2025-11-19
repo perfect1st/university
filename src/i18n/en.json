@@ -206,6 +206,10 @@
       "BANK_TRANSFER": "Bank Transfer",
       "ONLINE": "Online Payment"
     },
+    "transactionType":{
+      "OUT":"Out Comes",
+      "IN":"In Comes"
+    },
     "payDialogTitle": "Pay {{price}}",
     "payNowBtn": "Pay {{price}}",
     "payNow": "Pay",
@@ -277,7 +281,8 @@
      "feesTypes" : "Fees Types",
      "inside_yemen":"Price  Inside Yemen",
       "outside_yemen":"Price Outside Yemen",
-      "transactions":"Transactions"
+      "transactions":"Transactions",
+      "transactionType":"TransactionType"
    },
     "submit":"Submit",
     "error":"Error happened try again later",

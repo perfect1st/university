@@ -36,7 +36,7 @@ query GetTransactions {
 }
 `;
 
-export const CREATE_NEW_TRANSACTION=gql`
+export const CREATE_NEW_TRANSACTION_BY_ADMIN=gql`
 mutation CreateTransaction($input:TransactionInput!) {
     createTransaction(input: $input) {
         id

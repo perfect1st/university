@@ -243,6 +243,10 @@
       "BANK_TRANSFER": "تحويل بنكي",
       "ONLINE": "دفع إلكتروني"
     },
+    "transactionType":{
+      "OUT":"مصروفات",
+      "IN":"ايرادات"
+    },
     "payDialogTitle": "ادفع {{price}}",
     "payNowBtn": "ادفع {{price}}",
     "payNow": "ادفع",
@@ -314,7 +318,8 @@
       "feesTypes" : "انواع الرسوم",
       "inside_yemen":"السعر داخل اليمن",
       "outside_yemen":" السعر خارج اليمن",
-      "transactions":"المعاملات المالية"
+      "transactions":"المعاملات المالية",
+      "transactionType":"نوع المعاملة"
    },
 
   "submit":"تأكيد",
