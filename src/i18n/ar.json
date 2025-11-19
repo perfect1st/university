@@ -312,8 +312,8 @@
       "greaterThanError":" يجب ان يكون {{more}}  اكبر من {{less}}  ",
       "allFieldsRequired":"يجب ادخال جميع الحقول  داخل {{item}}",
       "feesTypes" : "انواع الرسوم",
-      "inside_yemen":"داخل اليمن",
-      "outside_yemen":"خارج اليمن"
+      "inside_yemen":"السعر داخل اليمن",
+      "outside_yemen":" السعر خارج اليمن"
    },
 
   "submit":"تأكيد",

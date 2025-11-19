@@ -275,8 +275,8 @@
      "greaterThanError":"{{more}} must be greater than {{less}}",
      "allFieldsRequired":"You must Enter All fields in {{item}}",
      "feesTypes" : "Fees Types",
-     "inside_yemen":"Inside Yemen",
-      "outside_yemen":"Outside Yemen"
+     "inside_yemen":"Price  Inside Yemen",
+      "outside_yemen":"Price Outside Yemen"
    },
     "submit":"Submit",
     "error":"Error happened try again later",
