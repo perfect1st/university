@@ -312,8 +312,12 @@ export default function AddAcademyTermPage() {
           backgroundColor={theme.palette.background.inputBackGround}
           value={selectedSemester}
           setValue={setSelectedSemester}
-          // onChange={setSelectedSemester}
-          onBlur={(e) => console.log("blurred", e.target.name)}
+          //  onChange={()=>selectedSemester !=0 &&formik.setFieldError("selectedSemester", undefined)}
+          onBlur={(e) =>{
+            console.log('blur',selectedSemester);
+            if(selectedSemester !=0) formik.setFieldError("selectedSemester", undefined);
+
+          }}
           error={formik.errors.selectedSemester && t("admissions.errors.required")}
           helperText={formik.errors.selectedSemester && t("admissions.errors.required")}
 
@@ -338,6 +342,12 @@ export default function AddAcademyTermPage() {
                 faculty_id: e.target.value,
               },
             });
+          }}
+
+           onBlur={(e) =>{
+            // console.log('blur',selectedSemester);
+            if(selectedFaculity !=0) formik.setFieldError("selectedFaculity", undefined);
+
           }}
 
           error={formik.errors.selectedFaculity && t("admissions.errors.required")}
@@ -367,6 +377,11 @@ export default function AddAcademyTermPage() {
           backgroundColor={theme.palette.background.inputBackGround}
           value={selectedDepartment}
           setValue={setSelectedDepartment}
+            onBlur={(e) =>{
+            // console.log('blur',selectedSemester);
+            if(selectedDepartment !=0) formik.setFieldError("selectedDepartment", undefined);
+
+          }}
           error={formik.errors.selectedDepartment && t("admissions.errors.required")}
           helperText={formik.errors.selectedDepartment && t("admissions.errors.required")}
         >
