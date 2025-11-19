@@ -120,6 +120,15 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   },
   {
     // icon: FlagIcon,
+    key: "materials",
+    path: "/materials",
+    label: {
+      ar: "المواد الدراسية",
+      en: "Subjects",
+    },
+  },
+  {
+    // icon: FlagIcon,
     key: "academyTerms",
     path: "/academyTerms",
     label: {
@@ -128,15 +137,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
     },
   },
 
-  {
-    // icon: FlagIcon,
-    key: "materials",
-    path: "/materials",
-    label: {
-      ar: "المواد الدراسية",
-      en: "Subjects",
-    },
-  },
+  
   {
     // icon: PersonOutlineIcon,
     key: "profile",

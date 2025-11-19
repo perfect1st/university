@@ -147,8 +147,10 @@ export default function AddMaterialPage() {
       },
     });
     
-   let translateText = isArabic ? "مادة" : "Subject";
-  let translateText2 = isArabic ? "المادة" : "Subject";
+    let translateText = isArabic ? "مادة" : "Subject";
+    let translateText2 = isArabic ? "المادة" : "Subject";
+
+  if (faculitiesLoading) return <LoadingPage />;
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper", maxWidth: "100%" }}>
         <Header
@@ -169,9 +171,7 @@ export default function AddMaterialPage() {
                 formik.handleSubmit
               }
               sx={{
-                width: "100%", [theme.breakpoints.down("sm")]: {
-                  width: "60%", // 👈 للموبايل
-                },
+                width: "100%"
               }}
             >
       
@@ -248,6 +248,8 @@ export default function AddMaterialPage() {
                       faculty_id: e.target.value,
                     },
                   });
+
+                  setSelectedDepartment(0);
                 }}
       
                 error={formik.errors.selectedFaculity && t("admissions.errors.required")}
