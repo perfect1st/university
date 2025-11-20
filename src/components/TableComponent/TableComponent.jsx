@@ -222,7 +222,7 @@ const TableComponent = ({
                // console.log("row[column.key]",visibleColumns[visibleColumns?.length-1].key);
 
               // console.log("styles.bgColor",styles.bgColor);
-              console.log('rrrrrrrr',row.amount);
+             // console.log('rrrrrrrr',row.amount);
               return (
                 <TableRow key={row.id} hover>
                   {visibleColumns?.map((column) => (

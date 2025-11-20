@@ -34,6 +34,8 @@ export default function AddTransactionPage() {
 
     const [selectedUser, setSelectedUser] = useState(null);
 
+   // console.log("location.pathname",location.pathname.split('/add')[0]);
+
     const [CreateTransaction, {
         data,
         loading: creatingTransaction
@@ -116,7 +118,7 @@ export default function AddTransactionPage() {
 
                 notify(t("success"), "success");
 
-                navigate('/departments');
+                navigate(location.pathname.split('/add')[0]);
 
             } catch (error) {
                 console.error("Error logging in:", error);
