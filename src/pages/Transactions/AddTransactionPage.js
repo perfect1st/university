@@ -1,6 +1,6 @@
 import { CREATE_NEW_TRANSACTION_BY_ADMIN } from "../../graphql/transactionQueries"
 import { GET_ALL_FEES_TYPES } from "../../graphql/feeTypesQueries";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { GET_ALL_TRANSACTION_TYPES } from "../../graphql/transactionTypeQueries";
 import { useLocation, useNavigate } from "react-router-dom"
 import { CREATE_NEW_COUNTRY } from "../../graphql/countriesQueries"
@@ -16,9 +16,12 @@ import VerticalTextField, { SearchByTypingSelect, VerticalTextFieldSelect } from
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import LoadingPage from "../../components/LoadingComponent";
 import { useState } from "react";
-import { paymentMethodsArr, transactionTypesArr , TrueOrFalseArr } from "../../constants";
+import { paymentMethodsArr, transactionTypesArr, TrueOrFalseArr } from "../../constants";
 import { GET_ALL_USERES_FOR_ADMIN } from "../../graphql/userQueriesForAdmin";
+import axios from "axios";
 import ConfirmModal from "../../components/Utilities/ConfirmModal";
+import { baseURL } from "../../Api/apolloClient";
+import UploadFileField from "../../components/Utilities/UploadFileField";
 // GET_ALL_USERES_FOR_ADMIN
 
 export default function AddTransactionPage() {
@@ -36,9 +39,58 @@ export default function AddTransactionPage() {
     const [isInSideYemen, setIsInSideYemen] = useState(true);
     const [selectedUser, setSelectedUser] = useState(null);
 
-    const[showConfirmModal,setShowConfirmModal]=useState(false);
+    const fileInputRef = useRef(null);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedToShowFile, setSelectedToShowFile] = useState(null);
+    const [progress, setProgress] = useState(0);
 
-   // console.log("location.pathname",location.pathname.split('/add')[0]);
+    // File handling
+    const handlePickFile = () => {
+        if (fileInputRef.current) fileInputRef.current.click();
+    };
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files?.[0] ?? null;
+
+
+        console.log("ppppppppppppppppppppppp", file);
+
+        // fileInputRef.current=file?.name;
+
+        setSelectedToShowFile(file?.name);
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+
+            setProgress(0);
+
+            const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percent = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                    setProgress(percent);
+                },
+            });
+
+            console.log("res", res?.data?.url);
+            setSelectedFile(res?.data?.url);
+            // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
+        } catch (error) {
+            notify(t("errorUplaod"), "error");
+            console.log("error", error.message);
+        }
+
+
+    };
+
+    console.log('selectedFile', selectedFile);
+
 
     const [CreateTransaction, {
         data,
@@ -101,15 +153,16 @@ export default function AddTransactionPage() {
             //     return; // وقف الإرسال لحد ما المستخدم يختار
             // }
             console.log('xxxxxxxxxxxxxxxxxxxxxxx');
-            const data = {
-                payment_method_type:selectedPaymentMethod,
-                transaction_type_id:selectedTransactionType,
-                fees_type_ids:selectedFeeType,
-                user_id:selectedUser,
-                amount:values?.amount,
-                // faculty_id: selected
-
+            let data = {
+                payment_method_type: selectedPaymentMethod,
+                transaction_type_id: selectedTransactionType,
+                fees_type_ids: selectedFeeType,
+                user_id: selectedUser,
+                amount: values?.amount,
             };
+
+            if(selectedFile!=null) data.payment_document_file=selectedFile;
+
             try {
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
                 console.log(data);
@@ -175,11 +228,11 @@ export default function AddTransactionPage() {
                 isPrinter={false}
             />
 
-            <Box 
-            onSubmit={formik.handleSubmit}
-            sx={{width: isMobile ?"90%" : "100%"}} 
-            component="form" 
-             
+            <Box
+                onSubmit={formik.handleSubmit}
+                sx={{ width: isMobile ? "90%" : "100%" }}
+                component="form"
+
             >
 
                 <VerticalTextFieldSelect
@@ -202,10 +255,22 @@ export default function AddTransactionPage() {
                     }
                 </VerticalTextFieldSelect>
 
-                    {/* ادخل اليمن */}
+                {
+                    selectedPaymentMethod == "BANK_TRANSFER" && <UploadFileField
+                        title={t("admissions.addFile")}
+                        subTitle={t("admissions.addFile")}
+                        fileInputRef={fileInputRef}
+                        handleFileChange={handleFileChange}
+                        handlePickFile={handlePickFile}
+                        selectedToShowFile={selectedToShowFile}
+                        progress={progress}
+                    />
+                }
+
+                {/* ادخل اليمن */}
                 <VerticalTextFieldSelect
                     t={t}
-                    title={t("Dashboard.inside_yemen")} 
+                    title={t("Dashboard.inside_yemen")}
                     backgroundColor={theme.palette.background.inputBackGround}
                     value={isInSideYemen}
                     setValue={setIsInSideYemen}
@@ -220,7 +285,7 @@ export default function AddTransactionPage() {
                     }
                 </VerticalTextFieldSelect>
 
-                    {/* نوع المعاملة */}
+                {/* نوع المعاملة */}
                 <VerticalTextFieldSelect
                     t={t}
                     title={t("Dashboard.transactionType")} defaultOptionLabel={t("select")}
@@ -240,8 +305,8 @@ export default function AddTransactionPage() {
                     }
                 </VerticalTextFieldSelect>
 
-               
-                    {/*
+
+                {/*
                     نوع الرسوم
                     labelToShow-> الل انت عاوزه يتكتب جوة كل option
                      */}
@@ -249,31 +314,31 @@ export default function AddTransactionPage() {
                 <SearchByTypingSelect
                     multiple={true}
                     title={t("Dashboard.feeType")}
-                    labelToShow={(option)=>{
-                            return `${isArabic ? option?.title_ar : option?.title_en}- [${t("Dashboard.inside_yemen")} : ${option?.inside_yemen_value}] - [${t("Dashboard.outside_yemen")} : ${option?.outside_yemen_value}]`
+                    labelToShow={(option) => {
+                        return `${isArabic ? option?.title_ar : option?.title_en}- [${t("Dashboard.inside_yemen")} : ${option?.inside_yemen_value}] - [${t("Dashboard.outside_yemen")} : ${option?.outside_yemen_value}]`
                     }}
                     findKey={"id"}
                     isArabic={isArabic}
-                    options={getFeesTypes ? getFeesTypes :[]}
+                    options={getFeesTypes ? getFeesTypes : []}
                     value={selectedFeeType}
                     setValue={setSelectedFeeType}
                     error={formik.errors.selectedFeeType && t("admissions.errors.required")}
                     onBlur={(e) => {
                         // console.log("selectedFeeType blur",selectedFeeType);
-                        let totalAmount=0;
+                        let totalAmount = 0;
 
-                        getFeesTypes?.map(fee=>{
-                           let feeObj=selectedFeeType?.find(el=>el==fee?.id);
-                           console.log("feeObj",feeObj);
-                           if(feeObj){
-                                if(isInSideYemen==true) totalAmount+= Number(fee?.inside_yemen_value)
-                                else totalAmount+= Number(fee?.outside_yemen_value)
-                           }
+                        getFeesTypes?.map(fee => {
+                            let feeObj = selectedFeeType?.find(el => el == fee?.id);
+                            console.log("feeObj", feeObj);
+                            if (feeObj) {
+                                if (isInSideYemen == true) totalAmount += Number(fee?.inside_yemen_value)
+                                else totalAmount += Number(fee?.outside_yemen_value)
+                            }
                         });
 
                         // console.log('total amount',totalAmount);
 
-                        formik.values.amount=totalAmount;
+                        formik.values.amount = totalAmount;
 
                         // validation check
                         if (selectedFeeType != 0) formik.setFieldError("selectedFeeType", undefined);
@@ -281,11 +346,11 @@ export default function AddTransactionPage() {
                     }}
                 />
 
-               {/* المستخدم */}
+                {/* المستخدم */}
                 <SearchByTypingSelect
                     title={t("Dashboard.user")}
-                   labelToShow={(option)=>{
-                           return `${option?.fullname} - ${option?.email}`
+                    labelToShow={(option) => {
+                        return `${option?.fullname} - ${option?.email}`
                     }}
                     findKey={"id"}
                     isArabic={isArabic}
