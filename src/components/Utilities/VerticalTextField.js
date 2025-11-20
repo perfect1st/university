@@ -137,6 +137,7 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label,er
           placeholder={`${title} ...`}
           error={error}
           helperText={error} 
+          onBlur={onBlur}
           />
         )}
 
@@ -150,8 +151,7 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label,er
             color: theme.palette.error.main,   // 👈 لو عايز تغيّر لون Clear icon
           },
         }}
-        onBlur={onBlur}
-      
+        
       />
     </>
 

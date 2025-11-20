@@ -65,10 +65,7 @@ export default function AddTransactionPage() {
 
     const formik = useFormik({
         initialValues: {
-            // title_ar: "",
-            // title_en: ""
-            // faculty_id: ""
-            // flag: "",
+             amount: "",
         },
 
         validationSchema: Yup.object({
@@ -83,8 +80,8 @@ export default function AddTransactionPage() {
                 .notOneOf(["0"], t("admissions.errors.required")),
             selectedUser: selectedUser == 0 && Yup.string()
                 .required(t("admissions.errors.required"))
-                .notOneOf(["0"], t("admissions.errors.required"))
-            // faculty_id: Yup.string().required(t("admissions.errors.required")),
+                .notOneOf(["0"], t("admissions.errors.required")),
+             amount: Yup.string().required(t("admissions.errors.required")),
 
         }),
         onSubmit: async (values) => {
