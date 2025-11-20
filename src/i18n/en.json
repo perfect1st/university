@@ -283,7 +283,8 @@
       "outside_yemen":"Price Outside Yemen",
       "transactions":"Transactions",
       "transactionType":"TransactionType",
-      "feeType":"Fee Type"
+      "feeType":"Fee Type",
+      "user":"User"
    },
     "submit":"Submit",
     "error":"Error happened try again later",

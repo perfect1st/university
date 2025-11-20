@@ -95,10 +95,10 @@ export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOpti
   );
 }
 
-export const SearchByTypingSelect = ({ options, value, setValue, title, label,error,onBlur }) => {
+export const SearchByTypingSelect = ({ options, value, setValue, title, label, error, onBlur }) => {
   const theme = useTheme();
 
-  console.log("auto error",error);
+  console.log("auto error", error);
   return (
     <>
       <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
@@ -133,18 +133,22 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label,er
           }
         }}
         renderInput={(params) => (
-          <TextField 
-          {...params} 
-          placeholder={`${title} ...`}
-          error={error}
-          helperText={error} 
-          onBlur={onBlur}
+          <TextField
+            {...params}
+            placeholder={`${title} ...`}
+            error={error}
+            helperText={error}
+            onBlur={onBlur}
+            sx={{
+              "& .MuiInputBase-root": {
+                backgroundColor: theme.palette.background.inputBackGround, // 👈 هنا
+              },
+            }}
           />
         )}
 
         sx={{
           mb: 3,
-          backgroundColor: theme.palette.background.gray,
           "& .MuiAutocomplete-popupIndicator": {
             color: theme.palette.info.main, // 👈 لون السهم هنا
           },
@@ -152,7 +156,7 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label,er
             color: theme.palette.error.main,   // 👈 لو عايز تغيّر لون Clear icon
           },
         }}
-        
+
       />
     </>
 

@@ -65,7 +65,7 @@ export default function AddTransactionPage() {
 
     const formik = useFormik({
         initialValues: {
-             amount: "",
+            amount: "",
         },
 
         validationSchema: Yup.object({
@@ -81,7 +81,7 @@ export default function AddTransactionPage() {
             selectedUser: selectedUser == 0 && Yup.string()
                 .required(t("admissions.errors.required"))
                 .notOneOf(["0"], t("admissions.errors.required")),
-             amount: Yup.string().required(t("admissions.errors.required")),
+            amount: Yup.string().required(t("admissions.errors.required")),
 
         }),
         onSubmit: async (values) => {
@@ -137,11 +137,7 @@ export default function AddTransactionPage() {
 
     if (gettingFees || transactionTypesLoading || usersLoading) return <LoadingPage />;
 
-    const options = [
-        { label: "Egypt", value: 1 },
-        { label: "Saudi Arabia", value: 2 },
-        { label: "UAE", value: 3 },
-    ];
+
 
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
@@ -226,7 +222,7 @@ export default function AddTransactionPage() {
 
                 {/* label=> ال  key الل انت عاوز تظهره من ال options */}
                 <SearchByTypingSelect
-                    title={'المستخدم'}
+                    title={t("Dashboard.user")}
                     label={"fullname"}
                     isArabic={isArabic}
                     options={users}
@@ -237,6 +233,18 @@ export default function AddTransactionPage() {
                         if (selectedUser != null) formik.setFieldError("selectedUser", undefined);
 
                     }}
+                />
+
+                <VerticalTextField
+                    title={t("fee.table.amount", { item: translateText2 })}
+                    type={"number"}
+                    fieldID={"amount"}
+                    fieldName={"amount"}
+                    placeholder={t("fee.table.amount")}
+                    value={formik.values.amount}
+                    onChange={formik.handleChange}
+                    error={formik.touched.amount && Boolean(formik.errors.amount)}
+                    helperText={formik.touched.amount && formik.errors.amount}
                 />
 
                 <SubmitButton loading={creatingTransaction} t={t} />
