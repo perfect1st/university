@@ -1,4 +1,4 @@
-import { Box, MenuItem, TextField, Typography, useTheme } from '@mui/material'
+import { Autocomplete, Box, MenuItem, TextField, Typography, useTheme } from '@mui/material'
 import React from 'react'
 import { CustomSelect } from './CustomTextField';
 
@@ -16,7 +16,7 @@ export default function VerticalTextField({
 
   const theme = useTheme();
 
-  console.log("fieldID",fieldID);
+  console.log("fieldID", fieldID);
   return (
     <>
       <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
@@ -49,7 +49,7 @@ export default function VerticalTextField({
             helperText={helperText}
             variant="outlined"
             inputProps={{
-                formNoValidate: true,  
+              formNoValidate: true,
               inputMode: "numeric",
               // pattern: "[0-9]*",
             }}
@@ -75,7 +75,7 @@ export default function VerticalTextField({
 }
 
 
-export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange , fieldID, fieldName , onBlur , onKeyDown }) => {
+export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange, fieldID, fieldName, onBlur, onKeyDown }) => {
   const theme = useTheme();
   return (
     <>
@@ -94,3 +94,67 @@ export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOpti
 
   );
 }
+
+export const SearchByTypingSelect = ({ options, value, setValue, title, label,error,onBlur }) => {
+  const theme = useTheme();
+
+  console.log("auto error",error);
+  return (
+    <>
+      <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
+        {title}
+      </Typography>
+
+      <Autocomplete
+        options={options}
+        getOptionLabel={(option) => option[label]}
+        value={options?.find((opt) => opt.value === value) || null}
+        clearOnEscape={false}
+        disableClearable={false}
+
+        onChange={(e, newValue, reason) => {
+          if (reason === "clear") {
+            // لو المستخدم ضغط على clear icon
+            setValue(null);
+            return;
+          }
+
+          if (reason === "selectOption") {
+            // المستخدم اختار اختيار فعلي
+            setValue(newValue?.value);
+            return;
+          }
+
+          // لو المستخدم قفل البوكس فقط (blur)
+          if (reason === "blur") {
+            // خليه يحتفظ بالقيمة الحالية — متعملش setValue(null)
+            return;
+          }
+        }}
+        renderInput={(params) => (
+          <TextField 
+          {...params} 
+          placeholder={`${title} ...`}
+          error={error}
+          helperText={error} 
+          />
+        )}
+
+        sx={{
+          mb: 3,
+          backgroundColor: theme.palette.background.gray,
+          "& .MuiAutocomplete-popupIndicator": {
+            color: theme.palette.info.main, // 👈 لون السهم هنا
+          },
+          "& .MuiAutocomplete-clearIndicator": {
+            color: theme.palette.error.main,   // 👈 لو عايز تغيّر لون Clear icon
+          },
+        }}
+        onBlur={onBlur}
+      
+      />
+    </>
+
+  );
+}
+

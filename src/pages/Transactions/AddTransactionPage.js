@@ -6,17 +6,19 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { CREATE_NEW_COUNTRY } from "../../graphql/countriesQueries"
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
-import { Box, MenuItem, useMediaQuery, useTheme } from "@mui/material";
+import { Autocomplete, Box, MenuItem, TextField, useMediaQuery, useTheme } from "@mui/material";
 import Header from "../../components/PageHeader/header";
 import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import VerticalTextField, { VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
+import VerticalTextField, { SearchByTypingSelect, VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import LoadingPage from "../../components/LoadingComponent";
 import { useState } from "react";
 import { paymentMethodsArr, transactionTypesArr } from "../../constants";
+import { GET_ALL_USERES_FOR_ADMIN } from "../../graphql/userQueriesForAdmin";
+// GET_ALL_USERES_FOR_ADMIN
 
 export default function AddTransactionPage() {
     const theme = useTheme();
@@ -28,6 +30,9 @@ export default function AddTransactionPage() {
 
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(0);
     const [selectedTransactionType, setSelectedTransactionType] = useState(0);
+    const [selectedFeeType, setSelectedFeeType] = useState(0);
+
+    const [selectedUser, setSelectedUser] = useState(null);
 
     const [CreateTransaction, {
         data,
@@ -44,11 +49,18 @@ export default function AddTransactionPage() {
     const [GetTransactionTypes, {
         data: { getTransactionTypes } = {},
         loading: transactionTypesLoading
-    }] = useLazyQuery(GET_ALL_TRANSACTION_TYPES, { fetchPolicy: "network-only" })
+    }] = useLazyQuery(GET_ALL_TRANSACTION_TYPES, { fetchPolicy: "network-only" });
+
+    // get all users
+    const [Users, {
+        data: { users } = {},
+        loading: usersLoading
+    }] = useLazyQuery(GET_ALL_USERES_FOR_ADMIN, { fetchPolicy: "network-only" });
 
     useEffect(() => {
         GetFeesTypes();
         GetTransactionTypes();
+        Users();
     }, []);
 
     const formik = useFormik({
@@ -66,6 +78,12 @@ export default function AddTransactionPage() {
             selectedTransactionType: selectedTransactionType == 0 && Yup.string()
                 .required(t("admissions.errors.required"))
                 .notOneOf(["0"], t("admissions.errors.required")),
+            selectedFeeType: selectedFeeType == 0 && Yup.string()
+                .required(t("admissions.errors.required"))
+                .notOneOf(["0"], t("admissions.errors.required")),
+            selectedUser: selectedUser == 0 && Yup.string()
+                .required(t("admissions.errors.required"))
+                .notOneOf(["0"], t("admissions.errors.required"))
             // faculty_id: Yup.string().required(t("admissions.errors.required")),
 
         }),
@@ -113,12 +131,21 @@ export default function AddTransactionPage() {
         },
     });
 
-    console.log("getTransactionTypes", getTransactionTypes);
+    // console.log("getTransactionTypes", getTransactionTypes);
+    console.log("getFeesTypes", getFeesTypes);
+    console.log("users", users);
 
     let translateText = isArabic ? "معاملة مالية" : "Transaction";
     let translateText2 = isArabic ? "المعاملة المالية" : "Transaction";
 
-    if (gettingFees || transactionTypesLoading) return <LoadingPage />;
+    if (gettingFees || transactionTypesLoading || usersLoading) return <LoadingPage />;
+
+    const options = [
+        { label: "Egypt", value: 1 },
+        { label: "Saudi Arabia", value: 2 },
+        { label: "UAE", value: 3 },
+    ];
+
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
             <Header
@@ -136,27 +163,7 @@ export default function AddTransactionPage() {
 
             <Box component="form" onSubmit={formik.handleSubmit} fullWidth>
 
-                {/* <VerticalTextField
-                    title={t("form.name_ar", { item: translateText2 })}
-                    fieldID={"title_ar"}
-                    fieldName={"title_ar"}
-                    placeholder={t("form.name_ar", { item: translateText2 })}
-                    value={formik.values.title_ar}
-                    onChange={formik.handleChange}
-                    error={formik.touched.title_ar && Boolean(formik.errors.title_ar)}
-                    helperText={formik.touched.title_ar && formik.errors.title_ar}
-                />
 
-                <VerticalTextField
-                    title={t("form.name_en", { item: translateText2 })}
-                    fieldID={"title_en"}
-                    fieldName={"title_en"}
-                    placeholder={t("form.name_en", { item: translateText2 })}
-                    value={formik.values.title_en}
-                    onChange={formik.handleChange}
-                    error={formik.touched.title_en && Boolean(formik.errors.title_en)}
-                    helperText={formik.touched.title_en && formik.errors.title_en}
-                /> */}
 
                 <VerticalTextFieldSelect
                     t={t}
@@ -178,14 +185,14 @@ export default function AddTransactionPage() {
                     }
                 </VerticalTextFieldSelect>
 
-                 <VerticalTextFieldSelect
+                <VerticalTextFieldSelect
                     t={t}
                     title={t("Dashboard.transactionType")} defaultOptionLabel={t("select")}
                     backgroundColor={theme.palette.background.inputBackGround}
                     value={selectedTransactionType}
                     setValue={setSelectedTransactionType}
                     onBlur={(e) => {
-                       
+
                         if (selectedTransactionType != 0) formik.setFieldError("selectedTransactionType", undefined);
 
                     }}
@@ -198,6 +205,42 @@ export default function AddTransactionPage() {
                     }
                 </VerticalTextFieldSelect>
 
+                <VerticalTextFieldSelect
+                    t={t}
+                    title={t("Dashboard.feeType")} defaultOptionLabel={t("select")}
+                    backgroundColor={theme.palette.background.inputBackGround}
+                    value={selectedFeeType}
+                    setValue={setSelectedFeeType}
+                    onBlur={(e) => {
+
+                        if (selectedFeeType != 0) formik.setFieldError("selectedFeeType", undefined);
+
+                    }}
+                    error={formik.errors.selectedFeeType && t("admissions.errors.required")}
+                    helperText={formik.errors.selectedFeeType && t("admissions.errors.required")}
+                >
+                    <MenuItem value={0} selected>{t("select")}</MenuItem>
+                    {
+                        getFeesTypes?.map((el, i) => <MenuItem key={el?.id} value={el?.id}>{isArabic ? el?.title_ar : el?.title_en}</MenuItem>)
+                    }
+                </VerticalTextFieldSelect>
+
+
+
+                {/* label=> ال  key الل انت عاوز تظهره من ال options */}
+                <SearchByTypingSelect
+                    title={'المستخدم'}
+                    label={"fullname"}
+                    isArabic={isArabic}
+                    options={users}
+                    value={selectedUser}
+                    setValue={setSelectedUser}
+                    error={formik.errors.selectedFeeType && t("admissions.errors.required")}
+                    onBlur={(e) => {
+                        if (selectedUser != null) formik.setFieldError("selectedUser", undefined);
+
+                    }}
+                />
 
                 <SubmitButton loading={creatingTransaction} t={t} />
 

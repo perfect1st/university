@@ -282,7 +282,8 @@
      "inside_yemen":"Price  Inside Yemen",
       "outside_yemen":"Price Outside Yemen",
       "transactions":"Transactions",
-      "transactionType":"TransactionType"
+      "transactionType":"TransactionType",
+      "feeType":"Fee Type"
    },
     "submit":"Submit",
     "error":"Error happened try again later",

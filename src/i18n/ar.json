@@ -319,7 +319,8 @@
       "inside_yemen":"السعر داخل اليمن",
       "outside_yemen":" السعر خارج اليمن",
       "transactions":"المعاملات المالية",
-      "transactionType":"نوع المعاملة"
+      "transactionType":"نوع المعاملة",
+      "feeType":"نوع الرسوم"
    },
 
   "submit":"تأكيد",
