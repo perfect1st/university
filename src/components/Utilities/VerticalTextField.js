@@ -1,6 +1,7 @@
 import { Autocomplete, Box, MenuItem, TextField, Typography, useTheme } from '@mui/material'
 import React from 'react'
 import { CustomSelect } from './CustomTextField';
+import { isNullableType } from 'graphql';
 
 export default function VerticalTextField({
   title,
@@ -12,6 +13,8 @@ export default function VerticalTextField({
   error,
   helperText,
   type = "text",
+  isDisabled = false
+
 }) {
 
   const theme = useTheme();
@@ -35,6 +38,7 @@ export default function VerticalTextField({
             helperText={helperText}
             variant="outlined"
             sx={{ mb: 3, backgroundColor: theme.palette.background.inputBackGround, height: "56px" }}
+            disabled={isDisabled}
           />
           :
           <TextField
@@ -67,6 +71,7 @@ export default function VerticalTextField({
                 MozAppearance: "textfield",
               },
             }}
+            disabled={isDisabled}
           />
       }
 
@@ -95,7 +100,7 @@ export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOpti
   );
 }
 
-export const SearchByTypingSelect = ({ options, value, setValue, title, label, error, onBlur }) => {
+export const SearchByTypingSelect = ({ options, value, setValue, title, label, error, onBlur, multiple = false }) => {
   const theme = useTheme();
 
   console.log("auto error", error);
@@ -106,22 +111,32 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label, e
       </Typography>
 
       <Autocomplete
+        multiple={multiple}
         options={options}
         getOptionLabel={(option) => option[label]}
-        value={options?.find((opt) => opt.value === value) || null}
+       value={multiple ? options?.filter(opt => value.includes(opt.id)) : options?.find(opt => opt?.id === value) || null}
         clearOnEscape={false}
         disableClearable={false}
 
         onChange={(e, newValue, reason) => {
           if (reason === "clear") {
+
             // لو المستخدم ضغط على clear icon
-            setValue(null);
+            multiple ? setValue([]) : setValue(null);
             return;
           }
 
-          if (reason === "selectOption") {
+          if (reason === "selectOption" || reason === "removeOption") {
+            if (!newValue) return; // safety
             // المستخدم اختار اختيار فعلي
-            setValue(newValue?.value);
+            if (multiple) {
+              // newValue هترجع array من objects المختارين
+              const newIds = newValue.map(opt => opt.id);
+              setValue(newIds); // value = array of ids
+            }
+            else {
+              setValue(newValue?.id || isNullableType);
+            }
             return;
           }
 

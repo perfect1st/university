@@ -30,7 +30,7 @@ export default function AddTransactionPage() {
 
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(0);
     const [selectedTransactionType, setSelectedTransactionType] = useState(0);
-    const [selectedFeeType, setSelectedFeeType] = useState(0);
+    const [selectedFeeType, setSelectedFeeType] = useState([]);
 
     const [selectedUser, setSelectedUser] = useState(null);
 
@@ -138,6 +138,8 @@ export default function AddTransactionPage() {
     if (gettingFees || transactionTypesLoading || usersLoading) return <LoadingPage />;
 
 
+    console.log("selectedFeeType",selectedFeeType);
+    console.log("selectedUser",selectedUser);
 
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
@@ -198,27 +200,23 @@ export default function AddTransactionPage() {
                     }
                 </VerticalTextFieldSelect>
 
-                <VerticalTextFieldSelect
-                    t={t}
-                    title={t("Dashboard.feeType")} defaultOptionLabel={t("select")}
-                    backgroundColor={theme.palette.background.inputBackGround}
+               
+
+                <SearchByTypingSelect
+                    multiple={true}
+                    title={t("Dashboard.feeType")}
+                    label={"title_ar"}
+                    isArabic={isArabic}
+                    options={getFeesTypes ? getFeesTypes :[]}
                     value={selectedFeeType}
                     setValue={setSelectedFeeType}
+                    error={formik.errors.selectedFeeType && t("admissions.errors.required")}
                     onBlur={(e) => {
 
                         if (selectedFeeType != 0) formik.setFieldError("selectedFeeType", undefined);
 
                     }}
-                    error={formik.errors.selectedFeeType && t("admissions.errors.required")}
-                    helperText={formik.errors.selectedFeeType && t("admissions.errors.required")}
-                >
-                    <MenuItem value={0} selected>{t("select")}</MenuItem>
-                    {
-                        getFeesTypes?.map((el, i) => <MenuItem key={el?.id} value={el?.id}>{isArabic ? el?.title_ar : el?.title_en}</MenuItem>)
-                    }
-                </VerticalTextFieldSelect>
-
-
+                />
 
                 {/* label=> ال  key الل انت عاوز تظهره من ال options */}
                 <SearchByTypingSelect
@@ -245,6 +243,7 @@ export default function AddTransactionPage() {
                     onChange={formik.handleChange}
                     error={formik.touched.amount && Boolean(formik.errors.amount)}
                     helperText={formik.touched.amount && formik.errors.amount}
+                    isDisabled={true}
                 />
 
                 <SubmitButton loading={creatingTransaction} t={t} />
