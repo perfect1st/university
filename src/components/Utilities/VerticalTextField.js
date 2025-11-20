@@ -1,4 +1,4 @@
-import { Autocomplete, Box, MenuItem, TextField, Typography, useTheme } from '@mui/material'
+import { Autocomplete, Box, MenuItem, TextField, Typography, useMediaQuery, useTheme } from '@mui/material'
 import React from 'react'
 import { CustomSelect } from './CustomTextField';
 import { isNullableType } from 'graphql';
@@ -100,12 +100,13 @@ export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOpti
   );
 }
 
-export const SearchByTypingSelect = ({ options, value, setValue, title, label, error, onBlur, multiple = false , labelToShow }) => {
+export const SearchByTypingSelect = ({ options, value, setValue, title, label, error, onBlur, multiple = false , labelToShow,findKey }) => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   console.log("auto error", error);
   return (
-    <>
+    <Box sx={{ width: "100%", maxWidth: isMobile ? 400 : "100%" }}>
       <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
         {title}
       </Typography>
@@ -114,7 +115,7 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label, e
         multiple={multiple}
         options={options}
         getOptionLabel={(option) => labelToShow(option)}
-       value={multiple ? options?.filter(opt => value.includes(opt.id)) : options?.find(opt => opt?.id === value) || null}
+       value={multiple ? options?.filter(opt => value.includes(opt[findKey])) : options?.find(opt => opt[findKey] === value) || null}
         clearOnEscape={false}
         disableClearable={false}
 
@@ -131,11 +132,11 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label, e
             // المستخدم اختار اختيار فعلي
             if (multiple) {
               // newValue هترجع array من objects المختارين
-              const newIds = newValue.map(opt => opt.id);
+              const newIds = newValue.map(opt => opt[findKey]);
               setValue(newIds); // value = array of ids
             }
             else {
-              setValue(newValue?.id || isNullableType);
+              setValue(newValue[findKey]|| isNullableType);
             }
             return;
           }
@@ -173,7 +174,7 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label, e
         }}
 
       />
-    </>
+    </Box>
 
   );
 }

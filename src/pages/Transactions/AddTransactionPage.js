@@ -156,7 +156,7 @@ export default function AddTransactionPage() {
                 isPrinter={false}
             />
 
-            <Box component="form" onSubmit={formik.handleSubmit} fullWidth>
+            <Box sx={{width: isMobile ?"90%" : "100%"}} component="form" onSubmit={formik.handleSubmit} >
 
 
 
@@ -205,10 +205,10 @@ export default function AddTransactionPage() {
                 <SearchByTypingSelect
                     multiple={true}
                     title={t("Dashboard.feeType")}
-                    label={"title_ar"}
                     labelToShow={(option)=>{
-                            return `${option?.title_ar}-${option?.inside_yemen_value}-${option?.outside_yemen_value}`
+                            return `${isArabic ? option?.title_ar : option?.title_en}- [${t("Dashboard.inside_yemen")} : ${option?.inside_yemen_value}] - [${t("Dashboard.outside_yemen")} : ${option?.outside_yemen_value}]`
                     }}
+                    findKey={"id"}
                     isArabic={isArabic}
                     options={getFeesTypes ? getFeesTypes :[]}
                     value={selectedFeeType}
@@ -224,7 +224,10 @@ export default function AddTransactionPage() {
                 {/* label=> ال  key الل انت عاوز تظهره من ال options */}
                 <SearchByTypingSelect
                     title={t("Dashboard.user")}
-                    label={"fullname"}
+                   labelToShow={(option)=>{
+                           return option?.fullname
+                    }}
+                    findKey={"id"}
                     isArabic={isArabic}
                     options={users}
                     value={selectedUser}
