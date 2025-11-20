@@ -14,6 +14,8 @@ import LoadingPage from "../../components/LoadingComponent";
 import { useEffect, useState } from "react";
 import { CREATE_ACADEMY_TERM } from "../../graphql/AcademyTerms";
 import MaterialArrComponent from "./MaterialArrComponent";
+import { GET_MATERIALS_BY_DEPARTMENT_ID } from "../../graphql/materialQueries";
+
 
 export default function AddAcademyTermPage() {
 
@@ -52,6 +54,16 @@ export default function AddAcademyTermPage() {
   ] = useLazyQuery(GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, {
     fetchPolicy: "network-only",
   });
+
+  // get materials in Department
+  const[
+    MaterialsByDepartment,
+    {
+      data:{materialsByDepartment}={},
+      loading:DepartmentMaterialsLoading
+
+    }
+  ]=useLazyQuery(GET_MATERIALS_BY_DEPARTMENT_ID,{fetchPolicy:"network-only"});
 
   const [
     CreateAcademyTerm,
@@ -391,7 +403,13 @@ export default function AddAcademyTermPage() {
           }
         </VerticalTextFieldSelect>
 
-        <Typography
+           {
+          (DepartmentMaterialsLoading)
+          && <CircularProgress size={26}
+            thickness={8}
+            sx={{ color: "black" }} />
+        }
+        {/* <Typography
           variant="subtitle2"
           sx={{
             fontWeight: "bold",
@@ -400,7 +418,7 @@ export default function AddAcademyTermPage() {
         >
           {t("studentDashboard.subjects")}
         </Typography>
-        <MaterialArrComponent rows={rows} setRows={setRows} />
+        <MaterialArrComponent rows={rows} setRows={setRows} /> */}
 
         <SubmitButton loading={creatingAcademyTerm} t={t} />
 
