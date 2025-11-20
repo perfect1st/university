@@ -64,5 +64,21 @@ mutation UpdateMaterial($id:ID!,$input:MaterialInput!) {
         updatedAt
     }
 }
+`;
 
+
+export const GET_MATERIALS_BY_DEPARTMENT_ID=gql`
+query MaterialsByDepartment($faculty_department_id:ID!) {
+    materialsByDepartment(faculty_department_id: $faculty_department_id) {
+        id
+        title_ar
+        title_en
+        status
+        fullmark_degree
+        success_degree
+        material_hours
+        createdAt
+        updatedAt
+    }
+}
 `;
