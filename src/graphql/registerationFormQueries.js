@@ -53,24 +53,11 @@ query GetRegisterFormByUserId($user_id:ID!) {
         gpa
         createdAt
         updatedAt
-        user_id {
+        faculty_department_id {
             id
-            username
-            fullname
-            email
-            mobile
-            role
+            title_ar
+            title_en
             status
-            profile_image
-            qid_number
-            createdAt
-            updatedAt
-        }
-        nationality_id {
-            id
-            name_ar
-            name_en
-            flag
             createdAt
             updatedAt
         }
@@ -84,11 +71,18 @@ query GetRegisterFormByUserId($user_id:ID!) {
             createdAt
             updatedAt
         }
-        faculty_department_id {
+        country_id {
             id
-            title_ar
-            title_en
-            status
+            name_ar
+            name_en
+            createdAt
+            updatedAt
+        }
+        city_id {
+            id
+            name_ar
+            name_en
+            country_id
             createdAt
             updatedAt
         }
@@ -109,7 +103,6 @@ query GetRegisterFormByUserId($user_id:ID!) {
                 status
                 fullmark_degree
                 success_degree
-                faculty_department_id
                 material_hours
                 createdAt
                 updatedAt
@@ -121,147 +114,29 @@ query GetRegisterFormByUserId($user_id:ID!) {
                 status
                 createdAt
                 updatedAt
-                faculty_id {
-                    id
-                    title_ar
-                    title_en
-                    status
-                    required_dep
-                    study_years_count
-                    createdAt
-                    updatedAt
-                }
             }
         }
-        country_id {
+        nationality_id {
             id
             name_ar
             name_en
+            flag
             createdAt
             updatedAt
         }
-        city_id {
+        user_id {
             id
-            name_ar
-            name_en
-            country_id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
             createdAt
             updatedAt
         }
     }
 }
-
 `;
-// export const GET_REGISTERATION_FORM_BY_USER_ID=gql`
-// query GetRegisterFormByUserId($user_id : ID!) {
-//     getRegisterFormByUserId(user_id: $user_id) {
-//      id
-//         first_name
-//         second_name
-//         third_name
-//         fourth_name
-//         birthdate
-//         gender
-//         is_paid
-//         paid_document_file
-//         high_school_certificate_file
-//         address
-//         status
-//         mobile
-//         home_tel
-//         email
-//         is_inside_yemen
-//         transactions_id
-//         national_id_type
-//         national_id
-//         education_year
-//         study_place
-//         high_school_student_number
-//         general_grade
-//         gpa
-//         createdAt
-//         updatedAt
-//         user_id {
-//             id
-//             username
-//             fullname
-//             email
-//             mobile
-//             role
-//             status
-//             profile_image
-//             qid_number
-//             createdAt
-//             updatedAt
-//         }
-//         nationality_id {
-//             id
-//             name_ar
-//             name_en
-//             flag
-//             createdAt
-//             updatedAt
-//         }
-//         faculty_id {
-//             id
-//             title_ar
-//             title_en
-//             status
-//             required_dep
-//             study_years_count
-//             createdAt
-//             updatedAt
-//         }
-//         faculty_department_id {
-//             id
-//             title_ar
-//             title_en
-//             status
-//             faculty_id
-//             createdAt
-//             updatedAt
-//         }
-//         country_id {
-//             id
-//             name_ar
-//             name_en
-//             createdAt
-//             updatedAt
-//         }
-//         city_id {
-//             id
-//             name_ar
-//             name_en
-//             country_id
-//             createdAt
-//             updatedAt
-//         }
-//         academyTerm_id {
-//             id
-//             title_ar
-//             title_en
-//             status
-//             study_year
-//             current_year
-//             term_number
-//             min_study_hours
-//             max_study_hours
-//             faculty_department_id
-//             materials_array{
-//           id
-//         title_ar
-//         title_en
-//         status
-//         fullmark_degree
-//         success_degree
-//         faculty_department_id
-//         material_hours
-//         createdAt
-//         updatedAt
-//         }
-//         }
-
-//             }
-// }
-
-// `;

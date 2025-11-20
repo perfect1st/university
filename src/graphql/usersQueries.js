@@ -188,7 +188,7 @@ mutation CreateUserStudyMaterial($input:UserStudyMaterialInput!) {
 
 export const GET_USER_STUDY_MATERIALS_BY_USER_ID=gql`
 query GetUserStudyMaterialsByUser($user_id:ID!) {
-    getUserStudyMaterialsByUser(user_id:  $user_id) {
+    getUserStudyMaterialsByUser(user_id: $user_id) {
         id
         status
         createdAt
@@ -216,26 +216,6 @@ query GetUserStudyMaterialsByUser($user_id:ID!) {
             term_number
             min_study_hours
             max_study_hours
-            faculty_department_id {
-                id
-                title_ar
-                title_en
-                status
-                createdAt
-                updatedAt
-            }
-            materials_array {
-                id
-                title_ar
-                title_en
-                status
-                fullmark_degree
-                success_degree
-                faculty_department_id
-                material_hours
-                createdAt
-                updatedAt
-            }
         }
         material_id {
             id
@@ -244,13 +224,12 @@ query GetUserStudyMaterialsByUser($user_id:ID!) {
             status
             fullmark_degree
             success_degree
-            faculty_department_id
             material_hours
             createdAt
             updatedAt
         }
     }
 }
-`
+`;
 
 
