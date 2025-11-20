@@ -321,7 +321,11 @@
       "transactions":"المعاملات المالية",
       "transactionType":"نوع المعاملة",
       "feeType":"نوع الرسوم",
-      "user":"المستخدم"
+      "user":"المستخدم",
+      "trueOrFalse":{
+        "true":"نعم",
+        "false":"لا"
+      }
    },
 
   "submit":"تأكيد",

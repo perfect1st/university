@@ -284,7 +284,11 @@
       "transactions":"Transactions",
       "transactionType":"TransactionType",
       "feeType":"Fee Type",
-      "user":"User"
+      "user":"User",
+      "trueOrFalse":{
+        "true":"Yes",
+        "false":"No"
+      }
    },
     "submit":"Submit",
     "error":"Error happened try again later",

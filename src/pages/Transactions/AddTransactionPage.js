@@ -16,8 +16,9 @@ import VerticalTextField, { SearchByTypingSelect, VerticalTextFieldSelect } from
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import LoadingPage from "../../components/LoadingComponent";
 import { useState } from "react";
-import { paymentMethodsArr, transactionTypesArr } from "../../constants";
+import { paymentMethodsArr, transactionTypesArr , TrueOrFalseArr } from "../../constants";
 import { GET_ALL_USERES_FOR_ADMIN } from "../../graphql/userQueriesForAdmin";
+import ConfirmModal from "../../components/Utilities/ConfirmModal";
 // GET_ALL_USERES_FOR_ADMIN
 
 export default function AddTransactionPage() {
@@ -32,7 +33,10 @@ export default function AddTransactionPage() {
     const [selectedTransactionType, setSelectedTransactionType] = useState(0);
     const [selectedFeeType, setSelectedFeeType] = useState([]);
 
+    const [isInSideYemen, setIsInSideYemen] = useState(true);
     const [selectedUser, setSelectedUser] = useState(null);
+
+    const[showConfirmModal,setShowConfirmModal]=useState(false);
 
    // console.log("location.pathname",location.pathname.split('/add')[0]);
 
@@ -98,8 +102,11 @@ export default function AddTransactionPage() {
             // }
             console.log('xxxxxxxxxxxxxxxxxxxxxxx');
             const data = {
-                title_ar: values?.title_ar,
-                title_en: values.title_en,
+                payment_method_type:selectedPaymentMethod,
+                transaction_type_id:selectedTransactionType,
+                fees_type_ids:selectedFeeType,
+                user_id:selectedUser,
+                amount:values?.amount,
                 // faculty_id: selected
 
             };
@@ -140,11 +147,21 @@ export default function AddTransactionPage() {
     if (gettingFees || transactionTypesLoading || usersLoading) return <LoadingPage />;
 
 
-    console.log("selectedFeeType",selectedFeeType);
-    console.log("selectedUser",selectedUser);
-
+    // console.log("selectedFeeType",selectedFeeType);
+    // console.log("selectedUser",selectedUser);
+    // console.log("isInSideYemen",isInSideYemen);
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
+
+            {/* {
+                showConfirmModal&&<ConfirmModal 
+                title={"confirm"}
+                content={"confirm"} 
+                dialogOpen={showConfirmModal}
+                setDialogOpen={setShowConfirmModal}
+                onClickAction={formik.handleSubmit()}
+                 />
+            } */}
             <Header
                 title={t("Dashboard.transactions")}
                 subtitle={t("addItem", { item: translateText })}
@@ -158,9 +175,12 @@ export default function AddTransactionPage() {
                 isPrinter={false}
             />
 
-            <Box sx={{width: isMobile ?"90%" : "100%"}} component="form" onSubmit={formik.handleSubmit} >
-
-
+            <Box 
+            onSubmit={formik.handleSubmit}
+            sx={{width: isMobile ?"90%" : "100%"}} 
+            component="form" 
+             
+            >
 
                 <VerticalTextFieldSelect
                     t={t}
@@ -182,6 +202,25 @@ export default function AddTransactionPage() {
                     }
                 </VerticalTextFieldSelect>
 
+                    {/* ادخل اليمن */}
+                <VerticalTextFieldSelect
+                    t={t}
+                    title={t("Dashboard.inside_yemen")} 
+                    backgroundColor={theme.palette.background.inputBackGround}
+                    value={isInSideYemen}
+                    setValue={setIsInSideYemen}
+                    onBlur={(e) => {
+                        // console.log('blur', selectedPaymentMethod);
+                        // if (selectedPaymentMethod != 0) formik.setFieldError("selectedPaymentMethod", undefined);
+
+                    }}
+                >
+                    {
+                        TrueOrFalseArr?.map((el, i) => <MenuItem key={i} value={el}>{t(`Dashboard.trueOrFalse.${el}`)}</MenuItem>)
+                    }
+                </VerticalTextFieldSelect>
+
+                    {/* نوع المعاملة */}
                 <VerticalTextFieldSelect
                     t={t}
                     title={t("Dashboard.transactionType")} defaultOptionLabel={t("select")}
@@ -189,7 +228,6 @@ export default function AddTransactionPage() {
                     value={selectedTransactionType}
                     setValue={setSelectedTransactionType}
                     onBlur={(e) => {
-
                         if (selectedTransactionType != 0) formik.setFieldError("selectedTransactionType", undefined);
 
                     }}
@@ -204,8 +242,10 @@ export default function AddTransactionPage() {
 
                
                     {/*
-                     labelToShow-> الل انت عاوزه يتكتب جوة كل option
+                    نوع الرسوم
+                    labelToShow-> الل انت عاوزه يتكتب جوة كل option
                      */}
+
                 <SearchByTypingSelect
                     multiple={true}
                     title={t("Dashboard.feeType")}
@@ -219,17 +259,33 @@ export default function AddTransactionPage() {
                     setValue={setSelectedFeeType}
                     error={formik.errors.selectedFeeType && t("admissions.errors.required")}
                     onBlur={(e) => {
+                        // console.log("selectedFeeType blur",selectedFeeType);
+                        let totalAmount=0;
 
+                        getFeesTypes?.map(fee=>{
+                           let feeObj=selectedFeeType?.find(el=>el==fee?.id);
+                           console.log("feeObj",feeObj);
+                           if(feeObj){
+                                if(isInSideYemen==true) totalAmount+= Number(fee?.inside_yemen_value)
+                                else totalAmount+= Number(fee?.outside_yemen_value)
+                           }
+                        });
+
+                        // console.log('total amount',totalAmount);
+
+                        formik.values.amount=totalAmount;
+
+                        // validation check
                         if (selectedFeeType != 0) formik.setFieldError("selectedFeeType", undefined);
 
                     }}
                 />
 
-               
+               {/* المستخدم */}
                 <SearchByTypingSelect
                     title={t("Dashboard.user")}
                    labelToShow={(option)=>{
-                           return option?.fullname
+                           return `${option?.fullname} - ${option?.email}`
                     }}
                     findKey={"id"}
                     isArabic={isArabic}
