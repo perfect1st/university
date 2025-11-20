@@ -128,6 +128,7 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label,er
           // لو المستخدم قفل البوكس فقط (blur)
           if (reason === "blur") {
             // خليه يحتفظ بالقيمة الحالية — متعملش setValue(null)
+            onBlur();
             return;
           }
         }}
