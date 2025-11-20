@@ -203,7 +203,9 @@ export default function AddTransactionPage() {
                 </VerticalTextFieldSelect>
 
                
-
+                    {/*
+                     labelToShow-> الل انت عاوزه يتكتب جوة كل option
+                     */}
                 <SearchByTypingSelect
                     multiple={true}
                     title={t("Dashboard.feeType")}
@@ -223,7 +225,7 @@ export default function AddTransactionPage() {
                     }}
                 />
 
-                {/* label=> ال  key الل انت عاوز تظهره من ال options */}
+               
                 <SearchByTypingSelect
                     title={t("Dashboard.user")}
                    labelToShow={(option)=>{
