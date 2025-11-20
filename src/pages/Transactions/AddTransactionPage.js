@@ -206,6 +206,9 @@ export default function AddTransactionPage() {
                     multiple={true}
                     title={t("Dashboard.feeType")}
                     label={"title_ar"}
+                    labelToShow={(option)=>{
+                            return `${option?.title_ar}-${option?.inside_yemen_value}-${option?.outside_yemen_value}`
+                    }}
                     isArabic={isArabic}
                     options={getFeesTypes ? getFeesTypes :[]}
                     value={selectedFeeType}

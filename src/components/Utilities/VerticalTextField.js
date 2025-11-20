@@ -100,7 +100,7 @@ export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOpti
   );
 }
 
-export const SearchByTypingSelect = ({ options, value, setValue, title, label, error, onBlur, multiple = false }) => {
+export const SearchByTypingSelect = ({ options, value, setValue, title, label, error, onBlur, multiple = false , labelToShow }) => {
   const theme = useTheme();
 
   console.log("auto error", error);
@@ -113,7 +113,7 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label, e
       <Autocomplete
         multiple={multiple}
         options={options}
-        getOptionLabel={(option) => option[label]}
+        getOptionLabel={(option) => labelToShow(option)}
        value={multiple ? options?.filter(opt => value.includes(opt.id)) : options?.find(opt => opt?.id === value) || null}
         clearOnEscape={false}
         disableClearable={false}
