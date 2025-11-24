@@ -144,6 +144,7 @@ function App() {
             gray: "#F9FAFB",
             contrastText: "#ffffff",
             tabelHeader: "#D2D6DB",
+            disabled:"#384250"
           },
           secondary: {
             main: mode === "light" ? "#F39A15" : "#F39A15",

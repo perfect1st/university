@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import LoadingPage from "../../components/LoadingComponent";

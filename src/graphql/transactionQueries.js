@@ -36,6 +36,50 @@ query GetTransactions {
 }
 `;
 
+export const GET_TRANSACTION_BY_ID=gql`
+query GetTransactionById($id:ID!) {
+    getTransactionById(id: $id) {
+        id
+        payment_method_type
+        amount
+        payment_document_file
+        transaction_date
+        transaction_serial
+        fees_type_ids {
+            id
+            title_ar
+            title_en
+            inside_yemen_value
+            outside_yemen_value
+            createdAt
+            updatedAt
+            status
+        }
+        transaction_type_id {
+            id
+            operation_type
+            notes
+            status
+            createdAt
+            updatedAt
+        }
+        user_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            createdAt
+            updatedAt
+        }
+    }
+}
+`;
+
 export const CREATE_NEW_TRANSACTION_BY_ADMIN=gql`
 mutation CreateTransaction($input:TransactionInput!) {
     createTransaction(input: $input) {

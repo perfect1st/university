@@ -15,7 +15,8 @@ export default function HorizentalTextField({
   error,
   helperText,
   type = "",
-  handleChange
+  handleChange,
+  isDisabled = false
 
 }) {
   const theme = useTheme();
@@ -32,17 +33,12 @@ export default function HorizentalTextField({
       inputRef.current.focus(); // يعمل focus على الـ input
     }
   };
-  //     font-family: Arial;
-  // font-weight: 400;
-  // font-size: 20px;
-  // leading-trim: NONE;
-  // line-height: 24px;
-  // letter-spacing: 0%;
+
 
   return (
     <Box sx={{ display: "flex", flexWrap: "wrap", mb: 4, alignItems: "center", backgroundColor: theme.palette.primary?.gray, gap: 3, p: 1 }}>
 
-      <Typography variant="subtitle2" sx={{ fontWeight: "bold" , width:"40%" }}>
+      <Typography variant="subtitle2" sx={{ fontWeight: "bold", width: "40%" }}>
         {title}
       </Typography>
 
@@ -77,6 +73,7 @@ export default function HorizentalTextField({
           :
           type == "number" ?
             <TextField
+              disabled={isDisabled}
               type={"number"}
               id={fieldID}
               name={fieldName}
@@ -88,7 +85,7 @@ export default function HorizentalTextField({
               helperText={helperText}
               variant="outlined"
               InputProps={{
-                endAdornment: (
+                endAdornment: !isDisabled && (
                   <InputAdornment position="end">
                     <CreateIcon color="action" sx={{ cursor: "pointer" }} onClick={handleFocus} />
                   </InputAdornment>
@@ -112,16 +109,17 @@ export default function HorizentalTextField({
                     border: `2px solid ${theme.palette.primary.main}`, // يظهر عند focus
                   },
                 },
-                  "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
-                display: "none",
-              },
-              "& input[type=number]": {
-                MozAppearance: "textfield",
-              },
+                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+                  display: "none",
+                },
+                "& input[type=number]": {
+                  MozAppearance: "textfield",
+                },
               }}
             />
             :
             <TextField
+              disabled={isDisabled}
               id={fieldID}
               name={fieldName}
               placeholder={placeholder}
@@ -132,7 +130,7 @@ export default function HorizentalTextField({
               helperText={helperText}
               variant="outlined"
               InputProps={{
-                endAdornment: (
+                endAdornment: !isDisabled && (
                   <InputAdornment position="end">
                     <CreateIcon color="action" sx={{ cursor: "pointer" }} onClick={handleFocus} />
                   </InputAdornment>
@@ -148,6 +146,10 @@ export default function HorizentalTextField({
                   "&.Mui-focused fieldset": {
                     border: `2px solid ${theme.palette.primary.main}`, // يظهر عند focus
                   },
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: `${theme.palette.primary?.disabled} !important`, // لون النص
+                    fontWeight:"700"
+                  },
                 },
               }}
             />
@@ -160,12 +162,12 @@ export default function HorizentalTextField({
 }
 
 
-export const HorizentalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError , onChange }) => {
+export const HorizentalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange }) => {
   const theme = useTheme();
   return (
     <Box sx={{ display: "flex", flexWrap: "wrap", mb: 4, backgroundColor: theme.palette.primary?.gray, gap: 3, p: 1, height: "50px" }}>
 
-      <Typography variant="subtitle2" sx={{ fontWeight: "bold", height: "50px", display: "flex", flexDirection: "column", alignItems: "start", justifyContent: "center", width:"40%" }}>
+      <Typography variant="subtitle2" sx={{ fontWeight: "bold", height: "50px", display: "flex", flexDirection: "column", alignItems: "start", justifyContent: "center", width: "40%" }}>
         {title}
       </Typography>
 
