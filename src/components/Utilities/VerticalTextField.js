@@ -100,7 +100,7 @@ export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOpti
   );
 }
 
-export const SearchByTypingSelect = ({ options, value, setValue, title, label, error, onBlur, multiple = false , labelToShow,findKey }) => {
+export const SearchByTypingSelect = ({ options, value, setValue, title, label, error, onBlur, multiple = false , labelToShow,findKey, onChangeFn }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -124,6 +124,8 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label, e
 
             // لو المستخدم ضغط على clear icon
             multiple ? setValue([]) : setValue(null);
+
+            if(onChangeFn) onChangeFn([]);
             return;
           }
 
@@ -134,6 +136,8 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label, e
               // newValue هترجع array من objects المختارين
               const newIds = newValue.map(opt => opt[findKey]);
               setValue(newIds); // value = array of ids
+
+              if(onChangeFn) onChangeFn(newIds);
             }
             else {
               setValue(newValue[findKey]|| isNullableType);
@@ -147,6 +151,8 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label, e
             onBlur();
             return;
           }
+
+          
         }}
         renderInput={(params) => (
           <TextField

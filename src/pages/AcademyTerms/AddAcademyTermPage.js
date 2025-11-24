@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import VerticalTextField, { VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
+import VerticalTextField, { SearchByTypingSelect, VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import LoadingPage from "../../components/LoadingComponent";
@@ -29,6 +29,7 @@ export default function AddAcademyTermPage() {
   const [selectedSemester, setSelectedSemester] = useState(0);
   const [selectedFaculity, setSelectedFaculity] = useState(0);
   const [selectedDepartment, setSelectedDepartment] = useState(0);
+  const [selectedMaterials, setSelectedMaterials] = useState([]);
 
   const [rows, setRows] = useState([]);
 
@@ -56,14 +57,14 @@ export default function AddAcademyTermPage() {
   });
 
   // get materials in Department
-  const[
+  const [
     MaterialsByDepartment,
     {
-      data:{materialsByDepartment}={},
-      loading:DepartmentMaterialsLoading
+      data: { materialsByDepartment } = {},
+      loading: DepartmentMaterialsLoading
 
     }
-  ]=useLazyQuery(GET_MATERIALS_BY_DEPARTMENT_ID,{fetchPolicy:"network-only"});
+  ] = useLazyQuery(GET_MATERIALS_BY_DEPARTMENT_ID, { fetchPolicy: "network-only" });
 
   const [
     CreateAcademyTerm,
@@ -77,7 +78,19 @@ export default function AddAcademyTermPage() {
     Faculties();
   }, []);
 
+  // useEffect(()=>{
+  //   if(selectedMaterials?.length>0){
+
+  //   }
+  // },[selectedMaterials]);
+
   console.log("getFacultyDepartmentsByFaculty", getFacultyDepartmentsByFaculty);
+
+  console.log("materialsByDepartment", materialsByDepartment);
+
+  // console.log('**********************************');
+  // console.log(selectedMaterials);
+  // console.log('***********************************');
   // useEffect(()=>{
   //   if(selectedFaculity && selectedFaculity!=0){
 
@@ -115,13 +128,13 @@ export default function AddAcademyTermPage() {
           t("admissions.errors.required"),
           (value) => Number(value) > 0
         ),
-      selectedFaculity: selectedFaculity==0&& Yup.string()
+      selectedFaculity: selectedFaculity == 0 && Yup.string()
         .required(t("admissions.errors.required"))
         .notOneOf(["0"], t("admissions.errors.required")),
-      selectedSemester: selectedSemester==0&& Yup.string()
+      selectedSemester: selectedSemester == 0 && Yup.string()
         .required(t("admissions.errors.required"))
         .notOneOf(["0"], t("admissions.errors.required")),
-      selectedDepartment: selectedDepartment==0&& Yup.string()
+      selectedDepartment: selectedDepartment == 0 && Yup.string()
         .required(t("admissions.errors.required"))
         .notOneOf(["0"], t("admissions.errors.required")),
 
@@ -146,28 +159,54 @@ export default function AddAcademyTermPage() {
       }
       // console.log('xxxxxxxxxxxxxxxxxxxxxxx');
 
-      let rowsError=false;
-      // شيل ال index قبل متبعت
-      // const newRows = rows?.map(({ index, ...rest }) => rest);
-      const newRows = rows?.map((el, i) => {
-        const { index, ...rest } = el; // نشيل index
+      let MaterialHours = 0;
+      let hoursError=false;
+      // let maxMaterialHours=0;
 
-        const values = Object.values(rest);
+      if (rows?.length > 0) {
+        MaterialHours = rows?.reduce(
+          (sum, el) => sum + (el.material_hours || 0) + MaterialHours,
+          0
+        );
 
-        values?.map(value=>{
-            if(value=="") rowsError=true;
-        }) 
-        // if(rest[key]=="") rowsError=true;
-        return { ...rest, faculty_department_id: selectedDepartment };      // نضيف key
-      });
+        // لازم مجموع المواد المختارة اكبر من اقل عدد ساعات ف الترم
+        // واقل من اقصي عدد ساعات للترم
 
-      if(rowsError){
-        notify(t("Dashboard.allFieldsRequired",{
-          item:t("studentDashboard.subjects")
-        }),"error");
-        return;
+        if(Number(MaterialHours) < Number(values?.min_study_hours) || Number(MaterialHours) > Number(values?.max_study_hours) ){
+            console.log("MaterialHours error",MaterialHours);
+            hoursError=true;
+        } 
+      }
+
+      console.log("MaterialHours",MaterialHours);
+
+      if(hoursError){
+          notify(t("Dashboard.termHoursError"), "error");
+           return;
       }
      
+      // let rowsError = false;
+      // // شيل ال index قبل متبعت
+      // // const newRows = rows?.map(({ index, ...rest }) => rest);
+      // const newRows = rows?.map((el, i) => {
+      //   const { index, ...rest } = el; // نشيل index
+
+      //   const values = Object.values(rest);
+
+      //   values?.map(value => {
+      //     if (value == "") rowsError = true;
+      //   })
+      //   // if(rest[key]=="") rowsError=true;
+      //   return { ...rest, faculty_department_id: selectedDepartment };      // نضيف key
+      // });
+
+      // if (rowsError) {
+      //   notify(t("Dashboard.allFieldsRequired", {
+      //     item: t("studentDashboard.subjects")
+      //   }), "error");
+      //   return;
+      // }
+
       //  return;
       let data = {
         title_ar: values?.title_ar,
@@ -180,11 +219,11 @@ export default function AddAcademyTermPage() {
         max_study_hours: values?.max_study_hours
       };
 
-      if(rows?.length >0) data.materials_array=newRows;
+      if (selectedMaterials?.length > 0) data.materials_array = selectedMaterials;
 
 
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu",data);
+        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
         // console.log(data);
 
         //  return;
@@ -198,7 +237,7 @@ export default function AddAcademyTermPage() {
 
         notify(t("success"), "success");
 
-        navigate('/academyTerms');
+        navigate(location.pathname.split('/add')[0]);
 
       } catch (error) {
         console.error("Error logging in:", error);
@@ -220,7 +259,7 @@ export default function AddAcademyTermPage() {
   let translateText2 = isArabic ? "الفصل الدراسي" : "AcademyTerm";
 
   console.log('formik.touched.selectedFaculity', formik.touched);
-  console.log("errors",formik.errors);
+  console.log("errors", formik.errors);
   if (faculitiesLoading) return <LoadingPage />;
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper", maxWidth: "100%" }}>
@@ -325,9 +364,9 @@ export default function AddAcademyTermPage() {
           value={selectedSemester}
           setValue={setSelectedSemester}
           //  onChange={()=>selectedSemester !=0 &&formik.setFieldError("selectedSemester", undefined)}
-          onBlur={(e) =>{
-            console.log('blur',selectedSemester);
-            if(selectedSemester !=0) formik.setFieldError("selectedSemester", undefined);
+          onBlur={(e) => {
+            console.log('blur', selectedSemester);
+            if (selectedSemester != 0) formik.setFieldError("selectedSemester", undefined);
 
           }}
           error={formik.errors.selectedSemester && t("admissions.errors.required")}
@@ -354,11 +393,13 @@ export default function AddAcademyTermPage() {
                 faculty_id: e.target.value,
               },
             });
+
+            setSelectedDepartment(0);
           }}
 
-           onBlur={(e) =>{
+          onBlur={(e) => {
             // console.log('blur',selectedSemester);
-            if(selectedFaculity !=0) formik.setFieldError("selectedFaculity", undefined);
+            if (selectedFaculity != 0) formik.setFieldError("selectedFaculity", undefined);
 
           }}
 
@@ -389,9 +430,16 @@ export default function AddAcademyTermPage() {
           backgroundColor={theme.palette.background.inputBackGround}
           value={selectedDepartment}
           setValue={setSelectedDepartment}
-            onBlur={(e) =>{
+          onChange={async (e) => {
+            await MaterialsByDepartment({
+              variables: {
+                faculty_department_id: e.target.value
+              }
+            });
+          }}
+          onBlur={(e) => {
             // console.log('blur',selectedSemester);
-            if(selectedDepartment !=0) formik.setFieldError("selectedDepartment", undefined);
+            if (selectedDepartment != 0) formik.setFieldError("selectedDepartment", undefined);
 
           }}
           error={formik.errors.selectedDepartment && t("admissions.errors.required")}
@@ -403,22 +451,57 @@ export default function AddAcademyTermPage() {
           }
         </VerticalTextFieldSelect>
 
-           {
+        {
           (DepartmentMaterialsLoading)
           && <CircularProgress size={26}
             thickness={8}
             sx={{ color: "black" }} />
         }
-        {/* <Typography
-          variant="subtitle2"
-          sx={{
-            fontWeight: "bold",
-            mb: 1,
+
+
+        <SearchByTypingSelect
+          multiple={true}
+          title={t("studentDashboard.subjects")}
+          labelToShow={(option) => {
+            return `${isArabic ? option?.title_ar : option?.title_en}`
           }}
-        >
-          {t("studentDashboard.subjects")}
-        </Typography>
-        <MaterialArrComponent rows={rows} setRows={setRows} /> */}
+          findKey={"id"}
+          isArabic={isArabic}
+          options={materialsByDepartment ? materialsByDepartment : []}
+          value={selectedMaterials}
+          setValue={setSelectedMaterials}
+          onChangeFn={(newIDS) => {
+            console.log("newIDS", newIDS);
+            let rows = [];
+            rows = materialsByDepartment?.filter(m => newIDS?.find(el => el == m?.id));
+            console.log("rows", rows);
+            setRows(rows);
+          }
+          }
+          // error={formik.errors.selectedFeeType && t("admissions.errors.required")}
+          onBlur={(e) => {
+            // console.log("selectedFeeType blur",selectedFeeType);
+            // let totalAmount = 0;
+
+            // materialsByDepartment?.map(fee => {
+            //   let feeObj = selectedFeeType?.find(el => el == fee?.id);
+            //   console.log("feeObj", feeObj);
+            //   if (feeObj) {
+            //     if (isInSideYemen == true) totalAmount += Number(fee?.inside_yemen_value)
+            //     else totalAmount += Number(fee?.outside_yemen_value)
+            //   }
+            // });
+
+            // console.log('total amount',totalAmount);
+
+            // formik.values.amount = totalAmount;
+
+            // validation check
+            //  if (selectedFeeType != 0) formik.setFieldError("selectedFeeType", undefined);
+
+          }}
+        />
+        <MaterialArrComponent rows={rows} setRows={setRows} />
 
         <SubmitButton loading={creatingAcademyTerm} t={t} />
 

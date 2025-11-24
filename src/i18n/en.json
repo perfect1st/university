@@ -288,7 +288,8 @@
       "trueOrFalse":{
         "true":"Yes",
         "false":"No"
-      }
+      },
+      "termHoursError":"The total number of course hours must be greater than the minimum allowed for the semester and less than the maximum allowed for the semester."
    },
     "submit":"Submit",
     "error":"Error happened try again later",

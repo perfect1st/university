@@ -97,9 +97,6 @@ export default function MaterialArrComponent({rows,setRows}) {
                             <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
                                 {t("studentDashboard.materialHours")}
                             </TableCell>
-                            <TableCell sx={{ fontWeight: 700, textAlign: "start" }}>
-
-                            </TableCell>
                         </TableRow>
                     </TableHead>
 
@@ -112,124 +109,22 @@ export default function MaterialArrComponent({rows,setRows}) {
                                 <TableCell sx={{
                                     whiteSpace: "nowrap",   // يمنع النزول لسطر جديد
                                 }}>
-                                    <TextField
-                                        id={"title_ar"}
-                                        name={"title_ar"}
-                                        placeholder={t("studentDashboard.subjectTitleAr")}
-                                        value={row?.title_ar}
-                                        onChange={(e) => onInputChange(e, i)}
-                                        // error={error}
-                                        // helperText={helperText}
-                                        variant="outlined"
-                                        sx={{ mb: 3, backgroundColor: theme.palette.background.inputBackGround }}
-                                    />
+                                    {row?.title_ar}
                                 </TableCell>
                                 <TableCell>
-                                    <TextField
-
-                                        id={"title_en"}
-                                        name={"title_en"}
-                                        placeholder={t("studentDashboard.subjectTitleEn")}
-                                        value={row?.title_en}
-                                        onChange={(e) => onInputChange(e, i)}
-                                        // error={error}
-                                        // helperText={helperText}
-                                        variant="outlined"
-                                        sx={{ mb: 3, backgroundColor: theme.palette.background.inputBackGround }}
-                                    />
+                                  {row?.title_en}
                                 </TableCell>
                                 <TableCell>
-                                    <TextField
-                                        type="number"
-                                        id={"fullmark_degree"}
-                                        name={"fullmark_degree"}
-                                        placeholder={t("studentDashboard.fullmarkDegree")}
-                                        value={row?.fullmark_degree}
-                                        onChange={(e) => onInputChange(e, i)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                                e.preventDefault();   // يمنع الزيادة/النقصان
-                                            }
-                                        }}
-                                      
-                                        variant="outlined"
-
-                                        inputProps={{
-                                            inputMode: "numeric",
-                                            pattern: "[0-9]*",
-                                        }}
-                                        sx={{
-                                            mb: 3, backgroundColor: theme.palette.background.inputBackGround,
-                                            "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
-                                                display: "none",
-                                            },
-                                            "& input[type=number]": {
-                                                MozAppearance: "textfield",
-                                            },
-                                        }}
-
-                                    />
+                                   {row?.fullmark_degree}
                                 </TableCell>
                                 <TableCell>
-                                    <TextField
-                                        type="number"
-                                        id={"success_degree"}
-                                        name={"success_degree"}
-                                        placeholder={t("studentDashboard.successDegree")}
-                                        value={row?.success_degree}
-                                        onChange={(e) => onInputChange(e, i)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                                e.preventDefault();   // يمنع الزيادة/النقصان
-                                            }
-                                        }}
-                                      
-                                        inputProps={{
-                                            inputMode: "numeric",
-                                            pattern: "[0-9]*",
-                                        }}
-                                        sx={{
-                                            mb: 3, backgroundColor: theme.palette.background.inputBackGround,
-                                            "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
-                                                display: "none",
-                                            },
-                                            "& input[type=number]": {
-                                                MozAppearance: "textfield",
-                                            },
-                                        }}
-                                    />
+                                   {row?.success_degree}
                                 </TableCell>
                                 <TableCell>
-                                    <TextField
-
-                                        type="number"
-                                        id={"material_hours"}
-                                        name={"material_hours"}
-                                        placeholder={t("studentDashboard.materialHours")}
-                                        value={row?.material_hours}
-                                        onChange={(e) => onInputChange(e, i)}
-                                        inputProps={{
-                                            inputMode: "numeric",
-                                            pattern: "[0-9]*",
-                                        }}
-                                        onKeyDown={(e) => {
-                                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                                e.preventDefault();   // يمنع الزيادة/النقصان
-                                            }
-                                        }}
-                                        sx={{
-                                            mb: 3, backgroundColor: theme.palette.background.inputBackGround,
-                                            "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
-                                                display: "none",
-                                            },
-                                            "& input[type=number]": {
-                                                MozAppearance: "textfield",
-                                            },
-                                        }}
-                                    />
+                                  {row?.material_hours}
                                 </TableCell>
 
-                                <TableCell>
+                                {/* <TableCell>
                                     <Button
                                         variant="contained"
                                         onClick={() => handleDeleteRow(i)}
@@ -238,14 +133,14 @@ export default function MaterialArrComponent({rows,setRows}) {
                                     >
                                         <DeleteRoundedIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />
                                     </Button>
-                                </TableCell>
+                                </TableCell> */}
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
 
-            <Button
+            {/* <Button
                 variant="contained"
                 onClick={handleAddRow}
                 sx={{ my: 2, backgroundColor: theme.palette.info.main, gap: "5px", padding: "5px" }}
@@ -253,7 +148,7 @@ export default function MaterialArrComponent({rows,setRows}) {
                 {t("Dashboard.addSubject")}
 
                 <ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />
-            </Button>
+            </Button> */}
         </Box>
     )
 }
