@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom"
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
-import { Box, CircularProgress, MenuItem, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, CircularProgress, Collapse, MenuItem, Table, TableBody, TableCell, TableHead, TableRow, Typography, useMediaQuery, useTheme } from "@mui/material";
 import Header from "../../components/PageHeader/header";
 import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
@@ -95,6 +95,57 @@ export default function TransactionDetailsPage() {
           fieldName={"user_id"}
           value={getTransactionById?.user_id?.fullname}
         />
+
+         {/* Collapsible table */}
+              {/* <Collapse in={open} timeout="auto">
+                <Box sx={{ mt: 2 }}>
+                  <Table size="small">
+                    <TableHead
+                      sx={{
+                        backgroundColor:
+                          theme.palette.primary?.tabelHeader || "#e0e0e0",
+                      }}
+                    >
+                      <TableRow>
+                        <TableCell sx={{ textAlign: "start", fontWeight: 700 }}>
+                          {t("fee.table.reason")}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            textAlign: "start",
+                            fontWeight: 700,
+                            width: 140,
+                            textAlign: "right",
+                          }}
+                        >
+                          {t("fee.table.amount")}
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody
+                      sx={{
+                        backgroundColor:
+                          theme.palette.background?.secDefault || "#fafafa",
+                      }}
+                    >
+                      {data?.fees_types_ids?.map((it, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell sx={{ textAlign: "start", fontWeight: 600 }}>
+                            {isArabic ? it?.title_ar : it?.title_en}
+                          </TableCell>
+                          <TableCell
+                            sx={{ textAlign: `${isArabic ? "end" : "start"}` }}
+                          >
+                            {it.is_inside_yemen
+                              ? it.inside_yemen_value
+                              : it.outside_yemen_value}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Box>
+              </Collapse> */}
 
       </Box>
 
