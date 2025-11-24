@@ -66,12 +66,36 @@ export default function TransactionDetailsPage() {
 
         <HorizentalTextField
           isDisabled={true}
-          title={t("form.name_ar", { item: translateText2 })}
-          fieldID={"title_ar"}
-          fieldName={"title_ar"}
-          placeholder={t("form.name_ar", { item: translateText2 })}
+          title={t("fee.transactionSerial")}
+          fieldID={"transaction_serial"}
+          fieldName={"transaction_serial"}
           value={getTransactionById?.transaction_serial}
         />
+
+        <HorizentalTextField
+          isDisabled={true}
+          title={t("fee.paymentMethodsTitle")}
+          fieldID={"payment_method_type"}
+          fieldName={"payment_method_type"}
+          value={t(`fee.method.${getTransactionById?.payment_method_type}`)}
+        />
+
+        <HorizentalTextField
+          isDisabled={true}
+          title={t("fee.paymentDate")}
+          fieldID={"transaction_date"}
+          fieldName={"transaction_date"}
+          value={getTransactionById?.transaction_date}
+        />
+
+        <HorizentalTextField
+          isDisabled={true}
+          title={t("Dashboard.user")}
+          fieldID={"user_id"}
+          fieldName={"user_id"}
+          value={getTransactionById?.user_id?.fullname}
+        />
+
       </Box>
 
     </Box>
