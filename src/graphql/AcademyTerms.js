@@ -35,6 +35,41 @@ query GetAcademyTerms {
 
 `;
 
+export const GET_ONE_ACADEMY_TERM_BY_ID=gql`
+query GetAcademyTermById($id:ID!) {
+    getAcademyTermById(id: $id) {
+        id
+        title_ar
+        title_en
+        status
+        study_year
+        current_year
+        term_number
+        min_study_hours
+        max_study_hours
+        materials_array {
+            id
+            title_ar
+            title_en
+            status
+            fullmark_degree
+            success_degree
+            material_hours
+            createdAt
+            updatedAt
+        }
+        faculty_department_id {
+            id
+            title_ar
+            title_en
+            status
+            createdAt
+            updatedAt
+        }
+    }
+}
+`;
+
 export const CREATE_ACADEMY_TERM=gql`
 mutation CreateAcademyTerm($input:AcademyTermInput!) {
     createAcademyTerm(input: $input) {

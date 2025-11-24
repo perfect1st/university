@@ -234,7 +234,8 @@ export default function AddTransactionPage() {
                 component="form"
 
             >
-
+                    {/* paymentMethod */}
+                    
                 <VerticalTextFieldSelect
                     t={t}
                     title={t("fee.paymentMethodsTitle")} defaultOptionLabel={t("select")}

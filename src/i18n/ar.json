@@ -320,6 +320,7 @@
       "outside_yemen":" السعر خارج اليمن",
       "transactions":"المعاملات المالية",
       "transactionType":"نوع المعاملة",
+      "transactionTypes":"انواع المعاملات المالية",
       "feeType":"نوع الرسوم",
       "user":"المستخدم",
       "trueOrFalse":{

@@ -144,6 +144,14 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       en: "Fees Types",
     },
   },
+   {
+     key: "transactionTypes",
+    path: "/transactionTypes",
+    label: {
+      ar: "انواع المعاملات المالية",
+      en: "Transaction Types",
+    },
+  },
   {
      key: "transactions",
     path: "/transactions",

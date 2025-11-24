@@ -69,6 +69,10 @@ import FeeDetailsPage from "./pages/FeesTypes/FeeDetailsPage";
 import AllTransactionsPage from "./pages/Transactions/AllTransactionsPage";
 import AddTransactionPage from "./pages/Transactions/AddTransactionPage";
 import TransactionDetailsPage from "./pages/Transactions/TransactionDetailsPage";
+import AcademyTermDetailsPage from "./pages/AcademyTerms/AcademyTermDetailsPage";
+import AllTransactionTypesPage from "./pages/TransactionTypes/AllTransactionTypesPage";
+import AddTransactionTypePage from "./pages/TransactionTypes/AddTransactionTypePage";
+import TransactionTypeDetailsPage from "./pages/TransactionTypes/TransactionTypeDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -606,6 +610,11 @@ function App() {
                         <AddAcademyTermPage />
                       </MainLayout>
                       } />
+                      <Route path="details/:id" element={
+                        <MainLayout isLoggedIn={true}>
+                        <AcademyTermDetailsPage />
+                      </MainLayout>
+                      } />
 
                     </Route>
 
@@ -631,6 +640,7 @@ function App() {
 
                     </Route>
 
+                      {/* المعاملات المالية */}
                     <Route path="/transactions">
                       <Route index  element={
                         <MainLayout isLoggedIn={true}>
@@ -649,7 +659,27 @@ function App() {
                       }/>
                     </Route>
 
-                    
+                      {/* انواع المعاملات المالية */}
+                    <Route path="/transactionTypes">
+                      <Route index element={
+                          <MainLayout isLoggedIn={true}>
+                        <AllTransactionTypesPage />
+                      </MainLayout>
+                      } />
+
+                      <Route path="add" element={
+                          <MainLayout isLoggedIn={true}>
+                        <AddTransactionTypePage />
+                      </MainLayout>
+                      } />
+
+                      <Route path="details/:id" element={
+                          <MainLayout isLoggedIn={true}>
+                        <TransactionTypeDetailsPage />
+                      </MainLayout>
+                      } />
+
+                    </Route>
     
 
                 </Route>
