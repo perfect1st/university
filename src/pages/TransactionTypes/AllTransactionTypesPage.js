@@ -41,8 +41,7 @@ export default function AllTransactionTypesPage() {
     let getTransactionTypesToShow=getTransactionTypes?.map(el=>{
         return{
             ...el,
-            title_ar:t(`fee.transactionType.${el?.operation_type}`, { lng: "ar" }),
-            title_en:t(`fee.transactionType.${el?.operation_type}`, { lng: "en" })
+            operation_type:t(`fee.transactionType.${el?.operation_type}`)
         }
     });
 
@@ -52,6 +51,7 @@ export default function AllTransactionTypesPage() {
         // { key: "ID", label: "ID" },
         { key: "title_ar", label: t("Dashboard.NameInArabic") },
         { key: "title_en", label: t("Dashboard.NameInEnglish") },
+        {key:"operation_type",label:t("Dashboard.transactionType")},
         { key: "status", label: t("Status") }
 
     ];
