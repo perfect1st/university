@@ -30,6 +30,7 @@ export default function VerticalTextField({
         type == "text" ?
           <TextField
             multiline={isMultiline}
+            rows={4}
             fullWidth
             id={fieldID}
             name={fieldName}
@@ -39,7 +40,7 @@ export default function VerticalTextField({
             error={error}
             helperText={helperText}
             variant="outlined"
-            sx={{ mb: 3, backgroundColor: theme.palette.background.inputBackGround, height: "56px" }}
+            sx={{ mb: 3, backgroundColor: theme.palette.background.inputBackGround, height: isMultiline ? "auto" : "56px" }}
             disabled={isDisabled}
           />
           :

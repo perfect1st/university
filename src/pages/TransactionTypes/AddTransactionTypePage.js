@@ -15,7 +15,7 @@ import VerticalTextField, { SearchByTypingSelect, VerticalTextFieldSelect } from
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import LoadingPage from "../../components/LoadingComponent";
 import { useState } from "react";
-import { paymentMethodsArr, TrueOrFalseArr } from "../../constants";
+import { paymentMethodsArr, transactionTypesArr, TrueOrFalseArr } from "../../constants";
 
 
 export default function AddTransactionTypePage() {
@@ -50,21 +50,12 @@ export default function AddTransactionTypePage() {
     }),
     onSubmit: async (values) => {
 
-      // ✅ التحقق اليدوي قبل الإرسال
-      // if (selected==0) {
-      //     // console.log('rrrrrrrrrrrrrrrrrrrrrrr');
-      //     // formik.setFieldError("faculty_id", t("admissions.errors.required"));
-
-      //     setSelectError(t("admissions.errors.required"));
-      //     return; // وقف الإرسال لحد ما المستخدم يختار
-      // }
       console.log('xxxxxxxxxxxxxxxxxxxxxxx');
       let data = {
-        // payment_method_type: selectedPaymentMethod,
-        // transaction_type_id: selectedTransactionType,
-        // fees_type_ids: selectedFeeType,
-        // user_id: selectedUser,
-        // amount: values?.amount,
+        title_ar: values?.title_ar,
+        title_en: values?.title_en,
+        notes: values?.notes,
+        operation_type: selectedOperationType
       };
 
       // if(selectedFile!=null) data.payment_document_file=selectedFile;
@@ -98,6 +89,8 @@ export default function AddTransactionTypePage() {
 
   let translateText = isArabic ? "نوع معاملة مالية" : "Transaction Type";
   let translateText2 = isArabic ? "نوع المعاملة المالية" : "Transaction Type";
+
+  // console.log("selectedOperationType",selectedOperationType);
 
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
@@ -140,7 +133,39 @@ export default function AddTransactionTypePage() {
           helperText={formik.touched.title_en && formik.errors.title_en}
         />
 
-         <SubmitButton loading={loading} t={t} />
+        {/* نوع المعاملة */}
+        <VerticalTextFieldSelect
+          t={t}
+          title={t("Dashboard.transactionType")} defaultOptionLabel={t("select")}
+          backgroundColor={theme.palette.background.inputBackGround}
+          value={selectedOperationType}
+          setValue={setSelectedOperationType}
+          onBlur={(e) => {
+            if (selectedOperationType != 0) formik.setFieldError("selectedOperationType", undefined);
+
+          }}
+          error={formik.errors.selectedOperationType && t("admissions.errors.required")}
+          helperText={formik.errors.selectedOperationType && t("admissions.errors.required")}
+        >
+          <MenuItem value={0} selected>{t("select")}</MenuItem>
+          {
+            transactionTypesArr?.map((el, i) => <MenuItem key={i} value={el}>{t(`fee.transactionType.${el}`)}</MenuItem>)
+          }
+        </VerticalTextFieldSelect>
+
+        <VerticalTextField
+          isMultiline={true}
+          title={t("Dashboard.notes", { item: translateText2 })}
+          fieldID={"notes"}
+          fieldName={"notes"}
+          placeholder={t("Dashboard.notes", { item: translateText2 })}
+          value={formik.values.notes}
+          onChange={formik.handleChange}
+          error={formik.touched.notes && Boolean(formik.errors.notes)}
+          helperText={formik.touched.notes && formik.errors.notes}
+        />
+
+        <SubmitButton loading={loading} t={t} />
       </Box>
     </Box>
   )
