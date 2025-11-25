@@ -29,3 +29,18 @@ mutation CreateTransactionType($input:TransactionTypeInput!) {
     }
 }
 `;
+
+export const UPDATE_TRANSACTION_TYPE=gql`
+mutation UpdateTransactionType($id:ID!,$input:TransactionTypeInput!) {
+    updateTransactionType(id: $id, input: $input) {
+        id
+        title_ar
+        title_en
+        operation_type
+        notes
+        status
+        createdAt
+        updatedAt
+    }
+}
+`;
