@@ -42,6 +42,8 @@ export default function TransactionDetailsPage() {
   let translateText = isArabic ? "معاملة مالية" : "Transaction";
   let translateText2 = isArabic ? "المعاملة المالية" : "Transaction";
 
+  console.log("getTransactionById?.fees_type_ids",getTransactionById?.fees_type_ids);
+
   if (loadingTrans) return <LoadingPage />
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper", maxWidth: "100%" }}>
@@ -97,7 +99,7 @@ export default function TransactionDetailsPage() {
         />
 
          {/* Collapsible table */}
-              {/* <Collapse in={open} timeout="auto">
+              <Collapse in={true} timeout="auto">
                 <Box sx={{ mt: 2 }}>
                   <Table size="small">
                     <TableHead
@@ -107,8 +109,8 @@ export default function TransactionDetailsPage() {
                       }}
                     >
                       <TableRow>
-                        <TableCell sx={{ textAlign: "start", fontWeight: 700 }}>
-                          {t("fee.table.reason")}
+                        <TableCell sx={{ textAlign: "start", fontWeight: 700,color:"#384250" }}>
+                          {t("Dashboard.feesTypes")}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -116,6 +118,7 @@ export default function TransactionDetailsPage() {
                             fontWeight: 700,
                             width: 140,
                             textAlign: "right",
+                            color:"#384250"
                           }}
                         >
                           {t("fee.table.amount")}
@@ -128,7 +131,7 @@ export default function TransactionDetailsPage() {
                           theme.palette.background?.secDefault || "#fafafa",
                       }}
                     >
-                      {data?.fees_types_ids?.map((it, idx) => (
+                      {getTransactionById?.fees_type_ids?.map((it, idx) => (
                         <TableRow key={idx}>
                           <TableCell sx={{ textAlign: "start", fontWeight: 600 }}>
                             {isArabic ? it?.title_ar : it?.title_en}
@@ -136,16 +139,16 @@ export default function TransactionDetailsPage() {
                           <TableCell
                             sx={{ textAlign: `${isArabic ? "end" : "start"}` }}
                           >
-                            {it.is_inside_yemen
-                              ? it.inside_yemen_value
-                              : it.outside_yemen_value}
+                            {
+                               it?.inside_yemen_value
+                            }
                           </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
                 </Box>
-              </Collapse> */}
+              </Collapse>
 
       </Box>
 
