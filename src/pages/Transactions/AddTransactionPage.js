@@ -3,10 +3,9 @@ import { GET_ALL_FEES_TYPES } from "../../graphql/feeTypesQueries";
 import { useEffect, useRef } from "react";
 import { GET_ALL_TRANSACTION_TYPES } from "../../graphql/transactionTypeQueries";
 import { useLocation, useNavigate } from "react-router-dom"
-import { CREATE_NEW_COUNTRY } from "../../graphql/countriesQueries"
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
-import { Autocomplete, Box, MenuItem, TextField, useMediaQuery, useTheme } from "@mui/material";
+import {  Box, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import Header from "../../components/PageHeader/header";
 import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
@@ -16,13 +15,13 @@ import VerticalTextField, { SearchByTypingSelect, VerticalTextFieldSelect } from
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import LoadingPage from "../../components/LoadingComponent";
 import { useState } from "react";
-import { paymentMethodsArr, transactionTypesArr, TrueOrFalseArr } from "../../constants";
+import { paymentMethodsArr, TrueOrFalseArr } from "../../constants";
 import { GET_ALL_USERES_FOR_ADMIN } from "../../graphql/userQueriesForAdmin";
 import axios from "axios";
 import ConfirmModal from "../../components/Utilities/ConfirmModal";
 import { baseURL } from "../../Api/apolloClient";
 import UploadFileField from "../../components/Utilities/UploadFileField";
-// GET_ALL_USERES_FOR_ADMIN
+
 
 export default function AddTransactionPage() {
     const theme = useTheme();

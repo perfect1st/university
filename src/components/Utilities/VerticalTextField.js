@@ -13,7 +13,8 @@ export default function VerticalTextField({
   error,
   helperText,
   type = "text",
-  isDisabled = false
+  isDisabled = false,
+  isMultiline=false
 
 }) {
 
@@ -28,6 +29,7 @@ export default function VerticalTextField({
       {
         type == "text" ?
           <TextField
+            multiline={isMultiline}
             fullWidth
             id={fieldID}
             name={fieldName}

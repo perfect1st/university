@@ -16,7 +16,8 @@ export default function HorizentalTextField({
   helperText,
   type = "",
   handleChange,
-  isDisabled = false
+  isDisabled = false,
+  isMultiline=false
 
 }) {
   const theme = useTheme();
@@ -119,6 +120,7 @@ export default function HorizentalTextField({
             />
             :
             <TextField
+              multiline={isMultiline}
               disabled={isDisabled}
               id={fieldID}
               name={fieldName}
