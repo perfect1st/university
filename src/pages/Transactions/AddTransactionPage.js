@@ -302,12 +302,12 @@ export default function AddTransactionPage() {
                 >
                     <MenuItem value={0} selected>{t("select")}</MenuItem>
                     {
-                        transactionTypesArr?.map((el, i) => <MenuItem key={i} value={el}>{t(`fee.transactionType.${el}`)}</MenuItem>)
+                        getTransactionTypes?.map((el, i) => <MenuItem key={i} value={el?.id}>{t(`fee.transactionType.${el?.operation_type}`)}</MenuItem>)
                     }
                 </VerticalTextFieldSelect>
 
 
-                {/*
+                {/*   getTransactionTypes
                     نوع الرسوم
                     labelToShow-> الل انت عاوزه يتكتب جوة كل option
                      */}
