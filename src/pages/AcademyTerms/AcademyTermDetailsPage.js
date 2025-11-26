@@ -15,6 +15,7 @@ import LoadingPage from "../../components/LoadingComponent";
 import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import { GET_MATERIALS_BY_DEPARTMENT_ID } from "../../graphql/materialQueries";
 import { SearchByTypingSelect } from "../../components/Utilities/VerticalTextField";
+import MaterialArrComponent from "./MaterialArrComponent";
 
 // GET_ONE_ACADEMY_TERM_BY_ID
 export default function AcademyTermDetailsPage() {
@@ -443,7 +444,7 @@ export default function AcademyTermDetailsPage() {
                   }}
                   findKey={"id"}
                   isArabic={isArabic}
-                  options={materialsByDepartment ? materialsByDepartment : []}
+                  options={getAcademyTermById?.materials_array ? getAcademyTermById?.materials_array : []}
                   value={selectedMaterials}
                   setValue={setSelectedMaterials}
                   onChangeFn={(newIDS) => {
@@ -477,6 +478,8 @@ export default function AcademyTermDetailsPage() {
         
                   }}
                 />
+
+        <MaterialArrComponent rows={rows} setRows={setRows} />
 
         <SubmitButton loading={updatingTerm} t={t} />
       </Box>
