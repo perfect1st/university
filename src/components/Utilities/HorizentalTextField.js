@@ -121,6 +121,7 @@ export default function HorizentalTextField({
             :
             <TextField
               multiline={isMultiline}
+              rows={4}
               disabled={isDisabled}
               id={fieldID}
               name={fieldName}
@@ -167,9 +168,9 @@ export default function HorizentalTextField({
 export const HorizentalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange }) => {
   const theme = useTheme();
   return (
-    <Box sx={{ display: "flex", flexWrap: "wrap", mb: 4, backgroundColor: theme.palette.primary?.gray, gap: 3, p: 1, height: "50px" }}>
+    <Box sx={{ display: "flex", flexWrap: "wrap", mb: 4, backgroundColor: theme.palette.primary?.gray, gap: 3, p: 1, height: "60px" }}>
 
-      <Typography variant="subtitle2" sx={{ fontWeight: "bold", height: "50px", display: "flex", flexDirection: "column", alignItems: "start", justifyContent: "center", width: "40%" }}>
+      <Typography variant="subtitle2" sx={{ fontWeight: "bold", height: "55px", display: "flex", flexDirection: "column", alignItems: "start", justifyContent: "center", width: "40%" }}>
         {title}
       </Typography>
 

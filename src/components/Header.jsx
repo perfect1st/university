@@ -108,7 +108,7 @@ const Header = ({ onAction }) => {
 
   const user = me;
 
-  console.log("me in nav", me);
+  // console.log("me in nav", me);
   const isAuthenticated = Boolean(me);
 
   const currentRoutes = routes.admin;

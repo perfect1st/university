@@ -48,7 +48,7 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
 
   const loggedUser=useSelector(state=>state.user.loggedUser);
 
-  console.log('me',me);
+  // console.log('me',me);
 
   // if(isLoggedIn && !me && !userLoading  ) return <Navigate to="/home" />
 

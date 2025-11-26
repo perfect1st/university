@@ -133,8 +133,10 @@ export default function AllTransactionTypesPage() {
 
   const handleDetailsClick = (selectedRow) => {
     console.log('handleDetailsClick', selectedRow);
+    let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
+    
     navigate(`details/${selectedRow?.id}`, {
-      state: selectedRow
+      state: row
     });
   }
 
