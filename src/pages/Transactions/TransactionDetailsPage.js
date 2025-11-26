@@ -1,18 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { useLazyQuery, useMutation } from "@apollo/client/react";
+import { useLazyQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
-import { Box, CircularProgress, Collapse, MenuItem, Table, TableBody, TableCell, TableHead, TableRow, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Collapse, Table, TableBody, TableCell, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
 import Header from "../../components/PageHeader/header";
 import { useTranslation } from "react-i18next";
-import notify from "../../components/notify";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
-import SubmitButton from "../../components/Utilities/SubmitButton";
-import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
+
 import LoadingPage from "../../components/LoadingComponent";
-import { useEffect, useState } from "react";
-import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
+import { useEffect } from "react";
+import HorizentalTextField from "../../components/Utilities/HorizentalTextField";
 import { GET_TRANSACTION_BY_ID } from "../../graphql/transactionQueries";
 
 export default function TransactionDetailsPage() {
