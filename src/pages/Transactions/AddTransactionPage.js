@@ -301,7 +301,7 @@ export default function AddTransactionPage() {
                 >
                     <MenuItem value={0} selected>{t("select")}</MenuItem>
                     {
-                        getTransactionTypes?.map((el, i) => <MenuItem key={i} value={el?.id}>{t(`fee.transactionType.${el?.operation_type}`)}</MenuItem>)
+                        getTransactionTypes?.map((el, i) => <MenuItem key={i} value={el?.id}>{isArabic ? el?.title_ar : el?.title_en}</MenuItem>)
                     }
                 </VerticalTextFieldSelect>
 
