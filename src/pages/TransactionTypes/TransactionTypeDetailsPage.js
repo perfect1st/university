@@ -1,16 +1,14 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { useLazyQuery, useMutation } from "@apollo/client/react";
+import {  useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
-import { Box, CircularProgress, MenuItem, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import Header from "../../components/PageHeader/header";
 import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import SubmitButton from "../../components/Utilities/SubmitButton";
-import LoadingPage from "../../components/LoadingComponent";
-import { useEffect, useState } from "react";
-import { UPDATE_MATERIAL_BY_ID } from "../../graphql/materialQueries";
+import {  useState } from "react";
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
 import { UPDATE_TRANSACTION_TYPE } from "../../graphql/transactionTypeQueries"
 import { transactionTypesArr } from "../../constants";

@@ -38,7 +38,7 @@ export default function AllAcademyTermsPage() {
     const[UpdateAcademyTerm,{
         data,
         loading:updatingStatus
-    }]=useMutation(UPDATE_ACADEMY_TERM_BY_ID,{fetchPolicy:"network-only"})
+    }]=useMutation(UPDATE_ACADEMY_TERM_BY_ID,{fetchPolicy:"network-only"});
 
     // get all faculities
     const [

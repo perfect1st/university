@@ -47,6 +47,24 @@ query GetAcademyTermById($id:ID!) {
         term_number
         min_study_hours
         max_study_hours
+        faculty_department_id {
+            id
+            title_ar
+            title_en
+            status
+            createdAt
+            updatedAt
+            faculty_id {
+                id
+                title_ar
+                title_en
+                status
+                required_dep
+                study_years_count
+                createdAt
+                updatedAt
+            }
+        }
         materials_array {
             id
             title_ar
@@ -55,14 +73,6 @@ query GetAcademyTermById($id:ID!) {
             fullmark_degree
             success_degree
             material_hours
-            createdAt
-            updatedAt
-        }
-        faculty_department_id {
-            id
-            title_ar
-            title_en
-            status
             createdAt
             updatedAt
         }

@@ -185,29 +185,7 @@ export default function AddAcademyTermPage() {
            return;
       }
      
-      // let rowsError = false;
-      // // شيل ال index قبل متبعت
-      // // const newRows = rows?.map(({ index, ...rest }) => rest);
-      // const newRows = rows?.map((el, i) => {
-      //   const { index, ...rest } = el; // نشيل index
-
-      //   const values = Object.values(rest);
-
-      //   values?.map(value => {
-      //     if (value == "") rowsError = true;
-      //   })
-      //   // if(rest[key]=="") rowsError=true;
-      //   return { ...rest, faculty_department_id: selectedDepartment };      // نضيف key
-      // });
-
-      // if (rowsError) {
-      //   notify(t("Dashboard.allFieldsRequired", {
-      //     item: t("studentDashboard.subjects")
-      //   }), "error");
-      //   return;
-      // }
-
-      //  return;
+     
       let data = {
         title_ar: values?.title_ar,
         title_en: values?.title_en,
@@ -255,6 +233,7 @@ export default function AddAcademyTermPage() {
     { id: 2, value: 2 },
     { id: 3, value: 3 },
   ];
+
   let translateText = isArabic ? "فصل دراسي" : "AcademyTerm";
   let translateText2 = isArabic ? "الفصل الدراسي" : "AcademyTerm";
 
