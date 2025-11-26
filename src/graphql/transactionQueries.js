@@ -45,23 +45,21 @@ query GetTransactionById($id:ID!) {
         payment_document_file
         transaction_date
         transaction_serial
-        fees_type_ids {
+        transaction_type_snapshot {
+            id
+            title_ar
+            title_en
+            operation_type
+            notes
+            status
+        }
+        fees_type_snapshot {
             id
             title_ar
             title_en
             inside_yemen_value
             outside_yemen_value
-            createdAt
-            updatedAt
             status
-        }
-        transaction_type_id {
-            id
-            operation_type
-            notes
-            status
-            createdAt
-            updatedAt
         }
         user_id {
             id

@@ -95,7 +95,7 @@ export default function TransactionDetailsPage() {
           title={t("Dashboard.user")}
           fieldID={"user_id"}
           fieldName={"user_id"}
-          value={getTransactionById?.user_id?.fullname}
+          value={`${getTransactionById?.user_id?.fullname} - ${getTransactionById?.user_id?.email}`}
         />
 
          {/* Collapsible table */}
@@ -131,7 +131,7 @@ export default function TransactionDetailsPage() {
                           theme.palette.background?.secDefault || "#fafafa",
                       }}
                     >
-                      {getTransactionById?.fees_type_ids?.map((it, idx) => (
+                      {getTransactionById?.fees_type_snapshot?.map((it, idx) => (
                         <TableRow key={idx}>
                           <TableCell sx={{ textAlign: "start", fontWeight: 600 }}>
                             {isArabic ? it?.title_ar : it?.title_en}
