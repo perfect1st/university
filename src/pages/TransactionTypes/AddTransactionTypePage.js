@@ -1,9 +1,6 @@
-import { CREATE_NEW_TRANSACTION_BY_ADMIN } from "../../graphql/transactionQueries"
-import { GET_ALL_FEES_TYPES } from "../../graphql/feeTypesQueries";
-import { useEffect, useRef } from "react";
-import { CREATE_TRANSACTION_TYPE, GET_ALL_TRANSACTION_TYPES } from "../../graphql/transactionTypeQueries";
+import { CREATE_TRANSACTION_TYPE } from "../../graphql/transactionTypeQueries";
 import { useLocation, useNavigate } from "react-router-dom"
-import { useLazyQuery, useMutation } from "@apollo/client/react";
+import {  useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import { Box, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import Header from "../../components/PageHeader/header";
@@ -11,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import VerticalTextField, { SearchByTypingSelect, VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
+import VerticalTextField, {  VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import LoadingPage from "../../components/LoadingComponent";
 import { useState } from "react";
