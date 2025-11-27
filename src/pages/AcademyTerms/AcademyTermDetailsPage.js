@@ -226,6 +226,7 @@ export default function AcademyTermDetailsPage() {
         //  return;
         const result = await UpdateAcademyTerm({
           variables: {
+            id:location?.state?.id,
             input: data
           }
         });
@@ -425,7 +426,7 @@ export default function AcademyTermDetailsPage() {
           setValue={setSelectedDepartment}
           onChange={async (e) => {
             setRows([]);
-            
+
             await MaterialsByDepartment({
               variables: {
                 faculty_department_id: e.target.value
