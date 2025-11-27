@@ -579,7 +579,7 @@ function App() {
                   </Route>
 
                     {/* اسعار الكليات */}
-                  <Route path="/faculitiesprices">
+                  <Route path="/prices">
                     <Route index element={
                       <MainLayout isLoggedIn={true}>
                         <AllFaculitiesPricesPage />

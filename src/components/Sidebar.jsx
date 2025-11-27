@@ -120,8 +120,8 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   },
   {
     // icon: FlagIcon,
-    key: "faculitiesprices",
-    path: "/faculitiesprices",
+    key: "prices",
+    path: "/prices",
     label: {
       ar: "اسعار الكليات",
       en: "Faculities Prices",
