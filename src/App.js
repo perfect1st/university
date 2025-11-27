@@ -73,6 +73,9 @@ import AcademyTermDetailsPage from "./pages/AcademyTerms/AcademyTermDetailsPage"
 import AllTransactionTypesPage from "./pages/TransactionTypes/AllTransactionTypesPage";
 import AddTransactionTypePage from "./pages/TransactionTypes/AddTransactionTypePage";
 import TransactionTypeDetailsPage from "./pages/TransactionTypes/TransactionTypeDetailsPage";
+import AllFaculitiesPricesPage from "./pages/FaculitiesPrices/AllFaculitiesPricesPage";
+import AddFaculityPricePage from "./pages/FaculitiesPrices/AddFaculityPricePage";
+import FaculityPriceDetailsPage from "./pages/FaculitiesPrices/FaculityPriceDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -575,6 +578,25 @@ function App() {
 
                   </Route>
 
+                    {/* اسعار الكليات */}
+                  <Route path="/faculitiesprices">
+                    <Route index element={
+                      <MainLayout isLoggedIn={true}>
+                        <AllFaculitiesPricesPage />
+                      </MainLayout>
+                    } />
+                     <Route path="add" element={
+                      <MainLayout isLoggedIn={true}>
+                        <AddFaculityPricePage />
+                      </MainLayout>
+                    } />
+
+                    <Route path="details/:id" element={
+                      <MainLayout isLoggedIn={true}>
+                        <FaculityPriceDetailsPage />
+                      </MainLayout>
+                    } />
+                  </Route>
                     {/* المواد  (materials)*/}
                     <Route path="/materials">
                       <Route index element={
