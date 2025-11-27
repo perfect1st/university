@@ -374,6 +374,8 @@ export default function AddAcademyTermPage() {
             });
 
             setSelectedDepartment(0);
+             setSelectedMaterials([]);
+            setRows([]);
           }}
 
           onBlur={(e) => {
@@ -410,6 +412,7 @@ export default function AddAcademyTermPage() {
           value={selectedDepartment}
           setValue={setSelectedDepartment}
           onChange={async (e) => {
+            setRows([]);
             await MaterialsByDepartment({
               variables: {
                 faculty_department_id: e.target.value

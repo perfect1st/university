@@ -104,7 +104,7 @@ export default function MaterialArrComponent({rows,setRows}) {
                         backgroundColor:
                             theme.palette.background?.secDefault || "#fafafa",
                     }}>
-                        {rows.map((row, i) => (
+                        {rows?.map((row, i) => (
                             <TableRow key={i}>
                                 <TableCell sx={{
                                     whiteSpace: "nowrap",   // يمنع النزول لسطر جديد

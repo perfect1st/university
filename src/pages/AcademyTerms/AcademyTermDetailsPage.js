@@ -97,8 +97,21 @@ export default function AcademyTermDetailsPage() {
         faculty_id: location?.state?.faculty_id?.id
       },
     });
+    MaterialsByDepartment({
+      variables: {
+        faculty_department_id: location?.state?.faculty_department_id?.id
+      }
+    });
 
   }, []);
+
+  useEffect(() => {
+    if (getAcademyTermById?.materials_array) {
+      setRows(getAcademyTermById?.materials_array);
+      let materialsIDS = getAcademyTermById?.materials_array?.map(el => el?.id);
+      setSelectedMaterials(materialsIDS);
+    }
+  }, [getAcademyTermById]);
 
   console.log("getAcademyTermById", getAcademyTermById);
   console.log("getFacultyDepartmentsByFaculty", getFacultyDepartmentsByFaculty);
@@ -372,6 +385,8 @@ export default function AcademyTermDetailsPage() {
             });
 
             setSelectedDepartment(0);
+            setSelectedMaterials([]);
+            setRows([]);
 
           }}
 
@@ -409,11 +424,15 @@ export default function AcademyTermDetailsPage() {
           value={selectedDepartment}
           setValue={setSelectedDepartment}
           onChange={async (e) => {
+            setRows([]);
+            
             await MaterialsByDepartment({
               variables: {
                 faculty_department_id: e.target.value
               }
             });
+
+             
           }}
           onBlur={(e) => {
             // console.log('blur',selectedSemester);
@@ -437,47 +456,47 @@ export default function AcademyTermDetailsPage() {
         }
 
         <SearchByTypingSelect
-                  multiple={true}
-                  title={t("studentDashboard.subjects")}
-                  labelToShow={(option) => {
-                    return `${isArabic ? option?.title_ar : option?.title_en}`
-                  }}
-                  findKey={"id"}
-                  isArabic={isArabic}
-                  options={getAcademyTermById?.materials_array ? getAcademyTermById?.materials_array : []}
-                  value={selectedMaterials}
-                  setValue={setSelectedMaterials}
-                  onChangeFn={(newIDS) => {
-                    console.log("newIDS", newIDS);
-                    let rows = [];
-                    rows = materialsByDepartment?.filter(m => newIDS?.find(el => el == m?.id));
-                    console.log("rows", rows);
-                    setRows(rows);
-                  }
-                  }
-                  // error={formik.errors.selectedFeeType && t("admissions.errors.required")}
-                  onBlur={(e) => {
-                    // console.log("selectedFeeType blur",selectedFeeType);
-                    // let totalAmount = 0;
-        
-                    // materialsByDepartment?.map(fee => {
-                    //   let feeObj = selectedFeeType?.find(el => el == fee?.id);
-                    //   console.log("feeObj", feeObj);
-                    //   if (feeObj) {
-                    //     if (isInSideYemen == true) totalAmount += Number(fee?.inside_yemen_value)
-                    //     else totalAmount += Number(fee?.outside_yemen_value)
-                    //   }
-                    // });
-        
-                    // console.log('total amount',totalAmount);
-        
-                    // formik.values.amount = totalAmount;
-        
-                    // validation check
-                    //  if (selectedFeeType != 0) formik.setFieldError("selectedFeeType", undefined);
-        
-                  }}
-                />
+          multiple={true}
+          title={t("studentDashboard.subjects")}
+          labelToShow={(option) => {
+            return `${isArabic ? option?.title_ar : option?.title_en}`
+          }}
+          findKey={"id"}
+          isArabic={isArabic}
+          options={materialsByDepartment ? materialsByDepartment : []}
+          value={selectedMaterials}
+          setValue={setSelectedMaterials}
+          onChangeFn={(newIDS) => {
+            console.log("newIDS", newIDS);
+            let rows = [];
+            rows = materialsByDepartment?.filter(m => newIDS?.find(el => el == m?.id));
+            console.log("rows", rows);
+            setRows(rows);
+          }
+          }
+          // error={formik.errors.selectedFeeType && t("admissions.errors.required")}
+          onBlur={(e) => {
+            // console.log("selectedFeeType blur",selectedFeeType);
+            // let totalAmount = 0;
+
+            // materialsByDepartment?.map(fee => {
+            //   let feeObj = selectedFeeType?.find(el => el == fee?.id);
+            //   console.log("feeObj", feeObj);
+            //   if (feeObj) {
+            //     if (isInSideYemen == true) totalAmount += Number(fee?.inside_yemen_value)
+            //     else totalAmount += Number(fee?.outside_yemen_value)
+            //   }
+            // });
+
+            // console.log('total amount',totalAmount);
+
+            // formik.values.amount = totalAmount;
+
+            // validation check
+            //  if (selectedFeeType != 0) formik.setFieldError("selectedFeeType", undefined);
+
+          }}
+        />
 
         <MaterialArrComponent rows={rows} setRows={setRows} />
 
