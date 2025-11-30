@@ -1,5 +1,4 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { CREATE_NEW_COUNTRY } from "../../graphql/countriesQueries"
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import { Box, MenuItem, useMediaQuery, useTheme } from "@mui/material";
@@ -8,7 +7,6 @@ import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import  { VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import {  GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import LoadingPage from "../../components/LoadingComponent";

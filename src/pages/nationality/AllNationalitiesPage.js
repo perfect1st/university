@@ -56,7 +56,6 @@ export default function AllNationalitiesPage() {
 
   // const [allUsers, setAllUsers] = useState(DUMMY_USERS);
   const isArabic = i18n.language === "ar";
-  const me = useSelector((state) => state.user.loggedUser);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1", 10);
