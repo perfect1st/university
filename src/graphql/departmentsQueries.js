@@ -145,3 +145,30 @@ mutation UpdateWebsiteDepartment($id:ID!,$input:UpdateWebsiteDepartmentInput!) {
     }
 }
 `;
+
+export const GET_DEPARTMENTS_BY_FATHER_ID_FOR_ADMIN=gql`
+query GetDepartmentsByFather($father_id: ID!) {
+    getDepartmentsByFather(father_id: $father_id) {
+        id
+        title_ar
+        title_en
+        desc_ar
+        desc_en
+        image
+        status
+        createdAt
+        updatedAt
+        father_id {
+            id
+            title_ar
+            title_en
+            desc_ar
+            desc_en
+            image
+            status
+            createdAt
+            updatedAt
+        }
+    }
+}
+`;

@@ -78,6 +78,9 @@ import AddFaculityPricePage from "./pages/FaculitiesPrices/AddFaculityPricePage"
 import FaculityPriceDetailsPage from "./pages/FaculitiesPrices/FaculityPriceDetailsPage";
 import AllDepartmentsPage from "./pages/websiteDepartments/AllDepartmentsPage";
 import AddWebsiteDepartmentPage from "./pages/websiteDepartments/AddWebsiteDepartmentPage";
+import AllArticlesPage from "./pages/WebsiteArticles/AllArticlesPage";
+import AddArticlePage from "./pages/WebsiteArticles/AddArticlePage";
+import ArticleDetailsPage from "./pages/WebsiteArticles/ArticleDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -440,7 +443,7 @@ function App() {
                     }
                   />
 
-                  {/* website Departments  المقالات */}
+                  {/* website Departments  الاقسام */}
                   <Route path="/website-departments">
                    <Route
                       index
@@ -464,6 +467,35 @@ function App() {
                       element={
                         <MainLayout isLoggedIn={true}>
                           <DepartmentDetailsPage />
+                        </MainLayout>
+                      }
+                    />
+                  </Route>
+
+                  {/* المقالات */}
+                  <Route path="/website-articles">
+                         <Route
+                      index
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <AllArticlesPage />
+                        </MainLayout>
+                      }
+                    />
+                    <Route
+                      path="add"
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <AddArticlePage />
+                        </MainLayout>
+                      }
+                    />
+
+                    <Route
+                      path="details/:id"
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <ArticleDetailsPage />
                         </MainLayout>
                       }
                     />

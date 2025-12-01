@@ -330,7 +330,8 @@
       "termHoursError":"يجب ان يكون مجموع ساعات المواد اكبر من اقل عدد ساعات للترم واقل من اقصي عدد ساعات للترم",
       "notes":"ملاحظات",
       "facultyPrices":"اسعار الكليات",
-      "WebsiteDepartments":"اقسام الموقع"
+      "WebsiteDepartments":"اقسام الموقع",
+      "ArticleDepartment":"قسم المقالات"
    },
 
   "submit":"تأكيد",

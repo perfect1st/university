@@ -1,10 +1,9 @@
-import { GET_ALL_TRANSACTION_TYPES, UPDATE_TRANSACTION_TYPE } from "../../graphql/transactionTypeQueries"
 import LoadingPage from "../../components/LoadingComponent";
 import { useTheme } from "@emotion/react";
 import { Box, CircularProgress, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
+import {  useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
