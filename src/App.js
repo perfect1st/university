@@ -76,6 +76,8 @@ import TransactionTypeDetailsPage from "./pages/TransactionTypes/TransactionType
 import AllFaculitiesPricesPage from "./pages/FaculitiesPrices/AllFaculitiesPricesPage";
 import AddFaculityPricePage from "./pages/FaculitiesPrices/AddFaculityPricePage";
 import FaculityPriceDetailsPage from "./pages/FaculitiesPrices/FaculityPriceDetailsPage";
+import AllDepartmentsPage from "./pages/websiteDepartments/AllDepartmentsPage";
+import AddWebsiteDepartmentPage from "./pages/websiteDepartments/AddWebsiteDepartmentPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -437,6 +439,35 @@ function App() {
                       </MainLayout>
                     }
                   />
+
+                  {/* website Departments  المقالات */}
+                  <Route path="/website-departments">
+                   <Route
+                      index
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <AllDepartmentsPage />
+                        </MainLayout>
+                      }
+                    />
+                    <Route
+                      path="add"
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <AddWebsiteDepartmentPage />
+                        </MainLayout>
+                      }
+                    />
+
+                    <Route
+                      path="details/:id"
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <DepartmentDetailsPage />
+                        </MainLayout>
+                      }
+                    />
+                  </Route>
 
                   <Route path="/nationality">
                     <Route
