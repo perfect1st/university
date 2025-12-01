@@ -109,7 +109,7 @@ mutation UpdateWebsiteDepartment($id:ID!,$input:UpdateWebsiteDepartmentInput!) {
         status
         createdAt
         updatedAt
-        father_id {
+          father_id {
             id
             title_ar
             title_en
@@ -119,6 +119,28 @@ mutation UpdateWebsiteDepartment($id:ID!,$input:UpdateWebsiteDepartmentInput!) {
             status
             createdAt
             updatedAt
+            father_id {
+                id
+                title_ar
+                title_en
+                desc_ar
+                desc_en
+                image
+                status
+                createdAt
+                updatedAt
+                father_id {
+                    id
+                    title_ar
+                    title_en
+                    desc_ar
+                    desc_en
+                    image
+                    status
+                    createdAt
+                    updatedAt
+                }
+            }
         }
     }
 }

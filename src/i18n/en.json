@@ -292,7 +292,8 @@
       },
       "termHoursError":"The total number of course hours must be greater than the minimum allowed for the semester and less than the maximum allowed for the semester.",
       "notes":"Notes",
-      "facultyPrices":"Faculty Prices"
+      "facultyPrices":"Faculty Prices",
+      "WebsiteDepartments":"Website Departments"
    },
     "submit":"Submit",
     "error":"Error happened try again later",
