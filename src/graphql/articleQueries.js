@@ -96,7 +96,24 @@ export const ArticaleById = gql`
   }
 `;
 
-
+export const CREATE_WEBSITE_ARTICLE=gql`
+mutation CreateWebsiteArticle($input:WebsiteArticleInput!) {
+    createWebsiteArticle(input: $input) {
+        id
+        title_ar
+        title_en
+        desc_ar
+        desc_en
+        article_date
+        images_array
+        main_image
+        status
+        website_department_id
+        createdAt
+        updatedAt
+    }
+}
+`;
 
 // {  "input": {
 //   "title_ar": "حدث 1",

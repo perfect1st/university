@@ -331,7 +331,12 @@
       "notes":"ملاحظات",
       "facultyPrices":"اسعار الكليات",
       "WebsiteDepartments":"اقسام الموقع",
-      "ArticleDepartment":"قسم المقالات"
+      "ArticleDepartment":"قسم المقالات",
+      "arDescription":"الوصف بالعربية",
+      "enDescription":"الوصف بالانجليزية",
+      "Article":"المقالة",
+      "mainImage":"الصورة الرئيسية",
+      "images":"الصور"
    },
 
   "submit":"تأكيد",

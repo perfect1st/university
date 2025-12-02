@@ -12,7 +12,8 @@ export default function UploadFileField({
     handleFileChange,
     handlePickFile,
     selectedToShowFile,
-    progress
+    progress,
+    isMultiple=false 
 }) {
     const theme=useTheme();
 
@@ -50,6 +51,7 @@ export default function UploadFileField({
                    type="file"
                    hidden
                    onChange={handleFileChange}
+                   multiple={isMultiple}
                  // value={selectedFile}
                  />
                  <Button

@@ -294,7 +294,12 @@
       "notes":"Notes",
       "facultyPrices":"Faculty Prices",
       "WebsiteDepartments":"Website Departments",
-      "ArticleDepartment":"Article Department"
+      "ArticleDepartment":"Article Department",
+      "arDescription":"Arabic Description",
+      "enDescription":"English Description",
+      "Article":"Article",
+      "mainImage":"Main Image",
+      "images":"Images"
    },
     "submit":"Submit",
     "error":"Error happened try again later",
