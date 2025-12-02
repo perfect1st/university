@@ -93,6 +93,15 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   },
   {
     // icon: FlagIcon,
+    key: "departments",
+    path: "/website-articles",
+    label: {
+      ar: "مقالات الموقع",
+      en: "Website Articles",
+    },
+  },
+  {
+    // icon: FlagIcon,
     key: "nationality",
     path: "/nationality",
     label: {

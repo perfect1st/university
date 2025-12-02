@@ -16,8 +16,39 @@ export const GetWebsiteArticles = gql`
       website_department_id
       createdAt
       updatedAt
+        users_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            createdAt
+            updatedAt
+        }
     }
   }
+`;
+
+export const UPDATE_WEBSITE_ARTICLE_BY_ID=gql`
+mutation UpdateWebsiteArticle($id:ID!,$input:WebsiteArticleInput!) {
+    updateWebsiteArticle(id: $id, input: $input) {
+        id
+        title_ar
+        title_en
+        desc_ar
+        desc_en
+        article_date
+       
+        status
+        website_department_id
+        createdAt
+        updatedAt
+    }
+}
 `;
 
 export const ArticalesById = gql`
