@@ -30,7 +30,7 @@ export default function WebSiteDepartmentDetailsPage() {
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const location = useLocation();
 
-      const [
+    const [
         UpdateWebsiteDepartment,
         {
             data,
@@ -59,38 +59,38 @@ export default function WebSiteDepartmentDetailsPage() {
 
     ];
 
-     const fetchAndExport = async (type) => {
-                try {
-                    const exportData = getDepartmentsByFather?.map((user) => ({
-                        ID: user.serial_num,
-                        "Full Name": user.name,
-                        Email: user.email,
-                        Mobile: user.mobile,
-                        "User Type": user.userType,
-                        Status: user.status,
-                    }));
-        
-                    if (type === "excel") {
-                        const ws = XLSX.utils.json_to_sheet(exportData);
-                        const wb = XLSX.utils.book_new();
-                        XLSX.utils.book_append_sheet(wb, ws, "Users");
-                        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-                        const data = new Blob([excelBuffer], {
-                            type: "application/octet-stream",
-                        });
-                        saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-                    } else if (type === "pdf") {
-                        const doc = new jsPDF();
-                        doc.text("Users Report", 14, 10);
-                        autoTable(doc, {
-                            startY: 20,
-                            head: [Object.keys(exportData[0] || {})],
-                            body: exportData.map((row) => Object.values(row)),
-                        });
-                        doc.save(`Users_${new Date().toISOString()}.pdf`);
-                    } else if (type === "print") {
-                        const printableWindow = window.open("", "_blank");
-                        const htmlContent = `
+    const fetchAndExport = async (type) => {
+        try {
+            const exportData = getDepartmentsByFather?.map((user) => ({
+                ID: user.serial_num,
+                "Full Name": user.name,
+                Email: user.email,
+                Mobile: user.mobile,
+                "User Type": user.userType,
+                Status: user.status,
+            }));
+
+            if (type === "excel") {
+                const ws = XLSX.utils.json_to_sheet(exportData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Users");
+                const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+                const data = new Blob([excelBuffer], {
+                    type: "application/octet-stream",
+                });
+                saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
+            } else if (type === "pdf") {
+                const doc = new jsPDF();
+                doc.text("Users Report", 14, 10);
+                autoTable(doc, {
+                    startY: 20,
+                    head: [Object.keys(exportData[0] || {})],
+                    body: exportData.map((row) => Object.values(row)),
+                });
+                doc.save(`Users_${new Date().toISOString()}.pdf`);
+            } else if (type === "print") {
+                const printableWindow = window.open("", "_blank");
+                const htmlContent = `
                                    <html>
                                      <head>
                                        <title>Users Report</title>
@@ -104,63 +104,63 @@ export default function WebSiteDepartmentDetailsPage() {
                                        <h2>Users Report</h2>
                                        <table>
                                          <thead><tr>${Object.keys(exportData[0] || {})
-                                .map((k) => `<th>${k}</th>`)
-                                .join("")}</tr></thead>
+                        .map((k) => `<th>${k}</th>`)
+                        .join("")}</tr></thead>
                                          <tbody>${exportData
-                                .map(
-                                    (row) =>
-                                        `<tr>${Object.values(row)
-                                            .map((v) => `<td>${v}</td>`)
-                                            .join("")}</tr>`
-                                )
-                                .join("")}</tbody>
+                        .map(
+                            (row) =>
+                                `<tr>${Object.values(row)
+                                    .map((v) => `<td>${v}</td>`)
+                                    .join("")}</tr>`
+                        )
+                        .join("")}</tbody>
                                        </table>
                                      </body>
                                    </html>
                                  `;
-                        printableWindow.document.write(htmlContent);
-                        printableWindow.document.close();
-                        printableWindow.print();
-                    }
-                } catch (err) {
-                    console.error("Export error:", err);
-                }
-            };
-        
-            const addNavigate = () => navigate("add");
-        
-            const handleDetailsClick = (selectedRow) => {
-                console.log('handleDetailsClick', selectedRow);
-                navigate(`details/${selectedRow?.id}`, {
-                    state: selectedRow
-                });
+                printableWindow.document.write(htmlContent);
+                printableWindow.document.close();
+                printableWindow.print();
             }
-        
-            const onStatusChange = async (selectedRow, newStatus) => {
-                try {
-                    console.log("selectedRow", selectedRow, newStatus);
-                    // return;
-                    let data={
-                        status:newStatus=="inActive" ? false :true
-                    }
-                    
-                    const result=await UpdateWebsiteDepartment({
-                        variables:{
-                            id:selectedRow?.id,
-                            input:data
-                        }
-                    });
-        
-                    console.log("reeesult",result);
-        
-                     notify(t("success"), "success");
-        
-                } catch (error) {
-                        notify(t("error"), "error");
-                }
+        } catch (err) {
+            console.error("Export error:", err);
+        }
+    };
+
+    const addNavigate = () => navigate("add");
+
+    const handleDetailsClick = (selectedRow) => {
+        console.log('handleDetailsClick', selectedRow);
+        navigate(`details/${selectedRow?.id}`, {
+            state: selectedRow
+        });
+    }
+
+    const onStatusChange = async (selectedRow, newStatus) => {
+        try {
+            console.log("selectedRow", selectedRow, newStatus);
+            // return;
+            let data = {
+                status: newStatus == "inActive" ? false : true
             }
-        
-        
+
+            const result = await UpdateWebsiteDepartment({
+                variables: {
+                    id: selectedRow?.id,
+                    input: data
+                }
+            });
+
+            console.log("reeesult", result);
+
+            notify(t("success"), "success");
+
+        } catch (error) {
+            notify(t("error"), "error");
+        }
+    }
+
+
     // console.log("faculties", faculties);
     console.log("location", location?.state);
     console.log("getDepartmentsByFather", getDepartmentsByFather);
@@ -231,11 +231,11 @@ export default function WebSiteDepartmentDetailsPage() {
 
     if (getDepartmentsByFatherLoading) return <LoadingPage />;
 
-        const hasViewPermission = true;
-        const hasAddPermission = true;
-        if (!hasViewPermission) return <Navigate to="/profile" />;
+    const hasViewPermission = true;
+    const hasAddPermission = true;
+    if (!hasViewPermission) return <Navigate to="/profile" />;
 
-      // console.log("DepartmentDetailsPage");
+    // console.log("DepartmentDetailsPage");
 
 
     return (
@@ -254,7 +254,7 @@ export default function WebSiteDepartmentDetailsPage() {
             />
 
             <Box component="form" onSubmit={formik.handleSubmit} sx={{
-                width:isMobile ? "50%" : "100%"
+                width: isMobile ? "50%" : "100%"
             }}>
 
                 <HorizentalTextField
@@ -308,15 +308,15 @@ export default function WebSiteDepartmentDetailsPage() {
 
             </Box>
 
-             {
-                            loading && <CircularProgress
-                                size={26}
-                                thickness={8}
-                                sx={{ color: "black" }}
-                            />
-                        }
+            {
+                loading && <CircularProgress
+                    size={26}
+                    thickness={8}
+                    sx={{ color: "black" }}
+                />
+            }
 
-             <Grid container spacing={3}>
+            <Grid container spacing={3}>
                 <Grid item
                     sm={12} md={12}
                     sx={{
@@ -349,8 +349,6 @@ export default function WebSiteDepartmentDetailsPage() {
                         loading={getDepartmentsByFatherLoading}
                         // isUsers={true}
                         statusKey="status"
-                        // arPopulateKey={"title_ar"}
-                        // enPopulateKey={"title_en"}
                         sx={{
                             flex: 1,
                             overflow: "auto",

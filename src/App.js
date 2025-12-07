@@ -456,7 +456,7 @@ function App() {
                       }
                     />
                     <Route
-                      path="add"
+                      path="details/:id/add"
                       element={
                         <MainLayout isLoggedIn={true}>
                           <AddWebsiteDepartmentPage />
