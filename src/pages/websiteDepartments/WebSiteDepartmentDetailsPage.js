@@ -1,4 +1,4 @@
-import { Navigate, useLocation, useNavigate } from "react-router-dom"
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import { Box, CircularProgress, Grid, MenuItem, useMediaQuery, useTheme } from "@mui/material";
@@ -29,6 +29,7 @@ export default function WebSiteDepartmentDetailsPage() {
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const location = useLocation();
+    const{id}=useParams();
 
     const [
         UpdateWebsiteDepartment,
@@ -204,7 +205,7 @@ export default function WebSiteDepartmentDetailsPage() {
 
                 const result = await UpdateWebsiteDepartment({
                     variables: {
-                        id: location?.state?.id,
+                        id: id,
                         input: data
                     }
                 });
