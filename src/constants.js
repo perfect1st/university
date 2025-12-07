@@ -4,4 +4,6 @@ export const transactionTypesArr=["OUT","IN"];
 
 export const TrueOrFalseArr=[true,false];
 
+export const userRules=["admin", "teacher", "student"];
+
 // fee.transactionType

@@ -301,7 +301,11 @@
       "mainImage":"Main Image",
       "images":"Images",
       "subtitle": "Sub Titles",
-      "userType":"User Type"
+      "userType":"User Type",
+      "userName":"User Name",
+      "admin":"Admin",
+      "teacher":"Teacher",
+      "student":"Student"
    },
     "submit":"Submit",
     "error":"Error happened try again later",

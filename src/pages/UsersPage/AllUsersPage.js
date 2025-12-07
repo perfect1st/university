@@ -14,8 +14,8 @@ import DashboardFilterComponent from "../../components/Utilities/DashboardFilter
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import notify from "../../components/notify";
-import { GET_WEBSITE_DEPARTMENTS_BY_ADMIN, UPDATE_WEBSITE_DEPARTMENT_BY_ID } from "../../graphql/departmentsQueries";
 import { GET_ALL_USERES_FOR_ADMIN, UPDATE_USER_BY_ADMIN } from '../../graphql/userQueriesForAdmin';
+
 
 export default function AllUsersPage() {
 
