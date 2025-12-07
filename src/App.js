@@ -82,6 +82,9 @@ import AllArticlesPage from "./pages/WebsiteArticles/AllArticlesPage";
 import AddArticlePage from "./pages/WebsiteArticles/AddArticlePage";
 import ArticleDetailsPage from "./pages/WebsiteArticles/ArticleDetailsPage";
 import WebSiteDepartmentDetailsPage from "./pages/websiteDepartments/WebSiteDepartmentDetailsPage";
+import AllUsersPage from "./pages/UsersPage/AllUsersPage";
+import AddUserPage from "./pages/UsersPage/AddUserPage";
+import UserDetailsPage from "./pages/UsersPage/UserDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -153,7 +156,7 @@ function App() {
             gray: "#F9FAFB",
             contrastText: "#ffffff",
             tabelHeader: "#D2D6DB",
-            disabled:"#384250"
+            disabled: "#384250"
           },
           secondary: {
             main: mode === "light" ? "#F39A15" : "#F39A15",
@@ -171,7 +174,7 @@ function App() {
             secDefault: mode === "light" ? "#CFDBE8" : "#1f2937",
             gray: mode === "light" ? "#E5E5E5" : "#334155",
             green: "",
-            inputBackGround:"#E8EDF2"
+            inputBackGround: "#E8EDF2"
           },
           text: {
             primary: mode === "light" ? "#0f172a" : "#f1f5f9",
@@ -427,7 +430,7 @@ function App() {
                     }
                   />
 
-                  <Route
+                  {/* <Route
                     path="/Users"
                     element={
                       <MainLayout>
@@ -442,12 +445,12 @@ function App() {
                         <UserDetails />
                       </MainLayout>
                     }
-                  />
+                  /> */}
 
                   {/* website Departments  الاقسام */}
 
                   <Route path="/website-departments">
-                   <Route
+                    <Route
                       index
                       element={
                         <MainLayout isLoggedIn={true}>
@@ -476,7 +479,7 @@ function App() {
 
                   {/* المقالات */}
                   <Route path="/website-articles">
-                         <Route
+                    <Route
                       index
                       element={
                         <MainLayout isLoggedIn={true}>
@@ -501,6 +504,36 @@ function App() {
                         </MainLayout>
                       }
                     />
+                  </Route>
+
+                  <Route path="/users">
+                    <Route
+                      index
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <AllUsersPage />
+                        </MainLayout>
+                      }
+                    />
+
+                    <Route
+                      path="add"
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <AddUserPage />
+                        </MainLayout>
+                      }
+                    />
+
+                    <Route
+                      path="details/:id"
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <UserDetailsPage />
+                        </MainLayout>
+                      }
+                    />
+
                   </Route>
 
                   <Route path="/nationality">
@@ -595,7 +628,7 @@ function App() {
 
                   </Route>
 
-                      {/* الكليات */}
+                  {/* الكليات */}
                   <Route path="/faculities">
                     <Route index element={
                       <MainLayout isLoggedIn={true}>
@@ -615,14 +648,14 @@ function App() {
                       </MainLayout>
                     } />
 
-                   
+
 
                   </Route>
 
-                      {/* الاقسام للكليات */}
+                  {/* الاقسام للكليات */}
                   <Route path="/departments">
 
-                      <Route index element={
+                    <Route index element={
                       <MainLayout isLoggedIn={true}>
                         <AllDepartmnentsPage />
                       </MainLayout>
@@ -643,14 +676,14 @@ function App() {
 
                   </Route>
 
-                    {/* اسعار الكليات */}
+                  {/* اسعار الكليات */}
                   <Route path="/prices">
                     <Route index element={
                       <MainLayout isLoggedIn={true}>
                         <AllFaculitiesPricesPage />
                       </MainLayout>
                     } />
-                     <Route path="add" element={
+                    <Route path="add" element={
                       <MainLayout isLoggedIn={true}>
                         <AddFaculityPricePage />
                       </MainLayout>
@@ -662,113 +695,113 @@ function App() {
                       </MainLayout>
                     } />
                   </Route>
-                    {/* المواد  (materials)*/}
-                    <Route path="/materials">
-                      <Route index element={
-                        <MainLayout isLoggedIn={true}>
+                  {/* المواد  (materials)*/}
+                  <Route path="/materials">
+                    <Route index element={
+                      <MainLayout isLoggedIn={true}>
                         <AllMaterialsPage />
                       </MainLayout>
-                      } />
+                    } />
 
-                      <Route path="add" element={
-                        <MainLayout isLoggedIn={true}>
+                    <Route path="add" element={
+                      <MainLayout isLoggedIn={true}>
                         <AddMaterialPage />
                       </MainLayout>
-                      } />
+                    } />
 
-                       <Route path="details/:id" element={
-                        <MainLayout isLoggedIn={true}>
+                    <Route path="details/:id" element={
+                      <MainLayout isLoggedIn={true}>
                         <MaterialDetailsPage />
                       </MainLayout>
-                      } />
+                    } />
 
-                    </Route>
+                  </Route>
 
 
-                    {/* الفصول الدراسية */}
-                    <Route path="/academyTerms">
-                      <Route index element={
-                        <MainLayout isLoggedIn={true}>
+                  {/* الفصول الدراسية */}
+                  <Route path="/academyTerms">
+                    <Route index element={
+                      <MainLayout isLoggedIn={true}>
                         <AllAcademyTermsPage />
                       </MainLayout>
-                      } />
+                    } />
 
-                      <Route path="add" element={
-                        <MainLayout isLoggedIn={true}>
+                    <Route path="add" element={
+                      <MainLayout isLoggedIn={true}>
                         <AddAcademyTermPage />
                       </MainLayout>
-                      } />
-                      <Route path="details/:id" element={
-                        <MainLayout isLoggedIn={true}>
+                    } />
+                    <Route path="details/:id" element={
+                      <MainLayout isLoggedIn={true}>
                         <AcademyTermDetailsPage />
                       </MainLayout>
-                      } />
+                    } />
 
-                    </Route>
+                  </Route>
 
-                      {/* انواع الرسوم */}
-                    <Route path="/feesTypes">
-                      <Route index element={
-                          <MainLayout isLoggedIn={true}>
+                  {/* انواع الرسوم */}
+                  <Route path="/feesTypes">
+                    <Route index element={
+                      <MainLayout isLoggedIn={true}>
                         <AllFeesTypesPage />
                       </MainLayout>
-                      } />
+                    } />
 
-                      <Route path="add" element={
-                          <MainLayout isLoggedIn={true}>
+                    <Route path="add" element={
+                      <MainLayout isLoggedIn={true}>
                         <AddFeesTypesPage />
                       </MainLayout>
-                      } />
+                    } />
 
-                      <Route path="details/:id" element={
-                          <MainLayout isLoggedIn={true}>
+                    <Route path="details/:id" element={
+                      <MainLayout isLoggedIn={true}>
                         <FeeDetailsPage />
                       </MainLayout>
-                      } />
+                    } />
 
-                    </Route>
+                  </Route>
 
-                      {/* المعاملات المالية */}
-                    <Route path="/transactions">
-                      <Route index  element={
-                        <MainLayout isLoggedIn={true}>
+                  {/* المعاملات المالية */}
+                  <Route path="/transactions">
+                    <Route index element={
+                      <MainLayout isLoggedIn={true}>
                         <AllTransactionsPage />
                       </MainLayout>
-                      } />
-                      <Route path="add" element={
-                        <MainLayout isLoggedIn={true}>
+                    } />
+                    <Route path="add" element={
+                      <MainLayout isLoggedIn={true}>
                         <AddTransactionPage />
                       </MainLayout>
-                      }/>
-                      <Route path="details/:id" element={
-                        <MainLayout isLoggedIn={true}>
+                    } />
+                    <Route path="details/:id" element={
+                      <MainLayout isLoggedIn={true}>
                         <TransactionDetailsPage />
                       </MainLayout>
-                      }/>
-                    </Route>
+                    } />
+                  </Route>
 
-                      {/* انواع المعاملات المالية */}
-                    <Route path="/transactionTypes">
-                      <Route index element={
-                          <MainLayout isLoggedIn={true}>
+                  {/* انواع المعاملات المالية */}
+                  <Route path="/transactionTypes">
+                    <Route index element={
+                      <MainLayout isLoggedIn={true}>
                         <AllTransactionTypesPage />
                       </MainLayout>
-                      } />
+                    } />
 
-                      <Route path="add" element={
-                          <MainLayout isLoggedIn={true}>
+                    <Route path="add" element={
+                      <MainLayout isLoggedIn={true}>
                         <AddTransactionTypePage />
                       </MainLayout>
-                      } />
+                    } />
 
-                      <Route path="details/:id" element={
-                          <MainLayout isLoggedIn={true}>
+                    <Route path="details/:id" element={
+                      <MainLayout isLoggedIn={true}>
                         <TransactionTypeDetailsPage />
                       </MainLayout>
-                      } />
+                    } />
 
-                    </Route>
-    
+                  </Route>
+
 
                 </Route>
 

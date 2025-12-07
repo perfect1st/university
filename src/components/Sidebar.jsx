@@ -100,6 +100,16 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       en: "Website Articles",
     },
   },
+
+   {
+    // icon: FlagIcon,
+    key: "users",
+    path: "/users",
+    label: {
+      ar: "المستخدمين",
+      en: "Users",
+    },
+  },
   {
     // icon: FlagIcon,
     key: "nationality",

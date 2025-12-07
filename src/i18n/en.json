@@ -300,7 +300,8 @@
       "Article":"Article",
       "mainImage":"Main Image",
       "images":"Images",
-      "subtitle": "Sub Titles"
+      "subtitle": "Sub Titles",
+      "userType":"User Type"
    },
     "submit":"Submit",
     "error":"Error happened try again later",
