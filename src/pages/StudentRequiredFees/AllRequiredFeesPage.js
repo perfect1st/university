@@ -206,8 +206,8 @@ export default function AllRequiredFeesPage() {
                     }
 
                     <Header
-                        title={t("Users")}
-                        subtitle={t("Users")}
+                        title={t("Dashboard.requiredFees")}
+                        subtitle={t("Dashboard.requiredFees")}
                         i18n={i18n}
                         haveBtn={true}
                         btn={t("addItem", { item: translateText })}

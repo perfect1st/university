@@ -344,7 +344,8 @@
       "teacher":"معلم",
       "student":"طالب",
       "studentName":"اسم الطالب",
-      "createdAt":"تاريخ الانشاء"
+      "createdAt":"تاريخ الانشاء",
+      "requiredFees":"رسوم الطلاب"
    },
 
   "submit":"تأكيد",
