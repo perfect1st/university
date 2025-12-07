@@ -45,8 +45,11 @@ export default function AddUserPage() {
             selectedRule: selectedRule == 0 && Yup.string()
                 .required(t("admissions.errors.required"))
                 .notOneOf(["0"], t("admissions.errors.required")),
-            // title_ar: Yup.string().required(t("admissions.errors.required")),
-            // title_en: Yup.string().required(t("admissions.errors.required"))
+            username: Yup.string().required(t("admissions.errors.required")),
+            fullname: Yup.string().required(t("admissions.errors.required")),
+            email: Yup.string().email(t("admissions.errors.invalidEmail"))
+            .required(t("admissions.errors.required")),
+            mobile: Yup.string().required(t("admissions.errors.required"))
 
         }),
         onSubmit: async (values) => {

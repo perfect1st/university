@@ -150,6 +150,12 @@ export default function AllUsersPage() {
         }
     }
 
+    const usersToShow=users?.map(el=>{
+        return {
+            ...el,
+            role:t(`Dashboard.${el.role}`)
+        }
+    })
     const hasViewPermission = true;
     const hasAddPermission = true;
 
@@ -198,7 +204,7 @@ export default function AllUsersPage() {
                     <TableComponent
                         columns={columns}
                         hasNavigateBtn={true}
-                        data={users}
+                        data={usersToShow}
                         // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
                         loading={usersLoading}
                         // isUsers={true}
