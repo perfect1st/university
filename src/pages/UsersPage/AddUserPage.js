@@ -38,7 +38,8 @@ export default function AddUserPage() {
             username: "",
             fullname: "",
             email: "",
-            mobile: ""
+            mobile: "",
+            password:""
         },
 
         validationSchema: Yup.object({
@@ -59,7 +60,8 @@ export default function AddUserPage() {
                 username: values?.username,
                 fullname: values?.fullname,
                 email: values?.email,
-                mobile: values?.mobile
+                mobile: values?.mobile,
+                password:values?.password
             };
 
             data.role = selectedRule;
@@ -156,6 +158,17 @@ export default function AddUserPage() {
                     onChange={formik.handleChange}
                     error={formik.touched.mobile && Boolean(formik.errors.mobile)}
                     helperText={formik.touched.mobile && formik.errors.mobile}
+                />
+
+                 <VerticalTextField
+                    title={t("form.password", { item: translateText2 })}
+                    fieldID={"password"}
+                    fieldName={"password"}
+                    placeholder={t("Mobile", { item: translateText2 })}
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    error={formik.touched.password && Boolean(formik.errors.password)}
+                    helperText={formik.touched.password && formik.errors.password}
                 />
 
                 <VerticalTextFieldSelect
