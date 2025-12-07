@@ -17,7 +17,8 @@ export default function HorizentalTextField({
   type = "",
   handleChange,
   isDisabled = false,
-  isMultiline=false
+  isMultiline = false,
+  isMultiImages=false
 
 }) {
   const theme = useTheme();
@@ -46,19 +47,49 @@ export default function HorizentalTextField({
       {
         type == "file" ?
           <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", flexGrow: "1" }}>
+           
             <Box
-              component="img"
-              src={`${baseURL}${value}`}
-              alt="وصف الصورة"
-              loading="lazy"
               sx={{
-                width: 100,          // ثابت أو '100%' للعرض الكامل
-                height: "auto",
-                objectFit: 'cover',  // contain, cover, fill
-                borderRadius: 2,     // زوايا مدورة
-                boxShadow: 1,
+                display: "flex",
+                gap: 1,
+                flexWrap: "wrap",
               }}
-            />
+            >
+              {Array.isArray(value) ?
+                value.map((img, index) => (
+                  <Box
+                    key={index}
+                    component="img"
+                    src={`${baseURL}${img}`}
+                    alt={`صورة-${index}`}
+                    loading="lazy"
+                    sx={{
+                      width: 100,
+                      height: 100,
+                      objectFit: "cover",
+                      borderRadius: 2,
+                      boxShadow: 1,
+                    }}
+                  />
+                ))
+                :
+                <Box
+                  component="img"
+                  src={`${baseURL}${value}`}
+                  alt="وصف الصورة"
+                  loading="lazy"
+                  sx={{
+                    width: 100,          // ثابت أو '100%' للعرض الكامل
+                    height: "auto",
+                    objectFit: 'cover',  // contain, cover, fill
+                    borderRadius: 2,     // زوايا مدورة
+                    boxShadow: 1,
+                  }}
+                />
+
+              }
+            </Box>
+
 
             <CreateIcon color="action" sx={{ margin: "15px", cursor: "pointer" }} onClick={handleClick} />
 
@@ -68,6 +99,7 @@ export default function HorizentalTextField({
               ref={fileInputRef}
               style={{ display: "none" }} // المخفي
               onChange={handleChange}
+              multiple={isMultiImages}
             />
           </Box>
 
@@ -151,7 +183,7 @@ export default function HorizentalTextField({
                   },
                   "& .MuiInputBase-input.Mui-disabled": {
                     WebkitTextFillColor: `${theme.palette.primary?.disabled} !important`, // لون النص
-                    fontWeight:"700"
+                    fontWeight: "700"
                   },
                 },
               }}
