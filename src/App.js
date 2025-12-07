@@ -81,6 +81,7 @@ import AddWebsiteDepartmentPage from "./pages/websiteDepartments/AddWebsiteDepar
 import AllArticlesPage from "./pages/WebsiteArticles/AllArticlesPage";
 import AddArticlePage from "./pages/WebsiteArticles/AddArticlePage";
 import ArticleDetailsPage from "./pages/WebsiteArticles/ArticleDetailsPage";
+import WebSiteDepartmentDetailsPage from "./pages/websiteDepartments/WebSiteDepartmentDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -444,6 +445,7 @@ function App() {
                   />
 
                   {/* website Departments  الاقسام */}
+
                   <Route path="/website-departments">
                    <Route
                       index
@@ -466,7 +468,7 @@ function App() {
                       path="details/:id"
                       element={
                         <MainLayout isLoggedIn={true}>
-                          <DepartmentDetailsPage />
+                          <WebSiteDepartmentDetailsPage />
                         </MainLayout>
                       }
                     />

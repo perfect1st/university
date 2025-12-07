@@ -1,13 +1,3 @@
-import React from 'react'
-
-export default function DepartmentDetailsPage() {
-  return (
-    <div>DepartmentDetailsPage</div>
-  )
-}
-
-
-/*
 import { Navigate, useLocation, useNavigate } from "react-router-dom"
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
@@ -32,9 +22,7 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 
-// UPDATE_FACULITY_DEPARTMENT_BY_ID
-export default function DepartmentDetailsPage() {
-
+export default function WebSiteDepartmentDetailsPage() {
     const theme = useTheme();
     const { t } = useTranslation();
     const isArabic = i18n.language === "ar";
@@ -42,17 +30,7 @@ export default function DepartmentDetailsPage() {
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const location = useLocation();
 
-    // const [selected, setSelected] = useState(()=>location?.state?.faculty_id?.id);
-    // const [selectError, setSelectError] = useState("");
-
-    // const [
-    //     Faculties, {
-    //         data: { faculties } = {},
-    //         loading: faculitiesLoading
-    //     }
-    // ] = useLazyQuery(GET_ALL_FACULITIES, { fetchPolicy: "network-only" });
-
-    const [
+      const [
         UpdateWebsiteDepartment,
         {
             data,
@@ -70,7 +48,6 @@ export default function DepartmentDetailsPage() {
 
     useEffect(() => {
         GetDepartmentsByFather({ variables: { father_id: location?.state?.id } });
-        // Faculties();
     }, []);
 
     let columns = [
@@ -260,6 +237,7 @@ export default function DepartmentDetailsPage() {
 
       // console.log("DepartmentDetailsPage");
 
+
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
             <Header
@@ -391,4 +369,3 @@ export default function DepartmentDetailsPage() {
 }
 
 
-*/
