@@ -58,7 +58,9 @@ const TableComponent = ({
   dontShowActions = false,
   onActionClick,
   onSortClick,
-  handleDetailsClick
+  handleDetailsClick,
+  activeStatusLabel="true",
+  inActiveStatusLabel="false"
 }) => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
@@ -261,7 +263,7 @@ const TableComponent = ({
                         //   }}
                         // />
                         <Chip
-                          label={t(status)}
+                          label={t(status ? activeStatusLabel : inActiveStatusLabel)}
                           color={status==true ? "success" : "error"}      // primary | secondary | success | error | info | warning
                           variant="filled"     // filled | outlined
                              sx={{
@@ -480,7 +482,7 @@ const TableComponent = ({
               }}
             >
               <Box component="span" sx={{ ml: 1 }}>
-                {t("active")}
+                {activeStatusLabel ? t(activeStatusLabel) : t("active")}
               </Box>
             </MenuItem>
 
@@ -501,7 +503,7 @@ const TableComponent = ({
               }}
             >
               <Box component="span" sx={{ ml: 1 }}>
-                {t("inActive")}
+                {inActiveStatusLabel ? t(inActiveStatusLabel) : t("inActive")}
               </Box>
             </MenuItem>
           </>

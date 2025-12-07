@@ -42,9 +42,9 @@ export default function AllRequiredFeesPage() {
         // { key: "ID", label: "ID" },
         { key: "student_id", label: t("Dashboard.studentName") },
         { key: "createDate", label: t("Dashboard.createdAt") },
-        { key: "mobile", label: t("Mobile") },
-        { key: "role", label: t("Dashboard.userType") },
-        { key: "status", label: t("Status") }
+        { key: "amount", label: t("fee.table.amount") },
+        { key: "transaction_serial", label: t("fee.transactionSerial") },
+        { key: "is_paid", label: t("Status") }
 
     ];
 
@@ -52,9 +52,19 @@ export default function AllRequiredFeesPage() {
         const timestamp = Number(el?.createdAt); // نتأكد إنه رقم
         const date = new Date(timestamp);
 
+        let total=0;
+
+        el?.fees_types_ids?.map(fee=>{
+            if(el?.student_id?.is_inside_yemen==true)  total+=fee?.inside_yemen_value
+            else total+=fee?.outside_yemen_value
+        })
+
         return {
             ...el,
-            createDate: formatDateToString(date)
+            createDate: formatDateToString(date),
+            amount:total,
+            transaction_serial: el?.transactions_id?.transaction_serial,
+            // is_paid:el?.is_paid==true ? "paid" :"unpaid"
         }
     })
 
@@ -146,7 +156,11 @@ export default function AllRequiredFeesPage() {
 
             // // return;
             let data = {
-                status: newStatus == "inActive" ? false : true,
+                is_paid: newStatus == "inActive" ? false : true,
+                student_id:selectedRow?.student_id?.id,
+                fees_types_ids:selectedRow?.fees_types_ids?.map(el=>el?.id),
+                title_ar:selectedRow?.title_ar,
+                title_en:selectedRow?.title_en
                 //   operation_type:row?.operation_type
             }
             const result = await UpdateUsersRequiredFees({
@@ -216,7 +230,7 @@ export default function AllRequiredFeesPage() {
                         // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
                         loading={pageLoading}
                         // isUsers={true}
-                        statusKey="status"
+                        statusKey="is_paid"
                         sx={{
                             flex: 1,
                             overflow: "auto",
@@ -228,6 +242,8 @@ export default function AllRequiredFeesPage() {
                         onStatusChange={onStatusChange}
                         arPopulateKey={"fullname"}
                         enPopulateKey={"fullname"}
+                        activeStatusLabel={"paid"}
+                        inActiveStatusLabel={"unpaid"}
                     />
                 </Grid>
             </Grid>

@@ -319,5 +319,7 @@
     "departments":"Departments",
     "true":"Active",
     "false":"in Active",
-    "select":"Select"
+    "select":"Select",
+    "paid":"Paid",
+    "unpaid":"UnPaid"
 }
