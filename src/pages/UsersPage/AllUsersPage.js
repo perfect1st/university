@@ -117,10 +117,10 @@ export default function AllUsersPage() {
 
     const handleDetailsClick = (selectedRow) => {
         console.log('handleDetailsClick', selectedRow);
-        //   let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
+        let row=users?.find(el=>el?.id==selectedRow?.id);
 
         navigate(`details/${selectedRow?.id}`, {
-            state: selectedRow
+            state: row
         });
     }
 

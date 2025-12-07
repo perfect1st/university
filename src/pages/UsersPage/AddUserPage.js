@@ -164,7 +164,7 @@ export default function AddUserPage() {
                     title={t("form.password", { item: translateText2 })}
                     fieldID={"password"}
                     fieldName={"password"}
-                    placeholder={t("Mobile", { item: translateText2 })}
+                    placeholder={t("form.password", { item: translateText2 })}
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     error={formik.touched.password && Boolean(formik.errors.password)}
