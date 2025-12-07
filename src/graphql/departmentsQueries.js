@@ -80,17 +80,6 @@ mutation CreateWebsiteDepartment($input:CreateWebsiteDepartmentInput!) {
         desc_en
         image
         status
-          father_id {
-            id
-            title_ar
-            title_en
-            desc_ar
-            desc_en
-            image
-            status
-            createdAt
-            updatedAt
-        }
         createdAt
         updatedAt
     }
