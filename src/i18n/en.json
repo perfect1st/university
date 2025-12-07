@@ -305,7 +305,9 @@
       "userName":"User Name",
       "admin":"Admin",
       "teacher":"Teacher",
-      "student":"Student"
+      "student":"Student",
+      "studentName":"Student Name",
+      "createdAt":"Created At"
    },
     "submit":"Submit",
     "error":"Error happened try again later",

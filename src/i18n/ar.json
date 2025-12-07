@@ -342,7 +342,9 @@
       "userName":"اسم المستخدم",
       "admin":"ادمن",
       "teacher":"معلم",
-      "student":"طالب"
+      "student":"طالب",
+      "studentName":"اسم الطالب",
+      "createdAt":"تاريخ الانشاء"
    },
 
   "submit":"تأكيد",

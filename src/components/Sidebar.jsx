@@ -197,6 +197,14 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       en: "Transactions",
     },
   },
+  {
+     key: "requiredFees",
+    path: "/requiredFees",
+    label: {
+      ar: "رسوم الطلاب",
+      en: "Student Required Fees",
+    },
+  },
   
   {
     // icon: PersonOutlineIcon,
