@@ -299,7 +299,8 @@
       "enDescription":"English Description",
       "Article":"Article",
       "mainImage":"Main Image",
-      "images":"Images"
+      "images":"Images",
+      "subtitle": "Sub Titles"
    },
     "submit":"Submit",
     "error":"Error happened try again later",
