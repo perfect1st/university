@@ -127,6 +127,7 @@ export default function AddWebsiteDepartmentPage() {
 
         notify(t("success"), "success");
 
+       // navigate(`/website-departments/details/${id}`);
         navigate(location.pathname.split('/add')[0]);
 
       } catch (error) {

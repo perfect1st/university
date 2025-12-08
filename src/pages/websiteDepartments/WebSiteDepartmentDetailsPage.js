@@ -12,7 +12,7 @@ import { GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import LoadingPage from "../../components/LoadingComponent";
 import { useEffect, useState } from "react";
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
-import { GET_DEPARTMENTS_BY_FATHER_ID_FOR_ADMIN, UPDATE_WEBSITE_DEPARTMENT_BY_ID } from "../../graphql/departmentsQueries";
+import { GET_DEPARTMENTS_BY_FATHER_ID_FOR_ADMIN, GET_WEBSITE_DEPARTMENTS_BY_ADMIN, UPDATE_WEBSITE_DEPARTMENT_BY_ID } from "../../graphql/departmentsQueries";
 
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -47,8 +47,13 @@ export default function WebSiteDepartmentDetailsPage() {
         }
     ] = useLazyQuery(GET_DEPARTMENTS_BY_FATHER_ID_FOR_ADMIN, { fetchPolicy: "network-only" });
 
+    const {
+        data: { websiteDepartments } = {},
+        loading:websiteDepartmentsLoading
+      } = useQuery(GET_WEBSITE_DEPARTMENTS_BY_ADMIN, { fetchPolicy: "network-only" });
+
     useEffect(() => {
-        GetDepartmentsByFather({ variables: { father_id: location?.state?.id } });
+        GetDepartmentsByFather({ variables: { father_id: id } });
     }, []);
 
     let columns = [
@@ -161,18 +166,23 @@ export default function WebSiteDepartmentDetailsPage() {
         }
     }
 
+   
 
     // console.log("faculties", faculties);
     console.log("location", location?.state);
     console.log("getDepartmentsByFather", getDepartmentsByFather);
 
+    let currentDep=websiteDepartments?.find(el=>el?.id==id);
+
+    console.log("currentDep",currentDep);
+
     // faculty_id?.id
     const formik = useFormik({
         initialValues: {
-            title_ar: location?.state?.title_ar,
-            title_en: location?.state?.title_en,
-            desc_ar: location?.state?.desc_ar,
-            desc_en: location?.state?.desc_en
+            // title_ar: currentDep?.title_ar,
+            // title_en: currentDep?.title_en,
+            // desc_ar: currentDep?.desc_ar,
+            // desc_en: currentDep?.desc_en
             // faculty_id: ""
             // flag: "",
         },
@@ -193,9 +203,9 @@ export default function WebSiteDepartmentDetailsPage() {
             console.log('xxxxxxxxxxxxxxxxxxxxxxx');
             const data = {
                 title_ar: values?.title_ar,
-                title_en: values.title_en,
-                desc_ar: values?.state?.desc_ar,
-                desc_en: values?.state?.desc_en
+                title_en: values?.title_en,
+                desc_ar: values?.desc_ar,
+                desc_en: values?.desc_en
                 // faculty_id: selected
 
             };
@@ -226,19 +236,28 @@ export default function WebSiteDepartmentDetailsPage() {
         },
     });
 
+     useEffect(()=>{
+        let currentDep=websiteDepartments?.find(el=>el?.id==id);
+        if(currentDep?.id){
+            formik.values.title_ar=currentDep?.title_ar;
+            formik.values.title_en=currentDep?.title_en;
+            formik.values.desc_ar=currentDep?.desc_ar;
+            formik.values.desc_en=currentDep?.desc_en;
+        }
+    },[websiteDepartments]);
+
     let translateText = isArabic ? "قسم" : "Department";
     let translateText2 = isArabic ? "القسم" : "Department";
     let translateText3 = isArabic ? "عنوان فرعي" : "Sub Title";
 
-    if (getDepartmentsByFatherLoading) return <LoadingPage />;
 
     const hasViewPermission = true;
     const hasAddPermission = true;
     if (!hasViewPermission) return <Navigate to="/profile" />;
 
+    if (getDepartmentsByFatherLoading || websiteDepartmentsLoading) return <LoadingPage />;
+
     // console.log("DepartmentDetailsPage");
-
-
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
             <Header
