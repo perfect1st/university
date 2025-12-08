@@ -135,7 +135,7 @@ export default function AddTransactionPage() {
             selectedFeeType: selectedFeeType == 0 && Yup.string()
                 .required(t("admissions.errors.required"))
                 .notOneOf(["0"], t("admissions.errors.required")),
-            selectedUser: selectedUser == 0 && Yup.string()
+            selectedUser: selectedUser == null && Yup.string()
                 .required(t("admissions.errors.required"))
                 .notOneOf(["0"], t("admissions.errors.required")),
             amount: Yup.string().required(t("admissions.errors.required")),
@@ -357,7 +357,7 @@ export default function AddTransactionPage() {
                     options={users}
                     value={selectedUser}
                     setValue={setSelectedUser}
-                    error={formik.errors.selectedFeeType && t("admissions.errors.required")}
+                    error={formik.errors.selectedUser && t("admissions.errors.required")}
                     onBlur={(e) => {
                         if (selectedUser != null) formik.setFieldError("selectedUser", undefined);
 

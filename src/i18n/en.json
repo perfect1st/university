@@ -308,7 +308,8 @@
       "student":"Student",
       "studentName":"Student Name",
       "createdAt":"Created At",
-      "requiredFees":"required Fees"
+      "requiredFees":"required Fees",
+      "createdBy":"Created By"
    },
     "submit":"Submit",
     "error":"Error happened try again later",

@@ -345,7 +345,8 @@
       "student":"طالب",
       "studentName":"اسم الطالب",
       "createdAt":"تاريخ الانشاء",
-      "requiredFees":"رسوم الطلاب"
+      "requiredFees":"رسوم الطلاب",
+      "createdBy":"انشيء بواسطة"
    },
 
   "submit":"تأكيد",

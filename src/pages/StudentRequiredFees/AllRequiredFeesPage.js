@@ -44,6 +44,7 @@ export default function AllRequiredFeesPage() {
         { key: "createDate", label: t("Dashboard.createdAt") },
         { key: "amount", label: t("fee.table.amount") },
         { key: "transaction_serial", label: t("fee.transactionSerial") },
+         { key: "website_user_id", label: t("Dashboard.createdBy") },
         { key: "is_paid", label: t("Status") }
 
     ];

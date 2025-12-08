@@ -1,4 +1,3 @@
-import { CREATE_TRANSACTION_TYPE } from "../../graphql/transactionTypeQueries";
 import { useLocation, useNavigate } from "react-router-dom"
 import { useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
