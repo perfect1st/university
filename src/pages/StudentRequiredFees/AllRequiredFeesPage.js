@@ -44,7 +44,7 @@ export default function AllRequiredFeesPage() {
         { key: "createDate", label: t("Dashboard.createdAt") },
         { key: "amount", label: t("fee.table.amount") },
         { key: "transaction_serial", label: t("fee.transactionSerial") },
-         { key: "website_user_id", label: t("Dashboard.createdBy") },
+        { key: "website_user_id", label: t("Dashboard.createdBy") },
         { key: "is_paid", label: t("Status") }
 
     ];
@@ -53,17 +53,17 @@ export default function AllRequiredFeesPage() {
         const timestamp = Number(el?.createdAt); // نتأكد إنه رقم
         const date = new Date(timestamp);
 
-        let total=0;
+        let total = 0;
 
-        el?.fees_types_ids?.map(fee=>{
-            if(el?.student_id?.is_inside_yemen==true)  total+=fee?.inside_yemen_value
-            else total+=fee?.outside_yemen_value
+        el?.fees_types_ids?.map(fee => {
+            if (el?.student_id?.is_inside_yemen == true) total += fee?.inside_yemen_value
+            else total += fee?.outside_yemen_value
         })
 
         return {
             ...el,
             createDate: formatDateToString(date),
-            amount:total,
+            amount: total,
             transaction_serial: el?.transactions_id?.transaction_serial,
             // is_paid:el?.is_paid==true ? "paid" :"unpaid"
         }
@@ -158,10 +158,10 @@ export default function AllRequiredFeesPage() {
             // // return;
             let data = {
                 is_paid: newStatus == "inActive" ? false : true,
-                student_id:selectedRow?.student_id?.id,
-                fees_types_ids:selectedRow?.fees_types_ids?.map(el=>el?.id),
-                title_ar:selectedRow?.title_ar,
-                title_en:selectedRow?.title_en
+                student_id: selectedRow?.student_id?.id,
+                fees_types_ids: selectedRow?.fees_types_ids?.map(el => el?.id),
+                title_ar: selectedRow?.title_ar,
+                title_en: selectedRow?.title_en
                 //   operation_type:row?.operation_type
             }
             const result = await UpdateUsersRequiredFees({
