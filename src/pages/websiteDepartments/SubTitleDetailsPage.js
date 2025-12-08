@@ -37,7 +37,7 @@ export default function SubTitleDetailsPage() {
         UpdateWebsiteDepartment,
         {
             data,
-            updating
+           loading: updating
         }
     ] = useMutation(UPDATE_WEBSITE_DEPARTMENT_BY_ID, { fetchPolicy: "network-only" });
 
@@ -134,7 +134,7 @@ export default function SubTitleDetailsPage() {
 
                 notify(t("success"), "success");
 
-                // navigate(`/website-departments/details/${id}`);
+               
                 navigate(location.pathname.split('/edit')[0]);
 
             } catch (error) {
