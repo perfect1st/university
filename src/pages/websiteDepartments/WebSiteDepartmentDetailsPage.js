@@ -137,7 +137,7 @@ export default function WebSiteDepartmentDetailsPage() {
 
     const handleDetailsClick = (selectedRow) => {
         console.log('handleDetailsClick', selectedRow);
-        navigate(`details/${selectedRow?.id}`, {
+        navigate(`edit/${selectedRow?.id}`, {
             state: selectedRow
         });
     }

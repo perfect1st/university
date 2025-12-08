@@ -88,6 +88,7 @@ import UserDetailsPage from "./pages/UsersPage/UserDetailsPage";
 import AllRequiredFeesPage from "./pages/StudentRequiredFees/AllRequiredFeesPage";
 import AddRequiredFeesPage from "./pages/StudentRequiredFees/AddRequiredFeesPage";
 import RequiredFeeDetailsPage from "./pages/StudentRequiredFees/RequiredFeeDetailsPage";
+import SubTitleDetailsPage from "./pages/websiteDepartments/SubTitleDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -466,6 +467,15 @@ function App() {
                       element={
                         <MainLayout isLoggedIn={true}>
                           <AddWebsiteDepartmentPage />
+                        </MainLayout>
+                      }
+                    />
+
+                    <Route
+                      path="details/:id/edit/:DepID"
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <SubTitleDetailsPage />
                         </MainLayout>
                       }
                     />
