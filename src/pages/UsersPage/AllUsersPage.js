@@ -3,7 +3,7 @@ import { useTheme } from "@emotion/react";
 import { Box, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Pagination, Select, Stack, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { useMutation, useQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -14,9 +14,10 @@ import DashboardFilterComponent from "../../components/Utilities/DashboardFilter
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import notify from "../../components/notify";
-import { GET_ALL_USERES_FOR_ADMIN, UPDATE_USER_BY_ADMIN } from '../../graphql/userQueriesForAdmin';
-import { useState } from "react";
+import { GET_ALL_USERES_FOR_ADMIN, UPDATE_USER_BY_ADMIN, FILTERED_USERS } from '../../graphql/userQueriesForAdmin';
+import { useEffect, useState } from "react";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
+import { TrueOrFalseArr, userRules } from "../../constants";
 
 
 export default function AllUsersPage() {
@@ -28,15 +29,60 @@ export default function AllUsersPage() {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+    const [limit, setLimit] = useState(10);
 
     const isArabic = i18n.language === "ar";
-    const totalPages = 10;
+    // const totalPages = 10;
 
-    const {
-        data: { users } = {},
-        loading: usersLoading
-    } = useQuery(GET_ALL_USERES_FOR_ADMIN, { fetchPolicy: "network-only" });
+    // const {
+    //     data: { users } = {},
+    //     loading: usersLoading
+    // } = useQuery(GET_ALL_USERES_FOR_ADMIN, { fetchPolicy: "network-only" });
+
+    const [
+        FilteredPagedUsers
+        , {
+            data: { filteredPagedUsers } = {},
+            loading: usersLoading
+        }] = useLazyQuery(FILTERED_USERS, { fetchPolicy: "network-only" });
+
+    useEffect(() => {
+        let page;
+        let limit;
+        if (!searchParams.get("page")) {
+            page = 1;
+        }
+        else {
+            page = Number(searchParams.get("page"));
+        }
+        if (!searchParams.get("limit")) {
+            limit = 10;
+        }
+        else {
+            limit = Number(searchParams.get("limit"));
+        }
+
+        let searchText="";
+
+        if(searchParams.get("search")){
+            searchText=searchParams.get("search");
+        }
+        
+        let variablesObj={};
+        if(page) variablesObj.page=page;
+        if(limit) variablesObj.limit=limit;
+        if(searchText) variablesObj.search=searchText;
+        if(searchParams.get("status") !=="0") variablesObj.status= searchParams.get("status") === "true" ? true : false;
+
+        // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
+
+        FilteredPagedUsers({ variables: variablesObj });
+
+        // FilteredPagedUsers({ variables: { page, limit } });
+        // setLimit(parseInt(searchParams.get("limit"), 10));
+    }, [searchParams]);
+
+    console.log("filteredPagedUsers", filteredPagedUsers);
 
     const [UpdateUser, {
         loading: updatingStatus
@@ -53,7 +99,7 @@ export default function AllUsersPage() {
     ];
     const fetchAndExport = async (type) => {
         try {
-            const exportData = users?.map((user) => ({
+            const exportData = filteredPagedUsers?.users?.map((user) => ({
                 ID: user.serial_num,
                 "Full Name": user.name,
                 Email: user.email,
@@ -123,7 +169,7 @@ export default function AllUsersPage() {
 
     const handleDetailsClick = (selectedRow) => {
         console.log('handleDetailsClick', selectedRow);
-        let row=users?.find(el=>el?.id==selectedRow?.id);
+        let row = filteredPagedUsers?.users?.find(el => el?.id == selectedRow?.id);
 
         navigate(`details/${selectedRow?.id}`, {
             state: row
@@ -156,12 +202,41 @@ export default function AllUsersPage() {
         }
     }
 
-    const usersToShow=users?.map(el=>{
+    const onFilterChange=async(filterOBJ)=>{
+        console.log("filterOBJ",filterOBJ);
+        if(filterOBJ.search) searchParams.set("search", filterOBJ.search);
+         if(filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+            // searchParams.get("search", e.target.value);
+        setSearchParams(searchParams);
+    }
+
+    // const usersToShow=[];
+    const usersToShow = filteredPagedUsers?.users?.map(el => {
+        console.log("el", el);
         return {
             ...el,
-            role:t(`Dashboard.${el.role}`)
+            role: t(`Dashboard.${el.role}`)
         }
-    })
+    });
+
+    // let limit;
+    //  if(!searchParams.get("limit")){
+    //         limit=10;
+    //     } 
+    let pageLimit;
+    if (!searchParams.get("limit")) {
+        pageLimit = 10;
+    }
+    else {
+        pageLimit = Number(searchParams.get("limit"));
+    }
+
+    console.log("pageLimit", pageLimit);
+
+    const totalPages = parseInt(filteredPagedUsers?.total / pageLimit) + 1;
+
+    console.log("totalPages", totalPages);
+
     const hasViewPermission = true;
     const hasAddPermission = true;
 
@@ -171,7 +246,7 @@ export default function AllUsersPage() {
 
     if (usersLoading) return <LoadingPage />;
 
-    console.log("users", users);
+    // console.log("users", users);
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
             <Grid container spacing={3}>
@@ -205,7 +280,16 @@ export default function AllUsersPage() {
                         onPrinter={() => fetchAndExport("print")}
                     />
 
-                    <DashboardFilterComponent t={t} />
+                    <DashboardFilterComponent
+                    placeholder={t("Dashboard.userSearchField")}
+                    textSearchField={"search"}
+                    statusKey={"status"}
+                    TrueOrFalseArr={TrueOrFalseArr}
+                    selectKey={"role"}
+                    selectOptions={userRules}
+                    onFilterChange={onFilterChange}
+                     t={t}
+                      />
 
                     <TableComponent
                         columns={columns}
@@ -226,8 +310,8 @@ export default function AllUsersPage() {
                         onStatusChange={onStatusChange}
                     />
 
-                    <FilterComponent />
-                   
+                    <FilterComponent totalPages={totalPages} />
+
                 </Grid>
             </Grid>
         </Box>

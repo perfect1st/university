@@ -6,20 +6,18 @@ import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowDropDownCircleOutlined } from "@mui/icons-material";
 
-export default function CustomTextFieldAdmin({ searchKey, width = "100%", height }) {
+export default function CustomTextFieldAdmin({ searchKey, width = "100%", height,placeholder, value,setValue }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const theme = useTheme();
   const isArabic = i18n.language === "ar";
   return (
     <TextField
       hiddenLabel
-      value={searchParams.get(searchKey) || ""}
+      value={value}
       onChange={(e) => {
-        console.log("searchKey", searchKey);
-        searchParams.set(searchKey, e.target.value);
-        setSearchParams(searchParams);
+        setValue(e.target.value);
       }}
-      placeholder={isArabic ? "بحث بالاسم" : "Search By Nationality Name"}
+      placeholder={placeholder}
       // fullWidth
       InputProps={{
         endAdornment: (

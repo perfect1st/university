@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const GET_ALL_USERES_FOR_ADMIN=gql`
+export const GET_ALL_USERES_FOR_ADMIN = gql`
 query Users {
     users {
         id
@@ -18,7 +18,7 @@ query Users {
 }
 `;
 
-export const CREATE_USER_BY_ADMIN=gql`
+export const CREATE_USER_BY_ADMIN = gql`
 mutation CreateUser($input: AdminCreateUserInput!) {
     createUser(input: $input) {
         id
@@ -37,7 +37,7 @@ mutation CreateUser($input: AdminCreateUserInput!) {
 }
 `;
 
-export const UPDATE_USER_BY_ADMIN=gql`
+export const UPDATE_USER_BY_ADMIN = gql`
 mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
     updateUser(id: $id, input: $input) {
         id
@@ -54,4 +54,38 @@ mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
     }
 }
 
+`;
+
+export const FILTERED_USERS = gql`
+  query FilteredPagedUsers(
+    $limit: Int!
+    $page: Int!
+    $status: Boolean
+    $role: String
+    $search: String
+  ) {
+    filteredPagedUsers(
+      limit: $limit
+      page: $page
+      status: $status
+      role: $role
+      search: $search
+    ) {
+      total
+      users {
+      id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+      }
+    }
+  }
 `;

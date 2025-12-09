@@ -14,7 +14,7 @@ export default function VerticalTextField({
   helperText,
   type = "text",
   isDisabled = false,
-  isMultiline=false
+  isMultiline = false
 
 }) {
 
@@ -83,16 +83,18 @@ export default function VerticalTextField({
 }
 
 
-export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange, fieldID, fieldName, onBlur, onKeyDown }) => {
+export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange, fieldID, fieldName, onBlur, onKeyDown , height="56px" }) => {
   const theme = useTheme();
   return (
     <>
-      <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
-        {title}
-      </Typography>
+      {
+        title && <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
+          {title}
+        </Typography>
+      }
 
       <Box sx={{ mb: 3 }}>
-        <CustomSelect t={t} label={defaultOptionLabel} height={"56px"} backgroundColor={backgroundColor} value={value} setValue={setValue} error={error} setError={setError} onChange={onChange} fieldID={fieldID} fieldName={fieldName} onBlur={onBlur} onKeyDown={onKeyDown}  >
+        <CustomSelect t={t} label={defaultOptionLabel} height={height} backgroundColor={backgroundColor} value={value} setValue={setValue} error={error} setError={setError} onChange={onChange} fieldID={fieldID} fieldName={fieldName} onBlur={onBlur} onKeyDown={onKeyDown}  >
           {children}
         </CustomSelect>
 
@@ -103,7 +105,7 @@ export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOpti
   );
 }
 
-export const SearchByTypingSelect = ({ options, value, setValue, title, label, error, onBlur, multiple = false , labelToShow,findKey, onChangeFn }) => {
+export const SearchByTypingSelect = ({ options, value, setValue, title, label, error, onBlur, multiple = false, labelToShow, findKey, onChangeFn }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -118,7 +120,7 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label, e
         multiple={multiple}
         options={options}
         getOptionLabel={(option) => labelToShow(option)}
-       value={multiple ? options?.filter(opt => value.includes(opt[findKey])) : options?.find(opt => opt[findKey] === value) || null}
+        value={multiple ? options?.filter(opt => value.includes(opt[findKey])) : options?.find(opt => opt[findKey] === value) || null}
         clearOnEscape={false}
         disableClearable={false}
 
@@ -128,7 +130,7 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label, e
             // لو المستخدم ضغط على clear icon
             multiple ? setValue([]) : setValue(null);
 
-            if(onChangeFn) onChangeFn([]);
+            if (onChangeFn) onChangeFn([]);
             return;
           }
 
@@ -140,10 +142,10 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label, e
               const newIds = newValue.map(opt => opt[findKey]);
               setValue(newIds); // value = array of ids
 
-              if(onChangeFn) onChangeFn(newIds);
+              if (onChangeFn) onChangeFn(newIds);
             }
             else {
-              setValue(newValue[findKey]|| isNullableType);
+              setValue(newValue[findKey] || isNullableType);
             }
             return;
           }
@@ -155,7 +157,7 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label, e
             return;
           }
 
-          
+
         }}
         renderInput={(params) => (
           <TextField

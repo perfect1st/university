@@ -309,7 +309,8 @@
       "studentName":"Student Name",
       "createdAt":"Created At",
       "requiredFees":"required Fees",
-      "createdBy":"Created By"
+      "createdBy":"Created By",
+      "userSearchField":"Search by User Name , Email and Mobile"
    },
     "submit":"Submit",
     "error":"Error happened try again later",
