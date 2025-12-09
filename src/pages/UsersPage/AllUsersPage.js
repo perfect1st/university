@@ -1,6 +1,6 @@
 import LoadingPage from "../../components/LoadingComponent";
 import { useTheme } from "@emotion/react";
-import { Box, CircularProgress, Grid, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Pagination, Select, Stack, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client/react";
@@ -15,6 +15,8 @@ import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import notify from "../../components/notify";
 import { GET_ALL_USERES_FOR_ADMIN, UPDATE_USER_BY_ADMIN } from '../../graphql/userQueriesForAdmin';
+import { useState } from "react";
+import FilterComponent from "../../components/TableComponent/FilterComponent";
 
 
 export default function AllUsersPage() {
@@ -25,7 +27,11 @@ export default function AllUsersPage() {
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const [searchParams, setSearchParams] = useSearchParams();
 
+    const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
     const isArabic = i18n.language === "ar";
+    const totalPages = 10;
 
     const {
         data: { users } = {},
@@ -219,6 +225,9 @@ export default function AllUsersPage() {
                         handleDetailsClick={handleDetailsClick}
                         onStatusChange={onStatusChange}
                     />
+
+                    <FilterComponent />
+                   
                 </Grid>
             </Grid>
         </Box>
