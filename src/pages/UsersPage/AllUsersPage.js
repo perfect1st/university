@@ -287,6 +287,7 @@ export default function AllUsersPage() {
                     TrueOrFalseArr={TrueOrFalseArr}
                     selectKey={"role"}
                     selectOptions={userRules}
+                    select2Label={"Dashboard.userType"}
                     onFilterChange={onFilterChange}
                      t={t}
                       />

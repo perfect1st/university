@@ -1,4 +1,4 @@
-import { InputAdornment, MenuItem, TextField, useTheme } from "@mui/material";
+import { InputAdornment, MenuItem, TextField, useMediaQuery, useTheme } from "@mui/material";
 import React from "react";
 import i18n from "../../i18n/i18n";
 import SearchIcon from "@mui/icons-material/Search";
@@ -6,10 +6,18 @@ import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowDropDownCircleOutlined } from "@mui/icons-material";
 
-export default function CustomTextFieldAdmin({ searchKey, width = "100%", height,placeholder, value,setValue }) {
+const truncateText = (text, maxLength = 50) => {
+  if (!text) return "";
+  return text.length > maxLength
+    ? text.substring(0, maxLength) + "..."
+    : text;
+};
+
+export default function CustomTextFieldAdmin({ searchKey, width = "100%", height, placeholder, value, setValue }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const theme = useTheme();
   const isArabic = i18n.language === "ar";
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   return (
     <TextField
       hiddenLabel
@@ -17,7 +25,7 @@ export default function CustomTextFieldAdmin({ searchKey, width = "100%", height
       onChange={(e) => {
         setValue(e.target.value);
       }}
-      placeholder={placeholder}
+      placeholder={ isMobile ? truncateText(placeholder,40) : placeholder}
       // fullWidth
       InputProps={{
         endAdornment: (
@@ -37,7 +45,7 @@ export default function CustomTextFieldAdmin({ searchKey, width = "100%", height
         },
       }}
       sx={{
-        width: width,
+        width: isMobile ? "50%" : width,
         height: height,
         direction: isArabic ? "rtl" : "ltr",
         background: theme.palette.background.gray,
@@ -46,6 +54,7 @@ export default function CustomTextFieldAdmin({ searchKey, width = "100%", height
           "& fieldset": { border: "none" },
           "&:hover fieldset": { border: "none" },
           "&.Mui-focused fieldset": { border: "none" },
+        
         },
       }}
     />
@@ -347,7 +356,7 @@ export default function CustomTextFieldAdmin({ searchKey, width = "100%", height
 //   );
 // }
 
-function CustomSelect({ children, t, height, label, backgroundColor, value, setValue ,error,setError , onChange , fieldID, fieldName , onBlur , onKeyDown }) {
+function CustomSelect({ children, t, height, label, backgroundColor, value, setValue, error, setError, onChange, fieldID, fieldName, onBlur, onKeyDown }) {
   const theme = useTheme();
   // const { placeholder, helperText, error, ...rest } = props;
 
@@ -357,8 +366,8 @@ function CustomSelect({ children, t, height, label, backgroundColor, value, setV
 
   return (
     <TextField
-    id={fieldID}
-    name={fieldName}
+      id={fieldID}
+      name={fieldName}
       select
       size="small"
       SelectProps={{
@@ -368,9 +377,9 @@ function CustomSelect({ children, t, height, label, backgroundColor, value, setV
       }}
       sx={{
         direction: isArabic ? "rtl" : "ltr",
-        my:"auto",
+        my: "auto",
         width: "100%",
-        minWidth: "160px",
+        minWidth:"160px",
         "& .MuiInputBase-root": {
           height: height || "45px",
           backgroundColor: backgroundColor ? backgroundColor : theme.palette.background.gray,
@@ -404,17 +413,17 @@ function CustomSelect({ children, t, height, label, backgroundColor, value, setV
 
       value={value}
       onChange={(e) => {
-        if(onChange){
-         setValue && setValue(e.target.value);
+        if (onChange) {
+          setValue && setValue(e.target.value);
           onChange(e);
-          
+
         }
-        else{
-           setValue(e.target.value);
+        else {
+          setValue(e.target.value);
         }
 
-       setError && setError("");
-         
+        setError && setError("");
+
       }}
       onBlur={onBlur}
       error={error}
