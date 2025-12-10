@@ -15,7 +15,9 @@ import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import { useEffect } from "react";
 import notify from "../../components/notify";
-import { GET_ALL_FEES_TYPES, UPDATE_ONE_FEE_BY_ID } from "../../graphql/feeTypesQueries";
+import { GET_ALL_FEES_TYPES, UPDATE_ONE_FEE_BY_ID, GET_ALL_FEES_TYPES_FILTERED } from "../../graphql/feeTypesQueries";
+import FilterComponent from "../../components/TableComponent/FilterComponent";
+import { TrueOrFalseArr } from "../../constants";
 
 export default function AllFeesTypesPage() {
     const theme = useTheme();
@@ -26,10 +28,17 @@ export default function AllFeesTypesPage() {
 
     const isArabic = i18n.language === "ar";
 
+    // getFeesTypes
     const [GetFeesTypes, {
-        data: { getFeesTypes } = {},
+        data: {
+            getFeesTypesFiltered: {
+                total = 0,
+                feesTypes: getFeesTypes = []
+            } = {}
+        }
+        = {},
         loading: gettingFees
-    }] = useLazyQuery(GET_ALL_FEES_TYPES, { fetchPolicy: "network-only" });
+    }] = useLazyQuery(GET_ALL_FEES_TYPES_FILTERED, { fetchPolicy: "network-only" });
 
     const [UpdateFeesType, {
         data,
@@ -37,8 +46,36 @@ export default function AllFeesTypesPage() {
     }] = useMutation(UPDATE_ONE_FEE_BY_ID, { fetchPolicy: "network-only" });
 
     useEffect(() => {
-        GetFeesTypes();
-    }, []);
+        let page;
+        let limit;
+        if (!searchParams.get("page")) {
+            page = 1;
+        }
+        else {
+            page = Number(searchParams.get("page"));
+        }
+        if (!searchParams.get("limit")) {
+            limit = 10;
+        }
+        else {
+            limit = Number(searchParams.get("limit"));
+        }
+
+        let searchText = "";
+
+        if (searchParams.get("search")) {
+            searchText = searchParams.get("search");
+        }
+
+        let variablesObj = {};
+        if (page) variablesObj.page = page;
+        if (limit) variablesObj.limit = limit;
+        if (searchText) variablesObj.search = searchText;
+        if (searchParams.get("status") && searchParams.get("status") !== "0") variablesObj.status = searchParams.get("status") === "true" ? true : false;
+
+        GetFeesTypes({ variables: variablesObj });
+
+    }, [searchParams]);
 
     // // inActive
     //  let feesTypesToShow=getFeesTypes?.map(el=>{
@@ -144,10 +181,10 @@ export default function AllFeesTypesPage() {
             // return;
             let data = {
                 status: newStatus == "inActive" ? false : true,
-                title_ar:selectedRow?.title_ar,
+                title_ar: selectedRow?.title_ar,
                 title_en: selectedRow?.title_en,
-                inside_yemen_value:selectedRow?.inside_yemen_value,
-                outside_yemen_value:selectedRow?.outside_yemen_value
+                inside_yemen_value: selectedRow?.inside_yemen_value,
+                outside_yemen_value: selectedRow?.outside_yemen_value
             }
             const result = await UpdateFeesType({
                 variables: {
@@ -167,20 +204,41 @@ export default function AllFeesTypesPage() {
 
     // console.log("faculties", faculties);
 
+    const onFilterChange =  (filterOBJ) => {
+    console.log("filterOBJ", filterOBJ);
+    if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
+    if( filterOBJ.hasOwnProperty("status")&&filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+
+    setSearchParams(searchParams);
+  }
+
+
+    let pageLimit;
+  if (!searchParams.get("limit")) {
+    pageLimit = 10;
+  }
+  else {
+    pageLimit = Number(searchParams.get("limit"));
+  }
+
+  console.log("pageLimit", pageLimit);
+
+  const totalPages = parseInt(total / pageLimit) + 1;
+
     const hasViewPermission = true;
     const hasAddPermission = true;
 
     if (!hasViewPermission) return <Navigate to="/profile" />;
 
     let translateText = isArabic ? "رسوم" : "fee type";
-
+    let searchText= isArabic ? "ب اسم الرسوم" : "Fee Types Title";
 
     console.log("getFeesTypes", getFeesTypes);
 
     if (gettingFees) return <LoadingPage />
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
-             {
+            {
                 updatingStatus && <CircularProgress
                     size={26}
                     thickness={8}
@@ -188,53 +246,66 @@ export default function AllFeesTypesPage() {
                 />
             }
 
-             <Grid container spacing={3}>
-                            <Grid item
-                                sm={12} md={12}
-                                sx={{
-                                    overflowX: "auto", // ✅ مهم جدًا عشان الجدول يعمل scroll داخل الـ Grid
-                                }}
-                            >
-                                <Header
-                                    title={t("Dashboard.feesTypes")}
-                                    subtitle={t("Dashboard.feesTypes")}
-                                    i18n={i18n}
-                                    haveBtn={hasAddPermission}
-                                    btn={t("addItem", { item: translateText })}
-                                    btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
-                                    onSubmit={addNavigate}
-                                    isExcel
-                                    isPdf
-                                    isPrinter
-                                    onExcel={() => fetchAndExport("excel")}
-                                    onPdf={() => fetchAndExport("pdf")}
-                                    onPrinter={() => fetchAndExport("print")}
-                                />
-            
-            
-                                <DashboardFilterComponent t={t} />
-            
-            
-                                <TableComponent
-                                    columns={columns}
-                                    data={getFeesTypes}
-                                    statusKey={"status"}
-                                    // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
-                                    loading={gettingFees}
-                                    // isUsers={true}
-                                    // statusKey="status"
-                                    sx={{
-                                        flex: 1,
-                                        overflow: "auto",
-                                        boxShadow: 1,
-                                        borderRadius: 1,
-                                        width: "100%",
-                                    }}
-                                    handleDetailsClick={handleDetailsClick}
-                                     onStatusChange={onStatusChange}
-                                />
-                            </Grid>
-                        </Grid>
+            <Grid container spacing={3}>
+                <Grid item
+                    sm={12} md={12}
+                    sx={{
+                        overflowX: "auto", // ✅ مهم جدًا عشان الجدول يعمل scroll داخل الـ Grid
+                    }}
+                >
+                    <Header
+                        title={t("Dashboard.feesTypes")}
+                        subtitle={t("Dashboard.feesTypes")}
+                        i18n={i18n}
+                        haveBtn={hasAddPermission}
+                        btn={t("addItem", { item: translateText })}
+                        btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
+                        onSubmit={addNavigate}
+                        isExcel
+                        isPdf
+                        isPrinter
+                        onExcel={() => fetchAndExport("excel")}
+                        onPdf={() => fetchAndExport("pdf")}
+                        onPrinter={() => fetchAndExport("print")}
+                    />
+
+
+                    <DashboardFilterComponent
+                                placeholder={t("Dashboard.searchWith", { search: searchText })}
+                                textSearchField={"search"}
+                                statusKey={"status"}
+                                select1Label={"Status"}
+                                TrueOrFalseArr={TrueOrFalseArr}
+                                select2Label={"Dashboard.transactionType"}
+                                // selectKey={"operation_type"}
+                                // selectOptions={transactionTypesArr}
+                                onFilterChange={onFilterChange}
+                                t={t}
+                              />
+
+
+                    <TableComponent
+                        columns={columns}
+                        data={getFeesTypes}
+                        statusKey={"status"}
+                        // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
+                        loading={gettingFees}
+                        // isUsers={true}
+                        // statusKey="status"
+                        sx={{
+                            flex: 1,
+                            overflow: "auto",
+                            boxShadow: 1,
+                            borderRadius: 1,
+                            width: "100%",
+                        }}
+                        handleDetailsClick={handleDetailsClick}
+                        onStatusChange={onStatusChange}
+                    />
+
+                    <FilterComponent totalPages={totalPages} />
+                </Grid>
+            </Grid>
         </Box>
     )
 }
