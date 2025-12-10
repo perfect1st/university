@@ -1,4 +1,4 @@
-import { GET_ALL_TRANSACTION_TYPES, UPDATE_TRANSACTION_TYPE } from "../../graphql/transactionTypeQueries"
+import { GET_ALL_TRANSACTION_TYPES_FILTERED, GET_ALL_TRANSACTION_TYPES, UPDATE_TRANSACTION_TYPE } from "../../graphql/transactionTypeQueries"
 import LoadingPage from "../../components/LoadingComponent";
 import { useTheme } from "@emotion/react";
 import { Box, CircularProgress, Grid, useMediaQuery } from "@mui/material";
@@ -15,6 +15,9 @@ import DashboardFilterComponent from "../../components/Utilities/DashboardFilter
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import notify from "../../components/notify";
+import { useEffect } from "react";
+import FilterComponent from "../../components/TableComponent/FilterComponent";
+import { paymentMethodsArr, transactionTypesArr, TrueOrFalseArr } from "../../constants";
 
 // t(`fee.transactionType.${el}
 // t(`fee.transactionType.${el}`, { lng: "ar" })
@@ -28,10 +31,24 @@ export default function AllTransactionTypesPage() {
 
   const isArabic = i18n.language === "ar";
 
-  const {
-    data: { getTransactionTypes } = {},
-    loading
-  } = useQuery(GET_ALL_TRANSACTION_TYPES, { fetchPolicy: "network-only" });
+  // getTransactionTypes
+  const [
+    GetTransactionTypesFiltered,
+    {
+      data: {
+        getTransactionTypesFiltered: {
+          total = 0,
+          transactionTypes: getTransactionTypes = []
+        } = {}
+      }
+      = {},
+      loading
+    }
+  ] = useLazyQuery(GET_ALL_TRANSACTION_TYPES_FILTERED, {
+    fetchPolicy: "network-only"
+  });
+
+
 
   const [
     UpdateTransactionType, {
@@ -39,7 +56,42 @@ export default function AllTransactionTypesPage() {
     }
   ] = useMutation(UPDATE_TRANSACTION_TYPE, { fetchPolicy: "network-only" });
 
-  console.log("getTransactionTypes", getTransactionTypes, loading);
+  useEffect(() => {
+    let page;
+    let limit;
+    if (!searchParams.get("page")) {
+      page = 1;
+    }
+    else {
+      page = Number(searchParams.get("page"));
+    }
+    if (!searchParams.get("limit")) {
+      limit = 10;
+    }
+    else {
+      limit = Number(searchParams.get("limit"));
+    }
+
+    let searchText = "";
+
+    if (searchParams.get("search")) {
+      searchText = searchParams.get("search");
+    }
+
+    let variablesObj = {};
+    if (page) variablesObj.page = page;
+    if (limit) variablesObj.limit = limit;
+    if (searchText) variablesObj.search = searchText;
+    if (searchParams.get("operation_type")) variablesObj.operation_type = searchParams.get("operation_type");
+    if(searchParams.get("status")&&searchParams.get("status") !=="0") variablesObj.status= searchParams.get("status") === "true" ? true : false;
+
+    GetTransactionTypesFiltered({
+      variables: variablesObj
+    });
+
+  }, [searchParams]);
+
+  console.log("getTransactionTypes", getTransactionTypes);
 
 
 
@@ -133,8 +185,8 @@ export default function AllTransactionTypesPage() {
 
   const handleDetailsClick = (selectedRow) => {
     console.log('handleDetailsClick', selectedRow);
-    let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
-    
+    let row = getTransactionTypes?.find(el => el?.id == selectedRow?.id);
+
     navigate(`details/${selectedRow?.id}`, {
       state: row
     });
@@ -143,12 +195,12 @@ export default function AllTransactionTypesPage() {
   const onStatusChange = async (selectedRow, newStatus) => {
     try {
       console.log("selectedRow", selectedRow, newStatus);
-      let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
+      let row = getTransactionTypes?.find(el => el?.id == selectedRow?.id);
 
       // return;
       let data = {
         status: newStatus == "inActive" ? false : true,
-        operation_type:row?.operation_type
+        operation_type: row?.operation_type
       }
       const result = await UpdateTransactionType({
         variables: {
@@ -166,6 +218,26 @@ export default function AllTransactionTypesPage() {
     }
   }
 
+  let pageLimit;
+  if (!searchParams.get("limit")) {
+    pageLimit = 10;
+  }
+  else {
+    pageLimit = Number(searchParams.get("limit"));
+  }
+
+  console.log("pageLimit", pageLimit);
+
+  const totalPages = parseInt(total / pageLimit) + 1;
+
+  const onFilterChange = async (filterOBJ) => {
+    console.log("filterOBJ", filterOBJ);
+    if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
+    if (filterOBJ.hasOwnProperty("operation_type") && filterOBJ.operation_type !== "0") searchParams.set("operation_type", filterOBJ.operation_type);
+    if( filterOBJ.hasOwnProperty("status")&&filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+
+    setSearchParams(searchParams);
+  }
 
 
   const hasViewPermission = true;
@@ -174,6 +246,8 @@ export default function AllTransactionTypesPage() {
   if (!hasViewPermission) return <Navigate to="/profile" />;
 
   let translateText = isArabic ? "نوع معاملة مالية" : "Transaction Type";
+
+  let searchText= isArabic ? "اسم المعاملة المالية":"Fee Types Name"
 
   if (loading) return <LoadingPage />;
   return (
@@ -209,7 +283,18 @@ export default function AllTransactionTypesPage() {
           />
 
 
-          <DashboardFilterComponent t={t} />
+          <DashboardFilterComponent
+            placeholder={t("Dashboard.searchWith", { search: searchText })}
+            textSearchField={"search"}
+            statusKey={"status"}
+            select1Label={"Status"}
+            TrueOrFalseArr={TrueOrFalseArr}
+            select2Label={"Dashboard.transactionType"}
+            selectKey={"operation_type"}
+            selectOptions={transactionTypesArr}
+            onFilterChange={onFilterChange}
+            t={t}
+          />
 
 
           <TableComponent
@@ -230,6 +315,8 @@ export default function AllTransactionTypesPage() {
             handleDetailsClick={handleDetailsClick}
             onStatusChange={onStatusChange}
           />
+
+          <FilterComponent totalPages={totalPages} />
         </Grid>
       </Grid>
     </Box>
