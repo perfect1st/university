@@ -13,9 +13,11 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
-import { GET_ALL_FACULITIES, UPDATE_FACULITY_BY_ID } from "../../graphql/facultyQuiries";
+import { GET_ALL_FACULITIES, UPDATE_FACULITY_BY_ID, FILTERED_PAGED_FACULITIES } from "../../graphql/facultyQuiries";
 import { useEffect } from "react";
 import notify from "../../components/notify";
+import FilterComponent from "../../components/TableComponent/FilterComponent";
+import { TrueOrFalseArr } from "../../constants";
 
 export default function AllfaculitiesPage() {
     const theme = useTheme();
@@ -27,13 +29,13 @@ export default function AllfaculitiesPage() {
     const isArabic = i18n.language === "ar";
 
     const [
-        Faculties,
+        FilteredPagedFaculties,
         {
-            data: { faculties } = {},
+            data: { filteredPagedFaculties } = {},
             loading: faculitiesLoading,
-            error
+            
         }
-    ] = useLazyQuery(GET_ALL_FACULITIES, {
+    ] = useLazyQuery(FILTERED_PAGED_FACULITIES, {
         fetchPolicy: "network-only"
     });
 
@@ -44,8 +46,36 @@ export default function AllfaculitiesPage() {
     }] = useMutation(UPDATE_FACULITY_BY_ID, { fetchPolicy: "network-only" });
 
     useEffect(() => {
-        Faculties();
-    }, []);
+        let page;
+        let limit;
+        if (!searchParams.get("page")) {
+            page = 1;
+        }
+        else {
+            page = Number(searchParams.get("page"));
+        }
+        if (!searchParams.get("limit")) {
+            limit = 10;
+        }
+        else {
+            limit = Number(searchParams.get("limit"));
+        }
+
+        let searchText="";
+
+        if(searchParams.get("search")){
+            searchText=searchParams.get("search");
+        }
+        
+        let variablesObj={};
+        if(page) variablesObj.page=page;
+        if(limit) variablesObj.limit=limit;
+        if(searchText) variablesObj.search=searchText;
+        if(searchParams.get("status")&&searchParams.get("status") !=="0") variablesObj.status= searchParams.get("status") === "true" ? true : false;
+        
+        FilteredPagedFaculties({ variables: variablesObj });
+        
+    }, [searchParams]);
 
     let columns = [
         // { key: "ID", label: "ID" },
@@ -60,7 +90,7 @@ export default function AllfaculitiesPage() {
 
     const fetchAndExport = async (type) => {
         try {
-            const exportData = faculties.map((user) => ({
+            const exportData = filteredPagedFaculties?.faculties.map((user) => ({
                 ID: user.serial_num,
                 "Full Name": user.name,
                 Email: user.email,
@@ -158,7 +188,28 @@ export default function AllfaculitiesPage() {
         }
     }
 
-    console.log("faculties", faculties);
+     const onFilterChange=async(filterOBJ)=>{
+        console.log("filterOBJ",filterOBJ);
+        if(filterOBJ.search) searchParams.set("search", filterOBJ.search);
+        if( filterOBJ.hasOwnProperty("status")&&filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+            // searchParams.get("search", e.target.value);
+        setSearchParams(searchParams);
+    }
+
+
+     let pageLimit;
+    if (!searchParams.get("limit")) {
+        pageLimit = 10;
+    }
+    else {
+        pageLimit = Number(searchParams.get("limit"));
+    }
+
+    console.log("pageLimit", pageLimit);
+
+    const totalPages = parseInt(filteredPagedFaculties?.total / pageLimit) + 1;
+
+    console.log("filteredPagedFaculties", filteredPagedFaculties);
 
     const hasViewPermission = true;
     const hasAddPermission = true;
@@ -203,7 +254,14 @@ export default function AllfaculitiesPage() {
                     />
 
 
-                    <DashboardFilterComponent t={t} />
+                    <DashboardFilterComponent
+                                        placeholder={t("Dashboard.searchByFaculityName")}
+                                        textSearchField={"search"}
+                                        statusKey={"status"}
+                                        TrueOrFalseArr={TrueOrFalseArr}
+                                        onFilterChange={onFilterChange}
+                                         t={t}
+                                          />
 
 
                     <TableComponent
@@ -211,7 +269,7 @@ export default function AllfaculitiesPage() {
                         hasNavigateBtn={true}
                         navigateTo={'departments'}
                         navigateBtnTitle={t("departments")}
-                        data={faculties}
+                        data={filteredPagedFaculties?.faculties}
                         statusKey={"status"}
                         // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
                         loading={faculitiesLoading}
@@ -227,6 +285,8 @@ export default function AllfaculitiesPage() {
                         handleDetailsClick={handleDetailsClick}
                         onStatusChange={onStatusChange}
                     />
+
+                    <FilterComponent totalPages={totalPages} />
                 </Grid>
             </Grid>
         </Box>

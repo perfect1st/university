@@ -72,7 +72,8 @@ export default function AllUsersPage() {
         if(page) variablesObj.page=page;
         if(limit) variablesObj.limit=limit;
         if(searchText) variablesObj.search=searchText;
-        if(searchParams.get("status") !=="0") variablesObj.status= searchParams.get("status") === "true" ? true : false;
+        if(searchParams.get("status")&&searchParams.get("status") !=="0") variablesObj.status= searchParams.get("status") === "true" ? true : false;
+        if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
 
         // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
 
@@ -205,7 +206,8 @@ export default function AllUsersPage() {
     const onFilterChange=async(filterOBJ)=>{
         console.log("filterOBJ",filterOBJ);
         if(filterOBJ.search) searchParams.set("search", filterOBJ.search);
-         if(filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+        if( filterOBJ.hasOwnProperty("status")&&filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+        if(filterOBJ.role) searchParams.set("role", filterOBJ.role);
             // searchParams.get("search", e.target.value);
         setSearchParams(searchParams);
     }

@@ -12,7 +12,7 @@ import VerticalTextField, {  VerticalTextFieldSelect } from "../../components/Ut
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import LoadingPage from "../../components/LoadingComponent";
 import { useState } from "react";
-import { paymentMethodsArr, transactionTypesArr, TrueOrFalseArr } from "../../constants";
+import {  transactionTypesArr } from "../../constants";
 
 
 export default function AddTransactionTypePage() {

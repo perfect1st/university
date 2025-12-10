@@ -36,6 +36,48 @@ query GetTransactions {
 }
 `;
 
+export const GET_FILTERED_TRANSACTIONS=gql`
+query GetTransactionsFiltered(
+    $limit: Int!
+    $page: Int!
+    $operation_type: String
+    $search: String
+    $payment_method_type: String
+) {
+    getTransactionsFiltered(
+        operation_type: $operation_type
+        page: $page
+        limit: $limit
+        search: $search
+        payment_method_type: $payment_method_type
+    ) {
+        total
+        transactions {
+            id
+            payment_method_type
+            amount
+            payment_document_file
+            transaction_date
+            transaction_serial
+            user_id {
+                id
+                username
+                fullname
+                email
+                mobile
+                role
+                status
+                profile_image
+                qid_number
+                is_inside_yemen
+                createdAt
+                updatedAt
+            }
+        }
+    }
+}
+`;
+
 export const GET_TRANSACTION_BY_ID=gql`
 query GetTransactionById($id:ID!) {
     getTransactionById(id: $id) {

@@ -62,7 +62,28 @@ mutation UpdateFaculty($id:ID!,$input:UpdateFacultyInput!) {
 
 `;
 
-
+export const FILTERED_PAGED_FACULITIES=gql`
+query FilteredPagedFaculties(
+    $limit: Int!
+    $page: Int!
+    $status: Boolean
+    $search: String
+) {
+    filteredPagedFaculties(search: $search, status: $status, page: $page, limit: $limit) {
+        total
+        faculties {
+            id
+            title_ar
+            title_en
+            status
+            required_dep
+            study_years_count
+            createdAt
+            updatedAt
+        }
+    }
+}
+`;
 
 //////////////Departments اقسام الكلية///////////////
 

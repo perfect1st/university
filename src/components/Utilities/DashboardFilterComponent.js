@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import CustomTextFieldAdmin, { CustomSelect } from './CustomTextField'
 import { useSearchParams } from 'react-router-dom';
 
-export default function DashboardFilterComponent({ t, placeholder, onFilterChange, textSearchField, statusKey , TrueOrFalseArr , selectKey , selectOptions,select2Label }) {
+export default function DashboardFilterComponent({ t, placeholder, onFilterChange, textSearchField, statusKey , TrueOrFalseArr , selectKey , selectOptions,select2Label,select1Label="Status" }) {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -25,7 +25,7 @@ export default function DashboardFilterComponent({ t, placeholder, onFilterChang
 
           {
             statusKey && <CustomSelect t={t} value={statusSearch} setValue={setStatusSearch} height={"40px"}>
-              <MenuItem value="0">{t("Status")}</MenuItem>
+              <MenuItem value="0">{t(select1Label)}</MenuItem>
               {
                 TrueOrFalseArr?.map((el, i) => (
                   <MenuItem key={i} value={el}>{t(el)}</MenuItem>
@@ -51,8 +51,9 @@ export default function DashboardFilterComponent({ t, placeholder, onFilterChang
               console.log("statusSearch", statusSearch);
 
               let filterOBJ = {};
-              if (searchValue) filterOBJ[textSearchField] = searchValue;
+              if (searchValue) filterOBJ[textSearchField] = searchValue?.trim();
               if (statusSearch !== "0") filterOBJ[statusKey] = statusSearch;
+              if(selectKey) filterOBJ[selectKey]=select2Search;
 
               onFilterChange(filterOBJ);
             }}
