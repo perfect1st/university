@@ -15,6 +15,7 @@ import {
   Box,
   alpha,
   Button,
+  useMediaQuery,
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { ReactComponent as SortIcon } from "../../assets/Sort-icon.svg";
@@ -70,6 +71,7 @@ const TableComponent = ({
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const location=useLocation();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   
   const chipRefs = useRef({});
   const [maxChipWidth, setMaxChipWidth] = useState(0);
@@ -127,11 +129,9 @@ const TableComponent = ({
       // }} 
       // sx={{ width: "100%", boxShadow: "none !important" ,maxWidth: "100%",overflowX: "auto" }}
       sx={{
-        width: "100%",
-    maxWidth: "100%",
+        width: isMobile ? "90%" : "100%",
     overflowX: "auto", // ✅ لو الأعمدة كتيرة بيعمل scroll تلقائي
     boxShadow: "none",
-      whiteSpace: "nowrap" // يمنع تكسير الصفوف
       }}
     >
       <Box sx={{ 
