@@ -1,9 +1,9 @@
 import { useTheme } from "@emotion/react";
-import { Box, Grid, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { GET_CITIES_BY_COUNTRY_ID, GET_COUNTRY_BY_ID, GET_FILTERED_CITIES } from "../../graphql/countriesQueries";
-import { useLazyQuery, useQuery } from "@apollo/client/react";
+import { GET_CITIES_BY_COUNTRY_ID, GET_COUNTRY_BY_ID, GET_FILTERED_CITIES, UPDATE_CITY_BY_ID } from "../../graphql/countriesQueries";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import LoadingPage from "../../components/LoadingComponent";
 import * as XLSX from "xlsx";
@@ -17,6 +17,7 @@ import Header from "../../components/PageHeader/header";
 import { useEffect } from "react";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
+import notify from "../../components/notify";
 
 // GET_CITIES_BY_COUNTRY_ID
 export default function AllCitiesInOneCountryPage() {
@@ -32,6 +33,7 @@ export default function AllCitiesInOneCountryPage() {
 
   console.log("location", location.state);
 
+  // get filtered cities
   const [
     FilteredPagedCities
     ,
@@ -49,6 +51,7 @@ export default function AllCitiesInOneCountryPage() {
     { fetchPolicy: "network-only" }
   );
 
+  // get country
   const [
     Country
     ,
@@ -58,6 +61,18 @@ export default function AllCitiesInOneCountryPage() {
     }
   ] = useLazyQuery(GET_COUNTRY_BY_ID,
     { fetchPolicy: "network-only" }
+  );
+
+  const [
+    UpdateCity,
+    {
+      loading: updatingStatus,
+    }
+  ] = useMutation(
+    UPDATE_CITY_BY_ID,
+    {
+      fetchPolicy: "network-only"
+    }
   );
 
 
@@ -111,7 +126,7 @@ export default function AllCitiesInOneCountryPage() {
     // { key: "ID", label: "ID" },
     { key: "name_ar", label: t("Dashboard.NameInArabic") },
     { key: "name_en", label: t("Dashboard.NameInEnglish") },
-    // { key: "status", label: t("Status") },
+    { key: "status", label: t("Status") },
 
   ];
 
@@ -205,6 +220,32 @@ export default function AllCitiesInOneCountryPage() {
     setSearchParams(searchParams);
   }
 
+  const onStatusChange = async (selectedRow, newStatus) => {
+    try {
+      // console.log("selectedRow", selectedRow, newStatus);
+      // let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
+
+      // // return;
+      let data = {
+        status: newStatus == "inActive" ? false : true,
+        //   operation_type:row?.operation_type
+      }
+      const result = await UpdateCity({
+        variables: {
+          id: selectedRow?.id,
+          input: data
+        }
+      });
+
+      console.log("reeesult", result);
+
+      notify(t("success"), "success");
+
+    } catch (error) {
+      notify(t("error"), "error");
+    }
+  }
+
   let pageLimit;
   if (!searchParams.get("limit")) {
     pageLimit = 10;
@@ -237,6 +278,13 @@ export default function AllCitiesInOneCountryPage() {
             overflowX: "auto", // ✅ مهم جدًا عشان الجدول يعمل scroll داخل الـ Grid
           }}
         >
+          {
+            updatingStatus && <CircularProgress
+              size={26}
+              thickness={8}
+              sx={{ color: "black" }}
+            />
+          }
           <Header
             title={t("cities")}
             subtitle={`${t("cities")} (${isArabic ? country?.name_ar : country?.name_en})`}
@@ -269,7 +317,7 @@ export default function AllCitiesInOneCountryPage() {
             // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
             loading={citiesLoading}
             // isUsers={true}
-            // statusKey="status"
+            statusKey="status"
             sx={{
               flex: 1,
               overflow: "auto",
@@ -278,7 +326,7 @@ export default function AllCitiesInOneCountryPage() {
               width: "100%",
             }}
             handleDetailsClick={handleDetailsClick}
-          // onStatusChange={onStatusChange}
+            onStatusChange={onStatusChange}
           />
 
           <FilterComponent totalPages={totalPages} />
