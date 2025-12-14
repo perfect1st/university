@@ -87,6 +87,18 @@ query FilteredPagedFaculties(
 
 //////////////Departments اقسام الكلية///////////////
 
+export const GET_ALL_DEPARTMENTS_FOR_FILTER=gql`
+query FacultyDepartments {
+    facultyDepartments {
+        id
+        title_ar
+        title_en
+        status
+        createdAt
+        updatedAt
+    }
+}
+`;
 export const GET_ALL_DEPARTMENTS=gql`
 query FacultyDepartments {
     facultyDepartments {

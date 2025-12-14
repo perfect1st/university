@@ -56,7 +56,9 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
      const user = getUserCookie();
      const isAuthenticated = Boolean(user);
 
-     if(isLoggedIn && !isAuthenticated) return <Navigate to="/home" />
+     console.log("loggedUser",loggedUser)
+
+     if((isLoggedIn && !isAuthenticated) || !user) return <Navigate to="/home" />
        
      
   console.log('isAuthenticated',isAuthenticated);

@@ -48,10 +48,10 @@ query FilteredPagedFacultyPrices(
     $search: String
     $faculty_id:ID
     $faculty_department_id:ID
-    $level_year: Int!
+    $level_year: Int
     $status: Boolean
-    $limit: Int!
-    $page: Int!
+    $limit: Int
+    $page: Int
     ) {
     filteredPagedFacultyPrices(
         search: $search
@@ -68,6 +68,7 @@ query FilteredPagedFacultyPrices(
             level_year
             price_inside_yemen
             price_outside_yemen
+            status
             createdAt
             updatedAt
             faculty_id {
@@ -100,6 +101,7 @@ mutation UpdateFacultyPrice($id:ID!,$input:FacultyPriceInput!) {
         level_year
         price_inside_yemen
         price_outside_yemen
+        status
         createdAt
         updatedAt
     }
