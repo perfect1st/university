@@ -6,8 +6,30 @@ query Countries {
         id
         name_ar
         name_en
+        status
         createdAt
         updatedAt
+    }
+}
+`;
+
+export const GET_FILTERED_COUNTRIES=gql`
+query FilteredPagedCountries(
+    $limit: Int!
+    $page: Int!
+    $search: String
+    $status: Boolean
+    ) {
+    filteredPagedCountries(search: $search, page: $page, limit: $limit, status: $status) {
+        total
+        countries {
+            id
+            name_ar
+            name_en
+            status
+            createdAt
+            updatedAt
+        }
     }
 }
 `;
@@ -18,6 +40,7 @@ query Country($id:ID!) {
         id
         name_ar
         name_en
+        status
         createdAt
         updatedAt
     }
@@ -32,6 +55,7 @@ mutation CreateCountry($input:CreateCountryInput!) {
         id
         name_ar
         name_en
+        status
         createdAt
         updatedAt
     }
@@ -44,6 +68,7 @@ mutation UpdateCountry($id:ID!, $input:UpdateCountryInput!) {
         id
         name_ar
         name_en
+        status
         createdAt
         updatedAt
     }
@@ -53,6 +78,7 @@ mutation UpdateCountry($id:ID!, $input:UpdateCountryInput!) {
 
 
 //////////////  cities //////////////////////////
+
 export const GET_CITIES_BY_COUNTRY_ID=gql`
 query GetCitiesByCountry($country_id:ID!) {
     getCitiesByCountry(country_id: $country_id) {
@@ -60,8 +86,31 @@ query GetCitiesByCountry($country_id:ID!) {
         name_ar
         name_en
         country_id
+        status
         createdAt
         updatedAt
+    }
+}
+`;
+
+export const GET_FILTERED_CITIES=gql`
+query FilteredPagedCities(
+    $limit: Int!
+    $page: Int!
+    $search: String
+    $country_id:ID
+    $status: Boolean
+    ) {
+    filteredPagedCities(search: $search, country_id: $country_id, page: $page, limit: $limit, status: $status) {
+        total
+        cities {
+            id
+            name_ar
+            name_en
+            status
+            createdAt
+            updatedAt
+        }
     }
 }
 `;
@@ -73,6 +122,7 @@ mutation CreateCity($input:CreateCityInput!) {
         name_ar
         name_en
         country_id
+        status
         createdAt
         updatedAt
     }
@@ -87,6 +137,7 @@ mutation UpdateCity($id:ID!,$input:UpdateCityInput!) {
         name_ar
         name_en
         country_id
+        status
         createdAt
         updatedAt
     }

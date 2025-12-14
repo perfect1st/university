@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import { Box, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { GET_CITIES_BY_COUNTRY_ID , GET_COUNTRY_BY_ID } from "../../graphql/countriesQueries";
+import { GET_CITIES_BY_COUNTRY_ID, GET_COUNTRY_BY_ID, GET_FILTERED_CITIES } from "../../graphql/countriesQueries";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import LoadingPage from "../../components/LoadingComponent";
@@ -15,6 +15,8 @@ import DashboardFilterComponent from "../../components/Utilities/DashboardFilter
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import { useEffect } from "react";
+import FilterComponent from "../../components/TableComponent/FilterComponent";
+import { TrueOrFalseArr } from "../../constants";
 
 // GET_CITIES_BY_COUNTRY_ID
 export default function AllCitiesInOneCountryPage() {
@@ -22,23 +24,28 @@ export default function AllCitiesInOneCountryPage() {
   const theme = useTheme();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location=useLocation();
+  const location = useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
   const isArabic = i18n.language === "ar";
 
-  console.log("location",location.state);
+  console.log("location", location.state);
 
   const [
-    GetCitiesByCountry
+    FilteredPagedCities
     ,
     {
-      data: { getCitiesByCountry } = {},
+      data: {
+        filteredPagedCities: {
+          cities: getCitiesByCountry = [],
+          total
+        } = {}
+      } = {},
       loading: citiesLoading,
       error: citiesError
     }
-  ] = useLazyQuery(GET_CITIES_BY_COUNTRY_ID,
+  ] = useLazyQuery(GET_FILTERED_CITIES,
     { fetchPolicy: "network-only" }
   );
 
@@ -48,7 +55,6 @@ export default function AllCitiesInOneCountryPage() {
     {
       data: { country } = {},
       loading: countryLoading,
-      error: countryError
     }
   ] = useLazyQuery(GET_COUNTRY_BY_ID,
     { fetchPolicy: "network-only" }
@@ -57,34 +63,62 @@ export default function AllCitiesInOneCountryPage() {
 
 
   useEffect(() => {
-    if (id){
-        GetCitiesByCountry({
-      variables:{
-        country_id:id
+    if (id) {
+      let page;
+      let limit;
+      if (!searchParams.get("page")) {
+        page = 1;
       }
-    });
-
-    Country({
-      variables:{
-        id:id
+      else {
+        page = Number(searchParams.get("page"));
       }
-    });
+      if (!searchParams.get("limit")) {
+        limit = 10;
+      }
+      else {
+        limit = Number(searchParams.get("limit"));
+      }
 
-    } 
-  }, []);
+      let searchText = "";
+
+      if (searchParams.get("search")) {
+        searchText = searchParams.get("search");
+      }
+
+      let variablesObj = {};
+      if (page) variablesObj.page = page;
+      if (limit) variablesObj.limit = limit;
+      if (searchText) variablesObj.search = searchText;
+      if (searchParams.get("status") && searchParams.get("status") !== "0") variablesObj.status = searchParams.get("status") === "true" ? true : false;
+
+      variablesObj.country_id = id;
+      // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
+
+      FilteredPagedCities({ variables: variablesObj });
+
+
+      Country({
+        variables: {
+          id: id
+        }
+      });
+
+    }
+  }, [searchParams]);
 
 
   let columns = [
     // { key: "ID", label: "ID" },
     { key: "name_ar", label: t("Dashboard.NameInArabic") },
     { key: "name_en", label: t("Dashboard.NameInEnglish") },
+    // { key: "status", label: t("Status") },
 
   ];
 
   // console.log("id",id);
   console.log("data", getCitiesByCountry);
 
-  console.log("country",country);
+  console.log("country", country);
 
   const fetchAndExport = async (type) => {
     try {
@@ -163,11 +197,36 @@ export default function AllCitiesInOneCountryPage() {
     });
   }
 
+  const onFilterChange = async (filterOBJ) => {
+    console.log("filterOBJ", filterOBJ);
+    if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
+    if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+    // searchParams.get("search", e.target.value);
+    setSearchParams(searchParams);
+  }
+
+  let pageLimit;
+  if (!searchParams.get("limit")) {
+    pageLimit = 10;
+  }
+  else {
+    pageLimit = Number(searchParams.get("limit"));
+  }
+
+  console.log("pageLimit", pageLimit);
+
+  const totalPages = parseInt(total / pageLimit) + 1;
+
+  console.log("totalPages", totalPages);
+
+
   const hasViewPermission = true;
   const hasAddPermission = true;
   if (!hasViewPermission) return <Navigate to="/profile" />;
 
   let translateText = isArabic ? "مدينة" : "City";
+  let searchText = isArabic ? "بحث ب اسم المدينة" : "Search by city name";
+
   if (citiesLoading || countryLoading) return <LoadingPage />;
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
@@ -194,7 +253,14 @@ export default function AllCitiesInOneCountryPage() {
             onPrinter={() => fetchAndExport("print")}
           />
 
-          <DashboardFilterComponent t={t} />
+          <DashboardFilterComponent
+            placeholder={searchText}
+            textSearchField={"search"}
+            statusKey={"status"}
+            TrueOrFalseArr={TrueOrFalseArr}
+            onFilterChange={onFilterChange}
+            t={t}
+          />
 
 
           <TableComponent
@@ -214,6 +280,9 @@ export default function AllCitiesInOneCountryPage() {
             handleDetailsClick={handleDetailsClick}
           // onStatusChange={onStatusChange}
           />
+
+          <FilterComponent totalPages={totalPages} />
+
         </Grid>
       </Grid>
     </Box>

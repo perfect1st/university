@@ -549,7 +549,7 @@ function App() {
                     />
 
                   </Route>
-                  
+
                   {/* الجنسيات */}
                   <Route path="/nationality">
                     <Route
@@ -581,7 +581,7 @@ function App() {
 
                   </Route>
 
-
+                  {/* البلاد و الدول */}
                   <Route path="/countries">
 
                     <Route

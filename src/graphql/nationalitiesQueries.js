@@ -7,6 +7,7 @@ export const GET_ALL_NATIONALITIES=gql`
         name_ar
         name_en
         flag
+        status
         createdAt
         updatedAt
     }
@@ -17,15 +18,17 @@ export const GET_FILTERED_NATIONALITIES=gql`
 query FilteredPagedNationalities(
     $limit: Int!
     $page: Int!
+    $status: Boolean
     $search: String
     ) {
-    filteredPagedNationalities(search: $search, page: $page, limit: $limit) {
+    filteredPagedNationalities(search: $search, page: $page, limit: $limit, status: $status) {
         total
         nationalities {
             id
             name_ar
             name_en
             flag
+            status
             createdAt
             updatedAt
         }
@@ -40,6 +43,7 @@ mutation CreateNationality($input:CreateNationalityInput!) {
         name_ar
         name_en
         flag
+        status
         createdAt
         updatedAt
     }
@@ -53,6 +57,7 @@ mutation UpdateNationality($id:ID!,$input:UpdateNationalityInput!) {
         name_ar
         name_en
         flag
+        status
         createdAt
         updatedAt
     }

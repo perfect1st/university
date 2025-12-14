@@ -28,9 +28,6 @@ export default function AllUsersPage() {
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(10);
-
     const isArabic = i18n.language === "ar";
     // const totalPages = 10;
 

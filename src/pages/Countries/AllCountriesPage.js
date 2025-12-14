@@ -1,9 +1,9 @@
 import { useTheme } from "@emotion/react";
-import { Box, Grid, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { GET_ALL_COUNTRIES } from "../../graphql/countriesQueries";
-import { useQuery } from "@apollo/client/react";
+import { GET_ALL_COUNTRIES, GET_FILTERED_COUNTRIES, UPDATE_COUNTRY_BY_ID } from "../../graphql/countriesQueries";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import LoadingPage from "../../components/LoadingComponent";
 import * as XLSX from "xlsx";
@@ -14,69 +14,130 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
+import { useEffect, useState } from "react";
+import FilterComponent from "../../components/TableComponent/FilterComponent";
+import { TrueOrFalseArr } from "../../constants";
+import notify from "../../components/notify";
+
 
 
 
 export default function AllCountriesPage() {
 
-    const theme = useTheme();
-    const { t } = useTranslation();
-    const navigate = useNavigate();
-    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-    const [searchParams, setSearchParams] = useSearchParams();
+  const theme = useTheme();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [searchParams, setSearchParams] = useSearchParams();
 
-    const isArabic = i18n.language === "ar";
+  const isArabic = i18n.language === "ar";
 
-    // get all countries
-    const {
-        data: { countries } = {},
-        loading: countriesLoading,
-        error: countriesError,
-    } = useQuery(GET_ALL_COUNTRIES, { fetchPolicy: "network-only" });
+  // get all countries
+  const [
+    FilteredPagedCountries,
+    {
+      data: {
+        filteredPagedCountries: {
+          countries = [],
+          total
+        } = {}
+      }
+      = {},
+      loading: countriesLoading,
 
-    console.log('countriesData', countries);
+    }
+  ] = useLazyQuery(GET_FILTERED_COUNTRIES, { fetchPolicy: "network-only" });
 
-    let columns = [
-        // { key: "ID", label: "ID" },
-        { key: "name_ar", label: t("Dashboard.NameInArabic") },
-        { key: "name_en", label: t("Dashboard.NameInEnglish") },
-        {key:"navigate" , label:t("cities")},
-        //  { key: "userType", label: t("User Type") }
-        // { key: "status", label: t("Status") },
-    ];
-    // const location=useLocation();
-    const fetchAndExport = async (type) => {
-        try {
-            const exportData = countries.map((user) => ({
-                ID: user.serial_num,
-                "Full Name": user.name,
-                Email: user.email,
-                Mobile: user.mobile,
-                "User Type": user.userType,
-                Status: user.status,
-            }));
+  const [
+    UpdateCountry,
+    {
+      loading: updatingStatus
+    }
+  ] = useMutation(
+    UPDATE_COUNTRY_BY_ID,
+    {
+      fetchPolicy: "network-only"
+    }
+  );
 
-            if (type === "excel") {
-                const ws = XLSX.utils.json_to_sheet(exportData);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Users");
-                const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-                const data = new Blob([excelBuffer], {
-                    type: "application/octet-stream",
-                });
-                saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-            } else if (type === "pdf") {
-                const doc = new jsPDF();
-                doc.text("Users Report", 14, 10);
-                autoTable(doc, {
-                    startY: 20,
-                    head: [Object.keys(exportData[0] || {})],
-                    body: exportData.map((row) => Object.values(row)),
-                });
-                doc.save(`Users_${new Date().toISOString()}.pdf`);
-            } else if (type === "print") {
-                const printableWindow = window.open("", "_blank");
-                const htmlContent = `
+  useEffect(() => {
+    let page;
+    let limit;
+    if (!searchParams.get("page")) {
+      page = 1;
+    }
+    else {
+      page = Number(searchParams.get("page"));
+    }
+    if (!searchParams.get("limit")) {
+      limit = 10;
+    }
+    else {
+      limit = Number(searchParams.get("limit"));
+    }
+
+    let searchText = "";
+
+    if (searchParams.get("search")) {
+      searchText = searchParams.get("search");
+    }
+
+    let variablesObj = {};
+    if (page) variablesObj.page = page;
+    if (limit) variablesObj.limit = limit;
+    if (searchText) variablesObj.search = searchText;
+    if (searchParams.get("status") && searchParams.get("status") !== "0") variablesObj.status = searchParams.get("status") === "true" ? true : false;
+
+
+    FilteredPagedCountries({ variables: variablesObj });
+
+    // FilteredPagedUsers({ variables: { page, limit } });
+    // setLimit(parseInt(searchParams.get("limit"), 10));
+  }, [searchParams]);
+
+  console.log('countriesData', countries);
+
+  let columns = [
+    // { key: "ID", label: "ID" },
+    { key: "name_ar", label: t("Dashboard.NameInArabic") },
+    { key: "name_en", label: t("Dashboard.NameInEnglish") },
+    { key: "navigate", label: t("cities") },
+    //  { key: "userType", label: t("User Type") }
+    { key: "status", label: t("Status") }
+  ];
+  // const location=useLocation();
+  const fetchAndExport = async (type) => {
+    try {
+      const exportData = countries.map((user) => ({
+        ID: user.serial_num,
+        "Full Name": user.name,
+        Email: user.email,
+        Mobile: user.mobile,
+        "User Type": user.userType,
+        Status: user.status,
+      }));
+
+      if (type === "excel") {
+        const ws = XLSX.utils.json_to_sheet(exportData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Users");
+        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const data = new Blob([excelBuffer], {
+          type: "application/octet-stream",
+        });
+        saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
+      } else if (type === "pdf") {
+        const doc = new jsPDF();
+        doc.text("Users Report", 14, 10);
+        autoTable(doc, {
+          startY: 20,
+          head: [Object.keys(exportData[0] || {})],
+          body: exportData.map((row) => Object.values(row)),
+        });
+        doc.save(`Users_${new Date().toISOString()}.pdf`);
+      } else if (type === "print") {
+        const printableWindow = window.open("", "_blank");
+        const htmlContent = `
                  <html>
                    <head>
                      <title>Users Report</title>
@@ -90,58 +151,115 @@ export default function AllCountriesPage() {
                      <h2>Users Report</h2>
                      <table>
                        <thead><tr>${Object.keys(exportData[0] || {})
-                        .map((k) => `<th>${k}</th>`)
-                        .join("")}</tr></thead>
+            .map((k) => `<th>${k}</th>`)
+            .join("")}</tr></thead>
                        <tbody>${exportData
-                        .map(
-                            (row) =>
-                                `<tr>${Object.values(row)
-                                    .map((v) => `<td>${v}</td>`)
-                                    .join("")}</tr>`
-                        )
-                        .join("")}</tbody>
+            .map(
+              (row) =>
+                `<tr>${Object.values(row)
+                  .map((v) => `<td>${v}</td>`)
+                  .join("")}</tr>`
+            )
+            .join("")}</tbody>
                      </table>
                    </body>
                  </html>
                `;
-                printableWindow.document.write(htmlContent);
-                printableWindow.document.close();
-                printableWindow.print();
-            }
-        } catch (err) {
-            console.error("Export error:", err);
-        }
-    };
-
-    const addCountryNavigate = () => navigate('add');
-
-    const handleDetailsClick = (selectedRow) => {
-        console.log('handleDetailsClick', selectedRow);
-        navigate(`details/${selectedRow?.id}`, {
-            state: selectedRow
-        });
+        printableWindow.document.write(htmlContent);
+        printableWindow.document.close();
+        printableWindow.print();
+      }
+    } catch (err) {
+      console.error("Export error:", err);
     }
+  };
 
-    // const onActionClick=()=>navigate('details')
-    // Permissions: for the dummy page we allow viewing. Replace with your real permission check if needed.
-    const hasViewPermission = true;
-    const hasAddPermission = true;
+  const addCountryNavigate = () => navigate('add');
 
-    if (!hasViewPermission) return <Navigate to="/profile" />;
+  const handleDetailsClick = (selectedRow) => {
+    console.log('handleDetailsClick', selectedRow);
+    navigate(`details/${selectedRow?.id}`, {
+      state: selectedRow
+    });
+  }
 
-    let translateText = isArabic ? "دولة" : "Country";
+  const onStatusChange = async (selectedRow, newStatus) => {
+    try {
+      // console.log("selectedRow", selectedRow, newStatus);
+      // let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
 
-    if (countriesLoading) return <LoadingPage />;
+      // // return;
+      let data = {
+        status: newStatus == "inActive" ? false : true,
+        //   operation_type:row?.operation_type
+      }
+      const result = await UpdateCountry({
+        variables: {
+          id: selectedRow?.id,
+          input: data
+        }
+      });
 
-    return (
-         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
+      console.log("reeesult", result);
+
+      notify(t("success"), "success");
+
+    } catch (error) {
+      notify(t("error"), "error");
+    }
+  }
+
+
+  // const onActionClick=()=>navigate('details')
+  // Permissions: for the dummy page we allow viewing. Replace with your real permission check if needed.
+  const onFilterChange = async (filterOBJ) => {
+    console.log("filterOBJ", filterOBJ);
+    if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
+    if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+    // searchParams.get("search", e.target.value);
+    setSearchParams(searchParams);
+  }
+
+  let pageLimit;
+  if (!searchParams.get("limit")) {
+    pageLimit = 10;
+  }
+  else {
+    pageLimit = Number(searchParams.get("limit"));
+  }
+
+  console.log("pageLimit", pageLimit);
+
+  const totalPages = parseInt(total / pageLimit) + 1;
+
+  console.log("totalPages", totalPages);
+  const hasViewPermission = true;
+  const hasAddPermission = true;
+
+  if (!hasViewPermission) return <Navigate to="/profile" />;
+
+  let translateText = isArabic ? "دولة" : "Country";
+  const searchText = isArabic ? "ابحث ب  اسم الدولة" : "Search by Country Name";
+
+  if (countriesLoading) return <LoadingPage />;
+
+  return (
+    <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Grid container spacing={3}>
-        <Grid item 
-        sm={12} md={12}  
-        sx={{
-      overflowX: "auto", // ✅ مهم جدًا عشان الجدول يعمل scroll داخل الـ Grid
-    }}
-    >
+        <Grid item
+          sm={12} md={12}
+          sx={{
+            overflowX: "auto", // ✅ مهم جدًا عشان الجدول يعمل scroll داخل الـ Grid
+          }}
+        >
+
+          {
+            updatingStatus && <CircularProgress
+              size={26}
+              thickness={8}
+              sx={{ color: "black" }}
+            />
+          }
           <Header
             title={t("countries")}
             subtitle={t("countries")}
@@ -149,7 +267,7 @@ export default function AllCountriesPage() {
             haveBtn={hasAddPermission}
             btn={t("addItem", { item: translateText })}
             btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
-             onSubmit={addCountryNavigate}
+            onSubmit={addCountryNavigate}
             isExcel
             isPdf
             isPrinter
@@ -158,10 +276,18 @@ export default function AllCountriesPage() {
             onPrinter={() => fetchAndExport("print")}
           />
 
-       
-          <DashboardFilterComponent t={t} />
 
-          
+          <DashboardFilterComponent
+            placeholder={searchText}
+            textSearchField={"search"}
+            statusKey={"status"}
+            TrueOrFalseArr={TrueOrFalseArr}
+
+            onFilterChange={onFilterChange}
+            t={t}
+          />
+
+
           <TableComponent
             columns={columns}
             hasNavigateBtn={true}
@@ -171,7 +297,7 @@ export default function AllCountriesPage() {
             // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
             loading={countriesLoading}
             // isUsers={true}
-            // statusKey="status"
+            statusKey="status"
             sx={{
               flex: 1,
               overflow: "auto",
@@ -180,10 +306,12 @@ export default function AllCountriesPage() {
               width: "100%",
             }}
             handleDetailsClick={handleDetailsClick}
-            // onStatusChange={onStatusChange}
+            onStatusChange={onStatusChange}
           />
+
+          <FilterComponent totalPages={totalPages} />
         </Grid>
       </Grid>
     </Box>
-    )
+  )
 }
