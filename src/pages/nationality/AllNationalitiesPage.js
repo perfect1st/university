@@ -1,38 +1,26 @@
 import {
   Box,
-  Typography,
   useTheme,
   Grid,
-  Paper,
-  IconButton,
-  Button,
-  TextField,
-  InputAdornment,
-  MenuItem,
   useMediaQuery,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n/i18n";
-import { useSelector } from "react-redux";
-import { useMemo, useState } from "react";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import { useNavigate, useSearchParams, Navigate, useLocation } from "react-router-dom";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Header from "../../components/PageHeader/header";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { useQuery } from "@apollo/client/react";
-import { GET_ALL_NATIONALITIES } from "../../graphql/nationalitiesQueries";
+import { useQuery , useLazyQuery } from "@apollo/client/react";
+import { GET_ALL_NATIONALITIES , GET_FILTERED_NATIONALITIES } from "../../graphql/nationalitiesQueries";
 import LoadingPage from "../../components/LoadingComponent";
-import FilterComponent from "../../components/FilterComponent/FilterComponent";
-import SearchIcon from "@mui/icons-material/Search";
-import CustomTextFieldAdmin, { CustomSelect } from "../../components/Utilities/CustomTextField";
+import { useEffect, useState } from "react";
+import FilterComponent from "../../components/TableComponent/FilterComponent";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
-// import CustomTextField from "../RTLTextField";
-
+import { TrueOrFalseArr } from "../../constants";
 
 
 export default function AllNationalitiesPage() {
@@ -41,75 +29,73 @@ export default function AllNationalitiesPage() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const location=useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
  // console.log('location',location);
   // get all nationalities
-  const {
-    data: { nationalities } = {},
-    loading: nationalitiesLoading,
-    error: nationalitiesError,
-  } = useQuery(GET_ALL_NATIONALITIES, {
+  const [
+    FilteredPagedNationalities,
+    {
+    data: { 
+      filteredPagedNationalities:{
+        nationalities=[],
+        total
+      }={} 
+    } = {},
+    loading: nationalitiesLoading
+    }
+] = useLazyQuery(GET_FILTERED_NATIONALITIES, {
     fetchPolicy: "network-only",
   });
+
+  useEffect(() => {
+        let page;
+        let limit;
+        if (!searchParams.get("page")) {
+            page = 1;
+        }
+        else {
+            page = Number(searchParams.get("page"));
+        }
+        if (!searchParams.get("limit")) {
+            limit = 10;
+        }
+        else {
+            limit = Number(searchParams.get("limit"));
+        }
+
+        let searchText="";
+
+        if(searchParams.get("search")){
+            searchText=searchParams.get("search");
+        }
+        
+        let variablesObj={};
+        if(page) variablesObj.page=page;
+        if(limit) variablesObj.limit=limit;
+        if(searchText) variablesObj.search=searchText;
+        if(searchParams.get("status")&&searchParams.get("status") !=="0") variablesObj.status= searchParams.get("status") === "true" ? true : false;
+       
+
+        FilteredPagedNationalities({ variables: variablesObj });
+
+        // FilteredPagedUsers({ variables: { page, limit } });
+        // setLimit(parseInt(searchParams.get("limit"), 10));
+    }, [searchParams]);
 
   console.log("nationalities", nationalities);
 
   // const [allUsers, setAllUsers] = useState(DUMMY_USERS);
   const isArabic = i18n.language === "ar";
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const page = parseInt(searchParams.get("page") || "1", 10);
-  const limit = parseInt(searchParams.get("limit") || "10", 10);
-  const keyword = searchParams.get("keyword") || "";
-  const userTypeParam = searchParams.get("userType") || "";
-  const statusParam = searchParams.get("status") || "";
+ 
+ 
 
-  // derive filtered list
-  // const filteredUsers = useMemo(() => {
-  //   return allUsers.filter((u) => {
-  //     const matchesKeyword =
-  //       !keyword ||
-  //       u.name.toLowerCase().includes(keyword.toLowerCase()) ||
-  //       u.email.toLowerCase().includes(keyword.toLowerCase()) ||
-  //       u.mobile.toLowerCase().includes(keyword.toLowerCase()) ||
-  //       (u.serial_num && String(u.serial_num).includes(keyword));
-  //     const matchesType =
-  //       !userTypeParam ||
-  //       userTypeParam === "" ||
-  //       String(u.userType) === String(userTypeParam);
-  //     const matchesStatus =
-  //       !statusParam ||
-  //       statusParam === "" ||
-  //       String(u.status) === String(statusParam);
-  //     return matchesKeyword && matchesType && matchesStatus;
-  //   });
-  // }, [allUsers, keyword, userTypeParam, statusParam]);
-
-  // pagination calculations
-  // const totalUsers = filteredUsers.length;
-  // const totalPages = Math.max(1, Math.ceil(totalUsers / limit));
-  // const currentPage = Math.min(Math.max(1, page), totalPages);
-
-  // const paginatedUsers = useMemo(() => {
-  //   const start = (currentPage - 1) * limit;
-  //   return filteredUsers.slice(start, start + limit);
-  // }, [filteredUsers, currentPage, limit]);
-
-  // columns requested: ID, Full Name, Email, Mobile, User Type, Status
-  // const rows = paginatedUsers.map((u) => ({
-  //   id: u.id,
-  //   ID: u.id,
-  //   name_ar: u.name_ar,
-  //   name_en: u.name_en,
-  //   flag: u.flag,
-  // }));
-
+ 
   let columns = [
-    // { key: "ID", label: "ID" },
     { key: "name_ar", label: t("Dashboard.NameInArabic") },
     { key: "name_en", label: t("Dashboard.NameInEnglish") },
     { key: "flag", label: t("Dashboard.flag") },
-    // { key: "userType", label: t("User Type") },
     // { key: "status", label: t("Status") },
   ];
 
@@ -191,6 +177,29 @@ export default function AllNationalitiesPage() {
     });
   }
 
+   const onFilterChange=async(filterOBJ)=>{
+        console.log("filterOBJ",filterOBJ);
+        if(filterOBJ.search) searchParams.set("search", filterOBJ.search);
+        if( filterOBJ.hasOwnProperty("status")&&filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+        if(filterOBJ.role) searchParams.set("role", filterOBJ.role);
+            // searchParams.get("search", e.target.value);
+        setSearchParams(searchParams);
+    }
+
+
+   let pageLimit;
+    if (!searchParams.get("limit")) {
+        pageLimit = 10;
+    }
+    else {
+        pageLimit = Number(searchParams.get("limit"));
+    }
+
+    console.log("pageLimit", pageLimit);
+
+    const totalPages = parseInt(total / pageLimit) + 1;
+
+    console.log("totalPages", totalPages);
   // const onActionClick=()=>navigate('details')
   // Permissions: for the dummy page we allow viewing. Replace with your real permission check if needed.
   const hasViewPermission = true;
@@ -198,6 +207,7 @@ export default function AllNationalitiesPage() {
   if (!hasViewPermission) return <Navigate to="/profile" />;
 
   let translateText = isArabic ? "جنسية" : "Nationality";
+  const searchText= isArabic ? "بحث ب اسم الجنسية" :" Search by Nationality Name";
 
   if (nationalitiesLoading) return <LoadingPage />;
   return (
@@ -226,7 +236,17 @@ export default function AllNationalitiesPage() {
           />
 
        
-          <DashboardFilterComponent t={t} />
+         <DashboardFilterComponent
+                    placeholder={searchText}
+                    textSearchField={"search"}
+                    statusKey={"status"}
+                    TrueOrFalseArr={TrueOrFalseArr}
+                    // selectKey={"role"}
+                    // selectOptions={userRules}
+                   // select2Label={"Dashboard.userType"}
+                    onFilterChange={onFilterChange}
+                     t={t}
+                      />
 
           
           <TableComponent
@@ -246,6 +266,8 @@ export default function AllNationalitiesPage() {
             handleDetailsClick={handleDetailsClick}
             // onStatusChange={onStatusChange}
           />
+
+          <FilterComponent totalPages={totalPages} />
         </Grid>
       </Grid>
     </Box>

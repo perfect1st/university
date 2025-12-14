@@ -549,7 +549,8 @@ function App() {
                     />
 
                   </Route>
-
+                  
+                  {/* الجنسيات */}
                   <Route path="/nationality">
                     <Route
                       index
