@@ -1,4 +1,4 @@
-import { Box, FormControl, InputLabel, MenuItem, Pagination, Select, Stack } from '@mui/material'
+import { Box, FormControl, InputLabel, MenuItem, Pagination, Select, Stack, useMediaQuery, useTheme } from '@mui/material'
 import React, { useState } from 'react'
 import { useSearchParams } from 'react-router-dom';
 
@@ -6,6 +6,8 @@ export default function FilterComponent({ totalPages = 10, onFilterChange }) {
     //  const [page, setPage] = useState(1);
     // const [limit, setLimit] = useState(10);
     const [searchParams, setSearchParams] = useSearchParams();
+     const theme = useTheme();
+     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     let page;
 
@@ -25,7 +27,10 @@ export default function FilterComponent({ totalPages = 10, onFilterChange }) {
         limit = Number(searchParams.get("limit"));
     }
     return (
-        <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ my: 2 }}>
+        <Box display="flex" justifyContent="space-between" flexWrap={"wrap"} alignItems="center" sx={{ my: 2 ,
+            flexDirection: isMobile ? "column" : "row",
+            gap: 2
+          }}>
 
             {/* Pagination */}
             <Stack spacing={2}>
