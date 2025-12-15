@@ -13,10 +13,12 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import notify from "../../components/notify";
 import { GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
-import { GET_ALL_MATERIALS, UPDATE_MATERIAL_BY_ID } from "../../graphql/materialQueries";
+import { GET_ALL_MATERIALS, UPDATE_MATERIAL_BY_ID, GET_ALL_FILTERED_MATERIALS } from "../../graphql/materialQueries";
+import FilterComponent from "../../components/TableComponent/FilterComponent";
+import { TrueOrFalseArr } from "../../constants";
 
 
 export default function AllMaterialsPage() {
@@ -29,13 +31,20 @@ export default function AllMaterialsPage() {
   const { id } = useParams();
   const isArabic = i18n.language === "ar";
 
+  const firstRenderRef = useRef(true);
+
   // get all subjects
   const [
-    Materials, {
-      data: {materials} = {},
+    FilteredPagedMaterials, {
+      data: {
+        filteredPagedMaterials: {
+          materials = [],
+          total
+        } = {}
+      } = {},
       loading: materialsLoading
     }
-  ] = useLazyQuery(GET_ALL_MATERIALS, { fetchPolicy: "network-only" });
+  ] = useLazyQuery(GET_ALL_FILTERED_MATERIALS, { fetchPolicy: "network-only" });
 
   // update subject status
   const [UpdateMaterial, {
@@ -56,8 +65,41 @@ export default function AllMaterialsPage() {
   });
 
   useEffect(() => {
-    Materials();
-    Faculties();
+    // Materials();
+    let page;
+    let limit;
+    if (!searchParams.get("page")) {
+      page = 1;
+    }
+    else {
+      page = Number(searchParams.get("page"));
+    }
+    if (!searchParams.get("limit")) {
+      limit = 10;
+    }
+    else {
+      limit = Number(searchParams.get("limit"));
+    }
+
+    let searchText = "";
+
+    if (searchParams.get("search")) {
+      searchText = searchParams.get("search");
+    }
+
+    let variablesObj = {};
+    if (page) variablesObj.page = page;
+    if (limit) variablesObj.limit = limit;
+    if (searchText) variablesObj.search = searchText;
+    if (searchParams.get("status")) variablesObj.status = searchParams.get("status") === "true" ? true : false;
+
+    FilteredPagedMaterials({ variables: variablesObj });
+
+    if (firstRenderRef) {
+      Faculties();
+      firstRenderRef.current = false;
+    }
+
   }, []);
 
   let getSubjectsToShow = materials?.map(el => {
@@ -189,6 +231,28 @@ export default function AllMaterialsPage() {
       notify(t("error"), "error");
     }
   }
+  const onFilterChange = async (filterOBJ) => {
+    console.log("filterOBJ", filterOBJ);
+    if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
+    if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+    // searchParams.get("search", e.target.value);
+    setSearchParams(searchParams);
+  }
+
+
+  let pageLimit;
+  if (!searchParams.get("limit")) {
+    pageLimit = 10;
+  }
+  else {
+    pageLimit = Number(searchParams.get("limit"));
+  }
+
+  console.log("pageLimit", pageLimit);
+
+  const totalPages = parseInt(total / pageLimit) + 1;
+
+  console.log("totalPages", totalPages);
 
   const hasViewPermission = true;
   const hasAddPermission = true;
@@ -196,6 +260,8 @@ export default function AllMaterialsPage() {
 
   // departments
   let translateText = isArabic ? "مادة" : "Subject";
+  const searchText = isArabic ? "بحث ب اسم المادة" : " Search by Subject Name";
+
   if (materialsLoading || faculitiesLoading) return <LoadingPage />;
 
   return (
@@ -231,7 +297,17 @@ export default function AllMaterialsPage() {
             onPrinter={() => fetchAndExport("print")}
           />
 
-          <DashboardFilterComponent t={t} />
+          <DashboardFilterComponent
+            placeholder={searchText}
+            textSearchField={"search"}
+            statusKey={"status"}
+            TrueOrFalseArr={TrueOrFalseArr}
+            // selectKey={"role"}
+            // selectOptions={userRules}
+            // select2Label={"Dashboard.userType"}
+            onFilterChange={onFilterChange}
+            t={t}
+          />
 
 
           <TableComponent
@@ -256,6 +332,8 @@ export default function AllMaterialsPage() {
             handleDetailsClick={handleDetailsClick}
             onStatusChange={onStatusChange}
           />
+
+          <FilterComponent totalPages={totalPages} />
         </Grid>
       </Grid>
     </Box>
