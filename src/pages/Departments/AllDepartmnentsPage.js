@@ -15,44 +15,77 @@ import DashboardFilterComponent from "../../components/Utilities/DashboardFilter
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import { useEffect } from "react";
-import { GET_ALL_DEPARTMENTS, UPDATE_FACULITY_DEPARTMENT_BY_ID } from "../../graphql/facultyQuiries";
+import { GET_ALL_DEPARTMENTS, UPDATE_FACULITY_DEPARTMENT_BY_ID, GET_ALL_DEPARTMENTS_FOR_FILTER } from "../../graphql/facultyQuiries";
 import notify from "../../components/notify";
+import FilterComponent from "../../components/TableComponent/FilterComponent";
+import { TrueOrFalseArr } from "../../constants";
 
 export default function AllDepartmnentsPage() {
     const theme = useTheme();
-        const { t } = useTranslation();
-        const navigate = useNavigate();
-        const location = useLocation();
-        const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-        const [searchParams, setSearchParams] = useSearchParams();
-        const { id } = useParams();
-        const isArabic = i18n.language === "ar";
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+    const [searchParams, setSearchParams] = useSearchParams();
+    const { id } = useParams();
+    const isArabic = i18n.language === "ar";
 
-        const[
-            FacultyDepartments,
-            {
-                data:{facultyDepartments}={},
-                loading:departmentsLoading,
-                error: departmentsError
-            }
-        ]=useLazyQuery(GET_ALL_DEPARTMENTS,{fetchPolicy:"network-only"});
+    const [
+        FilteredPagedFacultyDepartments,
+        {
+            data: {
+                filteredPagedFacultyDepartments: {
+                    facultyDepartments = [],
+                    total
+                } = {}
+            } = {},
+            loading: departmentsLoading,
+            error: departmentsError
+        }
+    ] = useLazyQuery(GET_ALL_DEPARTMENTS_FOR_FILTER, { fetchPolicy: "network-only" });
 
-         const [
+    const [
         UpdateFacultyDepartment,
         {
-            data: updateData,
-            loading: updatingStatus,
-            error: updateError
+            loading: updatingStatus
         }
     ] = useMutation(UPDATE_FACULITY_DEPARTMENT_BY_ID, { fetchPolicy: "network-only" });
 
-    console.log("facultyDepartments",facultyDepartments);
+    console.log("facultyDepartments", facultyDepartments);
 
-    useEffect(()=>{
-        FacultyDepartments();
-    },[]);
+    useEffect(() => {
+        let page;
+        let limit;
+        if (!searchParams.get("page")) {
+            page = 1;
+        }
+        else {
+            page = Number(searchParams.get("page"));
+        }
+        if (!searchParams.get("limit")) {
+            limit = 10;
+        }
+        else {
+            limit = Number(searchParams.get("limit"));
+        }
 
-     let columns = [
+        let searchText = "";
+
+        if (searchParams.get("search")) {
+            searchText = searchParams.get("search");
+        }
+
+        let variablesObj = {};
+        if (page) variablesObj.page = page;
+        if (limit) variablesObj.limit = limit;
+        if (searchText) variablesObj.search = searchText;
+        if (searchParams.get("status")) variablesObj.status = searchParams.get("status") === "true" ? true : false;
+
+        FilteredPagedFacultyDepartments({ variables: variablesObj });
+
+    }, [searchParams]);
+
+    let columns = [
         // { key: "ID", label: "ID" },
         { key: "title_ar", label: t("Dashboard.NameInArabic") },
         { key: "title_en", label: t("Dashboard.NameInEnglish") },
@@ -62,38 +95,38 @@ export default function AllDepartmnentsPage() {
 
     ];
 
-     const fetchAndExport = async (type) => {
-            try {
-                const exportData = facultyDepartments?.map((user) => ({
-                    ID: user.serial_num,
-                    "Full Name": user.name,
-                    Email: user.email,
-                    Mobile: user.mobile,
-                    "User Type": user.userType,
-                    Status: user.status,
-                }));
-    
-                if (type === "excel") {
-                    const ws = XLSX.utils.json_to_sheet(exportData);
-                    const wb = XLSX.utils.book_new();
-                    XLSX.utils.book_append_sheet(wb, ws, "Users");
-                    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-                    const data = new Blob([excelBuffer], {
-                        type: "application/octet-stream",
-                    });
-                    saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-                } else if (type === "pdf") {
-                    const doc = new jsPDF();
-                    doc.text("Users Report", 14, 10);
-                    autoTable(doc, {
-                        startY: 20,
-                        head: [Object.keys(exportData[0] || {})],
-                        body: exportData.map((row) => Object.values(row)),
-                    });
-                    doc.save(`Users_${new Date().toISOString()}.pdf`);
-                } else if (type === "print") {
-                    const printableWindow = window.open("", "_blank");
-                    const htmlContent = `
+    const fetchAndExport = async (type) => {
+        try {
+            const exportData = facultyDepartments?.map((user) => ({
+                ID: user.serial_num,
+                "Full Name": user.name,
+                Email: user.email,
+                Mobile: user.mobile,
+                "User Type": user.userType,
+                Status: user.status,
+            }));
+
+            if (type === "excel") {
+                const ws = XLSX.utils.json_to_sheet(exportData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Users");
+                const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+                const data = new Blob([excelBuffer], {
+                    type: "application/octet-stream",
+                });
+                saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
+            } else if (type === "pdf") {
+                const doc = new jsPDF();
+                doc.text("Users Report", 14, 10);
+                autoTable(doc, {
+                    startY: 20,
+                    head: [Object.keys(exportData[0] || {})],
+                    body: exportData.map((row) => Object.values(row)),
+                });
+                doc.save(`Users_${new Date().toISOString()}.pdf`);
+            } else if (type === "print") {
+                const printableWindow = window.open("", "_blank");
+                const htmlContent = `
                                <html>
                                  <head>
                                    <title>Users Report</title>
@@ -107,71 +140,97 @@ export default function AllDepartmnentsPage() {
                                    <h2>Users Report</h2>
                                    <table>
                                      <thead><tr>${Object.keys(exportData[0] || {})
-                            .map((k) => `<th>${k}</th>`)
-                            .join("")}</tr></thead>
+                        .map((k) => `<th>${k}</th>`)
+                        .join("")}</tr></thead>
                                      <tbody>${exportData
-                            .map(
-                                (row) =>
-                                    `<tr>${Object.values(row)
-                                        .map((v) => `<td>${v}</td>`)
-                                        .join("")}</tr>`
-                            )
-                            .join("")}</tbody>
+                        .map(
+                            (row) =>
+                                `<tr>${Object.values(row)
+                                    .map((v) => `<td>${v}</td>`)
+                                    .join("")}</tr>`
+                        )
+                        .join("")}</tbody>
                                    </table>
                                  </body>
                                </html>
                              `;
-                    printableWindow.document.write(htmlContent);
-                    printableWindow.document.close();
-                    printableWindow.print();
-                }
-            } catch (err) {
-                console.error("Export error:", err);
+                printableWindow.document.write(htmlContent);
+                printableWindow.document.close();
+                printableWindow.print();
             }
-        };
-    
-        const addDepartmentNavigate = () => navigate("add");
-    
-        const handleDetailsClick = (selectedRow) => {
-            console.log('handleDetailsClick', selectedRow);
-            navigate(`details/${selectedRow?.id}`, {
-                state: selectedRow
-            });
+        } catch (err) {
+            console.error("Export error:", err);
         }
-    
-        const onStatusChange = async (selectedRow, newStatus) => {
-            try {
-                console.log("selectedRow", selectedRow, newStatus);
-                // return;
-                let data={
-                    status:newStatus=="inActive" ? false :true
-                }
-                const result=await UpdateFacultyDepartment({
-                    variables:{
-                        id:selectedRow?.id,
-                        input:data
-                    }
-                });
-    
-                console.log("reeesult",result);
-    
-                 notify(t("success"), "success");
-    
-            } catch (error) {
-                    notify(t("error"), "error");
-            }
-        }
-    
-        const hasViewPermission = true;
-        const hasAddPermission = true;
-        if (!hasViewPermission) return <Navigate to="/profile" />;
-    
-        // departments
-        let translateText = isArabic ? "قسم" : "Department";
-        if (departmentsLoading) return <LoadingPage />
+    };
 
-  return (
-    <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
+    const addDepartmentNavigate = () => navigate("add");
+
+    const handleDetailsClick = (selectedRow) => {
+        console.log('handleDetailsClick', selectedRow);
+        navigate(`details/${selectedRow?.id}`, {
+            state: selectedRow
+        });
+    }
+
+    const onStatusChange = async (selectedRow, newStatus) => {
+        try {
+            console.log("selectedRow", selectedRow, newStatus);
+            // return;
+            let data = {
+                status: newStatus == "inActive" ? false : true
+            }
+            const result = await UpdateFacultyDepartment({
+                variables: {
+                    id: selectedRow?.id,
+                    input: data
+                }
+            });
+
+            console.log("reeesult", result);
+
+            notify(t("success"), "success");
+
+        } catch (error) {
+            notify(t("error"), "error");
+        }
+    }
+
+    const onFilterChange = async (filterOBJ) => {
+        console.log("filterOBJ", filterOBJ);
+        if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
+        if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+        // searchParams.get("search", e.target.value);
+        setSearchParams(searchParams);
+    }
+
+
+    let pageLimit;
+    if (!searchParams.get("limit")) {
+        pageLimit = 10;
+    }
+    else {
+        pageLimit = Number(searchParams.get("limit"));
+    }
+
+    console.log("pageLimit", pageLimit);
+
+    const totalPages = parseInt(total / pageLimit) + 1;
+
+    console.log("totalPages", totalPages);
+
+
+    const hasViewPermission = true;
+    const hasAddPermission = true;
+    if (!hasViewPermission) return <Navigate to="/profile" />;
+
+    // departments
+    let translateText = isArabic ? "قسم" : "Department";
+    let searchText = isArabic ? "بحث ب اسم القسم" : "Search by Department Name";
+
+    if (departmentsLoading) return <LoadingPage />
+
+    return (
+        <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
             {
                 updatingStatus && <CircularProgress
                     size={26}
@@ -202,7 +261,17 @@ export default function AllDepartmnentsPage() {
                         onPrinter={() => fetchAndExport("print")}
                     />
 
-                    <DashboardFilterComponent t={t} />
+                    <DashboardFilterComponent
+                        placeholder={searchText}
+                        textSearchField={"search"}
+                        statusKey={"status"}
+                        TrueOrFalseArr={TrueOrFalseArr}
+                        // selectKey={"role"}
+                        // selectOptions={userRules}
+                        // select2Label={"Dashboard.userType"}
+                        onFilterChange={onFilterChange}
+                        t={t}
+                    />
 
 
                     <TableComponent
@@ -224,8 +293,11 @@ export default function AllDepartmnentsPage() {
                         handleDetailsClick={handleDetailsClick}
                         onStatusChange={onStatusChange}
                     />
+
+                    <FilterComponent totalPages={totalPages} />
+
                 </Grid>
             </Grid>
         </Box>
-  )
+    )
 }

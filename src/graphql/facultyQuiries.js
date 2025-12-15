@@ -88,14 +88,39 @@ query FilteredPagedFaculties(
 //////////////Departments اقسام الكلية///////////////
 
 export const GET_ALL_DEPARTMENTS_FOR_FILTER=gql`
-query FacultyDepartments {
-    facultyDepartments {
-        id
-        title_ar
-        title_en
-        status
-        createdAt
-        updatedAt
+query FilteredPagedFacultyDepartments(
+    $limit: Int!
+    $page: Int!
+    $status: Boolean
+    $search: String
+    $faculty_id: ID
+    ) {
+    filteredPagedFacultyDepartments(
+        search: $search
+        faculty_id: $faculty_id
+        status: $status
+        page: $page
+        limit: $limit
+    ) {
+        total
+        facultyDepartments {
+            id
+            title_ar
+            title_en
+            status
+            createdAt
+            updatedAt
+            faculty_id {
+                id
+                title_ar
+                title_en
+                status
+                required_dep
+                study_years_count
+                createdAt
+                updatedAt
+            }
+        }
     }
 }
 `;

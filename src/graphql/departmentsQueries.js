@@ -1,5 +1,7 @@
 import { gql } from "@apollo/client";
 
+////////////////website departments////////////////////////////////////////
+
 export const GetWebsiteDepartments = gql`
   query GetWebsiteDepartments {
     websiteDepartments {
