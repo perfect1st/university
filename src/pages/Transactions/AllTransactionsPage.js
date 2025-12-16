@@ -213,7 +213,7 @@ export default function AllTransactionsPage() {
 
     let translateText = isArabic ? "معاملة مالية" : "Transaction";
 
-
+    console.log("transactionTypesArr",transactionTypesArr);
 
 
     if (transactionLoading) return <LoadingPage />

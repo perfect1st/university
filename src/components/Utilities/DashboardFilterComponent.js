@@ -50,7 +50,10 @@ export default function DashboardFilterComponent({ t, placeholder, onFilterChang
               {
                 selectOptions?.map((el, i) => (
                   <MenuItem key={i} value={el?.id ? el?.id : el}>{
+                   el?.id?
                     isArabic ? el[arKey] : el[enKey]
+                    :
+                    t(el)
                   }</MenuItem>
                 ))
               }
