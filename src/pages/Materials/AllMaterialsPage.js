@@ -15,7 +15,7 @@ import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import { useEffect, useRef } from "react";
 import notify from "../../components/notify";
-import { GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
+import { GET_ALL_DEPARTMENTS, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import { GET_ALL_MATERIALS, UPDATE_MATERIAL_BY_ID, GET_ALL_FILTERED_MATERIALS } from "../../graphql/materialQueries";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
@@ -64,6 +64,18 @@ export default function AllMaterialsPage() {
     fetchPolicy: "network-only"
   });
 
+  // get all departments
+  const [
+    FacultyDepartments,
+    {
+      data: { facultyDepartments } = {},
+      loading: departmentsLoading,
+      error: departmentsError
+    }
+  ] = useLazyQuery(GET_ALL_DEPARTMENTS, {
+    fetchPolicy: "network-only"
+  });
+
   useEffect(() => {
     // Materials();
     let page;
@@ -92,15 +104,20 @@ export default function AllMaterialsPage() {
     if (limit) variablesObj.limit = limit;
     if (searchText) variablesObj.search = searchText;
     if (searchParams.get("status")) variablesObj.status = searchParams.get("status") === "true" ? true : false;
-
+    // faculty_department_id
+    if (searchParams.get("faculty_department_id")) variablesObj.faculty_department_id = searchParams.get("faculty_department_id");
+    
     FilteredPagedMaterials({ variables: variablesObj });
 
     if (firstRenderRef) {
       Faculties();
+      FacultyDepartments();
       firstRenderRef.current = false;
     }
 
-  }, []);
+  }, [searchParams]);
+
+  // console.log("departments",facultyDepartments);
 
   let getSubjectsToShow = materials?.map(el => {
     return {
@@ -235,6 +252,7 @@ export default function AllMaterialsPage() {
     console.log("filterOBJ", filterOBJ);
     if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
     if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+    if (filterOBJ.hasOwnProperty("faculty_department_id") && filterOBJ.faculty_department_id !== "0") searchParams.set("faculty_department_id", filterOBJ.faculty_department_id);
     // searchParams.get("search", e.target.value);
     setSearchParams(searchParams);
   }
@@ -261,6 +279,7 @@ export default function AllMaterialsPage() {
   // departments
   let translateText = isArabic ? "مادة" : "Subject";
   const searchText = isArabic ? "بحث ب اسم المادة" : " Search by Subject Name";
+  const departmentSearch=isArabic?" اسم القسم":"Department name";
 
   if (materialsLoading || faculitiesLoading) return <LoadingPage />;
 
@@ -302,9 +321,11 @@ export default function AllMaterialsPage() {
             textSearchField={"search"}
             statusKey={"status"}
             TrueOrFalseArr={TrueOrFalseArr}
-            // selectKey={"role"}
-            // selectOptions={userRules}
-            // select2Label={"Dashboard.userType"}
+            selectKey={"faculty_department_id"}
+            selectOptions={facultyDepartments}
+            arKey={"title_ar"}
+            enKey={"title_en"}
+            select2Label={departmentSearch}
             onFilterChange={onFilterChange}
             t={t}
           />

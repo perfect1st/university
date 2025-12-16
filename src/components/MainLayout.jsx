@@ -48,7 +48,7 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
 
   const loggedUser=useSelector(state=>state.user.loggedUser);
 
-  // console.log('me',me);
+   console.log('me',me);
 
   // if(isLoggedIn && !me && !userLoading  ) return <Navigate to="/home" />
 
@@ -58,7 +58,7 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
 
      console.log("loggedUser",loggedUser)
 
-     if((isLoggedIn && !isAuthenticated) || !user) return <Navigate to="/home" />
+     if((isLoggedIn && !isAuthenticated && me==null)  ) return <Navigate to="/home" />
        
      
   console.log('isAuthenticated',isAuthenticated);
