@@ -31,10 +31,10 @@ export default function AllUsersPage() {
     const isArabic = i18n.language === "ar";
     // const totalPages = 10;
 
-    // const {
-    //     data: { users } = {},
-    //     loading: usersLoading
-    // } = useQuery(GET_ALL_USERES_FOR_ADMIN, { fetchPolicy: "network-only" });
+    const {
+        data: { users } = {},
+        loading: allUsersLoading
+    } = useQuery(GET_ALL_USERES_FOR_ADMIN, { fetchPolicy: "network-only" });
 
     const [
         FilteredPagedUsers
@@ -59,18 +59,18 @@ export default function AllUsersPage() {
             limit = Number(searchParams.get("limit"));
         }
 
-        let searchText="";
+        let searchText = "";
 
-        if(searchParams.get("search")){
-            searchText=searchParams.get("search");
+        if (searchParams.get("search")) {
+            searchText = searchParams.get("search");
         }
-        
-        let variablesObj={};
-        if(page) variablesObj.page=page;
-        if(limit) variablesObj.limit=limit;
-        if(searchText) variablesObj.search=searchText;
-        if(searchParams.get("status")&&searchParams.get("status") !=="0") variablesObj.status= searchParams.get("status") === "true" ? true : false;
-        if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
+
+        let variablesObj = {};
+        if (page) variablesObj.page = page;
+        if (limit) variablesObj.limit = limit;
+        if (searchText) variablesObj.search = searchText;
+        if (searchParams.get("status") && searchParams.get("status") !== "0") variablesObj.status = searchParams.get("status") === "true" ? true : false;
+        if (searchParams.get("role")) variablesObj.role = searchParams.get("role");
 
         // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
 
@@ -97,13 +97,14 @@ export default function AllUsersPage() {
     ];
     const fetchAndExport = async (type) => {
         try {
-            const exportData = filteredPagedUsers?.users?.map((user) => ({
-                ID: user.serial_num,
-                "Full Name": user.name,
+            
+            const exportData = users?.map((user, i) => ({
+                "#": i,
+                "Full Name": user.fullname,
                 Email: user.email,
                 Mobile: user.mobile,
-                "User Type": user.userType,
-                Status: user.status,
+                "User Type": t(`Dashboard.${user.role}`),
+                Status: t(user.status),
             }));
 
             if (type === "excel") {
@@ -118,6 +119,8 @@ export default function AllUsersPage() {
             } else if (type === "pdf") {
                 const doc = new jsPDF();
                 doc.text("Users Report", 14, 10);
+
+                
                 autoTable(doc, {
                     startY: 20,
                     head: [Object.keys(exportData[0] || {})],
@@ -129,6 +132,7 @@ export default function AllUsersPage() {
                 const htmlContent = `
                                    <html>
                                      <head>
+                                      <meta charset="UTF-8" />
                                        <title>Users Report</title>
                                        <style>
                                          table { width: 100%; border-collapse: collapse; }
@@ -200,12 +204,12 @@ export default function AllUsersPage() {
         }
     }
 
-    const onFilterChange=async(filterOBJ)=>{
-        console.log("filterOBJ",filterOBJ);
-        if(filterOBJ.search) searchParams.set("search", filterOBJ.search);
-        if( filterOBJ.hasOwnProperty("status")&&filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
-        if(filterOBJ.role) searchParams.set("role", filterOBJ.role);
-            // searchParams.get("search", e.target.value);
+    const onFilterChange = async (filterOBJ) => {
+        console.log("filterOBJ", filterOBJ);
+        if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
+        if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+        if (filterOBJ.role) searchParams.set("role", filterOBJ.role);
+        // searchParams.get("search", e.target.value);
         setSearchParams(searchParams);
     }
 
@@ -280,16 +284,16 @@ export default function AllUsersPage() {
                     />
 
                     <DashboardFilterComponent
-                    placeholder={t("Dashboard.userSearchField")}
-                    textSearchField={"search"}
-                    statusKey={"status"}
-                    TrueOrFalseArr={TrueOrFalseArr}
-                    selectKey={"role"}
-                    selectOptions={userRules}
-                    select2Label={"Dashboard.userType"}
-                    onFilterChange={onFilterChange}
-                     t={t}
-                      />
+                        placeholder={t("Dashboard.userSearchField")}
+                        textSearchField={"search"}
+                        statusKey={"status"}
+                        TrueOrFalseArr={TrueOrFalseArr}
+                        selectKey={"role"}
+                        selectOptions={userRules}
+                        select2Label={"Dashboard.userType"}
+                        onFilterChange={onFilterChange}
+                        t={t}
+                    />
 
                     <TableComponent
                         columns={columns}
