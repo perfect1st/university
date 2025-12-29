@@ -3,7 +3,7 @@ import { useTheme } from "@emotion/react";
 import { Box, CircularProgress, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { useMutation, useQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -14,8 +14,14 @@ import DashboardFilterComponent from "../../components/Utilities/DashboardFilter
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import notify from "../../components/notify";
-import { GET_USERS_REQUIRED_FEES, UPDATE_USER_REQUIRED_FEES } from "../../graphql/requiredFeesQueries";
+import { GET_FILTERED_USER_REQUIRED_FEES, GET_USERS_REQUIRED_FEES, UPDATE_USER_REQUIRED_FEES } from "../../graphql/requiredFeesQueries";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
+import { useEffect } from "react";
+
+
+import FilterComponent from "../../components/TableComponent/FilterComponent";
+import { isPaidArr, TrueOrFalseArr } from "../../constants";
+
 
 export default function AllRequiredFeesPage() {
     const theme = useTheme();
@@ -26,10 +32,10 @@ export default function AllRequiredFeesPage() {
 
     const isArabic = i18n.language === "ar";
 
-    const {
-        data: { getUsersRequiredFees } = {},
-        loading: pageLoading
-    } = useQuery(GET_USERS_REQUIRED_FEES, { fetchPolicy: "network-only" });
+    // const {
+    //     data: { getUsersRequiredFees } = {},
+    //     loading: pageLoading
+    // } = useQuery(GET_USERS_REQUIRED_FEES, { fetchPolicy: "network-only" });
 
     const [
         UpdateUsersRequiredFees,
@@ -37,6 +43,61 @@ export default function AllRequiredFeesPage() {
             loading: updatingStatus
         }
     ] = useMutation(UPDATE_USER_REQUIRED_FEES, { fetchPolicy: "network-only" });
+
+    const [
+        FilteredPagedUsersRequiredFees,
+        {
+            data: {
+                filteredPagedUsersRequiredFees: {
+                    usersRequiredFees: getUsersRequiredFees, // 👈 الاسم الجديد
+                    total,
+                } = {
+                    usersRequiredFees: [],
+                    total: 0,
+                },
+            } = {},
+            loading: pageLoading,
+        },
+    ] = useLazyQuery(GET_FILTERED_USER_REQUIRED_FEES, {
+        fetchPolicy: "network-only",
+    });
+
+    useEffect(() => {
+        let page;
+        let limit;
+        if (!searchParams.get("page")) {
+            page = 1;
+        }
+        else {
+            page = Number(searchParams.get("page"));
+        }
+        if (!searchParams.get("limit")) {
+            limit = 10;
+        }
+        else {
+            limit = Number(searchParams.get("limit"));
+        }
+
+        let searchText = "";
+
+        if (searchParams.get("search")) {
+            searchText = searchParams.get("search");
+        }
+
+        let variablesObj = {};
+        if (page) variablesObj.page = page;
+        if (limit) variablesObj.limit = limit;
+        if (searchText) variablesObj.search = searchText;
+        if (searchParams.get("is_paid") && searchParams.get("is_paid") !== "0") variablesObj.is_paid = searchParams.get("is_paid") === "true" ? true : false;
+        if (searchParams.get("role")) variablesObj.role = searchParams.get("role");
+
+        // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
+
+        FilteredPagedUsersRequiredFees({ variables: variablesObj });
+
+    }, [searchParams])
+
+
 
     let columns = [
         // { key: "ID", label: "ID" },
@@ -180,12 +241,36 @@ export default function AllRequiredFeesPage() {
         }
     }
 
+    const onFilterChange = async (filterOBJ) => {
+        console.log("filterOBJ", filterOBJ);
+        if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
+        if (filterOBJ.hasOwnProperty("is_paid") && filterOBJ.is_paid !== "0") searchParams.set("is_paid", filterOBJ.is_paid);
+        if (filterOBJ.role) searchParams.set("role", filterOBJ.role);
+        // searchParams.get("search", e.target.value);
+        setSearchParams(searchParams);
+    }
     const hasViewPermission = true;
     const hasAddPermission = true;
+
+    let pageLimit;
+    if (!searchParams.get("limit")) {
+        pageLimit = 10;
+    }
+    else {
+        pageLimit = Number(searchParams.get("limit"));
+    }
+
+    console.log("pageLimit", pageLimit);
+
+    const totalPages = parseInt(total / pageLimit) + 1;
+
+    console.log("totalPages", totalPages);
 
     if (!hasViewPermission) return <Navigate to="/profile" />;
 
     let translateText = isArabic ? "رسوم مطلوبة" : "Required Fees";
+
+    console.log("isPaidArr", isPaidArr);
 
     if (pageLoading) return <LoadingPage />;
 
@@ -222,7 +307,20 @@ export default function AllRequiredFeesPage() {
                         onPrinter={() => fetchAndExport("print")}
                     />
 
-                    <DashboardFilterComponent t={t} />
+                    <DashboardFilterComponent
+                        placeholder={t("Dashboard.searchWith", { search: t("Dashboard.studentName") })}
+                        textSearchField={"search"}
+                        // statusKey={"is_paid"}
+                        // TrueOrFalseArr={TrueOrFalseArr}
+                        //    selectKey={"role"}
+                        selectOptions={isPaidArr}
+                        arKey={"arKey"}
+                        enKey={"enKey"}
+                        selectKey={"is_paid"}
+                        select2Label={"Status"}
+                        onFilterChange={onFilterChange}
+                        t={t}
+                    />
 
                     <TableComponent
                         columns={columns}
@@ -246,6 +344,8 @@ export default function AllRequiredFeesPage() {
                         activeStatusLabel={"paid"}
                         inActiveStatusLabel={"unpaid"}
                     />
+
+                    <FilterComponent totalPages={totalPages} />
                 </Grid>
             </Grid>
         </Box>

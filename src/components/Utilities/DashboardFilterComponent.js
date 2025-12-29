@@ -50,10 +50,11 @@ export default function DashboardFilterComponent({ t, placeholder, onFilterChang
               {
                 selectOptions?.map((el, i) => (
                   <MenuItem key={i} value={el?.id ? el?.id : el}>{
-                   el?.id?
-                    isArabic ? el[arKey] : el[enKey]
-                    :
-                    t(el)
+                    el?.id ?
+                      isArabic ? el[arKey] : el[enKey]
+
+                      :
+                      t(el)
                   }</MenuItem>
                 ))
               }
@@ -64,11 +65,15 @@ export default function DashboardFilterComponent({ t, placeholder, onFilterChang
             selectOptions2 && <CustomSelect t={t} value={select3Search} setValue={setSelect3Search} height={"40px"}>
               <MenuItem value="0">{t(select2Label2)}</MenuItem>
               {
-                selectOptions2?.map((el, i) => (
-                  <MenuItem key={i} value={el?.id ? el?.id : el}>{
-                    isArabic ? el[arKey] : el[enKey]
-                  }</MenuItem>
-                ))
+                selectOptions2?.map((el, i) => {
+                  console.log("elllllllll",el);
+
+                  return (
+                    <MenuItem key={i} value={el.hasOwnProperty("id") ? el?.id : el}>{
+                      isArabic ? el[arKey] : el[enKey]
+                    }</MenuItem>
+                  )
+                })
               }
             </CustomSelect>
           }

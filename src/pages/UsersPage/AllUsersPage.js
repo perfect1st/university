@@ -72,12 +72,8 @@ export default function AllUsersPage() {
         if (searchParams.get("status") && searchParams.get("status") !== "0") variablesObj.status = searchParams.get("status") === "true" ? true : false;
         if (searchParams.get("role")) variablesObj.role = searchParams.get("role");
 
-        // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
 
         FilteredPagedUsers({ variables: variablesObj });
-
-        // FilteredPagedUsers({ variables: { page, limit } });
-        // setLimit(parseInt(searchParams.get("limit"), 10));
     }, [searchParams]);
 
     console.log("filteredPagedUsers", filteredPagedUsers);
