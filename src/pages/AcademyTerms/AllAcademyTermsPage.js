@@ -16,7 +16,7 @@ import Header from "../../components/PageHeader/header";
 import { useEffect, useRef } from "react";
 import notify from "../../components/notify";
 import { GET_ACADEMY_TERMS_WITH_FILTER, GET_ALL_ACADEMY_TERMS, UPDATE_ACADEMY_TERM_BY_ID } from "../../graphql/AcademyTerms";
-import { GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
+import { GET_ALL_DEPARTMENTS, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 
@@ -72,6 +72,18 @@ export default function AllAcademyTermsPage() {
         fetchPolicy: "network-only"
     });
 
+    // get all departments
+    const [
+        FacultyDepartments,
+        {
+            data: { facultyDepartments } = {},
+            loading: departmentsLoading,
+            error: departmentsError
+        }
+    ] = useLazyQuery(GET_ALL_DEPARTMENTS, {
+        fetchPolicy: "network-only"
+    });
+
     useEffect(() => {
         // GetAcademyTerms();
 
@@ -101,7 +113,7 @@ export default function AllAcademyTermsPage() {
         if (limit) variablesObj.limit = limit;
         if (searchText) variablesObj.search = searchText;
         if (searchParams.get("status") && searchParams.get("status") !== "0") variablesObj.status = searchParams.get("status") === "true" ? true : false;
-
+        if (searchParams.get("faculty_department_id")) variablesObj.faculty_department_id = searchParams.get("faculty_department_id");
 
         // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
 
@@ -109,6 +121,7 @@ export default function AllAcademyTermsPage() {
 
         if (firstRenderRef) {
             Faculties();
+            FacultyDepartments();
             firstRenderRef.current = false;
         }
 
@@ -249,7 +262,7 @@ export default function AllAcademyTermsPage() {
         console.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
-        if (filterOBJ.role) searchParams.set("role", filterOBJ.role);
+       if (filterOBJ.hasOwnProperty("faculty_department_id") && filterOBJ.faculty_department_id !== "0") searchParams.set("faculty_department_id", filterOBJ.faculty_department_id);
         // searchParams.get("search", e.target.value);
         setSearchParams(searchParams);
     }
@@ -278,6 +291,8 @@ export default function AllAcademyTermsPage() {
 
     // departments
     let translateText = isArabic ? "فصل دراسي" : "AcademyTerm";
+     const departmentSearch=isArabic?" اسم القسم":"Department name";
+
     if (getAcademyLoading || faculitiesLoading) return <LoadingPage />;
 
     return (
@@ -317,12 +332,11 @@ export default function AllAcademyTermsPage() {
                         textSearchField={"search"}
                         statusKey={"status"}
                         TrueOrFalseArr={TrueOrFalseArr}
-                        // selectKey={"status"}
-                        // selectOptions={isPaidArr}
-                        // arKey={"arKey"}
-                        // enKey={"enKey"}
-                        // selectKey={"is_paid"}
-                        // select2Label={"Status"}
+                        selectKey={"faculty_department_id"}
+                        selectOptions={facultyDepartments}
+                        arKey={"title_ar"}
+                        enKey={"title_en"}
+                        select2Label={departmentSearch}
                         onFilterChange={onFilterChange}
                         t={t}
                     />
