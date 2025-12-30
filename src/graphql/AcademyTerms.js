@@ -35,6 +35,55 @@ query GetAcademyTerms {
 
 `;
 
+export const GET_ACADEMY_TERMS_WITH_FILTER=gql`
+query FilteredPagedAcademyTerms(
+    $limit: Int!
+    $page: Int!
+    $search: String
+    $faculty_department_id: ID
+    $status: Boolean
+    ) {
+    filteredPagedAcademyTerms(
+        search: $search
+        faculty_department_id: $faculty_department_id
+        status: $status
+        page: $page
+        limit: $limit
+    ) {
+        total
+        academyTerms {
+            id
+            title_ar
+            title_en
+            status
+            study_year
+            current_year
+            term_number
+            min_study_hours
+            max_study_hours
+            faculty_department_id {
+                id
+                title_ar
+                title_en
+                status
+                createdAt
+                updatedAt
+                faculty_id {
+                    id
+                    title_ar
+                    title_en
+                    status
+                    required_dep
+                    study_years_count
+                    createdAt
+                    updatedAt
+                }
+            }
+        }
+    }
+}
+`;
+
 export const GET_ONE_ACADEMY_TERM_BY_ID=gql`
 query GetAcademyTermById($id:ID!) {
     getAcademyTermById(id: $id) {

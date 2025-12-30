@@ -10,4 +10,3 @@ export const isPaidArr = [
     { arKey: "مدفوع", id: "true" , enKey:"Paid" },
     { arKey: "غير مدفوع", id: "false" , enKey:"UnPaid" }
 ];
-// fee.transactionType

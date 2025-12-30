@@ -13,10 +13,12 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import notify from "../../components/notify";
-import { GET_ALL_ACADEMY_TERMS , UPDATE_ACADEMY_TERM_BY_ID } from "../../graphql/AcademyTerms";
+import { GET_ACADEMY_TERMS_WITH_FILTER, GET_ALL_ACADEMY_TERMS, UPDATE_ACADEMY_TERM_BY_ID } from "../../graphql/AcademyTerms";
 import { GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
+import FilterComponent from "../../components/TableComponent/FilterComponent";
+import { TrueOrFalseArr } from "../../constants";
 
 
 export default function AllAcademyTermsPage() {
@@ -30,15 +32,33 @@ export default function AllAcademyTermsPage() {
     const { id } = useParams();
     const isArabic = i18n.language === "ar";
 
-    const [GetAcademyTerms, {
-        data: { getAcademyTerms } = {},
-        loading: getAcademyLoading
-    }] = useLazyQuery(GET_ALL_ACADEMY_TERMS, { fetchPolicy: "network-only" });
+    let firstRenderRef = useRef(true);
 
-    const[UpdateAcademyTerm,{
+    // const [GetAcademyTerms, {
+    //     data: { getAcademyTerms } = {},
+    //     loading: getAcademyLoading
+    // }] = useLazyQuery(GET_ALL_ACADEMY_TERMS, { fetchPolicy: "network-only" });
+
+    const [
+        FilteredPagedAcademyTerms,
+        {
+            data: {
+                filteredPagedAcademyTerms: {
+                    total = 0,
+                    academyTerms: getAcademyTerms, // 👈 تغيير الاسم هنا
+                } = {},
+            } = {},
+            loading: getAcademyLoading,
+        },
+    ] = useLazyQuery(GET_ACADEMY_TERMS_WITH_FILTER, {
+        fetchPolicy: "network-only",
+    });
+
+
+    const [UpdateAcademyTerm, {
         data,
-        loading:updatingStatus
-    }]=useMutation(UPDATE_ACADEMY_TERM_BY_ID,{fetchPolicy:"network-only"});
+        loading: updatingStatus
+    }] = useMutation(UPDATE_ACADEMY_TERM_BY_ID, { fetchPolicy: "network-only" });
 
     // get all faculities
     const [
@@ -53,25 +73,62 @@ export default function AllAcademyTermsPage() {
     });
 
     useEffect(() => {
-        GetAcademyTerms();
-        Faculties();
-    }, []);
+        // GetAcademyTerms();
 
-    let getAcademyTermsToShow=getAcademyTerms?.map(el=>{
-        return{
+        let page;
+        let limit;
+        if (!searchParams.get("page")) {
+            page = 1;
+        }
+        else {
+            page = Number(searchParams.get("page"));
+        }
+        if (!searchParams.get("limit")) {
+            limit = 10;
+        }
+        else {
+            limit = Number(searchParams.get("limit"));
+        }
+
+        let searchText = "";
+
+        if (searchParams.get("search")) {
+            searchText = searchParams.get("search");
+        }
+
+        let variablesObj = {};
+        if (page) variablesObj.page = page;
+        if (limit) variablesObj.limit = limit;
+        if (searchText) variablesObj.search = searchText;
+        if (searchParams.get("status") && searchParams.get("status") !== "0") variablesObj.status = searchParams.get("status") === "true" ? true : false;
+
+
+        // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
+
+        FilteredPagedAcademyTerms({ variables: variablesObj });
+
+        if (firstRenderRef) {
+            Faculties();
+            firstRenderRef.current = false;
+        }
+
+    }, [searchParams]);
+
+    let getAcademyTermsToShow = getAcademyTerms?.map(el => {
+        return {
             ...el,
-            faculty_id:el?.faculty_department_id?.faculty_id
+            faculty_id: el?.faculty_department_id?.faculty_id
         }
     });
 
-    console.log('getAcademyTermsToShow',getAcademyTermsToShow);
+    console.log('getAcademyTermsToShow', getAcademyTermsToShow);
 
     let columns = [
         // { key: "ID", label: "ID" },
         { key: "title_ar", label: t("Dashboard.NameInArabic") },
         { key: "title_en", label: t("Dashboard.NameInEnglish") },
         { key: "current_year", label: t("Dashboard.AcademicYear") },
-        { key: "faculty_id", label: t("admissions.faculty")  },
+        { key: "faculty_id", label: t("admissions.faculty") },
         { key: "faculty_department_id", label: t("admissions.facultyDepartment") },
         { key: "term_number", label: t("Dashboard.semester") },
         { key: "status", label: t("Status") }
@@ -158,28 +215,28 @@ export default function AllAcademyTermsPage() {
 
     const onStatusChange = async (selectedRow, newStatus) => {
         try {
-          //  console.log("selectedRow", selectedRow, newStatus);
+            //  console.log("selectedRow", selectedRow, newStatus);
             // return;
             // let row={...selectedRow}:{faculty_department_id,faculty_id}
-        //    let { faculty_department_id, faculty_id,__typename,id ,...row } = selectedRow;
-        //     console.log('row',row);
+            //    let { faculty_department_id, faculty_id,__typename,id ,...row } = selectedRow;
+            //     console.log('row',row);
 
             let data = {
                 // ...row,
-                title_ar:selectedRow?.title_ar,
-                title_en:selectedRow?.title_en,
-                min_study_hours:selectedRow?.min_study_hours,
-                max_study_hours:selectedRow?.max_study_hours,
+                title_ar: selectedRow?.title_ar,
+                title_en: selectedRow?.title_en,
+                min_study_hours: selectedRow?.min_study_hours,
+                max_study_hours: selectedRow?.max_study_hours,
                 status: newStatus == "inActive" ? false : true
             }
-            const result=await UpdateAcademyTerm({
-                variables:{
-                    id:selectedRow?.id,
-                    input:data
+            const result = await UpdateAcademyTerm({
+                variables: {
+                    id: selectedRow?.id,
+                    input: data
                 }
             });
 
-            console.log("reeesult",result);
+            console.log("reeesult", result);
 
             notify(t("success"), "success");
 
@@ -188,8 +245,32 @@ export default function AllAcademyTermsPage() {
         }
     }
 
+    const onFilterChange = async (filterOBJ) => {
+        console.log("filterOBJ", filterOBJ);
+        if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
+        if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+        if (filterOBJ.role) searchParams.set("role", filterOBJ.role);
+        // searchParams.get("search", e.target.value);
+        setSearchParams(searchParams);
+    }
+
     console.log("getAcademyTerms", getAcademyTerms);
     console.log("faculties", faculties);
+
+
+    let pageLimit;
+    if (!searchParams.get("limit")) {
+        pageLimit = 10;
+    }
+    else {
+        pageLimit = Number(searchParams.get("limit"));
+    }
+
+    console.log("pageLimit", pageLimit);
+
+    const totalPages = parseInt(total / pageLimit) + 1;
+
+    console.log("totalPages", totalPages);
 
     const hasViewPermission = true;
     const hasAddPermission = true;
@@ -231,7 +312,20 @@ export default function AllAcademyTermsPage() {
                         onPrinter={() => fetchAndExport("print")}
                     />
 
-                    <DashboardFilterComponent t={t} />
+                    <DashboardFilterComponent
+                        placeholder={t("Dashboard.searchWith", { search: t("Dashboard.NameInArabic") })}
+                        textSearchField={"search"}
+                        statusKey={"status"}
+                        TrueOrFalseArr={TrueOrFalseArr}
+                        // selectKey={"status"}
+                        // selectOptions={isPaidArr}
+                        // arKey={"arKey"}
+                        // enKey={"enKey"}
+                        // selectKey={"is_paid"}
+                        // select2Label={"Status"}
+                        onFilterChange={onFilterChange}
+                        t={t}
+                    />
 
 
                     <TableComponent
@@ -256,6 +350,8 @@ export default function AllAcademyTermsPage() {
                         handleDetailsClick={handleDetailsClick}
                         onStatusChange={onStatusChange}
                     />
+
+                    <FilterComponent totalPages={totalPages} />
                 </Grid>
             </Grid>
         </Box>

@@ -89,7 +89,7 @@ export default function AllRequiredFeesPage() {
         if (limit) variablesObj.limit = limit;
         if (searchText) variablesObj.search = searchText;
         if (searchParams.get("is_paid") && searchParams.get("is_paid") !== "0") variablesObj.is_paid = searchParams.get("is_paid") === "true" ? true : false;
-        if (searchParams.get("role")) variablesObj.role = searchParams.get("role");
+        
 
         // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
 
