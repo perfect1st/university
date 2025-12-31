@@ -7,6 +7,7 @@ query FacultyPrices {
         level_year
         price_inside_yemen
         price_outside_yemen
+        status
         createdAt
         updatedAt
         faculty_id {

@@ -18,12 +18,13 @@ import autoTable from "jspdf-autotable";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import LoadingPage from "../../components/LoadingComponent";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
-import {  GET_ALL_FACULITY_PRICES_FILTERED, UPDATE_FACULITY_PRICE_BY_ID } from "../../graphql/faculityPricesQueries";
+import {  GET_ALL_FACULITY_PRICES_FILTERED, UPDATE_FACULITY_PRICE_BY_ID , GET_ALL_FACULITY_PRICES } from "../../graphql/faculityPricesQueries";
 import { useEffect } from "react";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { transactionTypesArr, TrueOrFalseArr } from "../../constants";
 import notify from "../../components/notify";
 import { GET_ALL_DEPARTMENTS_FOR_FILTER, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
+import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 
 
 export default function AllFaculitiesPricesPage() {
@@ -49,6 +50,14 @@ export default function AllFaculitiesPricesPage() {
 
   // console.log("facultyDepartments",facultyDepartments);
 
+  // all faculity prices
+  const{
+    data
+  }=useQuery(GET_ALL_FACULITY_PRICES, { fetchPolicy: "network-only" });
+
+ // console.log("data",data);
+
+  // faculity prices with filter
   const [
     FilteredPagedFacultyPrices
     ,
@@ -123,67 +132,26 @@ export default function AllFaculitiesPricesPage() {
 
   const fetchAndExport = async (type) => {
     try {
-      const exportData = facultyPrices?.map((user) => ({
-        ID: user.serial_num,
-        "Full Name": user.name,
-        Email: user.email,
-        Mobile: user.mobile,
-        "User Type": user.userType,
-        Status: user.status,
+      console.log("data?.facultyPrices",data?.facultyPrices);
+
+      const exportData = data?.facultyPrices?.map((user,i) => ({
+        ID: i,
+        [t("admissions.faculty")]: isArabic ? user?.faculty_id?.title_ar : user?.faculty_id?.title_en,
+        [t("admissions.facultyDepartment")]: isArabic ? user?.faculty_department_id?.title_ar : user?.faculty_department_id?.title_en,
+        [t("Dashboard.studyYear")]: user?.level_year,
+        [t("Dashboard.inside_yemen")]: user?.price_inside_yemen,
+        [t("Dashboard.outside_yemen")]: user?.price_outside_yemen,
+        [t("Status")]: t(user.status),
       }));
 
-      if (type === "excel") {
-        const ws = XLSX.utils.json_to_sheet(exportData);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Users");
-        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-        const data = new Blob([excelBuffer], {
-          type: "application/octet-stream",
-        });
-        saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-      } else if (type === "pdf") {
-        const doc = new jsPDF();
-        doc.text("Users Report", 14, 10);
-        autoTable(doc, {
-          startY: 20,
-          head: [Object.keys(exportData[0] || {})],
-          body: exportData.map((row) => Object.values(row)),
-        });
-        doc.save(`Users_${new Date().toISOString()}.pdf`);
-      } else if (type === "print") {
-        const printableWindow = window.open("", "_blank");
-        const htmlContent = `
-                <html>
-                  <head>
-                    <title>Users Report</title>
-                    <style>
-                      table { width: 100%; border-collapse: collapse; }
-                      th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-                      th { background-color: #f2f2f2; }
-                    </style>
-                  </head>
-                  <body>
-                    <h2>Users Report</h2>
-                    <table>
-                      <thead><tr>${Object.keys(exportData[0] || {})
-            .map((k) => `<th>${k}</th>`)
-            .join("")}</tr></thead>
-                      <tbody>${exportData
-            .map(
-              (row) =>
-                `<tr>${Object.values(row)
-                  .map((v) => `<td>${v}</td>`)
-                  .join("")}</tr>`
-            )
-            .join("")}</tbody>
-                    </table>
-                  </body>
-                </html>
-              `;
-        printableWindow.document.write(htmlContent);
-        printableWindow.document.close();
-        printableWindow.print();
-      }
+      ExportExcelAndPDF({
+        exportData,
+        isArabic,
+        reportTitle: isArabic ? "قائمة اسعار الكليات" : "Faculity Prices List",
+        type
+      });
+
+     
     } catch (err) {
       console.error("Export error:", err);
     }
