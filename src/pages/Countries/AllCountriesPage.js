@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 import notify from "../../components/notify";
+import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 
 
 
@@ -32,7 +33,7 @@ export default function AllCountriesPage() {
 
   const isArabic = i18n.language === "ar";
 
-  // get all countries
+  // get filtered countries
   const [
     FilteredPagedCountries,
     {
@@ -47,6 +48,15 @@ export default function AllCountriesPage() {
 
     }
   ] = useLazyQuery(GET_FILTERED_COUNTRIES, { fetchPolicy: "network-only" });
+
+  // get all countries
+    const {
+      data: {
+        countries: countriesData
+      }={},
+      loading: countriesDataLoading,
+      error: countriesError,
+    } = useQuery(GET_ALL_COUNTRIES, { fetchPolicy: "network-only" });
 
   const [
     UpdateCountry,
@@ -95,7 +105,7 @@ export default function AllCountriesPage() {
     // setLimit(parseInt(searchParams.get("limit"), 10));
   }, [searchParams]);
 
-  console.log('countriesData', countries);
+
 
   let columns = [
     // { key: "ID", label: "ID" },
@@ -108,67 +118,22 @@ export default function AllCountriesPage() {
   // const location=useLocation();
   const fetchAndExport = async (type) => {
     try {
-      const exportData = countries.map((user) => ({
-        ID: user.serial_num,
-        "Full Name": user.name,
-        Email: user.email,
-        Mobile: user.mobile,
-        "User Type": user.userType,
-        Status: user.status,
+      const exportData = countriesData?.map((user, i) => ({
+        "#": i,
+        [t("Dashboard.NameInArabic")]: user.name_ar,
+        [t("Dashboard.NameInEnglish")]: user.name_en,
+        // Mobile: user.mobile,
+        // "User Type": user.userType,
+        [t("Status")]: t(user.status),
       }));
 
-      if (type === "excel") {
-        const ws = XLSX.utils.json_to_sheet(exportData);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Users");
-        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-        const data = new Blob([excelBuffer], {
-          type: "application/octet-stream",
-        });
-        saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-      } else if (type === "pdf") {
-        const doc = new jsPDF();
-        doc.text("Users Report", 14, 10);
-        autoTable(doc, {
-          startY: 20,
-          head: [Object.keys(exportData[0] || {})],
-          body: exportData.map((row) => Object.values(row)),
-        });
-        doc.save(`Users_${new Date().toISOString()}.pdf`);
-      } else if (type === "print") {
-        const printableWindow = window.open("", "_blank");
-        const htmlContent = `
-                 <html>
-                   <head>
-                     <title>Users Report</title>
-                     <style>
-                       table { width: 100%; border-collapse: collapse; }
-                       th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-                       th { background-color: #f2f2f2; }
-                     </style>
-                   </head>
-                   <body>
-                     <h2>Users Report</h2>
-                     <table>
-                       <thead><tr>${Object.keys(exportData[0] || {})
-            .map((k) => `<th>${k}</th>`)
-            .join("")}</tr></thead>
-                       <tbody>${exportData
-            .map(
-              (row) =>
-                `<tr>${Object.values(row)
-                  .map((v) => `<td>${v}</td>`)
-                  .join("")}</tr>`
-            )
-            .join("")}</tbody>
-                     </table>
-                   </body>
-                 </html>
-               `;
-        printableWindow.document.write(htmlContent);
-        printableWindow.document.close();
-        printableWindow.print();
-      }
+      ExportExcelAndPDF({
+        exportData,
+        isArabic,
+        reportTitle: isArabic ? "قائمة الدول" : "Countries List",
+        type
+      });
+
     } catch (err) {
       console.error("Export error:", err);
     }

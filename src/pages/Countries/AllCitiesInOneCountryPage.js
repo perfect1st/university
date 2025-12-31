@@ -18,6 +18,7 @@ import { useEffect } from "react";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 import notify from "../../components/notify";
+import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 
 // GET_CITIES_BY_COUNTRY_ID
 export default function AllCitiesInOneCountryPage() {
@@ -51,6 +52,30 @@ export default function AllCitiesInOneCountryPage() {
     { fetchPolicy: "network-only" }
   );
 
+  // get cities by country code
+  // const [
+  //   getAllCitiesInCountry,
+  //   { data: citiesInCountry,
+  //      loading: AllCitiesLoading,
+  //      },
+  // ] = useLazyQuery(GET_CITIES_BY_COUNTRY_ID, { fetchPolicy: "network-only" });
+
+  const { data: {
+    getCitiesByCountry: citiesInCountry
+  }
+  ={}, loading: AllCitiesLoading, error, refetch } = useQuery(
+    GET_CITIES_BY_COUNTRY_ID,
+    {
+      variables: {
+        country_id: id // الـ parameter هنا
+      },
+      fetchPolicy: "network-only",
+      skip: !id // مش هتشغل ال query إلا لما يكون فيه countryId
+    }
+  );
+
+  // console.log("citiesInCountry",citiesInCountry);
+ 
   // get country
   const [
     Country
@@ -137,67 +162,23 @@ export default function AllCitiesInOneCountryPage() {
 
   const fetchAndExport = async (type) => {
     try {
-      const exportData = getCitiesByCountry.map((user) => ({
-        ID: user.serial_num,
-        "Full Name": user.name,
-        Email: user.email,
-        Mobile: user.mobile,
-        "User Type": user.userType,
-        Status: user.status,
+
+      const exportData = citiesInCountry?.map((user, i) => ({
+        "#": i,
+        [t("Dashboard.NameInArabic")]: user.name_ar,
+        [t("Dashboard.NameInEnglish")]: user.name_en,
+        // Mobile: user.mobile,
+        // "User Type": user.userType,
+        [t("Status")]: t(user.status),
       }));
 
-      if (type === "excel") {
-        const ws = XLSX.utils.json_to_sheet(exportData);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Users");
-        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-        const data = new Blob([excelBuffer], {
-          type: "application/octet-stream",
-        });
-        saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-      } else if (type === "pdf") {
-        const doc = new jsPDF();
-        doc.text("Users Report", 14, 10);
-        autoTable(doc, {
-          startY: 20,
-          head: [Object.keys(exportData[0] || {})],
-          body: exportData.map((row) => Object.values(row)),
-        });
-        doc.save(`Users_${new Date().toISOString()}.pdf`);
-      } else if (type === "print") {
-        const printableWindow = window.open("", "_blank");
-        const htmlContent = `
-                       <html>
-                         <head>
-                           <title>Users Report</title>
-                           <style>
-                             table { width: 100%; border-collapse: collapse; }
-                             th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-                             th { background-color: #f2f2f2; }
-                           </style>
-                         </head>
-                         <body>
-                           <h2>Users Report</h2>
-                           <table>
-                             <thead><tr>${Object.keys(exportData[0] || {})
-            .map((k) => `<th>${k}</th>`)
-            .join("")}</tr></thead>
-                             <tbody>${exportData
-            .map(
-              (row) =>
-                `<tr>${Object.values(row)
-                  .map((v) => `<td>${v}</td>`)
-                  .join("")}</tr>`
-            )
-            .join("")}</tbody>
-                           </table>
-                         </body>
-                       </html>
-                     `;
-        printableWindow.document.write(htmlContent);
-        printableWindow.document.close();
-        printableWindow.print();
-      }
+      ExportExcelAndPDF({
+        exportData,
+        isArabic,
+        reportTitle: isArabic ? `قائمة المدن (${country?.name_ar})` : `Cities List (${country?.name_en})`,
+        type
+      });
+
     } catch (err) {
       console.error("Export error:", err);
     }
