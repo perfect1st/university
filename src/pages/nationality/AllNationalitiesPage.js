@@ -23,6 +23,7 @@ import FilterComponent from "../../components/TableComponent/FilterComponent";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 import notify from "../../components/notify";
+import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 
 
 export default function AllNationalitiesPage() {
@@ -42,7 +43,7 @@ export default function AllNationalitiesPage() {
   ] = useMutation(UPDATE_NATIONALITY_BY_ID, {
     fetchPolicy: "network-only",
   });
-  // get all nationalities
+  // get filtered nationalities
   const [
     FilteredPagedNationalities,
     {
@@ -57,6 +58,19 @@ export default function AllNationalitiesPage() {
   ] = useLazyQuery(GET_FILTERED_NATIONALITIES, {
     fetchPolicy: "network-only",
   });
+
+  // get all nationalities
+  const {
+      data: {
+        nationalities:allNationalities
+      }={},
+      loading: allNationalitiesLoading,
+      error: nationalitiesError,
+    } = useQuery(GET_ALL_NATIONALITIES, {
+      fetchPolicy: "network-only",
+    });
+
+    // console.log("allNationalities",allNationalities);
 
   useEffect(() => {
     let page;
@@ -87,7 +101,7 @@ export default function AllNationalitiesPage() {
     if (searchParams.get("status")) variablesObj.status = searchParams.get("status") === "true" ? true : false;
 
 
-    console.log("(searchParams.get('status)",searchParams.get("status"));
+    console.log("(searchParams.get('status)", searchParams.get("status"));
     FilteredPagedNationalities({ variables: variablesObj });
 
     // FilteredPagedUsers({ variables: { page, limit } });
@@ -113,67 +127,21 @@ export default function AllNationalitiesPage() {
   // export filtered data (all filteredUsers, not only page)
   const fetchAndExport = async (type) => {
     try {
-      const exportData = nationalities.map((user) => ({
-        ID: user.serial_num,
-        "Full Name": user.name,
-        Email: user.email,
-        Mobile: user.mobile,
-        "User Type": user.userType,
-        Status: user.status,
+      const exportData = allNationalities?.map((user, i) => ({
+        "#": i,
+        [t("Dashboard.NameInArabic")]: user.name_ar,
+        [t("Dashboard.NameInEnglish")]: user.name_en,
+        // Mobile: user.mobile,
+        // "User Type": user.userType,
+        [t("Status")]: t(user.status),
       }));
 
-      if (type === "excel") {
-        const ws = XLSX.utils.json_to_sheet(exportData);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Users");
-        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-        const data = new Blob([excelBuffer], {
-          type: "application/octet-stream",
-        });
-        saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-      } else if (type === "pdf") {
-        const doc = new jsPDF();
-        doc.text("Users Report", 14, 10);
-        autoTable(doc, {
-          startY: 20,
-          head: [Object.keys(exportData[0] || {})],
-          body: exportData.map((row) => Object.values(row)),
-        });
-        doc.save(`Users_${new Date().toISOString()}.pdf`);
-      } else if (type === "print") {
-        const printableWindow = window.open("", "_blank");
-        const htmlContent = `
-            <html>
-              <head>
-                <title>Users Report</title>
-                <style>
-                  table { width: 100%; border-collapse: collapse; }
-                  th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-                  th { background-color: #f2f2f2; }
-                </style>
-              </head>
-              <body>
-                <h2>Users Report</h2>
-                <table>
-                  <thead><tr>${Object.keys(exportData[0] || {})
-            .map((k) => `<th>${k}</th>`)
-            .join("")}</tr></thead>
-                  <tbody>${exportData
-            .map(
-              (row) =>
-                `<tr>${Object.values(row)
-                  .map((v) => `<td>${v}</td>`)
-                  .join("")}</tr>`
-            )
-            .join("")}</tbody>
-                </table>
-              </body>
-            </html>
-          `;
-        printableWindow.document.write(htmlContent);
-        printableWindow.document.close();
-        printableWindow.print();
-      }
+      ExportExcelAndPDF({
+        exportData,
+        isArabic,
+        reportTitle: isArabic ? "قائمة الجنسيات" : "Nationalities List",
+        type
+      });
     } catch (err) {
       console.error("Export error:", err);
     }

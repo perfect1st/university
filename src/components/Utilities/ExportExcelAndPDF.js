@@ -16,17 +16,7 @@ export default function ExportExcelAndPDF({ exportData, type, reportTitle, isAra
         });
         saveAs(data, `${reportTitle}_${new Date().toISOString()}.xlsx`);
     } else if (type === "pdf") {
-        // const doc = new jsPDF();
-        // doc.text("Users Report", 14, 10);
-
-        // console.log("exportData",exportData);
-
-        // autoTable(doc, {
-        //     startY: 20,
-        //     head: [Object.keys(exportData[0] || {})],
-        //     body: exportData.map((row) => Object.values(row)),
-        // });
-        // doc.save(`Users_${new Date().toISOString()}.pdf`);
+      
 
 
         const element = document.createElement('div');
