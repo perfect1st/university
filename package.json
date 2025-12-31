@@ -20,6 +20,8 @@
     "formik": "^2.4.6",
     "framer-motion": "^12.23.5",
     "graphql": "^16.11.0",
+    "html2pdf": "^0.0.11",
+    "html2pdf.js": "^0.12.1",
     "i18next": "^22.4.15",
     "js-cookie": "^3.0.5",
     "jspdf": "^3.0.1",
