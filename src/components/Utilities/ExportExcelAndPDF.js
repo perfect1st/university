@@ -5,48 +5,48 @@ import autoTable from "jspdf-autotable";
 import html2pdf from 'html2pdf.js';
 
 
-export default function ExportExcelAndPDF({exportData,type,reportTitle,isArabic}){
+export default function ExportExcelAndPDF({ exportData, type, reportTitle, isArabic }) {
     if (type === "excel") {
-                const ws = XLSX.utils.json_to_sheet(exportData);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Users");
-                const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-                const data = new Blob([excelBuffer], {
-                    type: "application/octet-stream",
-                });
-                saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-            } else if (type === "pdf") {
-                // const doc = new jsPDF();
-                // doc.text("Users Report", 14, 10);
+        const ws = XLSX.utils.json_to_sheet(exportData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Users");
+        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const data = new Blob([excelBuffer], {
+            type: "application/octet-stream",
+        });
+        saveAs(data, `${reportTitle}_${new Date().toISOString()}.xlsx`);
+    } else if (type === "pdf") {
+        // const doc = new jsPDF();
+        // doc.text("Users Report", 14, 10);
 
-                // console.log("exportData",exportData);
+        // console.log("exportData",exportData);
 
-                // autoTable(doc, {
-                //     startY: 20,
-                //     head: [Object.keys(exportData[0] || {})],
-                //     body: exportData.map((row) => Object.values(row)),
-                // });
-                // doc.save(`Users_${new Date().toISOString()}.pdf`);
+        // autoTable(doc, {
+        //     startY: 20,
+        //     head: [Object.keys(exportData[0] || {})],
+        //     body: exportData.map((row) => Object.values(row)),
+        // });
+        // doc.save(`Users_${new Date().toISOString()}.pdf`);
 
 
-                const element = document.createElement('div');
-                element.innerHTML = `
+        const element = document.createElement('div');
+        element.innerHTML = `
         <div style="font-family:Tahoma; direction:${isArabic ? "rtl" : "ltr"}; padding:20px;">
             <h2 style="text-align:center">${reportTitle}</h2>
             <table border="1" style="width:100%; border-collapse:collapse;">
                 <thead>
                     <tr>
                         ${Object.keys(exportData[0] || {}).map(k =>
-                    `<th style="padding:10px; background:#f2f2f2;">${k}</th>`
-                ).join('')}
+            `<th style="padding:10px; background:#f2f2f2;">${k}</th>`
+        ).join('')}
                     </tr>
                 </thead>
                 <tbody>
                     ${exportData.map(row => `
                         <tr>
                             ${Object.values(row).map(v =>
-                    `<td style="padding:8px;">${v || ''}</td>`
-                ).join('')}
+            `<td style="padding:8px;">${v || ''}</td>`
+        ).join('')}
                         </tr>
                     `).join('')}
                 </tbody>
@@ -54,19 +54,19 @@ export default function ExportExcelAndPDF({exportData,type,reportTitle,isArabic}
         </div>
     `;
 
-                html2pdf()
-                    .set({
-                        margin: 10,
-                        filename: `${reportTitle}_${new Date().toISOString()}.pdf`,
-                        html2canvas: { scale: 2 },
-                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                    })
-                    .from(element)
-                    .save();
+        html2pdf()
+            .set({
+                margin: 10,
+                filename: `${reportTitle}_${new Date().toISOString()}.pdf`,
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            })
+            .from(element)
+            .save();
 
-            } else if (type === "print") {
-                const printableWindow = window.open("", "_blank");
-                const htmlContent = `
+    } else if (type === "print") {
+        const printableWindow = window.open("", "_blank");
+        const htmlContent = `
                                    <html>
                                      <head>
                                       <meta charset="UTF-8" />
@@ -109,24 +109,24 @@ export default function ExportExcelAndPDF({exportData,type,reportTitle,isArabic}
                                        <h2>Users Report</h2>
                                        <table>
                                          <thead><tr>${Object.keys(exportData[0] || {})
-                        .map((k) => `<th>${k}</th>`)
-                        .join("")}</tr></thead>
+                .map((k) => `<th>${k}</th>`)
+                .join("")}</tr></thead>
                                          <tbody>${exportData
-                        .map(
-                            (row) =>
-                                `<tr>${Object.values(row)
-                                    .map((v) => `<td>${v}</td>`)
-                                    .join("")}</tr>`
-                        )
-                        .join("")}</tbody>
+                .map(
+                    (row) =>
+                        `<tr>${Object.values(row)
+                            .map((v) => `<td>${v}</td>`)
+                            .join("")}</tr>`
+                )
+                .join("")}</tbody>
                                        </table>
                                      </body>
                                    </html>
                                  `;
 
 
-                printableWindow.document.write(htmlContent);
-                printableWindow.document.close();
-                printableWindow.print();
-            }
+        printableWindow.document.write(htmlContent);
+        printableWindow.document.close();
+        printableWindow.print();
+    }
 }

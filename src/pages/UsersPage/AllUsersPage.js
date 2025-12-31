@@ -107,7 +107,7 @@ export default function AllUsersPage() {
                 isArabic,
                 reportTitle: isArabic ? "قائمة المستخدمين" : "Users List",
                 type
-            })
+            });
 
         } catch (err) {
             console.error("Export error:", err);
