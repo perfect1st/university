@@ -27,7 +27,11 @@ export default function FilterComponent({ totalPages = 10, onFilterChange }) {
         limit = Number(searchParams.get("limit"));
     }
     return (
-        <Box display="flex" justifyContent="space-between" flexWrap={"wrap"} alignItems="center" sx={{ my: 2 ,
+        <Box display="flex" justifyContent={
+            isMobile ? "center" : "space-between"
+        } flexWrap={"wrap"} alignItems={
+            isMobile ? "start" : "center"
+        } sx={{ my: 2 ,
             flexDirection: isMobile ? "column" : "row",
             gap: 2
           }}>
