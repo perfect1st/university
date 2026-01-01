@@ -17,7 +17,8 @@ import { useEffect } from "react";
 import notify from "../../components/notify";
 import { GET_ALL_TRANSACTIONS, UPDATE_TRANSACTION_BY_ID, GET_FILTERED_TRANSACTIONS } from "../../graphql/transactionQueries";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
-import { paymentMethodsArr , transactionTypesArr } from "../../constants";
+import { paymentMethodsArr, transactionTypesArr } from "../../constants";
+import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 
 export default function AllTransactionsPage() {
     const theme = useTheme();
@@ -43,9 +44,10 @@ export default function AllTransactionsPage() {
         fetchPolicy: "network-only"
     });
 
+    const { data } = useQuery(GET_ALL_TRANSACTIONS, { fetchPolicy: "network-only" });
 
     const [UpdateTransaction, {
-        data,
+
         loading: updatingStatus
     }] = useMutation(UPDATE_TRANSACTION_BY_ID, { fetchPolicy: "network-only" });
 
@@ -75,8 +77,8 @@ export default function AllTransactionsPage() {
         if (page) variablesObj.page = page;
         if (limit) variablesObj.limit = limit;
         if (searchText) variablesObj.search = searchText;
-        if(searchParams.get("payment_method_type")) variablesObj.payment_method_type=searchParams.get("payment_method_type");
-        if(searchParams.get("operation_type")) variablesObj.operation_type=searchParams.get("operation_type");
+        if (searchParams.get("payment_method_type")) variablesObj.payment_method_type = searchParams.get("payment_method_type");
+        if (searchParams.get("operation_type")) variablesObj.operation_type = searchParams.get("operation_type");
 
         GetTransactions({
             variables: variablesObj
@@ -107,68 +109,23 @@ export default function AllTransactionsPage() {
     ];
 
     const fetchAndExport = async (type) => {
+       
         try {
-            const exportData = transactions?.map((user) => ({
-                ID: user.serial_num,
-                "Full Name": user.name,
-                Email: user.email,
-                Mobile: user.mobile,
-                "User Type": user.userType,
-                Status: user.status,
+            const exportData = data?.getTransactions?.map((user,i) => ({
+                ID: i,
+                [t("fee.transactionSerial")]: user?.transaction_serial,
+                [t("fee.paymentMethodsTitle")]: t(`fee.method.${user?.payment_method_type}`),
+                [t("fee.table.amount")]: user?.amount,
+                [t("fee.paymentDate")]: user?.transaction_date,
+                [t("Users")]: user?.user_id?.fullname,
             }));
 
-            if (type === "excel") {
-                const ws = XLSX.utils.json_to_sheet(exportData);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Users");
-                const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-                const data = new Blob([excelBuffer], {
-                    type: "application/octet-stream",
-                });
-                saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-            } else if (type === "pdf") {
-                const doc = new jsPDF();
-                doc.text("Users Report", 14, 10);
-                autoTable(doc, {
-                    startY: 20,
-                    head: [Object.keys(exportData[0] || {})],
-                    body: exportData.map((row) => Object.values(row)),
-                });
-                doc.save(`Users_${new Date().toISOString()}.pdf`);
-            } else if (type === "print") {
-                const printableWindow = window.open("", "_blank");
-                const htmlContent = `
-                         <html>
-                           <head>
-                             <title>Users Report</title>
-                             <style>
-                               table { width: 100%; border-collapse: collapse; }
-                               th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-                               th { background-color: #f2f2f2; }
-                             </style>
-                           </head>
-                           <body>
-                             <h2>Users Report</h2>
-                             <table>
-                               <thead><tr>${Object.keys(exportData[0] || {})
-                        .map((k) => `<th>${k}</th>`)
-                        .join("")}</tr></thead>
-                               <tbody>${exportData
-                        .map(
-                            (row) =>
-                                `<tr>${Object.values(row)
-                                    .map((v) => `<td>${v}</td>`)
-                                    .join("")}</tr>`
-                        )
-                        .join("")}</tbody>
-                             </table>
-                           </body>
-                         </html>
-                       `;
-                printableWindow.document.write(htmlContent);
-                printableWindow.document.close();
-                printableWindow.print();
-            }
+            ExportExcelAndPDF({
+                exportData,
+                isArabic,
+                reportTitle: isArabic ? "قائمة المعاملات المالية" : "Transactions List",
+                type
+            });
         } catch (err) {
             console.error("Export error:", err);
         }
@@ -196,13 +153,13 @@ export default function AllTransactionsPage() {
 
     const totalPages = parseInt(total / pageLimit) + 1;
 
-     const onFilterChange=async(filterOBJ)=>{
-        console.log("filterOBJ",filterOBJ);
-        if(filterOBJ.search) searchParams.set("search", filterOBJ.search);
-        if(filterOBJ.hasOwnProperty("payment_method_type")&&filterOBJ.payment_method_type !== "0") searchParams.set("payment_method_type", filterOBJ.payment_method_type);
-        if(filterOBJ.hasOwnProperty("operation_type")&&filterOBJ.operation_type !== "0") searchParams.set("operation_type", filterOBJ.operation_type);
+    const onFilterChange = async (filterOBJ) => {
+        console.log("filterOBJ", filterOBJ);
+        if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
+        if (filterOBJ.hasOwnProperty("payment_method_type") && filterOBJ.payment_method_type !== "0") searchParams.set("payment_method_type", filterOBJ.payment_method_type);
+        if (filterOBJ.hasOwnProperty("operation_type") && filterOBJ.operation_type !== "0") searchParams.set("operation_type", filterOBJ.operation_type);
 
-          
+
         setSearchParams(searchParams);
     }
 
@@ -213,7 +170,7 @@ export default function AllTransactionsPage() {
 
     let translateText = isArabic ? "معاملة مالية" : "Transaction";
 
-    console.log("transactionTypesArr",transactionTypesArr);
+    console.log("transactionTypesArr", transactionTypesArr);
 
 
     if (transactionLoading) return <LoadingPage />
@@ -248,13 +205,13 @@ export default function AllTransactionsPage() {
                     <DashboardFilterComponent
                         placeholder={t("Dashboard.searchWith", { search: t("fee.transactionSerial") })}
                         textSearchField={"search"}
-                         statusKey={"payment_method_type"}
-                         select1Label={"fee.paymentMethodsTitle"}
-                         TrueOrFalseArr={paymentMethodsArr}
-                         select2Label={"Dashboard.transactionType"}
-                         selectKey={"operation_type"}
+                        statusKey={"payment_method_type"}
+                        select1Label={"fee.paymentMethodsTitle"}
+                        TrueOrFalseArr={paymentMethodsArr}
+                        select2Label={"Dashboard.transactionType"}
+                        selectKey={"operation_type"}
                         selectOptions={transactionTypesArr}
-                         onFilterChange={onFilterChange}
+                        onFilterChange={onFilterChange}
                         t={t}
                     />
 

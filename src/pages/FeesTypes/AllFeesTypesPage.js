@@ -18,6 +18,7 @@ import notify from "../../components/notify";
 import { GET_ALL_FEES_TYPES, UPDATE_ONE_FEE_BY_ID, GET_ALL_FEES_TYPES_FILTERED } from "../../graphql/feeTypesQueries";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
+import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 
 export default function AllFeesTypesPage() {
     const theme = useTheme();
@@ -28,7 +29,7 @@ export default function AllFeesTypesPage() {
 
     const isArabic = i18n.language === "ar";
 
-    // getFeesTypes
+    // getFeesTypes with filter
     const [GetFeesTypes, {
         data: {
             getFeesTypesFiltered: {
@@ -40,8 +41,10 @@ export default function AllFeesTypesPage() {
         loading: gettingFees
     }] = useLazyQuery(GET_ALL_FEES_TYPES_FILTERED, { fetchPolicy: "network-only" });
 
+    // get all feesTypes
+    const { data } = useQuery(GET_ALL_FEES_TYPES, { fetchPolicy: "network-only" });
+
     const [UpdateFeesType, {
-        data,
         loading: updatingStatus
     }] = useMutation(UPDATE_ONE_FEE_BY_ID, { fetchPolicy: "network-only" });
 
@@ -77,15 +80,7 @@ export default function AllFeesTypesPage() {
 
     }, [searchParams]);
 
-    // // inActive
-    //  let feesTypesToShow=getFeesTypes?.map(el=>{
-    //     return{
-    //         ...el,
-    //         status:el?.status=="true" ? "Active" :"inActive"
-    //     }
-    //  });
 
-    // console.log('feesTypesToShow',feesTypesToShow);
 
     let columns = [
         // { key: "ID", label: "ID" },
@@ -100,67 +95,21 @@ export default function AllFeesTypesPage() {
 
     const fetchAndExport = async (type) => {
         try {
-            const exportData = getFeesTypes?.map((user) => ({
-                ID: user.serial_num,
-                "Full Name": user.name,
-                Email: user.email,
-                Mobile: user.mobile,
-                "User Type": user.userType,
-                Status: user.status,
+            const exportData = data?.getFeesTypes?.map((user) => ({
+                [t("Dashboard.NameInArabic")]: user?.title_ar,
+                [t("Dashboard.NameInEnglish")]: user?.title_en,
+                [t("Dashboard.inside_yemen")]: user?.inside_yemen_value,
+                [t("Dashboard.outside_yemen")]: user?.outside_yemen_value,
+                [t("Status")]: t(user.status),
             }));
 
-            if (type === "excel") {
-                const ws = XLSX.utils.json_to_sheet(exportData);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Users");
-                const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-                const data = new Blob([excelBuffer], {
-                    type: "application/octet-stream",
-                });
-                saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-            } else if (type === "pdf") {
-                const doc = new jsPDF();
-                doc.text("Users Report", 14, 10);
-                autoTable(doc, {
-                    startY: 20,
-                    head: [Object.keys(exportData[0] || {})],
-                    body: exportData.map((row) => Object.values(row)),
-                });
-                doc.save(`Users_${new Date().toISOString()}.pdf`);
-            } else if (type === "print") {
-                const printableWindow = window.open("", "_blank");
-                const htmlContent = `
-                     <html>
-                       <head>
-                         <title>Users Report</title>
-                         <style>
-                           table { width: 100%; border-collapse: collapse; }
-                           th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-                           th { background-color: #f2f2f2; }
-                         </style>
-                       </head>
-                       <body>
-                         <h2>Users Report</h2>
-                         <table>
-                           <thead><tr>${Object.keys(exportData[0] || {})
-                        .map((k) => `<th>${k}</th>`)
-                        .join("")}</tr></thead>
-                           <tbody>${exportData
-                        .map(
-                            (row) =>
-                                `<tr>${Object.values(row)
-                                    .map((v) => `<td>${v}</td>`)
-                                    .join("")}</tr>`
-                        )
-                        .join("")}</tbody>
-                         </table>
-                       </body>
-                     </html>
-                   `;
-                printableWindow.document.write(htmlContent);
-                printableWindow.document.close();
-                printableWindow.print();
-            }
+            ExportExcelAndPDF({
+                exportData,
+                isArabic,
+                reportTitle: isArabic ? "قائمة انواع الرسوم" : "Fees Types List",
+                type
+            });
+
         } catch (err) {
             console.error("Export error:", err);
         }
@@ -204,26 +153,26 @@ export default function AllFeesTypesPage() {
 
     // console.log("faculties", faculties);
 
-    const onFilterChange =  (filterOBJ) => {
-    console.log("filterOBJ", filterOBJ);
-    if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
-    if( filterOBJ.hasOwnProperty("status")&&filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+    const onFilterChange = (filterOBJ) => {
+        console.log("filterOBJ", filterOBJ);
+        if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
+        if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
 
-    setSearchParams(searchParams);
-  }
+        setSearchParams(searchParams);
+    }
 
 
     let pageLimit;
-  if (!searchParams.get("limit")) {
-    pageLimit = 10;
-  }
-  else {
-    pageLimit = Number(searchParams.get("limit"));
-  }
+    if (!searchParams.get("limit")) {
+        pageLimit = 10;
+    }
+    else {
+        pageLimit = Number(searchParams.get("limit"));
+    }
 
-  console.log("pageLimit", pageLimit);
+    console.log("pageLimit", pageLimit);
 
-  const totalPages = parseInt(total / pageLimit) + 1;
+    const totalPages = parseInt(total / pageLimit) + 1;
 
     const hasViewPermission = true;
     const hasAddPermission = true;
@@ -231,7 +180,7 @@ export default function AllFeesTypesPage() {
     if (!hasViewPermission) return <Navigate to="/profile" />;
 
     let translateText = isArabic ? "رسوم" : "fee type";
-    let searchText= isArabic ? "ب اسم الرسوم" : "Fee Types Title";
+    let searchText = isArabic ? "ب اسم الرسوم" : "Fee Types Title";
 
     console.log("getFeesTypes", getFeesTypes);
 
@@ -271,17 +220,17 @@ export default function AllFeesTypesPage() {
 
 
                     <DashboardFilterComponent
-                                placeholder={t("Dashboard.searchWith", { search: searchText })}
-                                textSearchField={"search"}
-                                statusKey={"status"}
-                                select1Label={"Status"}
-                                TrueOrFalseArr={TrueOrFalseArr}
-                                select2Label={"Dashboard.transactionType"}
-                                // selectKey={"operation_type"}
-                                // selectOptions={transactionTypesArr}
-                                onFilterChange={onFilterChange}
-                                t={t}
-                              />
+                        placeholder={t("Dashboard.searchWith", { search: searchText })}
+                        textSearchField={"search"}
+                        statusKey={"status"}
+                        select1Label={"Status"}
+                        TrueOrFalseArr={TrueOrFalseArr}
+                        select2Label={"Dashboard.transactionType"}
+                        // selectKey={"operation_type"}
+                        // selectOptions={transactionTypesArr}
+                        onFilterChange={onFilterChange}
+                        t={t}
+                    />
 
 
                     <TableComponent

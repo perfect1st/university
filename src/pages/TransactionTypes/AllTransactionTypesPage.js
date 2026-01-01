@@ -18,6 +18,7 @@ import notify from "../../components/notify";
 import { useEffect } from "react";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { paymentMethodsArr, transactionTypesArr, TrueOrFalseArr } from "../../constants";
+import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 
 // t(`fee.transactionType.${el}
 // t(`fee.transactionType.${el}`, { lng: "ar" })
@@ -31,7 +32,7 @@ export default function AllTransactionTypesPage() {
 
   const isArabic = i18n.language === "ar";
 
-  // getTransactionTypes
+  // getTransactionTypes with filter
   const [
     GetTransactionTypesFiltered,
     {
@@ -47,6 +48,11 @@ export default function AllTransactionTypesPage() {
   ] = useLazyQuery(GET_ALL_TRANSACTION_TYPES_FILTERED, {
     fetchPolicy: "network-only"
   });
+
+  // get all transaction types
+  const {
+    data
+  } = useQuery(GET_ALL_TRANSACTION_TYPES, { fetchPolicy: "network-only" });
 
 
 
@@ -83,7 +89,7 @@ export default function AllTransactionTypesPage() {
     if (limit) variablesObj.limit = limit;
     if (searchText) variablesObj.search = searchText;
     if (searchParams.get("operation_type")) variablesObj.operation_type = searchParams.get("operation_type");
-    if(searchParams.get("status")&&searchParams.get("status") !=="0") variablesObj.status= searchParams.get("status") === "true" ? true : false;
+    if (searchParams.get("status") && searchParams.get("status") !== "0") variablesObj.status = searchParams.get("status") === "true" ? true : false;
 
     GetTransactionTypesFiltered({
       variables: variablesObj
@@ -115,67 +121,20 @@ export default function AllTransactionTypesPage() {
 
   const fetchAndExport = async (type) => {
     try {
-      const exportData = getTransactionTypes?.map((user) => ({
-        ID: user.serial_num,
-        "Full Name": user.name,
-        Email: user.email,
-        Mobile: user.mobile,
-        "User Type": user.userType,
-        Status: user.status,
+      const exportData = getTransactionTypes?.map((user, i) => ({
+        ID: i,
+        [t("Dashboard.NameInArabic")]: user?.title_ar,
+        [t("Dashboard.NameInEnglish")]: user?.title_en,
+        [t("Dashboard.transactionType")]: t(`fee.transactionType.${user?.operation_type}`),
+        [t("Status")]: t(user.status),
       }));
 
-      if (type === "excel") {
-        const ws = XLSX.utils.json_to_sheet(exportData);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Users");
-        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-        const data = new Blob([excelBuffer], {
-          type: "application/octet-stream",
-        });
-        saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-      } else if (type === "pdf") {
-        const doc = new jsPDF();
-        doc.text("Users Report", 14, 10);
-        autoTable(doc, {
-          startY: 20,
-          head: [Object.keys(exportData[0] || {})],
-          body: exportData.map((row) => Object.values(row)),
-        });
-        doc.save(`Users_${new Date().toISOString()}.pdf`);
-      } else if (type === "print") {
-        const printableWindow = window.open("", "_blank");
-        const htmlContent = `
-                             <html>
-                               <head>
-                                 <title>Users Report</title>
-                                 <style>
-                                   table { width: 100%; border-collapse: collapse; }
-                                   th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-                                   th { background-color: #f2f2f2; }
-                                 </style>
-                               </head>
-                               <body>
-                                 <h2>Users Report</h2>
-                                 <table>
-                                   <thead><tr>${Object.keys(exportData[0] || {})
-            .map((k) => `<th>${k}</th>`)
-            .join("")}</tr></thead>
-                                   <tbody>${exportData
-            .map(
-              (row) =>
-                `<tr>${Object.values(row)
-                  .map((v) => `<td>${v}</td>`)
-                  .join("")}</tr>`
-            )
-            .join("")}</tbody>
-                                 </table>
-                               </body>
-                             </html>
-                           `;
-        printableWindow.document.write(htmlContent);
-        printableWindow.document.close();
-        printableWindow.print();
-      }
+      ExportExcelAndPDF({
+        exportData,
+        isArabic,
+        reportTitle: isArabic ? "قائمة انواع المعاملات المالية" : "Transaction Types List",
+        type
+      });
     } catch (err) {
       console.error("Export error:", err);
     }
@@ -234,7 +193,7 @@ export default function AllTransactionTypesPage() {
     console.log("filterOBJ", filterOBJ);
     if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
     if (filterOBJ.hasOwnProperty("operation_type") && filterOBJ.operation_type !== "0") searchParams.set("operation_type", filterOBJ.operation_type);
-    if( filterOBJ.hasOwnProperty("status")&&filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+    if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
 
     setSearchParams(searchParams);
   }
@@ -247,7 +206,7 @@ export default function AllTransactionTypesPage() {
 
   let translateText = isArabic ? "نوع معاملة مالية" : "Transaction Type";
 
-  let searchText= isArabic ? "اسم المعاملة المالية":"Fee Types Name"
+  let searchText = isArabic ? "اسم المعاملة المالية" : "Fee Types Name"
 
   if (loading) return <LoadingPage />;
   return (
