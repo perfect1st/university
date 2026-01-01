@@ -21,6 +21,7 @@ import { useEffect } from "react";
 
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { isPaidArr, TrueOrFalseArr } from "../../constants";
+import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 
 
 export default function AllRequiredFeesPage() {
@@ -32,10 +33,10 @@ export default function AllRequiredFeesPage() {
 
     const isArabic = i18n.language === "ar";
 
-    // const {
-    //     data: { getUsersRequiredFees } = {},
-    //     loading: pageLoading
-    // } = useQuery(GET_USERS_REQUIRED_FEES, { fetchPolicy: "network-only" });
+    // all required fees 
+    const {
+        data,
+    } = useQuery(GET_USERS_REQUIRED_FEES, { fetchPolicy: "network-only" });
 
     const [
         UpdateUsersRequiredFees,
@@ -44,6 +45,7 @@ export default function AllRequiredFeesPage() {
         }
     ] = useMutation(UPDATE_USER_REQUIRED_FEES, { fetchPolicy: "network-only" });
 
+    // filtered required fees
     const [
         FilteredPagedUsersRequiredFees,
         {
@@ -89,7 +91,7 @@ export default function AllRequiredFeesPage() {
         if (limit) variablesObj.limit = limit;
         if (searchText) variablesObj.search = searchText;
         if (searchParams.get("is_paid") && searchParams.get("is_paid") !== "0") variablesObj.is_paid = searchParams.get("is_paid") === "true" ? true : false;
-        
+
 
         // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
 
@@ -132,69 +134,38 @@ export default function AllRequiredFeesPage() {
 
     console.log("getUsersRequiredFeesToShow", getUsersRequiredFeesToShow);
 
+    console.log("data", data);
+
     const fetchAndExport = async (type) => {
         try {
-            const exportData = getUsersRequiredFees?.map((user) => ({
-                ID: user.serial_num,
-                "Full Name": user.name,
-                Email: user.email,
-                Mobile: user.mobile,
-                "User Type": user.userType,
-                Status: user.status,
-            }));
+            const exportData = data?.getUsersRequiredFees?.map((user, i) => {
+                const timestamp = Number(user?.createdAt); // نتأكد إنه رقم
+                const date = new Date(timestamp);
+                let total = 0;
 
-            if (type === "excel") {
-                const ws = XLSX.utils.json_to_sheet(exportData);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Users");
-                const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-                const data = new Blob([excelBuffer], {
-                    type: "application/octet-stream",
-                });
-                saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-            } else if (type === "pdf") {
-                const doc = new jsPDF();
-                doc.text("Users Report", 14, 10);
-                autoTable(doc, {
-                    startY: 20,
-                    head: [Object.keys(exportData[0] || {})],
-                    body: exportData.map((row) => Object.values(row)),
-                });
-                doc.save(`Users_${new Date().toISOString()}.pdf`);
-            } else if (type === "print") {
-                const printableWindow = window.open("", "_blank");
-                const htmlContent = `
-                                           <html>
-                                             <head>
-                                               <title>Users Report</title>
-                                               <style>
-                                                 table { width: 100%; border-collapse: collapse; }
-                                                 th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-                                                 th { background-color: #f2f2f2; }
-                                               </style>
-                                             </head>
-                                             <body>
-                                               <h2>Users Report</h2>
-                                               <table>
-                                                 <thead><tr>${Object.keys(exportData[0] || {})
-                        .map((k) => `<th>${k}</th>`)
-                        .join("")}</tr></thead>
-                                                 <tbody>${exportData
-                        .map(
-                            (row) =>
-                                `<tr>${Object.values(row)
-                                    .map((v) => `<td>${v}</td>`)
-                                    .join("")}</tr>`
-                        )
-                        .join("")}</tbody>
-                                               </table>
-                                             </body>
-                                           </html>
-                                         `;
-                printableWindow.document.write(htmlContent);
-                printableWindow.document.close();
-                printableWindow.print();
+                user?.fees_types_ids?.map(fee => {
+                    if (user?.student_id?.is_inside_yemen == true) total += fee?.inside_yemen_value
+                    else total += fee?.outside_yemen_value
+                })
+                return {
+                    ID: i,
+                    [t("Dashboard.studentName")]: user?.student_id?.fullname,
+                    [t("Dashboard.createdAt")]: formatDateToString(date),
+                    [t("fee.table.amount")]: total,
+                    [t("fee.transactionSerial")]: user?.transactions_id?.transaction_serial,
+                    [t("Dashboard.createdBy")]: user?.website_user_id?.fullname,
+                    [t("Status")]: t(user?.is_paid == true ? "paid" : "unpaid"),
+
+                }
             }
+            );
+
+            ExportExcelAndPDF({
+                exportData,
+                isArabic,
+                reportTitle: isArabic ? "قائمة رسوم الطلاب" : "Student  Required Fees List",
+                type
+            });
         } catch (err) {
             console.error("Export error:", err);
         }
