@@ -3,6 +3,7 @@ import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import html2pdf from 'html2pdf.js';
+import logo from "../../assets/Logo.png";
 
 
 export default function ExportExcelAndPDF({ exportData, type, reportTitle, isArabic }) {
@@ -23,6 +24,8 @@ export default function ExportExcelAndPDF({ exportData, type, reportTitle, isAra
         element.innerHTML = `
         <div style="font-family:Tahoma; direction:${isArabic ? "rtl" : "ltr"}; padding:20px;">
             <h2 style="text-align:center">${reportTitle}</h2>
+            <!-- هنا Favicon -->
+        <link rel="icon" href="${logo}" type="image/x-icon">
             <table border="1" style="width:100%; border-collapse:collapse;">
                 <thead>
                     <tr>
