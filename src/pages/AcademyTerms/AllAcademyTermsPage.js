@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import { Box, CircularProgress, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useLazyQuery, useMutation } from "@apollo/client/react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import LoadingPage from "../../components/LoadingComponent";
 import * as XLSX from "xlsx";
@@ -19,6 +19,7 @@ import { GET_ACADEMY_TERMS_WITH_FILTER, GET_ALL_ACADEMY_TERMS, UPDATE_ACADEMY_TE
 import { GET_ALL_DEPARTMENTS, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
+import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 
 
 export default function AllAcademyTermsPage() {
@@ -34,10 +35,9 @@ export default function AllAcademyTermsPage() {
 
     let firstRenderRef = useRef(true);
 
-    // const [GetAcademyTerms, {
-    //     data: { getAcademyTerms } = {},
-    //     loading: getAcademyLoading
-    // }] = useLazyQuery(GET_ALL_ACADEMY_TERMS, { fetchPolicy: "network-only" });
+    const {
+        data
+    } = useQuery(GET_ALL_ACADEMY_TERMS, { fetchPolicy: "network-only" });
 
     const [
         FilteredPagedAcademyTerms,
@@ -56,7 +56,6 @@ export default function AllAcademyTermsPage() {
 
 
     const [UpdateAcademyTerm, {
-        data,
         loading: updatingStatus
     }] = useMutation(UPDATE_ACADEMY_TERM_BY_ID, { fetchPolicy: "network-only" });
 
@@ -151,67 +150,23 @@ export default function AllAcademyTermsPage() {
 
     const fetchAndExport = async (type) => {
         try {
-            const exportData = getAcademyTerms?.map((user) => ({
-                ID: user.serial_num,
-                "Full Name": user.name,
-                Email: user.email,
-                Mobile: user.mobile,
-                "User Type": user.userType,
-                Status: user.status,
+            const exportData = data?.getAcademyTerms?.map((user, i) => ({
+                ID: i,
+                [t("Dashboard.NameInArabic")]: user?.title_ar,
+                [t("Dashboard.NameInEnglish")]: user?.title_en,
+                [t("Dashboard.AcademicYear")]: user?.current_year,
+                [t("admissions.faculty")]: isArabic ? user?.faculty_department_id?.faculty_id?.title_ar : user?.faculty_department_id?.faculty_id?.title_en,
+                [t("admissions.facultyDepartment")]: isArabic ? user?.faculty_department_id?.title_ar : user?.faculty_department_id?.title_en,
+                [t("Dashboard.semester")]: user?.term_number,
+                [t("Status")]: t(user.status),
             }));
 
-            if (type === "excel") {
-                const ws = XLSX.utils.json_to_sheet(exportData);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Users");
-                const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-                const data = new Blob([excelBuffer], {
-                    type: "application/octet-stream",
-                });
-                saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-            } else if (type === "pdf") {
-                const doc = new jsPDF();
-                doc.text("Users Report", 14, 10);
-                autoTable(doc, {
-                    startY: 20,
-                    head: [Object.keys(exportData[0] || {})],
-                    body: exportData.map((row) => Object.values(row)),
-                });
-                doc.save(`Users_${new Date().toISOString()}.pdf`);
-            } else if (type === "print") {
-                const printableWindow = window.open("", "_blank");
-                const htmlContent = `
-                                   <html>
-                                     <head>
-                                       <title>Users Report</title>
-                                       <style>
-                                         table { width: 100%; border-collapse: collapse; }
-                                         th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-                                         th { background-color: #f2f2f2; }
-                                       </style>
-                                     </head>
-                                     <body>
-                                       <h2>Users Report</h2>
-                                       <table>
-                                         <thead><tr>${Object.keys(exportData[0] || {})
-                        .map((k) => `<th>${k}</th>`)
-                        .join("")}</tr></thead>
-                                         <tbody>${exportData
-                        .map(
-                            (row) =>
-                                `<tr>${Object.values(row)
-                                    .map((v) => `<td>${v}</td>`)
-                                    .join("")}</tr>`
-                        )
-                        .join("")}</tbody>
-                                       </table>
-                                     </body>
-                                   </html>
-                                 `;
-                printableWindow.document.write(htmlContent);
-                printableWindow.document.close();
-                printableWindow.print();
-            }
+            ExportExcelAndPDF({
+                exportData,
+                isArabic,
+                reportTitle: isArabic ? "قائمة الفصول الدراسية" : "Subjects List",
+                type
+            });
         } catch (err) {
             console.error("Export error:", err);
         }
@@ -262,7 +217,7 @@ export default function AllAcademyTermsPage() {
         console.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
-       if (filterOBJ.hasOwnProperty("faculty_department_id") && filterOBJ.faculty_department_id !== "0") searchParams.set("faculty_department_id", filterOBJ.faculty_department_id);
+        if (filterOBJ.hasOwnProperty("faculty_department_id") && filterOBJ.faculty_department_id !== "0") searchParams.set("faculty_department_id", filterOBJ.faculty_department_id);
         // searchParams.get("search", e.target.value);
         setSearchParams(searchParams);
     }
@@ -291,7 +246,7 @@ export default function AllAcademyTermsPage() {
 
     // departments
     let translateText = isArabic ? "فصل دراسي" : "AcademyTerm";
-     const departmentSearch=isArabic?" اسم القسم":"Department name";
+    const departmentSearch = isArabic ? " اسم القسم" : "Department name";
 
     if (getAcademyLoading || faculitiesLoading) return <LoadingPage />;
 

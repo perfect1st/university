@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import { Box, CircularProgress, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useLazyQuery, useMutation } from "@apollo/client/react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import LoadingPage from "../../components/LoadingComponent";
 import * as XLSX from "xlsx";
@@ -19,6 +19,7 @@ import { GET_ALL_DEPARTMENTS, GET_ALL_FACULITIES } from "../../graphql/facultyQu
 import { GET_ALL_MATERIALS, UPDATE_MATERIAL_BY_ID, GET_ALL_FILTERED_MATERIALS } from "../../graphql/materialQueries";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
+import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 
 
 export default function AllMaterialsPage() {
@@ -33,7 +34,7 @@ export default function AllMaterialsPage() {
 
   const firstRenderRef = useRef(true);
 
-  // get all subjects
+  // get all mateerials with filter
   const [
     FilteredPagedMaterials, {
       data: {
@@ -45,6 +46,11 @@ export default function AllMaterialsPage() {
       loading: materialsLoading
     }
   ] = useLazyQuery(GET_ALL_FILTERED_MATERIALS, { fetchPolicy: "network-only" });
+
+  // get all materials 
+  const{
+    data
+  }=useQuery(GET_ALL_MATERIALS, { fetchPolicy: "network-only" });
 
   // update subject status
   const [UpdateMaterial, {
@@ -140,67 +146,23 @@ export default function AllMaterialsPage() {
   ];
   const fetchAndExport = async (type) => {
     try {
-      const exportData = materials?.map((user) => ({
-        ID: user.serial_num,
-        "Full Name": user.name,
-        Email: user.email,
-        Mobile: user.mobile,
-        "User Type": user.userType,
-        Status: user.status,
+      const exportData = data?.materials?.map((user,i) => ({
+        ID: i,
+        [t("Dashboard.NameInArabic")]: user?.title_ar,
+        [t("Dashboard.NameInEnglish")]: user?.title_en,
+        [t("admissions.faculty")]: isArabic ? user?.faculty_department_id?.faculty_id?.title_ar : user?.faculty_department_id?.faculty_id?.title_en,
+        [t("admissions.facultyDepartment")]: isArabic ? user?.faculty_department_id?.title_ar : user?.faculty_department_id?.title_en,
+        [t("studentDashboard.fullmarkDegree")]: user?.fullmark_degree,
+        [t("studentDashboard.successDegree")]: user?.success_degree,
+        [t("Status")]: t(user.status),
       }));
 
-      if (type === "excel") {
-        const ws = XLSX.utils.json_to_sheet(exportData);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Users");
-        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-        const data = new Blob([excelBuffer], {
-          type: "application/octet-stream",
-        });
-        saveAs(data, `Users_${new Date().toISOString()}.xlsx`);
-      } else if (type === "pdf") {
-        const doc = new jsPDF();
-        doc.text("Users Report", 14, 10);
-        autoTable(doc, {
-          startY: 20,
-          head: [Object.keys(exportData[0] || {})],
-          body: exportData.map((row) => Object.values(row)),
-        });
-        doc.save(`Users_${new Date().toISOString()}.pdf`);
-      } else if (type === "print") {
-        const printableWindow = window.open("", "_blank");
-        const htmlContent = `
-                                     <html>
-                                       <head>
-                                         <title>Users Report</title>
-                                         <style>
-                                           table { width: 100%; border-collapse: collapse; }
-                                           th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-                                           th { background-color: #f2f2f2; }
-                                         </style>
-                                       </head>
-                                       <body>
-                                         <h2>Users Report</h2>
-                                         <table>
-                                           <thead><tr>${Object.keys(exportData[0] || {})
-            .map((k) => `<th>${k}</th>`)
-            .join("")}</tr></thead>
-                                           <tbody>${exportData
-            .map(
-              (row) =>
-                `<tr>${Object.values(row)
-                  .map((v) => `<td>${v}</td>`)
-                  .join("")}</tr>`
-            )
-            .join("")}</tbody>
-                                         </table>
-                                       </body>
-                                     </html>
-                                   `;
-        printableWindow.document.write(htmlContent);
-        printableWindow.document.close();
-        printableWindow.print();
-      }
+      ExportExcelAndPDF({
+        exportData,
+        isArabic,
+        reportTitle: isArabic ? "قائمة المواد الدراسية" : "Materials List",
+        type
+      });
     } catch (err) {
       console.error("Export error:", err);
     }
