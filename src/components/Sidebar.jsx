@@ -174,6 +174,16 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
     },
   },
   {
+    // icon: FlagIcon,
+    key: "lecturesSchedule",
+    path: "/lecturesSchedule",
+    label: {
+      ar: "جداول المحاضرات",
+      en: "Lectures Schedule",
+    },
+  },
+
+  {
      key: "feesTypes",
     path: "/feesTypes",
     label: {

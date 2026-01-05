@@ -89,6 +89,9 @@ import AllRequiredFeesPage from "./pages/StudentRequiredFees/AllRequiredFeesPage
 import AddRequiredFeesPage from "./pages/StudentRequiredFees/AddRequiredFeesPage";
 import RequiredFeeDetailsPage from "./pages/StudentRequiredFees/RequiredFeeDetailsPage";
 import SubTitleDetailsPage from "./pages/websiteDepartments/SubTitleDetailsPage";
+import AllLecturesPage from "./pages/LecturesSchedule/AllLecturesPage";
+import AddLecturePage from "./pages/LecturesSchedule/AddLecturePage";
+import LectureDetailsPage from "./pages/LecturesSchedule/LectureDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -749,6 +752,27 @@ function App() {
                     <Route path="details/:id" element={
                       <MainLayout isLoggedIn={true}>
                         <AcademyTermDetailsPage />
+                      </MainLayout>
+                    } />
+
+                  </Route>
+
+                    {/* المحاضرات */}
+                  <Route path="/lecturesSchedule">
+                    <Route index element={
+                      <MainLayout isLoggedIn={true}>
+                        <AllLecturesPage />
+                      </MainLayout>
+                    } />
+
+                    <Route path="add" element={
+                      <MainLayout isLoggedIn={true}>
+                        <AddLecturePage />
+                      </MainLayout>
+                    } />
+                    <Route path="details/:id" element={
+                      <MainLayout isLoggedIn={true}>
+                        <LectureDetailsPage />
                       </MainLayout>
                     } />
 
