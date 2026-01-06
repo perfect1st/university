@@ -119,3 +119,18 @@ mutation CreateMainTimeTable($input:MainTimeTableInput!) {
     }
 }
 `;
+
+export const UPDATE_TIME_TABLE=gql`
+mutation UpdateMainTimeTable($id:ID!,$input:MainTimeTableInput!) {
+    updateMainTimeTable(id: $id, input: $input) {
+        id
+        number
+        title_ar
+        title_en
+        study_year
+        status
+        createdAt
+        updatedAt
+    }
+}
+`;

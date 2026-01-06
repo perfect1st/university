@@ -144,7 +144,7 @@ export default function AllLecturesPage() {
 
     const addNavigate = () => navigate("add");
 
-     const onFilterChange = async (filterOBJ) => {
+    const onFilterChange = async (filterOBJ) => {
         console.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
@@ -212,14 +212,14 @@ export default function AllLecturesPage() {
                         selectKey2={"faculty_id"}
                         selectOptions2={faculties}
                         select2Label2={searchFaculityText}
-                         onFilterChange={onFilterChange}
+                        onFilterChange={onFilterChange}
                         t={t}
                     />
 
 
                     <TableComponent
-                         columns={columns}
-                         data={mainTimeTables}
+                        columns={columns}
+                        data={mainTimeTables}
                         // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
                         // loading={materialsLoading}
                         // isUsers={true}
