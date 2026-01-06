@@ -20,7 +20,7 @@ import { GET_ALL_MATERIALS, UPDATE_MATERIAL_BY_ID, GET_ALL_FILTERED_MATERIALS } 
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
-import { GET_FILTERED_MAIN_TABLES } from "../../graphql/TimeTableQueries";
+import { GET_FILTERED_MAIN_TABLES, UPDATE_MAIN_TIME_TABLE_BY_ID } from "../../graphql/TimeTableQueries";
 export default function AllLecturesPage() {
     const theme = useTheme();
     const { t } = useTranslation();
@@ -45,6 +45,15 @@ export default function AllLecturesPage() {
 
         }
     ] = useLazyQuery(GET_FILTERED_MAIN_TABLES, {
+        fetchPolicy: "network-only"
+    });
+
+    const [
+        UpdateMainTimeTable,
+        {
+            loading: updatingStatus
+        }
+    ] = useMutation(UPDATE_MAIN_TIME_TABLE_BY_ID, {
         fetchPolicy: "network-only"
     });
 
@@ -144,6 +153,34 @@ export default function AllLecturesPage() {
 
     const addNavigate = () => navigate("add");
 
+    const onStatusChange = async (selectedRow, newStatus) => {
+        try {
+          
+
+            let data = {
+                faculty_department_id: selectedRow?.faculty_department_id?.id,
+                faculty_id: selectedRow?.faculty_id?.id,
+                academy_term_id: selectedRow?.academy_term_id?.id,
+                title_ar: selectedRow?.title_ar,
+                title_en:selectedRow?.title_en,
+                study_year:selectedRow?.study_year,
+                status: newStatus == "inActive" ? false : true
+            }
+            const result = await UpdateMainTimeTable({
+                variables: {
+                    id: selectedRow?.id,
+                    input: data
+                }
+            });
+
+            console.log("reeesult", result);
+
+            notify(t("success"), "success");
+
+        } catch (error) {
+            notify(t("error"), "error");
+        }
+    }
     const onFilterChange = async (filterOBJ) => {
         console.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
@@ -175,7 +212,13 @@ export default function AllLecturesPage() {
     if (departmentsLoading || faculitiesLoading || mainTablesLoading) return <LoadingPage />;
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
-
+            {
+                updatingStatus && <CircularProgress
+                    size={26}
+                    thickness={8}
+                    sx={{ color: "black" }}
+                />
+            }
             <Grid container spacing={3}>
                 <Grid item
                     sm={12} md={12}
@@ -234,7 +277,7 @@ export default function AllLecturesPage() {
                             width: "100%",
                         }}
                         handleDetailsClick={handleDetailsClick}
-                    // onStatusChange={onStatusChange}
+                        onStatusChange={onStatusChange}
                     />
 
                     {/* <FilterComponent totalPages={totalPages} /> */}

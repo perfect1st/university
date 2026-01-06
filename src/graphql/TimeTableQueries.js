@@ -120,7 +120,7 @@ mutation CreateMainTimeTable($input:MainTimeTableInput!) {
 }
 `;
 
-export const UPDATE_TIME_TABLE=gql`
+export const UPDATE_MAIN_TIME_TABLE_BY_ID=gql`
 mutation UpdateMainTimeTable($id:ID!,$input:MainTimeTableInput!) {
     updateMainTimeTable(id: $id, input: $input) {
         id

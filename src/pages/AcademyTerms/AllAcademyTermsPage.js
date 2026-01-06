@@ -222,8 +222,7 @@ export default function AllAcademyTermsPage() {
         setSearchParams(searchParams);
     }
 
-    console.log("getAcademyTerms", getAcademyTerms);
-    console.log("faculties", faculties);
+    
 
 
     let pageLimit;
