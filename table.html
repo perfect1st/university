@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="light" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>جدول المحاضرات الأسبوعي</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Cairo", "Inter", "sans-serif"],
+                        "sans": ["Cairo", "Inter", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Cairo', 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#0d121b] dark:text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation -->
+<header class="w-full border-b border-solid border-b-[#e7ebf3] bg-white dark:bg-[#1a202c] dark:border-[#2d3748] px-4 md:px-10 py-3 sticky top-0 z-50">
+<div class="flex items-center justify-between whitespace-nowrap max-w-[1280px] mx-auto">
+<div class="flex items-center gap-4 text-[#0d121b] dark:text-white">
+<div class="size-10 flex items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-2xl">calendar_month</span>
+</div>
+<h2 class="text-[#0d121b] dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">جدول المحاضرات</h2>
+</div>
+<div class="flex flex-1 justify-end gap-4 md:gap-8 items-center">
+<div class="hidden md:flex items-center gap-6 lg:gap-9">
+<a class="text-primary text-sm font-bold leading-normal border-b-2 border-primary pb-0.5" href="#">أسبوعي</a>
+<a class="text-[#0d121b] dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">يومي</a>
+<a class="text-[#0d121b] dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">المواد</a>
+</div>
+<div class="flex gap-3 items-center">
+<button class="hidden sm:flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-blue-700 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-sm">
+<span class="truncate">إضافة مادة</span>
+</button>
+<button class="flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-[#f0f2f5] dark:bg-[#2d3748] text-[#0d121b] dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-white shadow-sm" data-alt="Portrait of a user" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCA19Kw28z4zO5dZEZNR34rEptJKJ4d_-hsAfmq3vfiAna79oLU5Aad0z_dn0qStnV4sbQYhhdxTX_WySgN5wl5aWooD1pCnyvN7vt1kRW1y97dS3JWZYgcS0_1eoM5Jx3f4YZou6C2RUAn2o8xeSHbs_b4tlif-ZXhbRPpjE_NyommErovjgnoj-ZHusKrxiPOS-DVFuYrlKYBwoPLg6U74cxjD_x123mm81mqaSu1cI96F_Di4-ww0fAvrbwknd6bwYbVXgoC31E");'></div>
+</div>
+</div>
+</div>
+</header>
+<div class="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-8">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1 w-full gap-8">
+<!-- Page Heading -->
+<div class="flex flex-wrap justify-between items-end gap-4">
+<div class="flex min-w-72 flex-col gap-2">
+<h1 class="text-[#0d121b] dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">جدول المحاضرات الأسبوعي</h1>
+<p class="text-[#4c669a] dark:text-gray-400 text-base font-normal leading-normal">قم بإدارة محاضراتك وأوقاتك بسهولة</p>
+</div>
+<div class="flex gap-3">
+<button class="flex min-w-[84px] cursor-pointer items-center gap-2 justify-center overflow-hidden rounded-lg h-10 px-4 bg-white dark:bg-[#2d3748] border border-[#cfd7e7] dark:border-[#4a5568] text-[#0d121b] dark:text-white text-sm font-bold leading-normal hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+<span class="material-symbols-outlined text-[18px]">print</span>
+<span class="truncate">طباعة الجدول</span>
+</button>
+<button class="flex sm:hidden min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-blue-700 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">إضافة</span>
+</button>
+</div>
+</div>
+<!-- Calendar Table -->
+<div class="w-full @container">
+<div class="flex flex-col overflow-hidden rounded-xl border border-[#cfd7e7] dark:border-[#2d3748] bg-white dark:bg-[#1a202c] shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full min-w-[800px] border-collapse">
+<thead>
+<tr class="bg-[#f8f9fc] dark:bg-[#2d3748] border-b border-[#cfd7e7] dark:border-[#4a5568]">
+<th class="px-4 py-4 text-start text-[#4c669a] dark:text-gray-300 w-32 text-sm font-bold leading-normal sticky right-0 bg-[#f8f9fc] dark:bg-[#2d3748] z-10 border-l border-[#cfd7e7] dark:border-[#4a5568]">الوقت</th>
+<th class="px-4 py-4 text-start text-[#0d121b] dark:text-white flex-1 text-sm font-bold leading-normal">الأحد</th>
+<th class="px-4 py-4 text-start text-[#0d121b] dark:text-white flex-1 text-sm font-bold leading-normal bg-primary/5">الإثنين</th>
+<th class="px-4 py-4 text-start text-[#0d121b] dark:text-white flex-1 text-sm font-bold leading-normal">الثلاثاء</th>
+<th class="px-4 py-4 text-start text-[#0d121b] dark:text-white flex-1 text-sm font-bold leading-normal">الأربعاء</th>
+<th class="px-4 py-4 text-start text-[#0d121b] dark:text-white flex-1 text-sm font-bold leading-normal">الخميس</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#cfd7e7] dark:divide-[#4a5568]">
+<!-- 08:00 - 09:00 -->
+<tr class="group hover:bg-gray-50 dark:hover:bg-[#283141] transition-colors">
+<td class="h-[80px] px-4 py-2 text-[#4c669a] dark:text-gray-400 text-sm font-medium leading-normal sticky right-0 bg-white dark:bg-[#1a202c] group-hover:bg-gray-50 dark:group-hover:bg-[#283141] border-l border-[#cfd7e7] dark:border-[#4a5568] z-10">
+                                                08:00 - 09:00
+                                            </td>
+<td class="px-2 py-2">
+<button class="flex flex-col w-full h-full min-h-[64px] rounded-lg bg-primary/10 border border-primary/20 p-2 text-start hover:bg-primary/20 transition-all group/card">
+<span class="text-primary text-xs font-bold leading-tight truncate">رياضيات متقطعة</span>
+<span class="text-primary/70 text-[10px] font-medium mt-1 truncate">د. أحمد سلامة</span>
+<span class="text-primary/60 text-[10px] mt-auto flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">location_on</span> قاعة 101</span>
+</button>
+</td>
+<td class="px-2 py-2 bg-primary/5">
+<button class="flex flex-col w-full h-full min-h-[64px] rounded-lg bg-purple-50 border border-purple-200 dark:bg-purple-900/20 dark:border-purple-800 p-2 text-start hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-all">
+<span class="text-purple-700 dark:text-purple-300 text-xs font-bold leading-tight truncate">فيزياء عامة</span>
+<span class="text-purple-600 dark:text-purple-400 text-[10px] font-medium mt-1 truncate">د. سارة علي</span>
+<span class="text-purple-500 dark:text-purple-400/80 text-[10px] mt-auto flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">science</span> معمل 202</span>
+</button>
+</td>
+<td class="px-2 py-2">
+<div class="flex items-center justify-center w-full h-full min-h-[64px] rounded-lg border border-dashed border-[#cfd7e7] dark:border-[#4a5568] hover:border-primary hover:bg-primary/5 dark:hover:border-primary/50 transition-colors cursor-pointer group/add">
+<span class="material-symbols-outlined text-[#cfd7e7] dark:text-[#4a5568] group-hover/add:text-primary transition-colors">add</span>
+</div>
+</td>
+<td class="px-2 py-2">
+<button class="flex flex-col w-full h-full min-h-[64px] rounded-lg bg-emerald-50 border border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800 p-2 text-start hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-all">
+<span class="text-emerald-700 dark:text-emerald-300 text-xs font-bold leading-tight truncate">كيمياء عضوية</span>
+<span class="text-emerald-600 dark:text-emerald-400 text-[10px] font-medium mt-1 truncate">د. محمد عمر</span>
+<span class="text-emerald-500 dark:text-emerald-400/80 text-[10px] mt-auto flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">biotech</span> معمل 1</span>
+</button>
+</td>
+<td class="px-2 py-2">
+<div class="flex items-center justify-center w-full h-full min-h-[64px] rounded-lg border border-dashed border-[#cfd7e7] dark:border-[#4a5568] hover:border-primary hover:bg-primary/5 dark:hover:border-primary/50 transition-colors cursor-pointer group/add">
+<span class="material-symbols-outlined text-[#cfd7e7] dark:text-[#4a5568] group-hover/add:text-primary transition-colors">add</span>
+</div>
+</td>
+</tr>
+<!-- 09:00 - 10:00 -->
+<tr class="group hover:bg-gray-50 dark:hover:bg-[#283141] transition-colors">
+<td class="h-[80px] px-4 py-2 text-[#4c669a] dark:text-gray-400 text-sm font-medium leading-normal sticky right-0 bg-white dark:bg-[#1a202c] group-hover:bg-gray-50 dark:group-hover:bg-[#283141] border-l border-[#cfd7e7] dark:border-[#4a5568] z-10">
+                                                09:00 - 10:00
+                                            </td>
+<td class="px-2 py-2">
+<button class="flex flex-col w-full h-full min-h-[64px] rounded-lg bg-primary/10 border border-primary/20 p-2 text-start hover:bg-primary/20 transition-all">
+<span class="text-primary text-xs font-bold leading-tight truncate">رياضيات متقطعة</span>
+<span class="text-primary/70 text-[10px] font-medium mt-1 truncate">د. أحمد سلامة</span>
+<span class="text-primary/60 text-[10px] mt-auto flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">location_on</span> قاعة 101</span>
+</button>
+</td>
+<td class="px-2 py-2 bg-primary/5">
+<button class="flex flex-col w-full h-full min-h-[64px] rounded-lg bg-purple-50 border border-purple-200 dark:bg-purple-900/20 dark:border-purple-800 p-2 text-start hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-all">
+<span class="text-purple-700 dark:text-purple-300 text-xs font-bold leading-tight truncate">فيزياء عامة</span>
+<span class="text-purple-600 dark:text-purple-400 text-[10px] font-medium mt-1 truncate">د. سارة علي</span>
+<span class="text-purple-500 dark:text-purple-400/80 text-[10px] mt-auto flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">science</span> معمل 202</span>
+</button>
+</td>
+<td class="px-2 py-2">
+<button class="flex flex-col w-full h-full min-h-[64px] rounded-lg bg-orange-50 border border-orange-200 dark:bg-orange-900/20 dark:border-orange-800 p-2 text-start hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-all">
+<span class="text-orange-700 dark:text-orange-300 text-xs font-bold leading-tight truncate">أحياء دقيقة</span>
+<span class="text-orange-600 dark:text-orange-400 text-[10px] font-medium mt-1 truncate">د. منى خالد</span>
+<span class="text-orange-500 dark:text-orange-400/80 text-[10px] mt-auto flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">biotech</span> معمل 2</span>
+</button>
+</td>
+<td class="px-2 py-2">
+<div class="flex items-center justify-center w-full h-full min-h-[64px] rounded-lg border border-dashed border-[#cfd7e7] dark:border-[#4a5568] hover:border-primary hover:bg-primary/5 dark:hover:border-primary/50 transition-colors cursor-pointer group/add">
+<span class="material-symbols-outlined text-[#cfd7e7] dark:text-[#4a5568] group-hover/add:text-primary transition-colors">add</span>
+</div>
+</td>
+<td class="px-2 py-2">
+<button class="flex flex-col w-full h-full min-h-[64px] rounded-lg bg-rose-50 border border-rose-200 dark:bg-rose-900/20 dark:border-rose-800 p-2 text-start hover:bg-rose-100 dark:hover:bg-rose-900/40 transition-all">
+<span class="text-rose-700 dark:text-rose-300 text-xs font-bold leading-tight truncate">لغة عربية</span>
+<span class="text-rose-600 dark:text-rose-400 text-[10px] font-medium mt-1 truncate">أ. ماجد</span>
+<span class="text-rose-500 dark:text-rose-400/80 text-[10px] mt-auto flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">menu_book</span> قاعة 3</span>
+</button>
+</td>
+</tr>
+<!-- 10:00 - 11:00 (Break) -->
+<tr class="bg-gray-50/50 dark:bg-gray-800/30">
+<td class="h-[60px] px-4 py-2 text-[#4c669a] dark:text-gray-400 text-sm font-medium leading-normal sticky right-0 bg-gray-50/50 dark:bg-[#1e2532] border-l border-[#cfd7e7] dark:border-[#4a5568] z-10">
+                                                10:00 - 11:00
+                                            </td>
+<td class="px-2 py-2" colspan="5">
+<div class="w-full h-full flex items-center justify-center rounded bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 text-xs font-bold tracking-wide">
+<span class="material-symbols-outlined text-sm mx-1">coffee</span> استراحة
+                                                </div>
+</td>
+</tr>
+<!-- 11:00 - 12:00 -->
+<tr class="group hover:bg-gray-50 dark:hover:bg-[#283141] transition-colors">
+<td class="h-[80px] px-4 py-2 text-[#4c669a] dark:text-gray-400 text-sm font-medium leading-normal sticky right-0 bg-white dark:bg-[#1a202c] group-hover:bg-gray-50 dark:group-hover:bg-[#283141] border-l border-[#cfd7e7] dark:border-[#4a5568] z-10">
+                                                11:00 - 12:00
+                                            </td>
+<td class="px-2 py-2">
+<div class="flex items-center justify-center w-full h-full min-h-[64px] rounded-lg border border-dashed border-[#cfd7e7] dark:border-[#4a5568] hover:border-primary hover:bg-primary/5 dark:hover:border-primary/50 transition-colors cursor-pointer group/add">
+<span class="material-symbols-outlined text-[#cfd7e7] dark:text-[#4a5568] group-hover/add:text-primary transition-colors">add</span>
+</div>
+</td>
+<td class="px-2 py-2 bg-primary/5">
+<button class="flex flex-col w-full h-full min-h-[64px] rounded-lg bg-cyan-50 border border-cyan-200 dark:bg-cyan-900/20 dark:border-cyan-800 p-2 text-start hover:bg-cyan-100 dark:hover:bg-cyan-900/40 transition-all">
+<span class="text-cyan-700 dark:text-cyan-300 text-xs font-bold leading-tight truncate">برمجة حاسب</span>
+<span class="text-cyan-600 dark:text-cyan-400 text-[10px] font-medium mt-1 truncate">م. يوسف</span>
+<span class="text-cyan-500 dark:text-cyan-400/80 text-[10px] mt-auto flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">computer</span> معمل 4</span>
+</button>
+</td>
+<td class="px-2 py-2">
+<button class="flex flex-col w-full h-full min-h-[64px] rounded-lg bg-amber-50 border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800 p-2 text-start hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-all">
+<span class="text-amber-700 dark:text-amber-300 text-xs font-bold leading-tight truncate">تاريخ حديث</span>
+<span class="text-amber-600 dark:text-amber-400 text-[10px] font-medium mt-1 truncate">د. كريم</span>
+<span class="text-amber-500 dark:text-amber-400/80 text-[10px] mt-auto flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">history_edu</span> قاعة 5</span>
+</button>
+</td>
+<td class="px-2 py-2">
+<div class="flex items-center justify-center w-full h-full min-h-[64px] rounded-lg border border-dashed border-[#cfd7e7] dark:border-[#4a5568] hover:border-primary hover:bg-primary/5 dark:hover:border-primary/50 transition-colors cursor-pointer group/add">
+<span class="material-symbols-outlined text-[#cfd7e7] dark:text-[#4a5568] group-hover/add:text-primary transition-colors">add</span>
+</div>
+</td>
+<td class="px-2 py-2">
+<button class="flex flex-col w-full h-full min-h-[64px] rounded-lg bg-indigo-50 border border-indigo-200 dark:bg-indigo-900/20 dark:border-indigo-800 p-2 text-start hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-all">
+<span class="text-indigo-700 dark:text-indigo-300 text-xs font-bold leading-tight truncate">لياقة بدنية</span>
+<span class="text-indigo-600 dark:text-indigo-400 text-[10px] font-medium mt-1 truncate">ك. حسن</span>
+<span class="text-indigo-500 dark:text-indigo-400/80 text-[10px] mt-auto flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">sports_soccer</span> الملعب</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Add New Course Section -->
+<div class="flex flex-col gap-6 pt-6 border-t border-[#cfd7e7] dark:border-[#2d3748]">
+<div class="flex flex-col gap-1">
+<h3 class="text-[#0d121b] dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">إضافة مادة جديدة</h3>
+<p class="text-[#4c669a] dark:text-gray-400 text-sm">أدخل تفاصيل المادة لإضافتها إلى الجدول</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<label class="flex flex-col gap-2">
+<span class="text-[#0d121b] dark:text-gray-200 text-sm font-bold leading-normal">اسم المادة</span>
+<div class="relative">
+<input class="w-full h-11 rounded-lg border border-[#cfd7e7] dark:border-[#4a5568] bg-[#f8f9fc] dark:bg-[#2d3748] px-4 text-base text-[#0d121b] dark:text-white placeholder-[#4c669a] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all" placeholder="مثل: برمجة حاسب"/>
+<span class="material-symbols-outlined absolute left-3 top-3 text-[#9ca3af]">book</span>
+</div>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-[#0d121b] dark:text-gray-200 text-sm font-bold leading-normal">اسم المحاضر</span>
+<div class="relative">
+<input class="w-full h-11 rounded-lg border border-[#cfd7e7] dark:border-[#4a5568] bg-[#f8f9fc] dark:bg-[#2d3748] px-4 text-base text-[#0d121b] dark:text-white placeholder-[#4c669a] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all" placeholder="مثل: د. محمد أحمد"/>
+<span class="material-symbols-outlined absolute left-3 top-3 text-[#9ca3af]">person</span>
+</div>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-[#0d121b] dark:text-gray-200 text-sm font-bold leading-normal">اليوم</span>
+<div class="relative">
+<select class="w-full h-11 appearance-none rounded-lg border border-[#cfd7e7] dark:border-[#4a5568] bg-[#f8f9fc] dark:bg-[#2d3748] px-4 text-base text-[#0d121b] dark:text-white focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all cursor-pointer">
+<option>الأحد</option>
+<option>الإثنين</option>
+<option>الثلاثاء</option>
+<option>الأربعاء</option>
+<option>الخميس</option>
+</select>
+<span class="material-symbols-outlined absolute left-3 top-3 text-[#9ca3af] pointer-events-none">expand_more</span>
+</div>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-[#0d121b] dark:text-gray-200 text-sm font-bold leading-normal">الوقت</span>
+<div class="relative">
+<select class="w-full h-11 appearance-none rounded-lg border border-[#cfd7e7] dark:border-[#4a5568] bg-[#f8f9fc] dark:bg-[#2d3748] px-4 text-base text-[#0d121b] dark:text-white focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all cursor-pointer">
+<option>08:00 - 09:00</option>
+<option>09:00 - 10:00</option>
+<option>10:00 - 11:00</option>
+<option>11:00 - 12:00</option>
+<option>12:00 - 01:00</option>
+</select>
+<span class="material-symbols-outlined absolute left-3 top-3 text-[#9ca3af] pointer-events-none">schedule</span>
+</div>
+</label>
+</div>
+<div class="flex justify-end gap-3 mt-2">
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-11 px-6 bg-transparent border border-[#cfd7e7] dark:border-[#4a5568] hover:bg-gray-50 dark:hover:bg-[#2d3748] text-[#0d121b] dark:text-white text-base font-bold transition-colors">
+                                إلغاء
+                            </button>
+<button class="flex min-w-[140px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-11 px-6 bg-primary hover:bg-blue-700 text-white text-base font-bold shadow-md shadow-primary/20 transition-all">
+                                حفظ المادة
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>
