@@ -67,9 +67,9 @@ export default function AllLecturesPage() {
             = useQuery(GET_ALL_DEPARTMENTS, {
                 fetchPolicy: "network-only"
             });
-        
-            useEffect(()=>{
-                 let page;
+
+    useEffect(() => {
+        let page;
         let limit;
         if (!searchParams.get("page")) {
             page = 1;
@@ -96,13 +96,27 @@ export default function AllLecturesPage() {
         if (searchText) variablesObj.search = searchText;
         if (searchParams.get("status") && searchParams.get("status") !== "0") variablesObj.status = searchParams.get("status") === "true" ? true : false;
         if (searchParams.get("faculty_department_id")) variablesObj.faculty_department_id = searchParams.get("faculty_department_id");
+        if (searchParams.get("faculty_id")) variablesObj.faculty_id = searchParams.get("faculty_id");
 
         // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
 
         GetMainTimeTablesFiltered({ variables: variablesObj });
-            },[searchParams]);
+    }, [searchParams]);
 
     console.log("mainTimeTables", mainTimeTables);
+
+    let columns = [
+        // { key: "ID", label: "ID" },
+        { key: "title_ar", label: t("Dashboard.NameInArabic") },
+        { key: "title_en", label: t("Dashboard.NameInEnglish") },
+        { key: "study_year", label: t("Dashboard.studyYear") },
+        { key: "faculty_id", label: t("admissions.faculty") },
+        { key: "faculty_department_id", label: t("admissions.facultyDepartment") },
+        { key: "academy_term_id", label: t("Dashboard.semester") },
+        { key: "status", label: t("Status") }
+        //  { key: "userType", label: t("User Type") }
+
+    ];
 
     const fetchAndExport = async (type) => {
         try {
@@ -130,6 +144,16 @@ export default function AllLecturesPage() {
 
     const addNavigate = () => navigate("add");
 
+     const onFilterChange = async (filterOBJ) => {
+        console.log("filterOBJ", filterOBJ);
+        if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
+        if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
+        if (filterOBJ.hasOwnProperty("faculty_department_id") && filterOBJ.faculty_department_id !== "0") searchParams.set("faculty_department_id", filterOBJ.faculty_department_id);
+        if (filterOBJ.hasOwnProperty("faculty_id") && filterOBJ.faculty_id !== "0") searchParams.set("faculty_id", filterOBJ.faculty_id);
+
+        // faculty_id
+        setSearchParams(searchParams);
+    }
     const handleDetailsClick = (selectedRow) => {
         console.log('handleDetailsClick', selectedRow);
         navigate(`details/${selectedRow?.id}`, {
@@ -143,7 +167,7 @@ export default function AllLecturesPage() {
     console.log('t("Dashboard.Lectures")', t("Dashboard.Lectures"));
     // departments
     let translateText = isArabic ? "محاضرة" : "Lecture";
-    const searchText = isArabic ? "بحث ب اسم المادة" : " Search by Subject Name";
+    const searchText = isArabic ? "بحث ب بالاسم" : " Search by Name";
     const departmentSearch = isArabic ? " اسم القسم" : "Department name";
     let searchFaculityText = isArabic ? "اسم الكلية" : "Faculity Name";
 
@@ -188,23 +212,20 @@ export default function AllLecturesPage() {
                         selectKey2={"faculty_id"}
                         selectOptions2={faculties}
                         select2Label2={searchFaculityText}
-                        // onFilterChange={onFilterChange}
+                         onFilterChange={onFilterChange}
                         t={t}
                     />
 
 
                     <TableComponent
-                        // columns={columns}
-                        // data={getSubjectsToShow}
+                         columns={columns}
+                         data={mainTimeTables}
                         // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
                         // loading={materialsLoading}
                         // isUsers={true}
                         statusKey="status"
                         arPopulateKey={"title_ar"}
                         enPopulateKey={"title_en"}
-                        nestedArPopulateKey={"title_ar"}
-                        nestedEnPopulateKey={"title_en"}
-                        nestedPopulateKey={"faculty_id"}
                         sx={{
                             flex: 1,
                             overflow: "auto",
