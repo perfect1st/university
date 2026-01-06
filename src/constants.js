@@ -10,3 +10,9 @@ export const isPaidArr = [
     { arKey: "مدفوع", id: "true" , enKey:"Paid" },
     { arKey: "غير مدفوع", id: "false" , enKey:"UnPaid" }
 ];
+
+export const terms_optionsArr = [
+    { id: 1, value: 1 },
+    { id: 2, value: 2 },
+    { id: 3, value: 3 },
+  ];

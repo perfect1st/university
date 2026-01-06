@@ -302,6 +302,8 @@
   "addItem": "اضافة {{item}}",
   "detailsItem": "تفاصيل {{item}}",
   "Dashboard": {
+    "arabicTitle":"العنوان بالعربية",
+    "englishTitle":"العنوان بالانجليزية",
     "NameInArabic": "الاسم بالعربية",
     "NameInEnglish": "الاسم بالانجليزية",
     "flag": "علم الدولة",
@@ -346,7 +348,8 @@
     "createdBy": "انشيء بواسطة",
     "userSearchField": "ابحث ب استخدام البريد الالكتروني او رقم الهاتف او اسم المستخدم",
     "searchByFaculityName": "ابحث ب استخدام اسم الكلية",
-    "searchWith": "ابحث بواسطة  {{search}}"
+    "searchWith": "ابحث بواسطة  {{search}}",
+     "LecturesSchedule": "جدول المحاضرات"
   },
   "submit": "تأكيد",
   "error": "حدث خطأ حاول مرة اخري",

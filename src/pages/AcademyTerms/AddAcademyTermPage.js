@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { CREATE_ACADEMY_TERM } from "../../graphql/AcademyTerms";
 import MaterialArrComponent from "./MaterialArrComponent";
 import { GET_MATERIALS_BY_DEPARTMENT_ID } from "../../graphql/materialQueries";
+import { terms_optionsArr } from "../../constants";
 
 
 export default function AddAcademyTermPage() {
@@ -101,8 +102,8 @@ export default function AddAcademyTermPage() {
     initialValues: {
       title_ar: "",
       title_en: "",
-      current_year: "", // -> academic year
-      study_year: "",   // -> study year
+      current_year: "", // -> العام الدراسي
+      study_year: "",   // -> السنة الدراسية
       //  term_number: "0",
       min_study_hours: "",
       max_study_hours: "",
@@ -228,11 +229,7 @@ export default function AddAcademyTermPage() {
   });
 
 
-  const terms_optionsArr = [
-    { id: 1, value: 1 },
-    { id: 2, value: 2 },
-    { id: 3, value: 3 },
-  ];
+ 
 
   let translateText = isArabic ? "فصل دراسي" : "AcademyTerm";
   let translateText2 = isArabic ? "الفصل الدراسي" : "AcademyTerm";

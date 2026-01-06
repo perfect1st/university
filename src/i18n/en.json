@@ -265,6 +265,8 @@
   "addItem": "Add {{item}}",
   "detailsItem": "{{item}} Details",
   "Dashboard": {
+     "arabicTitle":"Arabic Title",
+    "englishTitle":"English Title",
     "NameInArabic": "Name In Arabic",
     "NameInEnglish": "Name In English",
     "flag": "Country Flag",
@@ -309,7 +311,8 @@
     "createdBy": "Created By",
     "userSearchField": "Search by User Name , Email and Mobile",
     "searchByFaculityName": "Search by Faculity Name",
-    "searchWith": "Search with  {{search}}"
+    "searchWith": "Search with  {{search}}",
+    "LecturesSchedule": "Lectures Schedule"
   },
   "submit": "Submit",
   "error": "Error happened try again later",
