@@ -16,6 +16,9 @@ import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../
 import { CREATE_NEW_FACULTY_PRICE } from "../../graphql/faculityPricesQueries";
 import { useSelector } from "react-redux";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
+import { CREATE_TIME_TABLE } from "../../graphql/TimeTableQueries";
+import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms.js";
+
 export default function AddLecturePage() {
 
     const theme = useTheme();
@@ -25,11 +28,20 @@ export default function AddLecturePage() {
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const location = useLocation();
 
-    const [selectedSemester, setSelectedSemester] = useState(0);
+    // const [selectedSemester, setSelectedSemester] = useState(0);
     const [selectedFaculity, setSelectedFaculity] = useState(0);
     const [selectedDepartment, setSelectedDepartment] = useState(0);
+    const [selectedAcademicTerm, setSelectedAcademicTerm] = useState(0);
 
     const me = useSelector(state => state.user.loggedUser);
+
+    // create time table
+    const [
+        CreateMainTimeTable,
+        {
+            loading: CreateMainTimeTableLoading,
+        }
+    ] = useMutation(CREATE_TIME_TABLE, { fetchPolicy: "network-only" });
     // get all faculities
     const {
         data: { faculties } = {},
@@ -51,23 +63,35 @@ export default function AddLecturePage() {
         fetchPolicy: "network-only",
     });
 
+    // تجيب الترمات بتاعة القسم
+    const [
+        getAcademyTermsByFacultyDepartment,
+        { data: { getAcademyTermsByFacultyDepartment: termsData } = {}, loading: termsLoading, error: termsError },
+    ] = useLazyQuery(GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID, {
+        fetchPolicy: "network-only",
+    });
+
     const formik = useFormik({
         initialValues: {
             title_ar: "",
             title_en: "",
             study_year: "",
-            current_year: ""
+            // current_year: ""
         },
 
         validationSchema: Yup.object({
             title_ar: Yup.string().required(t("admissions.errors.required")),
             title_en: Yup.string().required(t("admissions.errors.required")),
-            current_year: Yup.string().required(t("admissions.errors.required")),
+            // current_year: Yup.string().required(t("admissions.errors.required")),
             study_year: Yup.string().required(t("admissions.errors.required")),
-            selectedSemester: selectedSemester == 0 && Yup.string()
+            // selectedSemester: selectedSemester == 0 && Yup.string()
+            //     .required(t("admissions.errors.required"))
+            //     .notOneOf(["0"], t("admissions.errors.required")),
+            selectedAcademicTerm: selectedAcademicTerm == 0 && Yup.string()
                 .required(t("admissions.errors.required"))
                 .notOneOf(["0"], t("admissions.errors.required")),
-            // level_year: Yup.string()
+
+            // selectedAcademicTerm
             //     .required(t("admissions.errors.required"))
             //     .test(
             //         "greater-than-zero",
@@ -90,15 +114,13 @@ export default function AddLecturePage() {
             let data = {
                 title_ar: values?.title_ar,
                 title_en: values?.title_en,
-                term_number: selectedSemester,
                 study_year: values?.study_year,
-                current_year: values?.current_year,
-                // price_inside_yemen: Number(values?.price_inside_yemen),
-                // price_outside_yemen:Number(values?.price_outside_yemen),
                 faculty_department_id: selectedDepartment,
                 faculty_id: selectedFaculity,
-                website_user_id: me?.id, //            اضيف بواسطة
-                createDate: formatDateToString(new Date()),
+                academy_term_id: selectedAcademicTerm,
+                created_by: me?.id, //            اضيف بواسطة
+               
+
             };
 
 
@@ -108,13 +130,13 @@ export default function AddLecturePage() {
                 // console.log(data);
 
                 //  return;
-                // const result = await CreateFacultyPrice({
-                //     variables: {
-                //         input: data
-                //     }
-                // });
+                const result = await CreateMainTimeTable({
+                    variables: {
+                        input: data
+                    }
+                });
 
-                // console.log('result', result);
+                console.log('result', result);
 
                 notify(t("success"), "success");
 
@@ -133,7 +155,7 @@ export default function AddLecturePage() {
     // const date=new Date();
     // console.log("date",formatDateToString(new Date()));
 
-    let translateText = isArabic ? "محاضرة" : "Lecture";
+    let translateText = isArabic ? "جدول محاضرة" : "Lecture Schedule";
     let translateText2 = isArabic ? "العنوان بالعربية" : "Title in Arabic";
 
     if (faculitiesLoading) return <LoadingPage />;
@@ -199,7 +221,7 @@ export default function AddLecturePage() {
                 />
 
                 {/* العام الدراسي */}
-                <VerticalTextField
+                {/* <VerticalTextField
                     title={t("Dashboard.AcademicYear", { item: translateText2 })}
                     fieldID={"current_year"}
                     fieldName={"current_year"}
@@ -208,35 +230,12 @@ export default function AddLecturePage() {
                     onChange={formik.handleChange}
                     error={formik.touched.current_year && Boolean(formik.errors.current_year)}
                     helperText={formik.touched.current_year && formik.errors.current_year}
-                />
+                /> */}
 
-                {/* الترم */}
-
-                <VerticalTextFieldSelect
-                    t={t}
-                    title={t("Dashboard.semester")} defaultOptionLabel={t("select")}
-                    backgroundColor={theme.palette.background.inputBackGround}
-                    value={selectedSemester}
-                    setValue={setSelectedSemester}
-                    //  onChange={()=>selectedSemester !=0 &&formik.setFieldError("selectedSemester", undefined)}
-                    onBlur={(e) => {
-                        console.log('blur', selectedSemester);
-                        if (selectedSemester != 0) formik.setFieldError("selectedSemester", undefined);
-
-                    }}
-                    error={formik.errors.selectedSemester && t("admissions.errors.required")}
-                    helperText={formik.errors.selectedSemester && t("admissions.errors.required")}
-
-                >
-                    <MenuItem value={0} selected>{t("select")}</MenuItem>
-                    {
-                        terms_optionsArr?.map(el => <MenuItem key={el?.id} value={el?.id}>{el?.value}</MenuItem>)
-                    }
-                </VerticalTextFieldSelect>
+                
 
 
                 {/* الكلية */}
-
                 <VerticalTextFieldSelect
                     t={t}
                     title={t("admissions.faculty")} defaultOptionLabel={t("select")}
@@ -278,14 +277,25 @@ export default function AddLecturePage() {
                         sx={{ color: "black" }} />
                 }
 
-                {/* القسم */}
-
+                {/* القسم   */}
                 <VerticalTextFieldSelect
                     t={t}
                     title={t("admissions.facultyDepartment")} defaultOptionLabel={t("select")}
                     backgroundColor={theme.palette.background.inputBackGround}
                     value={selectedDepartment}
                     setValue={setSelectedDepartment}
+                    onChange={(e) => {
+                        // 44444444444444444444444444444
+                        if (e.target.value != "") {
+                            console.log("nnnnnnnnnnnnn", e.target.value);
+                            getAcademyTermsByFacultyDepartment({
+                                variables: {
+                                    faculty_department_id: e.target.value
+                                }
+                            });
+                        }
+
+                    }}
                     //   onChange={async (e) => {
 
                     //     await MaterialsByDepartment({
@@ -307,6 +317,39 @@ export default function AddLecturePage() {
                         getFacultyDepartmentsByFaculty?.map(el => <MenuItem key={el?.id} value={el?.id}>{isArabic ? el?.title_ar : el?.title_en}</MenuItem>)
                     }
                 </VerticalTextFieldSelect>
+
+                {
+                    (termsLoading)
+                    && <CircularProgress size={26}
+                        thickness={8}
+                        sx={{ color: "black" }} />
+                }
+
+                {/* الفصل الدراسي */}
+                    <VerticalTextFieldSelect
+                    t={t}
+                    title={
+                        isArabic ? "الفصل الدراسي" : "Academic Term"
+                    } defaultOptionLabel={t("select")}
+                    backgroundColor={theme.palette.background.inputBackGround}
+                    value={selectedAcademicTerm}
+                    setValue={setSelectedAcademicTerm}
+                 
+                    onBlur={(e) => {
+                        // console.log('blur',selectedSemester);
+                        if (selectedAcademicTerm != 0) formik.setFieldError("selectedAcademicTerm", undefined);
+
+                    }}
+                    error={formik.errors.selectedAcademicTerm && t("admissions.errors.required")}
+                    helperText={formik.errors.selectedAcademicTerm && t("admissions.errors.required")}
+                >
+                    <MenuItem value={0} selected>{t("select")}</MenuItem>
+                    {
+                        termsData?.map(el => <MenuItem key={el?.id} value={el?.id}>{isArabic ? el?.title_ar : el?.title_en}</MenuItem>)
+                    }
+                </VerticalTextFieldSelect>
+
+                <SubmitButton loading={CreateMainTimeTableLoading} t={t} />
             </Box>
         </Box>
     )
