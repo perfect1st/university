@@ -20,6 +20,7 @@ import { GET_ALL_MATERIALS, UPDATE_MATERIAL_BY_ID, GET_ALL_FILTERED_MATERIALS } 
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
+import { GET_FILTERED_MAIN_TABLES } from "../../graphql/TimeTableQueries";
 export default function AllLecturesPage() {
     const theme = useTheme();
     const { t } = useTranslation();
@@ -29,6 +30,23 @@ export default function AllLecturesPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const { id } = useParams();
     const isArabic = i18n.language === "ar";
+
+    // all main tables with filter
+    const [
+        GetMainTimeTablesFiltered,
+        {
+            data: {
+                getMainTimeTablesFiltered: {
+                    mainTimeTables,
+                    total
+                } = {}
+            } = {},
+            loading: mainTablesLoading,
+
+        }
+    ] = useLazyQuery(GET_FILTERED_MAIN_TABLES, {
+        fetchPolicy: "network-only"
+    });
 
     // get all faculities
     const {
@@ -49,9 +67,42 @@ export default function AllLecturesPage() {
             = useQuery(GET_ALL_DEPARTMENTS, {
                 fetchPolicy: "network-only"
             });
+        
+            useEffect(()=>{
+                 let page;
+        let limit;
+        if (!searchParams.get("page")) {
+            page = 1;
+        }
+        else {
+            page = Number(searchParams.get("page"));
+        }
+        if (!searchParams.get("limit")) {
+            limit = 10;
+        }
+        else {
+            limit = Number(searchParams.get("limit"));
+        }
 
-    const firstRenderRef = useRef(true);
+        let searchText = "";
 
+        if (searchParams.get("search")) {
+            searchText = searchParams.get("search");
+        }
+
+        let variablesObj = {};
+        if (page) variablesObj.page = page;
+        if (limit) variablesObj.limit = limit;
+        if (searchText) variablesObj.search = searchText;
+        if (searchParams.get("status") && searchParams.get("status") !== "0") variablesObj.status = searchParams.get("status") === "true" ? true : false;
+        if (searchParams.get("faculty_department_id")) variablesObj.faculty_department_id = searchParams.get("faculty_department_id");
+
+        // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
+
+        GetMainTimeTablesFiltered({ variables: variablesObj });
+            },[searchParams]);
+
+    console.log("mainTimeTables", mainTimeTables);
 
     const fetchAndExport = async (type) => {
         try {
@@ -97,7 +148,7 @@ export default function AllLecturesPage() {
     let searchFaculityText = isArabic ? "اسم الكلية" : "Faculity Name";
 
 
-    if (departmentsLoading || faculitiesLoading) return <LoadingPage />;
+    if (departmentsLoading || faculitiesLoading || mainTablesLoading) return <LoadingPage />;
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
 

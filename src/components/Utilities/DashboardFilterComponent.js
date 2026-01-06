@@ -66,8 +66,7 @@ export default function DashboardFilterComponent({ t, placeholder, onFilterChang
               <MenuItem value="0">{t(select2Label2)}</MenuItem>
               {
                 selectOptions2?.map((el, i) => {
-                  console.log("elllllllll",el);
-
+            
                   return (
                     <MenuItem key={i} value={el.hasOwnProperty("id") ? el?.id : el}>{
                       isArabic ? el[arKey] : el[enKey]
