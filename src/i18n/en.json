@@ -338,5 +338,6 @@
   "to": "To",
   "day": "Day",
   "doctorName": "Doctor Name",
-  "completeData":"Please Complete Data"
+  "completeData":"Please Complete Data",
+  "noData":"No Data"
 }

@@ -7,10 +7,12 @@ import {
     TableContainer,
     Paper,
     Button,
-    Box
+    Box,
+    Typography
 } from "@mui/material";
 import i18n from "../../i18n/i18n";
 import { days } from "../../constants";
+import { useTranslation } from "react-i18next";
 
 
 // const colors=["#e3f2fd","#f3e5f5","#e8f5e9"];
@@ -60,6 +62,7 @@ const staticRows = [
 export default function ScheduleTable({rows}) {
 
     const isArabic = i18n.language === "ar";
+    const { t } = useTranslation();
 
     return (
         <TableContainer
@@ -105,7 +108,14 @@ export default function ScheduleTable({rows}) {
 
                 {/* Body */}
                 <TableBody>
-                    {rows?.map((row, index) =>
+                    {
+                        rows?.length === 0 ? <TableRow><TableCell colSpan={7}>
+                             <Typography variant="h6" color="text.secondary" align="center">
+                                        {t("noData")}
+                            </Typography>
+                            </TableCell></TableRow>
+                        :
+                        rows?.map((row, index) =>
                         row.break ? (
                             <TableRow key={index}>
                                 <TableCell
@@ -176,7 +186,9 @@ export default function ScheduleTable({rows}) {
 
                             </TableRow>
                         )
-                    )}
+                    )
+                    }
+                  
                 </TableBody>
             </Table>
         </TableContainer>
