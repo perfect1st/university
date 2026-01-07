@@ -13,6 +13,7 @@ import LoadingPage from "../../components/LoadingComponent";
 import { useEffect, useState } from "react";
 import { UPDATE_MATERIAL_BY_ID } from "../../graphql/materialQueries";
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
+import { FILTERED_USERS } from "../../graphql/userQueriesForAdmin";
 
 export default function MaterialDetailsPage() {
     const theme = useTheme();
@@ -26,6 +27,7 @@ export default function MaterialDetailsPage() {
     //   const [selectedSemester, setSelectedSemester] = useState(0);
     const [selectedFaculity, setSelectedFaculity] = useState(() => location?.state?.faculty_id?.id);
     const [selectedDepartment, setSelectedDepartment] = useState(() => location?.state?.faculty_department_id?.id);
+    const [selectedDoctor, setSelectedDoctor] = useState(() => location?.state?.doctor_id?.id || 0);
 
     // console.log('selectedFaculity',selectedFaculity,"selectedDepartment",selectedDepartment);
 
@@ -50,12 +52,28 @@ export default function MaterialDetailsPage() {
         fetchPolicy: "network-only",
     });
 
+    // get all doctors
+    const [
+        FilteredPagedUsers
+        , {
+            data: { filteredPagedUsers: {
+                users
+            } = {}
+            } = {},
+            loading: usersLoading
+        }] = useLazyQuery(FILTERED_USERS, { fetchPolicy: "network-only" });
+
     useEffect(() => {
         Faculties();
         GetFacultyDepartmentsByFaculty({
             variables: {
                 faculty_id: location?.state?.faculty_department_id?.faculty_id?.id
             },
+        });
+        FilteredPagedUsers({
+            variables: {
+                role: "doctor"
+            }
         });
     }, []);
 
@@ -91,6 +109,8 @@ export default function MaterialDetailsPage() {
             selectedDepartment: selectedDepartment == 0 && Yup.string()
                 .required(t("admissions.errors.required"))
                 .notOneOf(["0"], t("admissions.errors.required")),
+            selectedDoctor: selectedDoctor == 0 && Yup.string()
+                .required(t("admissions.errors.required"))
 
         }),
         onSubmit: async (values) => {
@@ -121,6 +141,7 @@ export default function MaterialDetailsPage() {
                 title_en: values?.title_en,
                 fullmark_degree: values?.fullmark_degree,
                 faculty_department_id: selectedDepartment,
+                doctor_id: selectedDoctor,
                 success_degree: values?.success_degree,
                 material_hours: values?.material_hours
             };
@@ -280,7 +301,6 @@ export default function MaterialDetailsPage() {
                 }
 
                 {/* القسم */}
-
                 <HorizentalTextFieldSelect
                     t={t}
                     title={t("admissions.facultyDepartment")} defaultOptionLabel={t("select")}
@@ -296,7 +316,26 @@ export default function MaterialDetailsPage() {
                     }
                 </HorizentalTextFieldSelect>
 
+                {/* دكتور المادة */}
+                <HorizentalTextFieldSelect
+                    t={t}
+                    title={t("doctorName")} defaultOptionLabel={t("select")}
+                    backgroundColor={theme.palette.background.inputBackGround}
+                    value={selectedDoctor}
+                    setValue={setSelectedDoctor}
+                    error={formik.errors.selectedDoctor && t("admissions.errors.required")}
+                    helperText={formik.errors.selectedDoctor && t("admissions.errors.required")}
+                    onBlur={(e) => {
 
+                        if (selectedDoctor != 0) formik.setFieldError("selectedDoctor", undefined);
+
+                    }}
+                >
+                    <MenuItem value={0} selected>{t("select")}</MenuItem>
+                    {
+                        users?.map(el => <MenuItem key={el?.id} value={el?.id}>{el?.fullname}</MenuItem>)
+                    }
+                </HorizentalTextFieldSelect>
 
                 <SubmitButton loading={loading} t={t} />
 
