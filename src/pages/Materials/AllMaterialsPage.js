@@ -132,6 +132,8 @@ export default function AllMaterialsPage() {
     }
   });
 
+  console.log("getSubjectsToShow",getSubjectsToShow);
+  
   let columns = [
     // { key: "ID", label: "ID" },
     { key: "title_ar", label: t("Dashboard.NameInArabic") },

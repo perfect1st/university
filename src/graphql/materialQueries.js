@@ -46,6 +46,7 @@ mutation CreateMaterial($input:MaterialInput!) {
         material_hours
         createdAt
         updatedAt
+         
     }
 }
 `;
@@ -107,6 +108,20 @@ query FilteredPagedMaterials(
             fullmark_degree
             success_degree
             material_hours
+              doctor_id {
+                id
+                username
+                fullname
+                email
+                mobile
+                role
+                status
+                profile_image
+                qid_number
+                is_inside_yemen
+                createdAt
+                updatedAt
+            }
             createdAt
             updatedAt
             faculty_department_id {
@@ -123,6 +138,7 @@ query FilteredPagedMaterials(
                     createdAt
                     updatedAt
                 }
+               
                 status
                 createdAt
                 updatedAt
