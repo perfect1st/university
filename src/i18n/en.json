@@ -265,8 +265,8 @@
   "addItem": "Add {{item}}",
   "detailsItem": "{{item}} Details",
   "Dashboard": {
-     "arabicTitle":"Arabic Title",
-    "englishTitle":"English Title",
+    "arabicTitle": "Arabic Title",
+    "englishTitle": "English Title",
     "NameInArabic": "Name In Arabic",
     "NameInEnglish": "Name In English",
     "flag": "Country Flag",
@@ -312,7 +312,8 @@
     "userSearchField": "Search by User Name , Email and Mobile",
     "searchByFaculityName": "Search by Faculity Name",
     "searchWith": "Search with  {{search}}",
-    "LecturesSchedule": "Lectures Schedule"
+    "LecturesSchedule": "Lectures Schedule",
+    "subjectDetails": "Subject Details"
   },
   "submit": "Submit",
   "error": "Error happened try again later",
@@ -331,5 +332,11 @@
   "BANK_TRANSFER": "Bank Transfer",
   "ONLINE": "Online Payment",
   "OUT": "Out Comes",
-  "IN": "In Comes"
+  "IN": "In Comes",
+  "time": "Time",
+  "from": "From",
+  "to": "To",
+  "day": "Day",
+  "doctorName": "Doctor Name",
+  "completeData":"Please Complete Data"
 }

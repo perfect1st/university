@@ -302,8 +302,8 @@
   "addItem": "اضافة {{item}}",
   "detailsItem": "تفاصيل {{item}}",
   "Dashboard": {
-    "arabicTitle":"العنوان بالعربية",
-    "englishTitle":"العنوان بالانجليزية",
+    "arabicTitle": "العنوان بالعربية",
+    "englishTitle": "العنوان بالانجليزية",
     "NameInArabic": "الاسم بالعربية",
     "NameInEnglish": "الاسم بالانجليزية",
     "flag": "علم الدولة",
@@ -349,7 +349,8 @@
     "userSearchField": "ابحث ب استخدام البريد الالكتروني او رقم الهاتف او اسم المستخدم",
     "searchByFaculityName": "ابحث ب استخدام اسم الكلية",
     "searchWith": "ابحث بواسطة  {{search}}",
-     "LecturesSchedule": "جدول المحاضرات"
+    "LecturesSchedule": "جدول المحاضرات",
+    "subjectDetails": "أدخل تفاصيل المادة لإضافتها إلى الجدول"
   },
   "submit": "تأكيد",
   "error": "حدث خطأ حاول مرة اخري",
@@ -367,6 +368,13 @@
   "CASH": "نقدًا",
   "BANK_TRANSFER": "تحويل بنكي",
   "ONLINE": "دفع إلكتروني",
-   "OUT": "مصروفات",
-    "IN": "ايرادات"
+  "OUT": "مصروفات",
+  "IN": "ايرادات",
+  "time": "الوقت",
+  "from": "من",
+  "to": "الى",
+  "day": "اليوم",
+  "doctorName": "اسم المحاضر",
+  "completeData":"من فضلك اكمل البيانات"
+
 }
