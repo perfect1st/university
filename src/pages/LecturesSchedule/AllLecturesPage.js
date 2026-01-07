@@ -197,6 +197,13 @@ export default function AllLecturesPage() {
             state: selectedRow
         });
     }
+
+     const handleEditClick = (selectedRow) => {
+      
+        navigate(`edit/${selectedRow?.id}`, {
+            state: selectedRow
+        });
+    }
     const hasViewPermission = true;
     const hasAddPermission = true;
     if (!hasViewPermission) return <Navigate to="/profile" />;
@@ -278,6 +285,8 @@ export default function AllLecturesPage() {
                         }}
                         handleDetailsClick={handleDetailsClick}
                         onStatusChange={onStatusChange}
+                        hasEditBtn={true}
+                        handleEditClick={handleEditClick}
                     />
 
                     {/* <FilterComponent totalPages={totalPages} /> */}

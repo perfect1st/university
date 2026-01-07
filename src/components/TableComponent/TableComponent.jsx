@@ -46,7 +46,7 @@ const TableComponent = ({
   data,
   onStatusChange,
   onViewDetails,
-  statusKey = "accountStatus",
+  statusKey = "status",
   showStatusChange = true,
   hasObject=false,
   arPopulateKey,
@@ -61,7 +61,9 @@ const TableComponent = ({
   onSortClick,
   handleDetailsClick,
   activeStatusLabel="true",
-  inActiveStatusLabel="false"
+  inActiveStatusLabel="false",
+  hasEditBtn=false,
+  handleEditClick
 }) => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
@@ -459,6 +461,26 @@ const TableComponent = ({
             }}
           >
             {t("Details")}
+          </MenuItem>
+        )}
+
+        {/* edit */}
+         {hasEditBtn && (
+          <MenuItem
+            onClick={()=>{
+              handleEditClick(selectedRow);
+            }}
+            sx={{
+              borderLeft: isArabic
+                ? ""
+                : `4px solid ${alpha(theme.palette.text.primary, 0.5)}`,
+              borderRight: isArabic
+                ? `4px solid ${alpha(theme.palette.text.primary, 0.5)}`
+                : "",
+              py: 1,
+            }}
+          >
+           تعديل
           </MenuItem>
         )}
         
