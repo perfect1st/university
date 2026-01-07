@@ -303,7 +303,7 @@
     "userType": "User Type",
     "userName": "User Name",
     "admin": "Admin",
-    "teacher": "Teacher",
+    "doctor": "Teacher",
     "student": "Student",
     "studentName": "Student Name",
     "createdAt": "Created At",

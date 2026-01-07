@@ -58,8 +58,8 @@ mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
 
 export const FILTERED_USERS = gql`
   query FilteredPagedUsers(
-    $limit: Int!
-    $page: Int!
+    $limit: Int
+    $page: Int
     $status: Boolean
     $role: String
     $search: String

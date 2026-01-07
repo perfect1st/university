@@ -4,7 +4,7 @@ export const transactionTypesArr = ["OUT", "IN"];
 
 export const TrueOrFalseArr = [true, false];
 
-export const userRules = ["admin", "teacher", "student"];
+export const userRules = ["admin", "doctor", "student"];
 
 export const isPaidArr = [
     { arKey: "مدفوع", id: "true" , enKey:"Paid" },
