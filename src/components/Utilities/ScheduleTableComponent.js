@@ -169,11 +169,13 @@ export default function ScheduleTable({rows,canDelete=false}) {
                                 {/* days */}
                                
                                 {days?.map((day,i) => {
+                                    let foundDay=row?.items?.find(el => el?.day==day?.key);
 
-                                    // console.log('row["day"]',row);
-                                    // console.log("day",day);
+                                    console.log('foundDay',foundDay);
+                                    console.log("day",day);
+
                                    return <TableCell key={i}>
-                                        {row["day"]==day?.key ? (
+                                        {foundDay ? (
                                             <Button
                                                 fullWidth
                                                 sx={{
@@ -190,7 +192,7 @@ export default function ScheduleTable({rows,canDelete=false}) {
                                                          console.log("bbbbbbbbbbbbbbbb");
                                                          await DeleteTimeTable({
                                                              variables: {
-                                                                 id: row?.id
+                                                                 id: foundDay?.id
                                                              }
                                                          })
                                                      }
@@ -200,16 +202,16 @@ export default function ScheduleTable({rows,canDelete=false}) {
                                             >
                                                 <Box fontSize={12} fontWeight={700}>
                                                     {
-                                                        isArabic ? row?.material_id?.title_ar : row?.material_id?.title_en
+                                                        isArabic ? foundDay?.material_id?.title_ar : foundDay?.material_id?.title_en
                                                     }
                                                     {/* {row[day.key]?.title_ar} */}
                                                 </Box>
 
                                                 {/* اسم الدكتور */}
-                                                <Box fontSize={10}>{row?.doctor_id?.fullname}</Box>
+                                                <Box fontSize={10}>{foundDay?.doctor_id?.fullname}</Box>
 
                                                 {/* السكشن هنا */}
-                                                <Box fontSize={10}>{row?.section}</Box>
+                                                <Box fontSize={10}>{foundDay?.section}</Box>
 
                                                 {/* <DeleteIcon /> */}
                                             </Button>

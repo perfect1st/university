@@ -158,6 +158,45 @@ export default function LectureDetailsPage() {
  
   console.log("timeTablesByMainTimeTable",timeTablesByMainTimeTable);
 
+//   const groupedTimeTablesByMainTimeTable = timeTablesByMainTimeTable?.reduce((acc, item) => {
+//   const key = `${item.start_time}-${item.end_time}`;
+
+//   if (!acc[key]) {
+//     acc[key] = {
+//       items: []
+//     };
+//   }
+
+//   acc[key].items.push(item);
+//   return acc;
+// }, {});
+const groupedTimeTablesByMainTimeTable =
+  timeTablesByMainTimeTable?.reduce((acc, item) => {
+    // هل في جروب نفس البداية والنهاية؟
+    const existingGroup = acc.find(
+      (g) =>
+        g.start_time === item.start_time &&
+        g.end_time === item.end_time
+    );
+
+    if (existingGroup) {
+      // ضيف العنصر للجروب القديم
+      existingGroup.items.push(item);
+    } else {
+      // اعمل جروب جديد
+      acc.push({
+        start_time: item.start_time,
+        end_time: item.end_time,
+        items: [item]
+      });
+    }
+
+    return acc;
+  }, []);
+
+
+console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable);
+
   // get materials in Department
   const {
     data: { materialsByDepartment } = {},
@@ -270,7 +309,7 @@ export default function LectureDetailsPage() {
         isPdf={false}
         isPrinter={false}
       />
-      <ScheduleTable rows={timeTablesByMainTimeTable} canDelete={true} />
+      {<ScheduleTable rows={groupedTimeTablesByMainTimeTable} canDelete={true} />}
 
       <Box display="flex" flexDirection="column" gap={3} pt={3} borderTop="1px solid #cfd7e7">
 
