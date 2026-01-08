@@ -8,7 +8,9 @@ import {
     Paper,
     Button,
     Box,
-    Typography
+    Typography,
+    useMediaQuery,
+    useTheme
 } from "@mui/material";
 import i18n from "../../i18n/i18n";
 import { days } from "../../constants";
@@ -66,8 +68,10 @@ const staticRows = [
 export default function ScheduleTable({rows,canDelete=false}) {
 
     const isArabic = i18n.language === "ar";
+    const theme = useTheme();
     const { t } = useTranslation();
     const location = useLocation();
+     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     // delete time table
         const [
@@ -87,11 +91,12 @@ export default function ScheduleTable({rows,canDelete=false}) {
         <TableContainer
             component={Paper}
             sx={{
-                maxWidth: "100%",
-                overflowX: "auto" // <-- responsive scroll للموبايل
+                maxWidth: isMobile? "90%" : "100%",
+                overflowX: "auto", // <-- responsive scroll للموبايل
+                position: "relative"
             }}
         >
-            <Table sx={{ minWidth: 800 }}>
+            <Table sx={{ minWidth: 400 }}>
 
                 {/* Header */}
                 <TableHead>
@@ -100,9 +105,9 @@ export default function ScheduleTable({rows,canDelete=false}) {
                             sx={{
                                 fontWeight: "bold",
                                 position: "sticky",
-                                right: 0,
+                                // right: 0,
                                 background: "#f8f9fc",
-                                zIndex: 2
+                                zIndex: 2,
                             }}
                         >
                             {t("time")}
@@ -115,7 +120,8 @@ export default function ScheduleTable({rows,canDelete=false}) {
                                     fontWeight: "bold",
                                     position: "sticky",
                                     background: "#f8f9fc",
-                                    zIndex: 2
+                                    zIndex: 2,
+                                    // right: 0
                                 }}
                             >
                                 {isArabic ? day.labelAr : day.labelEn}
@@ -140,7 +146,7 @@ export default function ScheduleTable({rows,canDelete=false}) {
                                 <TableCell
                                     sx={{
                                         position: "sticky",
-                                        right: 0,
+                                        // right: 0,
                                         background: "#f1f5f9",
                                         zIndex: 1
                                     }}
@@ -158,7 +164,7 @@ export default function ScheduleTable({rows,canDelete=false}) {
                                 <TableCell
                                     sx={{
                                         position: "sticky",
-                                        right: 0,
+                                        // right: 0,
                                         background: "white",
                                         zIndex: 1
                                     }}
@@ -174,7 +180,15 @@ export default function ScheduleTable({rows,canDelete=false}) {
                                     console.log('foundDay',foundDay);
                                     console.log("day",day);
 
-                                   return <TableCell key={i}>
+                                   return <TableCell 
+                                   key={i}
+                                    sx={{
+                                        position: "sticky",
+                                        // right: 0,
+                                        background: "white",
+                                        zIndex: 1
+                                    }}
+                                   >
                                         {foundDay ? (
                                             <Button
                                                 fullWidth

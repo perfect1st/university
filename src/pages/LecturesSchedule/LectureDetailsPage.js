@@ -311,7 +311,7 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
       />
       {<ScheduleTable rows={groupedTimeTablesByMainTimeTable} canDelete={true} />}
 
-      <Box display="flex" flexDirection="column" gap={3} pt={3} borderTop="1px solid #cfd7e7">
+      <Box display="flex" width={isMobile ? "55%" :"100%"} flexDirection="column" gap={3} pt={3} borderTop="1px solid #cfd7e7">
 
         {/* Title */}
         <Box display="flex" flexDirection="column" gap={1}>
