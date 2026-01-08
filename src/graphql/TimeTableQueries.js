@@ -77,7 +77,7 @@ query GetMainTimeTablesFiltered(
 }
 `;
 
-export const CREATE_TIME_TABLE=gql`
+export const CREATE_MAIN_TIME_TABLE=gql`
 mutation CreateMainTimeTable($input:MainTimeTableInput!) {
     createMainTimeTable(input: $input) {
         id
@@ -131,6 +131,35 @@ mutation UpdateMainTimeTable($id:ID!,$input:MainTimeTableInput!) {
         status
         createdAt
         updatedAt
+    }
+}
+`;
+
+export const CREATE_TIME_TABLE=gql`
+mutation CreateTimeTable($input:CreateTimeTableInput!) {
+    createTimeTable(input: $input) {
+        id
+        day
+        start_time
+        end_time
+        section
+        status
+        createdAt
+        updatedAt
+        doctor_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
     }
 }
 `;

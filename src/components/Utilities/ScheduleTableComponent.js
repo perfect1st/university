@@ -86,7 +86,7 @@ export default function ScheduleTable({rows}) {
                                 zIndex: 2
                             }}
                         >
-                            الوقت
+                            {t("time")}
                         </TableCell>
 
                         {days.map((day) => (
@@ -164,6 +164,7 @@ export default function ScheduleTable({rows}) {
                                                     {row[day.key]?.title_ar}
                                                 </Box>
                                                 <Box fontSize={10}>{row[day.key]?.teacher?.fullname}</Box>
+                                                {/* السكشن هنا */}
                                                 <Box fontSize={10}>{row[day.key]?.place}</Box>
                                             </Button>
                                         ) : (

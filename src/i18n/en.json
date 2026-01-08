@@ -313,7 +313,8 @@
     "searchByFaculityName": "Search by Faculity Name",
     "searchWith": "Search with  {{search}}",
     "LecturesSchedule": "Lectures Schedule",
-    "subjectDetails": "Subject Details"
+    "subjectDetails": "Subject Details",
+    "saveSubject": "Save Subject"
   },
   "submit": "Submit",
   "error": "Error happened try again later",

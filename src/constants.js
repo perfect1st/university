@@ -18,11 +18,11 @@ export const terms_optionsArr = [
   ];
 
 export const days = [
-    { key: "sat", labelAr: "السبت", labelEn: "Saturday" },
-    { key: "sun", labelAr: "الأحد", labelEn: "Sunday" },
-    { key: "mon", labelAr: "الإثنين", labelEn: "Monday" },
-    { key: "tue", labelAr: "الثلاثاء", labelEn: "Tuesday" },
-    { key: "wed", labelAr: "الأربعاء", labelEn: "Wednesday" },
-    { key: "thu", labelAr: "الخميس", labelEn: "Thursday" },
-    { key: "fri", labelAr: "الجمعة", labelEn: "Friday" }
+    { key: "Saturday", labelAr: "السبت", labelEn: "Saturday" },
+    { key: "Sunday", labelAr: "الأحد", labelEn: "Sunday" },
+    { key: "Monday", labelAr: "الإثنين", labelEn: "Monday" },
+    { key: "Tuesday", labelAr: "الثلاثاء", labelEn: "Tuesday" },
+    { key: "Wednesday", labelAr: "الأربعاء", labelEn: "Wednesday" },
+    { key: "Thursday", labelAr: "الخميس", labelEn: "Thursday" },
+    { key: "Friday", labelAr: "الجمعة", labelEn: "Friday" }
 ];

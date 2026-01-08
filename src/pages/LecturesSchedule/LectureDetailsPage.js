@@ -11,7 +11,8 @@ import {
   InputLabel,
   FormControl,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
+  CircularProgress
 } from "@mui/material";
 
 import BookIcon from "@mui/icons-material/MenuBook";
@@ -22,80 +23,81 @@ import Header from '../../components/PageHeader/header';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n/i18n';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useLazyQuery, useQuery } from '@apollo/client/react';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
 import { GET_MATERIALS_BY_DEPARTMENT_ID } from '../../graphql/materialQueries';
-import { VerticalTextFieldSelect } from '../../components/Utilities/VerticalTextField';
+import VerticalTextField, { VerticalTextFieldSelect } from '../../components/Utilities/VerticalTextField';
 import { days } from '../../constants';
 import LoadingPage from '../../components/LoadingComponent';
 import notify from '../../components/notify';
+import { CREATE_TIME_TABLE } from '../../graphql/TimeTableQueries';
 
-const users = [
-  {
-    id: "69087b4f2ea81d69f488eb61",
-    username: "admin1",
-    fullname: "Admin One",
-    email: "admin1@gmail.com",
-    mobile: "123456781",
-    role: "admin",
-    status: true,
-    profile_image: null,
-    qid_number: null,
-    createdAt: "1762163535600",
-    updatedAt: "1762163770304"
-  },
-  {
-    id: "69087b4f2ea81d69f488eb62",
-    username: "admin2",
-    fullname: "Admin Two",
-    email: "admin2@gmail.com",
-    mobile: "123456782",
-    role: "admin",
-    status: true,
-    profile_image: null,
-    qid_number: null,
-    createdAt: "1762163535600",
-    updatedAt: "1762163770304"
-  },
-  {
-    id: "69087b4f2ea81d69f488eb63",
-    username: "admin3",
-    fullname: "Admin Three",
-    email: "admin3@gmail.com",
-    mobile: "123456783",
-    role: "admin",
-    status: true,
-    profile_image: null,
-    qid_number: null,
-    createdAt: "1762163535600",
-    updatedAt: "1762163770304"
-  },
-  {
-    id: "69087b4f2ea81d69f488eb64",
-    username: "admin4",
-    fullname: "Admin Four",
-    email: "admin4@gmail.com",
-    mobile: "123456784",
-    role: "admin",
-    status: true,
-    profile_image: null,
-    qid_number: null,
-    createdAt: "1762163535600",
-    updatedAt: "1762163770304"
-  },
-  {
-    id: "69087b4f2ea81d69f488eb65",
-    username: "admin5",
-    fullname: "Admin Five",
-    email: "admin5@gmail.com",
-    mobile: "123456785",
-    role: "admin",
-    status: true,
-    profile_image: null,
-    qid_number: null,
-    createdAt: "1762163535600",
-    updatedAt: "1762163770304"
-  }
-];
+// const users = [
+//   {
+//     id: "69087b4f2ea81d69f488eb61",
+//     username: "admin1",
+//     fullname: "Admin One",
+//     email: "admin1@gmail.com",
+//     mobile: "123456781",
+//     role: "admin",
+//     status: true,
+//     profile_image: null,
+//     qid_number: null,
+//     createdAt: "1762163535600",
+//     updatedAt: "1762163770304"
+//   },
+//   {
+//     id: "69087b4f2ea81d69f488eb62",
+//     username: "admin2",
+//     fullname: "Admin Two",
+//     email: "admin2@gmail.com",
+//     mobile: "123456782",
+//     role: "admin",
+//     status: true,
+//     profile_image: null,
+//     qid_number: null,
+//     createdAt: "1762163535600",
+//     updatedAt: "1762163770304"
+//   },
+//   {
+//     id: "69087b4f2ea81d69f488eb63",
+//     username: "admin3",
+//     fullname: "Admin Three",
+//     email: "admin3@gmail.com",
+//     mobile: "123456783",
+//     role: "admin",
+//     status: true,
+//     profile_image: null,
+//     qid_number: null,
+//     createdAt: "1762163535600",
+//     updatedAt: "1762163770304"
+//   },
+//   {
+//     id: "69087b4f2ea81d69f488eb64",
+//     username: "admin4",
+//     fullname: "Admin Four",
+//     email: "admin4@gmail.com",
+//     mobile: "123456784",
+//     role: "admin",
+//     status: true,
+//     profile_image: null,
+//     qid_number: null,
+//     createdAt: "1762163535600",
+//     updatedAt: "1762163770304"
+//   },
+//   {
+//     id: "69087b4f2ea81d69f488eb65",
+//     username: "admin5",
+//     fullname: "Admin Five",
+//     email: "admin5@gmail.com",
+//     mobile: "123456785",
+//     role: "admin",
+//     status: true,
+//     profile_image: null,
+//     qid_number: null,
+//     createdAt: "1762163535600",
+//     updatedAt: "1762163770304"
+//   }
+// ];
 
 
 export default function LectureDetailsPage() {
@@ -108,13 +110,20 @@ export default function LectureDetailsPage() {
 
   const [selectedMaterialDepartment, setSelectedMaterialDepartment] = useState(0);
   const [selectedDay, setSelectedDay] = useState(0);
-  const [selectedDoctor, setSelectedDoctor] = useState(0);
+  const [sectionInput, setSectionInput] = useState("");
   const [rows, setRows] = useState([]);
 
   const [from, setFrom] = useState("08:00");
   const [to, setTo] = useState("09:00");
 
   console.log("location", location.state);
+
+  const [
+    CreateTimeTable,
+    {
+      loading: creating
+    }
+  ] = useMutation(CREATE_TIME_TABLE, { fetchPolicy: "network-only" });
   // get materials in Department
   const {
     data: { materialsByDepartment } = {},
@@ -127,17 +136,8 @@ export default function LectureDetailsPage() {
   });
 
   const colors = ["#e3f2fd", "#f3e5f5", "#e8f5e9"];
-  //  {
-  //       time: "08:00 - 09:00",
-  //       sat: null,
-  //       sun: { subject: "رياضيات متقطعة", teacher: "د. أحمد سلامة", color: "#e3f2fd" },
-  //       mon: { subject: "فيزياء عامة", teacher: "د. سارة علي", color: "#f3e5f5" },
-  //       tue: null,
-  //       wed: { subject: "كيمياء عضوية", teacher: "د. محمد عمر",  color: "#e8f5e9" },
-  //       thu: null,
-  //       fri: null
-  //   }
-  const addRowToTable = () => {
+
+  const addRowToTable = async () => {
     let rowOBJ = {
       time: "",
       sat: null,
@@ -149,82 +149,64 @@ export default function LectureDetailsPage() {
       fri: null
     }
 
-    let fromString=from=="00:00" ? "12:00" : from;
-    let toString=to=="00:00" ? "12:00" : to;
+    let fromString = from == "00:00" ? "12:00" : from;
+    let toString = to == "00:00" ? "12:00" : to;
 
-    let time = fromString + " - " + toString;
+    let data = {
+      start_time: fromString,
+      end_time: toString,
+      day: selectedDay,
+      section: sectionInput,
+      // status: "active",
+      doctor_id: materialsByDepartment?.find(el => el?.id == selectedMaterialDepartment)?.doctor_id?.id
+    };
 
-    if (selectedDay == 0 || selectedDoctor == 0 || selectedMaterialDepartment == 0) return notify(t("completeData"), "error");
+    console.log("data to send", data);
 
-    rowOBJ.time = time;
+    // let time = fromString + " - " + toString;
 
-    let newObj;
+    // if (selectedDay == 0 || selectedDoctor == 0 || selectedMaterialDepartment == 0) return notify(t("completeData"), "error");
 
-    newObj = materialsByDepartment?.find(el => el?.id == selectedMaterialDepartment);
+    // rowOBJ.time = time;
 
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    newObj = {
-      ...newObj,
-      teacher: users?.find(el => el?.id == selectedDoctor),
-      color: randomColor
-    }
+    // let newObj;
 
-    rowOBJ[selectedDay] = newObj;
+    // newObj = materialsByDepartment?.find(el => el?.id == selectedMaterialDepartment);
+
+    // const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    // newObj = {
+    //   ...newObj,
+    //   // teacher: users?.find(el => el?.id == selectedDoctor),
+    //   color: randomColor
+    // }
+
+    // rowOBJ[selectedDay] = newObj;
     // console.log("rowOBJ", rowOBJ);
     // console.log("selectedDoctor", selectedDoctor);
 
-    const newRow = rowOBJ;
+    // setRows(prev => {
+    //   // هل يوجد صف بنفس الوقت؟
+    //   const existingRowIndex = prev.findIndex(r => r.time === rowOBJ.time);
 
-    // إذا فيه عنصر بنفس الوقت، نحدثه، لو لا نضيفه
-    // setRows(prevRows => {
-    //   const exists = prevRows.some(r => r.time === newRow.time);
+    //   // لو الوقت موجود بالفعل → حدث نفس الصف
+    //   if (existingRowIndex !== -1) {
+    //     const updated = [...prev];
 
-    //   console.log("rowOBJ[selectedDay]",rowOBJ[selectedDay]);
-    //   // sat
-    //   if (exists && prevRows?.find(el=>el[selectedDay])) {
-    //     return prevRows.map(r => (r.time === newRow.time ? newRow : r));
-    //   } else {
-    //     return [...prevRows, newRow];
+    //     // نعدل اليوم فقط داخل نفس الصف
+    //     updated[existingRowIndex] = {
+    //       ...updated[existingRowIndex],
+    //       [selectedDay]: rowOBJ[selectedDay]   // أضف المادة لليوم
+    //     };
+
+    //     return updated;
     //   }
+
+    //   // لو وقت جديد → أضف row جديد
+    //   return [...prev, rowOBJ];
     // });
 
-//     setRows(prevRows => {
-//   const index = prevRows.findIndex(r => r.time === newRow.time);
-
-//   if (index !== -1 && prevRows?.find(el=>el[selectedDay])) {
-//     // نسخ array وتحديث العنصر الموجود
-//     const updatedRows = [...prevRows];
-//     updatedRows[index] = newRow;
-//     return updatedRows;
-//   } else {
-//     return [...prevRows, newRow];
-//   }
-// });
-
-setRows(prev => {
-  // هل يوجد صف بنفس الوقت؟
-  const existingRowIndex = prev.findIndex(r => r.time === rowOBJ.time);
-
-  // لو الوقت موجود بالفعل → حدث نفس الصف
-  if (existingRowIndex !== -1) {
-    const updated = [...prev];
-
-    // نعدل اليوم فقط داخل نفس الصف
-    updated[existingRowIndex] = {
-      ...updated[existingRowIndex],
-      [selectedDay]: rowOBJ[selectedDay]   // أضف المادة لليوم
-    };
-
-    return updated;
-  }
-
-  // لو وقت جديد → أضف row جديد
-  return [...prev, rowOBJ];
-});
 
 
-    // setRows([...rows, rowOBJ]);
-    // console.log("time",time);
   }
 
   console.log("rows", rows);
@@ -302,42 +284,18 @@ setRows(prev => {
             </VerticalTextFieldSelect>
           </Grid>
 
-          {/* Lecturer Name */}
           <Grid item xs={12} md={6} lg={3}>
-
-            <VerticalTextFieldSelect
-              t={t}
-              title={
-                t("doctorName")
-              } defaultOptionLabel={t("select")}
-              backgroundColor={theme.palette.background.inputBackGround}
-              value={selectedDoctor}
-              setValue={setSelectedDoctor}
-              // onChange={async (e) => {
-              //   await GetFacultyDepartmentsByFaculty({
-              //     variables: {
-              //       faculty_id: e.target.value,
-              //     },
-              //   });
-
-              //   setSelectedDepartment(0);
-              // }}
-
-              onBlur={(e) => {
-                // console.log('blur',selectedSemester);
-                // if (selectedFaculity != 0) formik.setFieldError("selectedFaculity", undefined);
-
-              }}
-
-            // error={formik.errors.selectedFaculity && t("admissions.errors.required")}
-            // helperText={formik.errors.selectedFaculity && t("admissions.errors.required")}
-
-            >
-              <MenuItem value={0} selected>{t("select")}</MenuItem>
-              {
-                users?.map(el => <MenuItem key={el?.id} value={el?.id}>{el?.fullname}</MenuItem>)
-              }
-            </VerticalTextFieldSelect>
+            <VerticalTextField
+              title={t("studentDashboard.maxAcademyHours")}
+              fieldID={"max_study_hours"}
+              fieldName={"max_study_hours"}
+              placeholder={t("studentDashboard.maxAcademyHours")}
+              value={sectionInput}
+              //  setValue={setSectionInput}
+              onChange={(e) => setSectionInput(e.target.value)}
+            //  error={formik.touched.max_study_hours && Boolean(formik.errors.max_study_hours)}
+            //  helperText={formik.touched.max_study_hours && formik.errors.max_study_hours}
+            />
           </Grid>
 
           {/* Day */}
@@ -394,7 +352,7 @@ setRows(prev => {
                   type="time"
                   value={from}
                   onChange={(e) => setFrom(e.target.value)}
-                  
+
                 />
 
                 {/* وقت النهاية */}
@@ -411,15 +369,20 @@ setRows(prev => {
 
         {/* Buttons */}
         <Box display="flex" justifyContent="end" gap={2} mt={1}>
-          <Button variant="outlined" color="inherit">
+          {/* <Button variant="outlined" color="inherit">
             إلغاء
-          </Button>
+          </Button> */}
 
           <Button
             variant="contained"
             onClick={() => addRowToTable()}
+            disabled={creating}
           >
-            حفظ المادة
+            {
+              creating ? <CircularProgress size={26}
+                thickness={8}
+                sx={{ color: "black" }} /> : t("Dashboard.saveSubject")
+            }
           </Button>
         </Box>
       </Box>

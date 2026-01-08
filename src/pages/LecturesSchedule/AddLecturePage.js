@@ -16,7 +16,7 @@ import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../
 import { CREATE_NEW_FACULTY_PRICE } from "../../graphql/faculityPricesQueries";
 import { useSelector } from "react-redux";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
-import { CREATE_TIME_TABLE } from "../../graphql/TimeTableQueries";
+import { CREATE_MAIN_TIME_TABLE, CREATE_TIME_TABLE } from "../../graphql/TimeTableQueries";
 import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms.js";
 
 export default function AddLecturePage() {
@@ -41,7 +41,7 @@ export default function AddLecturePage() {
         {
             loading: CreateMainTimeTableLoading,
         }
-    ] = useMutation(CREATE_TIME_TABLE, { fetchPolicy: "network-only" });
+    ] = useMutation(CREATE_MAIN_TIME_TABLE, { fetchPolicy: "network-only" });
     // get all faculities
     const {
         data: { faculties } = {},

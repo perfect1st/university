@@ -350,7 +350,8 @@
     "searchByFaculityName": "ابحث ب استخدام اسم الكلية",
     "searchWith": "ابحث بواسطة  {{search}}",
     "LecturesSchedule": "جدول المحاضرات",
-    "subjectDetails": "أدخل تفاصيل المادة لإضافتها إلى الجدول"
+    "subjectDetails": "أدخل تفاصيل المادة لإضافتها إلى الجدول",
+    "saveSubject": "حفظ المادة"
   },
   "submit": "تأكيد",
   "error": "حدث خطأ حاول مرة اخري",
