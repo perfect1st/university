@@ -184,3 +184,59 @@ mutation CreateTimeTable($input:CreateTimeTableInput!) {
     }
 }
 `;
+
+export const GET_TIME_TABLES_BY_MAIN_TABLE_ID=gql`
+query TimeTablesByMainTimeTable($main_time_table_id:ID!) {
+    timeTablesByMainTimeTable(main_time_table_id: $main_time_table_id) {
+        id
+        day
+        start_time
+        end_time
+        section
+        status
+        createdAt
+        updatedAt
+        main_time_table_id {
+            id
+            number
+            title_ar
+            title_en
+            study_year
+            status
+            createdAt
+            updatedAt
+        }
+        material_id {
+            id
+            title_ar
+            title_en
+            status
+            fullmark_degree
+            success_degree
+            material_hours
+            createdAt
+            updatedAt
+        }
+        doctor_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
+    }
+}
+`;
+
+export const DELETE_TIME_TABLE_BY_ID=gql`
+mutation DeleteTimeTable($id:ID!) {
+    deleteTimeTable(id: $id)
+}
+`;

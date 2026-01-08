@@ -315,7 +315,8 @@
     "searchWith": "Search with  {{search}}",
     "LecturesSchedule": "Lectures Schedule",
     "subjectDetails": "Subject Details",
-    "saveSubject": "Save Subject"
+    "saveSubject": "Save Subject",
+    "confirm":"Are you sure to delete ?"
   },
   "submit": "Submit",
   "error": "Error happened try again later",

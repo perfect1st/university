@@ -29,7 +29,7 @@ import VerticalTextField, { VerticalTextFieldSelect } from '../../components/Uti
 import { days } from '../../constants';
 import LoadingPage from '../../components/LoadingComponent';
 import notify from '../../components/notify';
-import { CREATE_TIME_TABLE } from '../../graphql/TimeTableQueries';
+import { CREATE_TIME_TABLE , GET_TIME_TABLES_BY_MAIN_TABLE_ID , DELETE_TIME_TABLE_BY_ID } from '../../graphql/TimeTableQueries';
 
 // const users = [
 //   {
@@ -111,7 +111,7 @@ export default function LectureDetailsPage() {
   const [selectedMaterialDepartment, setSelectedMaterialDepartment] = useState(0);
   const [selectedDay, setSelectedDay] = useState(0);
   const [sectionInput, setSectionInput] = useState("");
-  const [rows, setRows] = useState([]);
+  // const [rows, setRows] = useState([]);
 
   const [from, setFrom] = useState("08:00");
   const [to, setTo] = useState("09:00");
@@ -123,7 +123,41 @@ export default function LectureDetailsPage() {
     {
       loading: creating
     }
-  ] = useMutation(CREATE_TIME_TABLE, { fetchPolicy: "network-only" });
+  ] = useMutation(CREATE_TIME_TABLE, { 
+    refetchQueries: [
+    {
+      query: GET_TIME_TABLES_BY_MAIN_TABLE_ID,   // أو أي query عايز تحدثها
+      variables: {
+        main_time_table_id: location?.state?.id
+      }
+    }
+  ],
+   });
+
+    
+
+  // get time tables by main time table
+  const{
+    data:{
+      timeTablesByMainTimeTable
+    }={},
+    loading: timeTablesLoading
+  }=useQuery(
+    GET_TIME_TABLES_BY_MAIN_TABLE_ID,
+    {
+      variables: {
+        main_time_table_id: location?.state?.id
+      },
+      fetchPolicy: "network-only",
+      // onCompleted: (data) => {
+      //   console.log("completed",data);
+      // }
+    }
+  );
+  
+ 
+  console.log("timeTablesByMainTimeTable",timeTablesByMainTimeTable);
+
   // get materials in Department
   const {
     data: { materialsByDepartment } = {},
@@ -142,16 +176,7 @@ export default function LectureDetailsPage() {
     try {
       if (selectedDay == 0 || selectedMaterialDepartment == 0) return notify(t("completeData"), "error");
 
-    let rowOBJ = {
-      time: "",
-      sat: null,
-      sun: null,
-      mon: null,
-      tue: null,
-      wed: null,
-      thu: null,
-      fri: null
-    }
+   
 
     let fromString = from == "00:00" ? "12:00" : from;
     let toString = to == "00:00" ? "12:00" : to;
@@ -224,13 +249,13 @@ export default function LectureDetailsPage() {
     
   }
 
-  console.log("rows", rows);
+  // console.log("rows", rows);
   console.log("materialsByDepartment", materialsByDepartment);
 
   let translateText = isArabic ? "جدول المحاضرة" : "Lecture Schedule";
   let translateText2 = isArabic ? "مادة جديدة" : "New Subject";
 
-  if (DepartmentMaterialsLoading) return <LoadingPage />;
+  if (DepartmentMaterialsLoading || timeTablesLoading) return <LoadingPage />;
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper", maxWidth: "100%" }}>
       <Header
@@ -245,7 +270,7 @@ export default function LectureDetailsPage() {
         isPdf={false}
         isPrinter={false}
       />
-      <ScheduleTable rows={rows} />
+      <ScheduleTable rows={timeTablesByMainTimeTable} canDelete={true} />
 
       <Box display="flex" flexDirection="column" gap={3} pt={3} borderTop="1px solid #cfd7e7">
 

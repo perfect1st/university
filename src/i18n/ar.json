@@ -352,7 +352,8 @@
     "searchWith": "ابحث بواسطة  {{search}}",
     "LecturesSchedule": "جدول المحاضرات",
     "subjectDetails": "أدخل تفاصيل المادة لإضافتها إلى الجدول",
-    "saveSubject": "حفظ المادة"
+    "saveSubject": "حفظ المادة",
+    "confirm":"هل أنت متأكد من الحذف؟"
   },
   "submit": "تأكيد",
   "error": "حدث خطأ حاول مرة اخري",

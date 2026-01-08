@@ -13,6 +13,10 @@ import {
 import i18n from "../../i18n/i18n";
 import { days } from "../../constants";
 import { useTranslation } from "react-i18next";
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useMutation } from "@apollo/client/react";
+import { DELETE_TIME_TABLE_BY_ID, GET_TIME_TABLES_BY_MAIN_TABLE_ID } from "../../graphql/TimeTableQueries";
+import { useLocation } from "react-router-dom";
 
 
 // const colors=["#e3f2fd","#f3e5f5","#e8f5e9"];
@@ -59,10 +63,25 @@ const staticRows = [
 
 
 
-export default function ScheduleTable({rows}) {
+export default function ScheduleTable({rows,canDelete=false}) {
 
     const isArabic = i18n.language === "ar";
     const { t } = useTranslation();
+    const location = useLocation();
+
+    // delete time table
+        const [
+          DeleteTimeTable
+        ]=useMutation(DELETE_TIME_TABLE_BY_ID, {
+          refetchQueries: [
+            {
+              query: GET_TIME_TABLES_BY_MAIN_TABLE_ID,   // أو أي query عايز تحدثها
+              variables: {
+                main_time_table_id: location?.state?.id
+              }
+            }
+          ],
+        });
 
     return (
         <TableContainer
@@ -126,7 +145,7 @@ export default function ScheduleTable({rows}) {
                                         zIndex: 1
                                     }}
                                 >
-                                    {row?.time}
+                                    {`${row?.start_time} - ${row?.end_time}`}
                                 </TableCell>
                                 <TableCell colSpan={5} align="center">
                                     ☕ استراحة
@@ -144,28 +163,55 @@ export default function ScheduleTable({rows}) {
                                         zIndex: 1
                                     }}
                                 >
-                                    {row?.time}
+                                    {`${row?.start_time} - ${row?.end_time}`}
                                 </TableCell>
 
                                 {/* days */}
                                
-                                {days?.map((day) => (
-                                    <TableCell key={day?.key}>
-                                        {row[day?.key] ? (
+                                {days?.map((day,i) => {
+
+                                    // console.log('row["day"]',row);
+                                    // console.log("day",day);
+                                   return <TableCell key={i}>
+                                        {row["day"]==day?.key ? (
                                             <Button
                                                 fullWidth
                                                 sx={{
                                                     flexDirection: "column",
                                                     minHeight: 64,
-                                                    background: row[day?.key]?.color
+                                                    background: "#e7eefd"
+                                                }}
+                                                onClick={async() => {
+                                                    if(!canDelete) return;
+                                                     console.log("row to delete", row);
+
+                                                     const confirm = window.confirm(t("Dashboard.confirm"));
+                                                     if (confirm) {
+                                                         console.log("bbbbbbbbbbbbbbbb");
+                                                         await DeleteTimeTable({
+                                                             variables: {
+                                                                 id: row?.id
+                                                             }
+                                                         })
+                                                     }
+                                                    // console.log("day", day);
+                                                    // console.log("row[day.key]", row[day.key]);
                                                 }}
                                             >
                                                 <Box fontSize={12} fontWeight={700}>
-                                                    {row[day.key]?.title_ar}
+                                                    {
+                                                        isArabic ? row?.material_id?.title_ar : row?.material_id?.title_en
+                                                    }
+                                                    {/* {row[day.key]?.title_ar} */}
                                                 </Box>
-                                                <Box fontSize={10}>{row[day.key]?.teacher?.fullname}</Box>
+
+                                                {/* اسم الدكتور */}
+                                                <Box fontSize={10}>{row?.doctor_id?.fullname}</Box>
+
                                                 {/* السكشن هنا */}
-                                                <Box fontSize={10}>{row[day.key]?.place}</Box>
+                                                <Box fontSize={10}>{row?.section}</Box>
+
+                                                {/* <DeleteIcon /> */}
                                             </Button>
                                         ) : (
                                             <Box
@@ -183,7 +229,7 @@ export default function ScheduleTable({rows}) {
                                             </Box>
                                         )}
                                     </TableCell>
-                                ))}
+})}
 
                             </TableRow>
                         )
