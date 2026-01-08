@@ -227,6 +227,38 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   },
 ]
 
+if(me?.role=="doctor")menuItems=[
+  // {
+  //     icon: AccountBalanceIcon,
+  //     key: "StudentDashboard",
+  //     path: "/StudentDashboard",
+  //     label: {
+  //       ar: "لوحة التحكم",
+  //       en: "StudentDashboard",
+  //     },
+  //   },
+    {
+      icon: PersonOutlineIcon,
+      key: "profile",
+      path: "/profile",
+      label: {
+        ar: "الصفحة الشخصية",
+        en: "Profile",
+      },
+    },
+
+    {
+       // icon: FlagIcon,
+    key: "DoctorlecturesSchedule",
+    path: "/DoctorlecturesSchedule",
+    label: {
+      ar: "جداول المحاضرات",
+      en: "Lectures Schedule",
+    },
+    },
+  ]
+
+
   // useEffect(() => {
   //   const newOpenKeys = {};
   //   menuItems.forEach((item) => {

@@ -240,3 +240,53 @@ mutation DeleteTimeTable($id:ID!) {
     deleteTimeTable(id: $id)
 }
 `;
+
+export const GET_TIME_TABLE_BY_DOCTOR_ID=gql`
+query TimeTablesByDoctor($doctor_id:ID!) {
+    timeTablesByDoctor(doctor_id: $doctor_id) {
+        id
+        day
+        start_time
+        end_time
+        section
+        status
+        createdAt
+        updatedAt
+        main_time_table_id {
+            id
+            number
+            title_ar
+            title_en
+            study_year
+            status
+            createdAt
+            updatedAt
+        }
+        material_id {
+            id
+            title_ar
+            title_en
+            status
+            fullmark_degree
+            success_degree
+            material_hours
+            createdAt
+            updatedAt
+        }
+        doctor_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
+    }
+}
+`;

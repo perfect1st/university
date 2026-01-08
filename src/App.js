@@ -93,6 +93,7 @@ import AllLecturesPage from "./pages/LecturesSchedule/AllLecturesPage";
 import AddLecturePage from "./pages/LecturesSchedule/AddLecturePage";
 import LectureDetailsPage from "./pages/LecturesSchedule/LectureDetailsPage";
 import EditLecturePage from "./pages/LecturesSchedule/EditLecturePage";
+import DoctorLecturesPage from "./pages/DoctorDashboard/DoctorLectures/DoctorLecturesPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -869,6 +870,15 @@ function App() {
 
                   </Route>
 
+                    {/* Doctor Dashboard Pages */}
+                     <Route
+                    path="/DoctorlecturesSchedule"
+                    element={
+                      <MainLayout isLoggedIn={true}>
+                        <DoctorLecturesPage />
+                      </MainLayout>
+                    }
+                  />
 
                 </Route>
 
