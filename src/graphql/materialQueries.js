@@ -10,6 +10,20 @@ query Materials {
         fullmark_degree
         success_degree
         material_hours
+        doctor_id {
+                id
+                username
+                fullname
+                email
+                mobile
+                role
+                status
+                profile_image
+                qid_number
+                is_inside_yemen
+                createdAt
+                updatedAt
+            }
         createdAt
         updatedAt
         faculty_department_id {
@@ -78,6 +92,20 @@ query MaterialsByDepartment($faculty_department_id:ID!) {
         fullmark_degree
         success_degree
         material_hours
+        doctor_id {
+                id
+                username
+                fullname
+                email
+                mobile
+                role
+                status
+                profile_image
+                qid_number
+                is_inside_yemen
+                createdAt
+                updatedAt
+            }
         createdAt
         updatedAt
     }
