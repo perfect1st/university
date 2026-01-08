@@ -143,7 +143,8 @@
     "materialHours": "Material Hours",
     "minAcademyHours": "Minimum Hours",
     "maxAcademyHours": "Maximum Hours",
-    "hoursError": "The number of hours must be greater than the minimum limit and less than the maximum limit For Term"
+    "hoursError": "The number of hours must be greater than the minimum limit and less than the maximum limit For Term",
+    "section":"Section"
   },
   "registrationSteps": {
     "title": "Registration Steps",

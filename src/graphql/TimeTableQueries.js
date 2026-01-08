@@ -144,8 +144,16 @@ mutation CreateTimeTable($input:CreateTimeTableInput!) {
         end_time
         section
         status
-        createdAt
-        updatedAt
+         main_time_table_id {
+            id
+            number
+            title_ar
+            title_en
+            study_year
+            status
+            createdAt
+            updatedAt
+        }
         doctor_id {
             id
             username
@@ -160,6 +168,19 @@ mutation CreateTimeTable($input:CreateTimeTableInput!) {
             createdAt
             updatedAt
         }
+        material_id {
+            id
+            title_ar
+            title_en
+            status
+            fullmark_degree
+            success_degree
+            material_hours
+            createdAt
+            updatedAt
+        }
+        createdAt
+        updatedAt
     }
 }
 `;

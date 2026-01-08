@@ -138,6 +138,10 @@ export default function LectureDetailsPage() {
   const colors = ["#e3f2fd", "#f3e5f5", "#e8f5e9"];
 
   const addRowToTable = async () => {
+
+    try {
+      if (selectedDay == 0 || selectedMaterialDepartment == 0) return notify(t("completeData"), "error");
+
     let rowOBJ = {
       time: "",
       sat: null,
@@ -157,12 +161,20 @@ export default function LectureDetailsPage() {
       end_time: toString,
       day: selectedDay,
       section: sectionInput,
-      // status: "active",
-      doctor_id: materialsByDepartment?.find(el => el?.id == selectedMaterialDepartment)?.doctor_id?.id
+      doctor_id: materialsByDepartment?.find(el => el?.id == selectedMaterialDepartment)?.doctor_id?.id,
+      main_time_table_id: location?.state?.id,
+      material_id: selectedMaterialDepartment
     };
 
     console.log("data to send", data);
 
+    const result = await CreateTimeTable({
+      variables: {
+        input: data
+      }
+    });
+
+    console.log("result", result?.data);
     // let time = fromString + " - " + toString;
 
     // if (selectedDay == 0 || selectedDoctor == 0 || selectedMaterialDepartment == 0) return notify(t("completeData"), "error");
@@ -205,8 +217,11 @@ export default function LectureDetailsPage() {
     //   return [...prev, rowOBJ];
     // });
 
-
-
+    } catch (error) {
+      console.log("error",error.message);
+      error?.message ? notify(error.message, "error") :  notify(t("error"), "error");
+    }
+    
   }
 
   console.log("rows", rows);
@@ -284,17 +299,15 @@ export default function LectureDetailsPage() {
             </VerticalTextFieldSelect>
           </Grid>
 
+          {/* section */}
           <Grid item xs={12} md={6} lg={3}>
             <VerticalTextField
-              title={t("studentDashboard.maxAcademyHours")}
-              fieldID={"max_study_hours"}
-              fieldName={"max_study_hours"}
-              placeholder={t("studentDashboard.maxAcademyHours")}
+              title={t("studentDashboard.section")}
+              fieldID={"section"}
+              fieldName={"section"}
+              placeholder={t("studentDashboard.section")}
               value={sectionInput}
-              //  setValue={setSectionInput}
               onChange={(e) => setSectionInput(e.target.value)}
-            //  error={formik.touched.max_study_hours && Boolean(formik.errors.max_study_hours)}
-            //  helperText={formik.touched.max_study_hours && formik.errors.max_study_hours}
             />
           </Grid>
 
