@@ -94,6 +94,7 @@ import AddLecturePage from "./pages/LecturesSchedule/AddLecturePage";
 import LectureDetailsPage from "./pages/LecturesSchedule/LectureDetailsPage";
 import EditLecturePage from "./pages/LecturesSchedule/EditLecturePage";
 import DoctorLecturesPage from "./pages/DoctorDashboard/DoctorLectures/DoctorLecturesPage";
+import StudentLecturesPage from "./pages/StudentDashboard/StudentlecturesSchedule/StudentLecturesPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -414,6 +415,8 @@ function App() {
                       </MainLayout>
                     }
                   />
+
+                  {/* student dashboard */}
                   <Route
                     path="/StudentDashboard"
                     element={
@@ -422,6 +425,16 @@ function App() {
                       </MainLayout>
                     }
                   />
+
+                  <Route
+                    path="/StudentlecturesSchedule"
+                    element={
+                      <MainLayout isLoggedIn={true}>
+                        <StudentLecturesPage />
+                      </MainLayout>
+                    }
+                  />
+
                   <Route
                     path="/profile"
                     element={

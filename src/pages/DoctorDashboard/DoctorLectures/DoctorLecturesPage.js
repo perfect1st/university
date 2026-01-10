@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, CircularProgress, Grid, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, Grid, Typography, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
@@ -11,11 +11,12 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { useEffect, useRef } from "react";
 
 import { useSelector } from "react-redux";
-import { GET_TIME_TABLE_BY_DOCTOR_ID } from "../../../graphql/TimeTableQueries";
+import { GET_TIME_TABLE_BY_DOCTOR_ID, TODAY_TIME_TABLE } from "../../../graphql/TimeTableQueries";
 import i18n from "../../../i18n/i18n";
 import LoadingPage from "../../../components/LoadingComponent";
 import Header from "../../../components/PageHeader/header";
 import ScheduleTable from "../../../components/Utilities/ScheduleTableComponent";
+import ToDayTimeTableComponent from "../../../components/Utilities/ToDayTimeTableComponent";
 
 export default function DoctorLecturesPage() {
     const theme = useTheme();
@@ -37,49 +38,65 @@ export default function DoctorLecturesPage() {
         }
     ] = useLazyQuery(GET_TIME_TABLE_BY_DOCTOR_ID, { fetchPolicy: "network-only" });
 
+    const [
+        TodayTimeTable,
+        {
+            data: { todayTimeTable } = {},
+            loading: getTodayTimeTableLoading
+        }
+    ] = useLazyQuery(TODAY_TIME_TABLE, { fetchPolicy: "network-only" });
+
+    
+
     useEffect(() => {
         if (me?.id) {
             // console.log('meeeee', me?.id);
+            const date = new Date();
+            const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+
+            console.log("dayName",dayName);
             TimeTablesByDoctor({ variables: { doctor_id: me?.id } });
+            TodayTimeTable({ variables: { doctor_id: me?.id,day:dayName } });
             // data({variables:{doctor_id:me?.id}});
         }
     }, [me]);
 
     const groupedTimeTablesByMainTimeTable =
-  timeTablesByDoctor?.reduce((acc, item) => {
-    // هل في جروب نفس البداية والنهاية؟
-    const existingGroup = acc.find(
-      (g) =>
-        g.start_time === item.start_time &&
-        g.end_time === item.end_time
-    );
+        timeTablesByDoctor?.reduce((acc, item) => {
+            // هل في جروب نفس البداية والنهاية؟
+            const existingGroup = acc.find(
+                (g) =>
+                    g.start_time === item.start_time &&
+                    g.end_time === item.end_time
+            );
 
-    if (existingGroup) {
-      // ضيف العنصر للجروب القديم
-      existingGroup.items.push(item);
-    } else {
-      // اعمل جروب جديد
-      acc.push({
-        start_time: item.start_time,
-        end_time: item.end_time,
-        items: [item]
-      });
-    }
+            if (existingGroup) {
+                // ضيف العنصر للجروب القديم
+                existingGroup.items.push(item);
+            } else {
+                // اعمل جروب جديد
+                acc.push({
+                    start_time: item.start_time,
+                    end_time: item.end_time,
+                    items: [item]
+                });
+            }
 
-    return acc;
-  }, []);
+            return acc;
+        }, []);
 
     console.log("me", me);
-    console.log("timeTablesByDoctor",timeTablesByDoctor);
+    console.log("timeTablesByDoctor", timeTablesByDoctor);
+    console.log("todayTimeTable",todayTimeTable);
 
-    if (getTimeTableLoading) return <LoadingPage />
+    if (getTimeTableLoading || getTodayTimeTableLoading) return <LoadingPage />
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
-            <Grid container spacing={3}>
+            <Grid container>
                 <Grid item
                     sm={12} md={12}
                     sx={{
-                        overflowX: "auto", // ✅ مهم جدًا عشان الجدول يعمل scroll داخل الـ Grid
+
                     }}
                 >
                     <Header
@@ -99,6 +116,21 @@ export default function DoctorLecturesPage() {
                     />
 
                     <ScheduleTable rows={groupedTimeTablesByMainTimeTable} canDelete={false} />
+
+                    <Box display="flex" width={isMobile ? "55%" : "100%"} flexDirection="column" gap={3} py={3} borderTop="1px solid #cfd7e7">
+                        {/* Title */}
+                        <Box display="flex" gap={1}>
+                            <Typography variant="h6" fontWeight={700}>
+                                {t("Dashboard.toDayLectures")}
+                            </Typography>
+
+                        </Box>
+
+                        <ToDayTimeTableComponent rows={todayTimeTable} canEdit={true} />
+                    </Box>
+
+
+
                 </Grid>
             </Grid>
         </Box>

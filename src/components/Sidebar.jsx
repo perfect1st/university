@@ -60,6 +60,15 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
         en: "Profile",
       },
     },
+    {
+       // icon: FlagIcon,
+    key: "StudentlecturesSchedule",
+    path: "/StudentlecturesSchedule",
+    label: {
+      ar: "جداول المحاضرات",
+      en: "Lectures Schedule",
+    },
+    },
 
     {
       icon: MonetizationOnOutlinedIcon,
@@ -228,15 +237,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
 ]
 
 if(me?.role=="doctor")menuItems=[
-  // {
-  //     icon: AccountBalanceIcon,
-  //     key: "StudentDashboard",
-  //     path: "/StudentDashboard",
-  //     label: {
-  //       ar: "لوحة التحكم",
-  //       en: "StudentDashboard",
-  //     },
-  //   },
+
     {
       icon: PersonOutlineIcon,
       key: "profile",

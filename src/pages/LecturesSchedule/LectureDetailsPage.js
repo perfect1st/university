@@ -227,7 +227,8 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
       section: sectionInput,
       doctor_id: materialsByDepartment?.find(el => el?.id == selectedMaterialDepartment)?.doctor_id?.id,
       main_time_table_id: location?.state?.id,
-      material_id: selectedMaterialDepartment
+      material_id: selectedMaterialDepartment,
+      academy_term_id:location?.state?.academy_term_id?.id
     };
 
     console.log("data to send", data);

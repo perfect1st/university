@@ -290,3 +290,70 @@ query TimeTablesByDoctor($doctor_id:ID!) {
     }
 }
 `;
+
+export const TODAY_TIME_TABLE=gql`
+query TodayTimeTable($doctor_id:ID,$academy_term_id:ID,$day:String!) {
+    todayTimeTable(
+    doctor_id: $doctor_id, 
+    academy_term_id: $academy_term_id, 
+    day: $day
+    ) {
+        id
+        day
+        start_time
+        end_time
+        section
+        status
+        lecture_status
+        lecture_id
+        createdAt
+        updatedAt
+        main_time_table_id {
+            id
+            number
+            title_ar
+            title_en
+            study_year
+            status
+            createdAt
+            updatedAt
+        }
+        academy_term_id {
+            id
+            title_ar
+            title_en
+            status
+            study_year
+            current_year
+            term_number
+            min_study_hours
+            max_study_hours
+        }
+        material_id {
+            id
+            title_ar
+            title_en
+            status
+            fullmark_degree
+            success_degree
+            material_hours
+            createdAt
+            updatedAt
+        }
+        doctor_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
+    }
+}
+`;

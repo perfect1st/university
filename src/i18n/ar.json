@@ -353,7 +353,12 @@
     "LecturesSchedule": "جدول المحاضرات",
     "subjectDetails": "أدخل تفاصيل المادة لإضافتها إلى الجدول",
     "saveSubject": "حفظ المادة",
-    "confirm":"هل أنت متأكد من الحذف؟"
+    "confirm":"هل أنت متأكد من الحذف؟",
+    "toDayLectures":"محاضرات اليوم"
+  },
+
+  "lectures":{
+    "pending":"لم تبدأ بعد"
   },
   "submit": "تأكيد",
   "error": "حدث خطأ حاول مرة اخري",
