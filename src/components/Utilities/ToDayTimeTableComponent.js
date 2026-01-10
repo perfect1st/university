@@ -8,11 +8,13 @@ import {
     Paper,
     useTheme,
     useMediaQuery,
-    Typography
+    Typography,
+    Button
 } from "@mui/material";
 import i18n from "../../i18n/i18n";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 
 // const rows = [
@@ -21,13 +23,15 @@ import { useTranslation } from "react-i18next";
 //   { id: 3, name: "Ali", age: 22 }
 // ];
 
-export default function ToDayTimeTableComponent({ rows=[],canEdit=false }) {
+export default function ToDayTimeTableComponent({ rows = [], canEdit = false }) {
 
     const isArabic = i18n.language === "ar";
     const theme = useTheme();
     const { t } = useTranslation();
     const location = useLocation();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+    const me = useSelector(state => state.user.loggedUser);
     return (
         <TableContainer component={Paper}>
             <Table>
@@ -37,6 +41,7 @@ export default function ToDayTimeTableComponent({ rows=[],canEdit=false }) {
                         <TableCell>{t("to")}</TableCell>
                         <TableCell>{t("studentDashboard.section")}</TableCell>
                         <TableCell>{t("Status")}</TableCell>
+                        <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
 
@@ -44,9 +49,9 @@ export default function ToDayTimeTableComponent({ rows=[],canEdit=false }) {
                     {
                         rows?.length == 0 ? <TableRow><TableCell colSpan={7}>
                             <Typography variant="h6" color="text.secondary" align="center">
-                                                                    {t("noData")}
-                                                        </Typography>
-                            </TableCell></TableRow>
+                                {t("noData")}
+                            </Typography>
+                        </TableCell></TableRow>
                             :
                             rows?.map((row, i) => (
                                 <TableRow key={i}>
@@ -54,6 +59,14 @@ export default function ToDayTimeTableComponent({ rows=[],canEdit=false }) {
                                     <TableCell>{row?.end_time}</TableCell>
                                     <TableCell>{row?.section}</TableCell>
                                     <TableCell>{t(`lectures.${row?.lecture_status}`)}</TableCell>
+                                    <TableCell>
+                                        {
+                                            me?.role == "doctor" && <Button variant="contained" size="small" color="primary" >
+                                                ابدأ الان
+                                            </Button>
+                                        }
+
+                                    </TableCell>
                                 </TableRow>
                             ))}
                 </TableBody>
