@@ -14,28 +14,64 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions
+    DialogActions,
+    CircularProgress
 } from "@mui/material";
 import i18n from "../../i18n/i18n";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useState } from "react";
+import VerticalTextField from "./VerticalTextField";
+import { useMutation } from "@apollo/client/react";
+import { CREATE_LECTURE_SESSION } from "../../graphql/LectureSessionQueries";
 
 
-// const rows = [
-//   { id: 1, name: "Ahmed", age: 25 },
-//   { id: 2, name: "Sara", age: 30 },
-//   { id: 3, name: "Ali", age: 22 }
-// ];
 
-export default function ToDayTimeTableComponent({ rows = [], canEdit = false }) {
+
+export default function ToDayTimeTableComponent({ rows = [], canEdit = false, func }) {
 
     // open lecture link pop up
     const [open, setOpen] = useState(false);
+    const [lectureLink, setLectureLink] = useState('');
+    const [selectedRow, setSelectedRow] = useState(null);
+
+    const me = useSelector(state => state.user.loggedUser);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const [
+        CreateLectureSession,
+        {
+            loading: creatingSession
+        }
+    ] = useMutation(CREATE_LECTURE_SESSION, { fetchPolicy: "network-only" });
+
+    const handleAddLectureLink = async () => {
+        let data = {};
+        data.lecture_url = lectureLink;
+        data.timetable_id = selectedRow?.id;
+
+        console.log("selectedRow", selectedRow);
+
+        const result = await CreateLectureSession({
+            variables: {
+                input: data
+            }
+        });
+
+        console.log("result", result);
+
+        const date = new Date();
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+
+        console.log("dayName", dayName);
+
+        func({ variables: { doctor_id: me?.id, day: dayName } });
+
+        handleClose();
+    }
 
     const isArabic = i18n.language === "ar";
     const theme = useTheme();
@@ -43,7 +79,6 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false }) 
     const location = useLocation();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-    const me = useSelector(state => state.user.loggedUser);
     return (
         <Box>
             <TableContainer component={Paper}>
@@ -74,10 +109,40 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false }) 
                                         <TableCell>{t(`lectures.${row?.lecture_status}`)}</TableCell>
                                         <TableCell>
                                             {
-                                                me?.role == "doctor" && <Button variant="contained" size="small" color="primary" onClick={handleOpen} >
-                                                    {t("Dashboard.startnow")}
+                                                me?.role == "doctor" &&
+                                                <>
+                                                    {
+                                                        row?.lecture_status == "pending" && <Button variant="contained" size="small" color="primary"
+                                                            onClick={() => {
+                                                                setSelectedRow(row);
+                                                                handleOpen();
+                                                            }}
+                                                        >
+                                                            {t("Dashboard.startnow")}
+                                                        </Button>
+
+                                                    }
+                                                </>
+
+                                            }
+
+                                            {
+
+                                                row?.lecture_status == "started" && <Button
+                                                    sx={{
+                                                        bgcolor: "secondary.main",
+                                                    }}
+                                                    variant="contained"
+                                                    size="small"
+                                                    onClick={() => {
+                                                        // setSelectedRow(row);
+                                                        // handleOpen();
+                                                    }}
+                                                >
+                                                    {t("Details")}
                                                 </Button>
                                             }
+
 
                                         </TableCell>
                                     </TableRow>
@@ -87,20 +152,54 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false }) 
             </TableContainer>
 
             {/* enter lecture link popup */}
-            <Dialog open={open} onClose={handleClose}>
-               
+            <Dialog open={open} onClose={() => {
+                handleClose();
+                setSelectedRow(null);
+            }}>
+
 
                 <DialogContent>
-                    <Typography variant="h6" color="text.secondary">
-                       {t("Dashboard.lectureLink")}
-                    </Typography>
+
+                    <VerticalTextField
+                        title={t("Dashboard.lectureLink")}
+                        fieldID={"lectureLink"}
+                        fieldName={"lectureLink"}
+                        placeholder={t("Dashboard.lectureLink")}
+                        value={lectureLink}
+                        onChange={(e) => setLectureLink(e.target.value)}
+                    />
                 </DialogContent>
 
-                <DialogActions>
-                    <Button onClick={handleClose}>Close</Button>
+                <DialogActions sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mx: 2
+                }}>
+
+                    <Button
+                        disabled={creatingSession}
+                        variant="contained"
+                        size="small"
+                        color="success"
+                        onClick={() => handleAddLectureLink()}>
+                        {
+                            creatingSession ? <>
+                                <CircularProgress size={26}
+                                    thickness={8}
+                                    sx={{ color: "black" }} />
+                            </> : t("form.save")
+                        }
+                    </Button>
+
+                    <Button variant="contained" size="small" color="primary" onClick={() => {
+                        handleClose();
+                        setSelectedRow(null);
+                    }}>{t("form.close")}</Button>
+
                 </DialogActions>
             </Dialog>
         </Box>
 
     )
+
 }

@@ -128,7 +128,7 @@ export default function DoctorLecturesPage() {
 
                         </Box>
 
-                        <ToDayTimeTableComponent rows={todayTimeTable} canEdit={true} />
+                        <ToDayTimeTableComponent rows={todayTimeTable} canEdit={true} func={TodayTimeTable} />
                     </Box>
 
 

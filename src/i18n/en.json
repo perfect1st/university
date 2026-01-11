@@ -226,7 +226,8 @@
     "name_ar": "{{item}} Name in Arabic",
     "name_en": "{{item}} Name in English",
     "flag": "Flag",
-    "save": "Save"
+    "save": "Save",
+    "close":"Close"
   },
   "Users": "Users",
   "Users Details": "Users Details",
@@ -321,7 +322,8 @@
     "lectureLink":"Enter Lecture Link"
   },
   "lectures":{
-    "pending":"not started yet"
+    "pending":"not started yet",
+    "started":"active"
   },
   "submit": "Submit",
   "error": "Error happened try again later",
