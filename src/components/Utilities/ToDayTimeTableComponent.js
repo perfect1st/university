@@ -24,7 +24,7 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import VerticalTextField from "./VerticalTextField";
 import { useMutation } from "@apollo/client/react";
-import { CREATE_LECTURE_SESSION } from "../../graphql/LectureSessionQueries";
+import { CANCEL_LECTURE_SESSION, CREATE_LECTURE_SESSION } from "../../graphql/LectureSessionQueries";
 
 
 
@@ -42,12 +42,21 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    // اضافة لينك للمحاضرة
     const [
         CreateLectureSession,
         {
             loading: creatingSession
         }
     ] = useMutation(CREATE_LECTURE_SESSION, { fetchPolicy: "network-only" });
+
+    // الغاء المحاضرة
+    const[
+        CreateCanceledLectureSession,
+        {
+            loading: cancelingSession
+        }
+    ]=useMutation(CANCEL_LECTURE_SESSION, { fetchPolicy: "network-only" });
 
     const handleAddLectureLink = async () => {
         let data = {};
@@ -88,7 +97,7 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
                         <TableRow>
                             <TableCell>{t("from")}</TableCell>
                             <TableCell>{t("to")}</TableCell>
-                            <TableCell>{t("studentDashboard.section")}</TableCell>
+                            {/* <TableCell>{t("studentDashboard.section")}</TableCell> */}
                             <TableCell>{t("Status")}</TableCell>
                             <TableCell> {t("Details")}</TableCell>
                             {
@@ -109,12 +118,12 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
                                     <TableRow key={i}>
                                         <TableCell>{row?.start_time}</TableCell>
                                         <TableCell>{row?.end_time}</TableCell>
-                                        <TableCell>{row?.section}</TableCell>
+                                        {/* <TableCell>{row?.section}</TableCell> */}
                                         <TableCell>{t(`lectures.${row?.lecture_status}`)}</TableCell>
                                         <TableCell>
                                             {
                                                 me?.role == "doctor" &&
-                                                <>
+                                                <Box>
                                                     {
                                                         row?.lecture_status == "pending" &&
                                                         <>
@@ -126,10 +135,22 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
                                                         >
                                                             {t("Dashboard.startnow")}
                                                         </Button>
+
+                                                         <Button variant="contained" size="small" color="error"
+                                                            sx={{
+                                                                mx:1
+                                                            }}
+                                                            onClick={() => {
+                                                                // setSelectedRow(row);
+                                                                // handleOpen();
+                                                            }}
+                                                        >
+                                                            {t("Cancel")}
+                                                        </Button>
                                                         </>
                                                          
                                                     }
-                                                </>
+                                                </Box>
 
                                             }
 
@@ -222,6 +243,8 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
 
                 </DialogActions>
             </Dialog>
+
+            {/* cancel lecture popup */}
         </Box>
 
     )

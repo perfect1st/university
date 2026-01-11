@@ -117,3 +117,21 @@ mutation UpdateLectureSession($id:ID!,$input:UpdateLectureSessionInput!) {
     }
 }
 `;
+
+export const CANCEL_LECTURE_SESSION=gql`
+mutation CreateCanceledLectureSession($timetable_id:ID!) {
+    createCanceledLectureSession(timetable_id: $timetable_id) {
+        id
+        study_year
+        lecture_date
+        lecture_videos
+        lecture_url
+        notes
+        session_task
+        attachments
+        status
+        createdAt
+        updatedAt
+    }
+}
+`;
