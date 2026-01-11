@@ -18,7 +18,7 @@ import {
     CircularProgress
 } from "@mui/material";
 import i18n from "../../i18n/i18n";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -36,6 +36,7 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
     const [lectureLink, setLectureLink] = useState('');
     const [selectedRow, setSelectedRow] = useState(null);
 
+    const navigte = useNavigate();
     const me = useSelector(state => state.user.loggedUser);
 
     const handleOpen = () => setOpen(true);
@@ -138,6 +139,7 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
                                                     variant="contained"
                                                     size="small"
                                                     onClick={() => {
+                                                        navigte(`/LectureSessionDetails/${row?.lecture_id}`);
                                                         // setSelectedRow(row);
                                                         // handleOpen();
                                                     }}
