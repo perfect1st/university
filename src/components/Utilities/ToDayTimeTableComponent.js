@@ -89,7 +89,10 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
                             <TableCell>{t("to")}</TableCell>
                             <TableCell>{t("studentDashboard.section")}</TableCell>
                             <TableCell>{t("Status")}</TableCell>
-                            <TableCell></TableCell>
+                            <TableCell> {t("Details")}</TableCell>
+                            {
+                                me?.role=="student" && <TableCell> {t("Dashboard.enterLecture")}</TableCell>
+                            } 
                         </TableRow>
                     </TableHead>
 
@@ -145,6 +148,22 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
 
 
                                         </TableCell>
+
+                                        {/* لينك دخول المحاضرة */}
+                                        {
+                                            me?.role=="student" &&  row?.lecture_status == "started" && <TableCell>
+                                                <Button
+                                                   color="primary"
+                                                    variant="contained"
+                                                    size="small"
+                                                    onClick={() => {
+                                                       window.open(row?.lecture_url, "_blank")
+                                                    }}
+                                                >
+                                                   {t("Dashboard.enterLecture")}
+                                                </Button>
+                                            </TableCell>
+                                        }
                                     </TableRow>
                                 ))}
                     </TableBody>

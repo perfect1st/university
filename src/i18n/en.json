@@ -319,7 +319,8 @@
     "saveSubject": "Save Subject",
     "confirm":"Are you sure to delete ?",
     "startnow":"start Now",
-    "lectureLink":"Enter Lecture Link"
+    "lectureLink":"Enter Lecture Link",
+    "enterLecture":"Enter Lecture"
   },
   "lectures":{
     "pending":"not started yet",

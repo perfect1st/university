@@ -47,6 +47,9 @@ export default function ProfilePage() {
     link.click();
   };
 
+  if(getRegisterFormByUserId?.id){
+    localStorage.setItem("registerForm",JSON.stringify(getRegisterFormByUserId));
+  }
   const highSchoolFile =
     getRegisterFormByUserId?.high_school_certificate_file;
 

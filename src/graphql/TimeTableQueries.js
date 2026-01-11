@@ -291,6 +291,67 @@ query TimeTablesByDoctor($doctor_id:ID!) {
 }
 `;
 
+export const GET_TIME_TABLE_BY_ACADEMY_TERM_ID=gql`
+query TimeTablesByTerm($academy_term_id:ID!) {
+    timeTablesByTerm(academy_term_id: $academy_term_id) {
+        id
+        day
+        start_time
+        end_time
+        section
+        status
+        createdAt
+        updatedAt
+        main_time_table_id {
+            id
+            number
+            title_ar
+            title_en
+            study_year
+            status
+            createdAt
+            updatedAt
+        }
+        academy_term_id {
+            id
+            title_ar
+            title_en
+            status
+            study_year
+            current_year
+            term_number
+            min_study_hours
+            max_study_hours
+        }
+        material_id {
+            id
+            title_ar
+            title_en
+            status
+            fullmark_degree
+            success_degree
+            material_hours
+            createdAt
+            updatedAt
+        }
+        doctor_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
+    }
+}
+`;
+
 export const TODAY_TIME_TABLE=gql`
 query TodayTimeTable($doctor_id:ID,$academy_term_id:ID,$day:String!) {
     todayTimeTable(
@@ -306,6 +367,7 @@ query TodayTimeTable($doctor_id:ID,$academy_term_id:ID,$day:String!) {
         status
         lecture_status
         lecture_id
+        lecture_url
         createdAt
         updatedAt
         main_time_table_id {

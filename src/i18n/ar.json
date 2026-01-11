@@ -357,7 +357,8 @@
     "confirm":"هل أنت متأكد من الحذف؟",
     "toDayLectures":"محاضرات اليوم",
     "startnow":"ابدأ الان",
-    "lectureLink":"ادخل رابط المحاضرة"
+    "lectureLink":"ادخل رابط المحاضرة",
+    "enterLecture":"دخول المحاضرة"
   },
 
   "lectures":{
