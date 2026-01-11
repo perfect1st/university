@@ -316,7 +316,12 @@
     "LecturesSchedule": "Lectures Schedule",
     "subjectDetails": "Subject Details",
     "saveSubject": "Save Subject",
-    "confirm":"Are you sure to delete ?"
+    "confirm":"Are you sure to delete ?",
+    "startnow":"start Now",
+    "lectureLink":"Enter Lecture Link"
+  },
+  "lectures":{
+    "pending":"not started yet"
   },
   "submit": "Submit",
   "error": "Error happened try again later",

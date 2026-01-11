@@ -354,7 +354,9 @@
     "subjectDetails": "أدخل تفاصيل المادة لإضافتها إلى الجدول",
     "saveSubject": "حفظ المادة",
     "confirm":"هل أنت متأكد من الحذف؟",
-    "toDayLectures":"محاضرات اليوم"
+    "toDayLectures":"محاضرات اليوم",
+    "startnow":"ابدأ الان",
+    "lectureLink":"ادخل رابط المحاضرة"
   },
 
   "lectures":{

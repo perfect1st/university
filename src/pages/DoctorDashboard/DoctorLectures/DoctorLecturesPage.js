@@ -8,7 +8,7 @@ import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useSelector } from "react-redux";
 import { GET_TIME_TABLE_BY_DOCTOR_ID, TODAY_TIME_TABLE } from "../../../graphql/TimeTableQueries";
@@ -27,6 +27,8 @@ export default function DoctorLecturesPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const { id } = useParams();
     const isArabic = i18n.language === "ar";
+
+    
 
     const me = useSelector(state => state.user.loggedUser);
     const [
