@@ -12,9 +12,14 @@ import { useEffect, useRef, useState } from "react";
 
 import { useSelector } from "react-redux";
 import i18n from "../../i18n/i18n";
-import { GET_LECTURE_SESSION_BY_ID } from "../../graphql/LectureSessionQueries";
+import { GET_LECTURE_SESSION_BY_ID, UPDATE_LECTURE_SESSION_BY_ID } from "../../graphql/LectureSessionQueries";
 import LoadingPage from "../../components/LoadingComponent";
 import Header from "../../components/PageHeader/header";
+import notify from "../../components/notify";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import VerticalTextField from "../../components/Utilities/VerticalTextField";
+import SubmitButton from "../../components/Utilities/SubmitButton";
 // import LoadingPage from "../../../components/LoadingComponent";
 // import Header from "../../../components/PageHeader/header";
 // import ScheduleTable from "../../../components/Utilities/ScheduleTableComponent";
@@ -40,6 +45,70 @@ export default function LectureSessionDetails() {
         fetchPolicy: "network-only",
     });
 
+    const [
+        UpdateLectureSession,
+        {
+            loading
+        }
+    ] = useMutation(UPDATE_LECTURE_SESSION_BY_ID, { fetchPolicy: "network-only" });
+
+    const formik = useFormik({
+        initialValues: {
+            // title_ar: "",
+            // title_en: "",
+            notes: getLectureSessionById?.notes,
+            session_task: getLectureSessionById?.session_task,
+        },
+
+        validationSchema: Yup.object({
+            //   selectedOperationType: selectedOperationType == 0 && Yup.string()
+            //     .required(t("admissions.errors.required"))
+            //     .notOneOf(["0"], t("admissions.errors.required")),
+            // title_ar: Yup.string().required(t("admissions.errors.required")),
+            // title_en: Yup.string().required(t("admissions.errors.required"))
+
+        }),
+        onSubmit: async (values) => {
+
+            console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+            let data = {
+                // title_ar: values?.title_ar,
+                // title_en: values?.title_en,
+                notes: values?.notes,
+                session_task: values?.session_task
+                // operation_type: selectedOperationType
+            };
+
+            // if(selectedFile!=null) data.payment_document_file=selectedFile;
+
+            try {
+                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                console.log(data);
+
+                // return;
+                const result = await UpdateLectureSession({
+                    variables: {
+                        input: data,
+                        id: getLectureSessionById?.id
+                    }
+                });
+
+                // console.log('result', result);
+
+                notify(t("success"), "success");
+
+                // navigate(location.pathname.split('/add')[0]);
+
+            } catch (error) {
+                console.error("Error logging in:", error);
+                notify(t("error"), "error");
+
+            } finally {
+                //  setIsLoading(false);
+            }
+        },
+    });
+
 
     console.log("getLectureSessionById", getLectureSessionById);
 
@@ -48,10 +117,10 @@ export default function LectureSessionDetails() {
     let translateText = isArabic ? "المحاضرة" : "Lecture";
     let translateText2 = isArabic ? "مادة جديدة" : "New Subject";
 
-  if (getSessionLoading) return <LoadingPage />;
+    if (getSessionLoading) return <LoadingPage />;
     return (
-       <Box sx={{ p: 3, backgroundColor: "background.paper", maxWidth: "100%" }}>
-         <Header
+        <Box sx={{ p: 3, backgroundColor: "background.paper", maxWidth: "100%" }}>
+            <Header
                 title={t("detailsItem", { item: translateText })}
                 subtitle={t("detailsItem", { item: translateText })}
                 i18n={i18n}
@@ -62,7 +131,40 @@ export default function LectureSessionDetails() {
                 isExcel={false}
                 isPdf={false}
                 isPrinter={false}
-              />
+            />
+
+            <Box
+                onSubmit={formik.handleSubmit}
+                sx={{ width: isMobile ? "90%" : "100%" }}
+                component="form">
+
+                <VerticalTextField
+                    isMultiline={true}
+                    title={t("Dashboard.notes", { item: translateText2 })}
+                    fieldID={"notes"}
+                    fieldName={"notes"}
+                    placeholder={t("Dashboard.notes", { item: translateText2 })}
+                    value={formik.values.notes}
+                    onChange={formik.handleChange}
+                    error={formik.touched.notes && Boolean(formik.errors.notes)}
+                    helperText={formik.touched.notes && formik.errors.notes}
+                />
+
+                <VerticalTextField
+                    isMultiline={true}
+                    title={t("Dashboard.session_task", { item: translateText2 })}
+                    fieldID={"session_task"}
+                    fieldName={"session_task"}
+                    placeholder={t("Dashboard.session_task", { item: translateText2 })}
+                    value={formik.values.session_task}
+                    onChange={formik.handleChange}
+                    error={formik.touched.session_task && Boolean(formik.errors.session_task)}
+                    helperText={formik.touched.session_task && formik.errors.session_task}
+                />
+
+
+                <SubmitButton loading={loading} t={t} />
+            </Box>
         </Box>
     )
 }

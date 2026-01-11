@@ -358,12 +358,15 @@
     "toDayLectures":"محاضرات اليوم",
     "startnow":"ابدأ الان",
     "lectureLink":"ادخل رابط المحاضرة",
-    "enterLecture":"دخول المحاضرة"
+    "enterLecture":"دخول المحاضرة",
+    "session_task":"الواجبات"
   },
 
   "lectures":{
     "pending":"لم تبدأ بعد",
-    "started":"نشطة"
+    "started":"نشطة",
+    "ended":"منتهية",
+    "canceled":"ملغاه"
   },
   "submit": "تأكيد",
   "error": "حدث خطأ حاول مرة اخري",

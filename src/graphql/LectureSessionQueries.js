@@ -99,3 +99,21 @@ query GetLectureSessionById($id: ID!) {
     }
 }
 `;
+
+export const UPDATE_LECTURE_SESSION_BY_ID=gql`
+mutation UpdateLectureSession($id:ID!,$input:UpdateLectureSessionInput!) {
+    updateLectureSession(id: $id, input: $input) {
+        id
+        study_year
+        lecture_date
+        lecture_videos
+        lecture_url
+        notes
+        session_task
+        attachments
+        status
+        createdAt
+        updatedAt
+    }
+}
+`;

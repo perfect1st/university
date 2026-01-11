@@ -116,7 +116,9 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
                                                 me?.role == "doctor" &&
                                                 <>
                                                     {
-                                                        row?.lecture_status == "pending" && <Button variant="contained" size="small" color="primary"
+                                                        row?.lecture_status == "pending" &&
+                                                        <>
+                                                        <Button variant="contained" size="small" color="primary"
                                                             onClick={() => {
                                                                 setSelectedRow(row);
                                                                 handleOpen();
@@ -124,7 +126,8 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
                                                         >
                                                             {t("Dashboard.startnow")}
                                                         </Button>
-
+                                                        </>
+                                                         
                                                     }
                                                 </>
 

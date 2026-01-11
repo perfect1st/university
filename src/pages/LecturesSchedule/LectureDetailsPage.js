@@ -31,73 +31,7 @@ import LoadingPage from '../../components/LoadingComponent';
 import notify from '../../components/notify';
 import { CREATE_TIME_TABLE , GET_TIME_TABLES_BY_MAIN_TABLE_ID , DELETE_TIME_TABLE_BY_ID } from '../../graphql/TimeTableQueries';
 
-// const users = [
-//   {
-//     id: "69087b4f2ea81d69f488eb61",
-//     username: "admin1",
-//     fullname: "Admin One",
-//     email: "admin1@gmail.com",
-//     mobile: "123456781",
-//     role: "admin",
-//     status: true,
-//     profile_image: null,
-//     qid_number: null,
-//     createdAt: "1762163535600",
-//     updatedAt: "1762163770304"
-//   },
-//   {
-//     id: "69087b4f2ea81d69f488eb62",
-//     username: "admin2",
-//     fullname: "Admin Two",
-//     email: "admin2@gmail.com",
-//     mobile: "123456782",
-//     role: "admin",
-//     status: true,
-//     profile_image: null,
-//     qid_number: null,
-//     createdAt: "1762163535600",
-//     updatedAt: "1762163770304"
-//   },
-//   {
-//     id: "69087b4f2ea81d69f488eb63",
-//     username: "admin3",
-//     fullname: "Admin Three",
-//     email: "admin3@gmail.com",
-//     mobile: "123456783",
-//     role: "admin",
-//     status: true,
-//     profile_image: null,
-//     qid_number: null,
-//     createdAt: "1762163535600",
-//     updatedAt: "1762163770304"
-//   },
-//   {
-//     id: "69087b4f2ea81d69f488eb64",
-//     username: "admin4",
-//     fullname: "Admin Four",
-//     email: "admin4@gmail.com",
-//     mobile: "123456784",
-//     role: "admin",
-//     status: true,
-//     profile_image: null,
-//     qid_number: null,
-//     createdAt: "1762163535600",
-//     updatedAt: "1762163770304"
-//   },
-//   {
-//     id: "69087b4f2ea81d69f488eb65",
-//     username: "admin5",
-//     fullname: "Admin Five",
-//     email: "admin5@gmail.com",
-//     mobile: "123456785",
-//     role: "admin",
-//     status: true,
-//     profile_image: null,
-//     qid_number: null,
-//     createdAt: "1762163535600",
-//     updatedAt: "1762163770304"
-//   }
-// ];
+
 
 
 export default function LectureDetailsPage() {
@@ -110,7 +44,7 @@ export default function LectureDetailsPage() {
 
   const [selectedMaterialDepartment, setSelectedMaterialDepartment] = useState(0);
   const [selectedDay, setSelectedDay] = useState(0);
-  const [sectionInput, setSectionInput] = useState("");
+  // const [sectionInput, setSectionInput] = useState("");
   // const [rows, setRows] = useState([]);
 
   const [from, setFrom] = useState("08:00");
@@ -224,7 +158,7 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
       start_time: fromString,
       end_time: toString,
       day: selectedDay,
-      section: sectionInput,
+      // section: sectionInput,
       doctor_id: materialsByDepartment?.find(el => el?.id == selectedMaterialDepartment)?.doctor_id?.id,
       main_time_table_id: location?.state?.id,
       material_id: selectedMaterialDepartment,
@@ -365,7 +299,7 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
           </Grid>
 
           {/* section */}
-          <Grid item xs={12} md={6} lg={3}>
+          {/* <Grid item xs={12} md={6} lg={3}>
             <VerticalTextField
               title={t("studentDashboard.section")}
               fieldID={"section"}
@@ -374,7 +308,7 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
               value={sectionInput}
               onChange={(e) => setSectionInput(e.target.value)}
             />
-          </Grid>
+          </Grid> */}
 
           {/* Day */}
           <Grid item xs={12} md={6} lg={3}>

@@ -190,7 +190,7 @@ export default function ScheduleTable({rows,canDelete=false}) {
                                                 <Box fontSize={10}>{foundDay?.doctor_id?.fullname}</Box>
 
                                                 {/* السكشن هنا */}
-                                                <Box fontSize={10}>{foundDay?.section}</Box>
+                                                {/* <Box fontSize={10}>{foundDay?.section}</Box> */}
 
                                                 {/* <DeleteIcon /> */}
                                             </Button>

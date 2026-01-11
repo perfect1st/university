@@ -320,11 +320,14 @@
     "confirm":"Are you sure to delete ?",
     "startnow":"start Now",
     "lectureLink":"Enter Lecture Link",
-    "enterLecture":"Enter Lecture"
+    "enterLecture":"Enter Lecture",
+    "session_task":"Session Task"
   },
   "lectures":{
     "pending":"not started yet",
-    "started":"active"
+    "started":"active",
+    "ended":"ended",
+    "canceled":"canceled"
   },
   "submit": "Submit",
   "error": "Error happened try again later",
