@@ -23,13 +23,16 @@ export default function UploadFileField({
 
   return (
     <Grid item xs={12} sx={{ my: 5 }}>
-      <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 , display:"flex", gap:5 }}>
+      <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 , display:"flex", gap:5 , alignItems:"center" }}>
         {title}
         {
           hasDownloadBtn && (
-            <IconButton size="small" onClick={handleDownloadFile}>
-              <DownloadIcon fontSize="small" />
+            <Button color='primary' variant='contained' onClick={handleDownloadFile}>
+              <IconButton size="small" sx={{ color: "white" }} >
+              <DownloadIcon fontSize="small" color='white' />
             </IconButton>
+            </Button>
+            
 
           )
         }

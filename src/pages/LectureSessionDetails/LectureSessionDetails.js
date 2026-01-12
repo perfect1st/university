@@ -45,7 +45,7 @@ export default function LectureSessionDetails() {
     const [showFiles, setShowFiles] = useState([]);
     const [progress, setProgress] = useState(0);
 
-    const [switchStatus, setSwitchStatus] = useState(true);
+    const [switchStatus, setSwitchStatus] = useState(false);
 
     const handlePickFile = () => {
         if (fileInputRef.current) fileInputRef.current.click();
@@ -170,6 +170,7 @@ export default function LectureSessionDetails() {
                 notes: getLectureSessionById?.notes,
                 session_task: getLectureSessionById?.session_task
             });
+            setSwitchStatus(getLectureSessionById?.status=="ended" ? true : false);
             // location?.state?.images_array?.map(el => el?.split(baseURL)[1])
         }
     }, [getLectureSessionById]);
@@ -233,9 +234,12 @@ export default function LectureSessionDetails() {
                 // title_ar: values?.title_ar,
                 // title_en: values?.title_en,
                 notes: values?.notes,
-                session_task: values?.session_task
+                session_task: values?.session_task,
+                // status: switchStatus
                 // operation_type: selectedOperationType
             };
+
+            if(switchStatus==true) data.status= "ended" ;
 
             if (files?.length > 0) data.attachments = files;
             // lecture_videos
@@ -355,7 +359,12 @@ export default function LectureSessionDetails() {
 
 
                 {
-                    me?.role == "doctor" && <Switch
+                    me?.role == "doctor" && <Box sx={{my:2}}>
+
+                         <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
+                                انهاء المحاضرة
+                        </Typography>
+                        <Switch
                         checked={switchStatus}
                         onChange={() => setSwitchStatus(!switchStatus)}
                         sx={{
@@ -377,6 +386,7 @@ export default function LectureSessionDetails() {
                             },
                         }}
                     />
+                    </Box>
                 }
 
 
