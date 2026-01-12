@@ -25,6 +25,7 @@ import { useState } from "react";
 import VerticalTextField from "./VerticalTextField";
 import { useMutation } from "@apollo/client/react";
 import { CANCEL_LECTURE_SESSION, CREATE_LECTURE_SESSION } from "../../graphql/LectureSessionQueries";
+import ConfirmModal from "./ConfirmModal";
 
 
 
@@ -33,6 +34,9 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
 
     // open lecture link pop up
     const [open, setOpen] = useState(false);
+    // open cancel lect. popup
+    const [cancelPopUp, setCancelPopUp] = useState(false);
+
     const [lectureLink, setLectureLink] = useState('');
     const [selectedRow, setSelectedRow] = useState(null);
 
@@ -51,12 +55,12 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
     ] = useMutation(CREATE_LECTURE_SESSION, { fetchPolicy: "network-only" });
 
     // الغاء المحاضرة
-    const[
+    const [
         CreateCanceledLectureSession,
         {
             loading: cancelingSession
         }
-    ]=useMutation(CANCEL_LECTURE_SESSION, { fetchPolicy: "network-only" });
+    ] = useMutation(CANCEL_LECTURE_SESSION, { fetchPolicy: "network-only" });
 
     const handleAddLectureLink = async () => {
         let data = {};
@@ -83,6 +87,24 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
         handleClose();
     }
 
+    const handleCancelLecture = async () => {
+        // let data = {};
+        // data.timetable_id = selectedRow?.id;
+        // console.log("selectedRow", selectedRow);
+
+        // return;
+        const result = await CreateCanceledLectureSession({
+            variables: { timetable_id: selectedRow?.id }
+        });
+        console.log("result", result);
+        const date = new Date();
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+
+        console.log("dayName", dayName);
+        func({ variables: { doctor_id: me?.id, day: dayName } });
+        setCancelPopUp(false);
+    }
+
     const isArabic = i18n.language === "ar";
     const theme = useTheme();
     const { t } = useTranslation();
@@ -101,8 +123,8 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
                             <TableCell>{t("Status")}</TableCell>
                             <TableCell> {t("Details")}</TableCell>
                             {
-                                me?.role=="student" && <TableCell> {t("Dashboard.enterLecture")}</TableCell>
-                            } 
+                                me?.role == "student" && <TableCell> {t("Dashboard.enterLecture")}</TableCell>
+                            }
                         </TableRow>
                     </TableHead>
 
@@ -127,28 +149,28 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
                                                     {
                                                         row?.lecture_status == "pending" &&
                                                         <>
-                                                        <Button variant="contained" size="small" color="primary"
-                                                            onClick={() => {
-                                                                setSelectedRow(row);
-                                                                handleOpen();
-                                                            }}
-                                                        >
-                                                            {t("Dashboard.startnow")}
-                                                        </Button>
+                                                            <Button variant="contained" size="small" color="primary"
+                                                                onClick={() => {
+                                                                    setSelectedRow(row);
+                                                                    handleOpen();
+                                                                }}
+                                                            >
+                                                                {t("Dashboard.startnow")}
+                                                            </Button>
 
-                                                         <Button variant="contained" size="small" color="error"
-                                                            sx={{
-                                                                mx:1
-                                                            }}
-                                                            onClick={() => {
-                                                                // setSelectedRow(row);
-                                                                // handleOpen();
-                                                            }}
-                                                        >
-                                                            {t("Cancel")}
-                                                        </Button>
+                                                            <Button variant="contained" size="small" color="error"
+                                                                sx={{
+                                                                    mx: 1
+                                                                }}
+                                                                onClick={() => {
+                                                                    setSelectedRow(row);
+                                                                    setCancelPopUp(true);
+                                                                }}
+                                                            >
+                                                                {t("Cancel")}
+                                                            </Button>
                                                         </>
-                                                         
+
                                                     }
                                                 </Box>
 
@@ -156,7 +178,7 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
 
                                             {
 
-                                                row?.lecture_status == "started" && <Button
+                                                row?.lecture_status !== "pending" && <Button
                                                     sx={{
                                                         bgcolor: "secondary.main",
                                                     }}
@@ -177,16 +199,16 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
 
                                         {/* لينك دخول المحاضرة */}
                                         {
-                                            me?.role=="student" &&  row?.lecture_status == "started" && <TableCell>
+                                            me?.role == "student" && row?.lecture_status == "started" && <TableCell>
                                                 <Button
-                                                   color="primary"
+                                                    color="primary"
                                                     variant="contained"
                                                     size="small"
                                                     onClick={() => {
-                                                       window.open(row?.lecture_url, "_blank")
+                                                        window.open(row?.lecture_url, "_blank")
                                                     }}
                                                 >
-                                                   {t("Dashboard.enterLecture")}
+                                                    {t("Dashboard.enterLecture")}
                                                 </Button>
                                             </TableCell>
                                         }
@@ -245,6 +267,13 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
             </Dialog>
 
             {/* cancel lecture popup */}
+            <ConfirmModal
+                dialogOpen={cancelPopUp}
+                setDialogOpen={setCancelPopUp}
+                content={"هل انت متأكد"}
+                onClickAction={handleCancelLecture}
+                isLoading={cancelingSession}
+            />
         </Box>
 
     )

@@ -143,6 +143,7 @@ const Header = ({ onAction }) => {
 
   const handleLogout = () => {
     clearAllCookies();
+    localStorage.clear();
     navigate("/login");
   };
 
