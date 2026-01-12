@@ -158,7 +158,7 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
       start_time: fromString,
       end_time: toString,
       day: selectedDay,
-      // section: sectionInput,
+       section: "1",
       doctor_id: materialsByDepartment?.find(el => el?.id == selectedMaterialDepartment)?.doctor_id?.id,
       main_time_table_id: location?.state?.id,
       material_id: selectedMaterialDepartment,
@@ -259,7 +259,7 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
         </Box>
 
         {/* Form */}
-        <Grid container spacing={3}>
+        <Grid container spacing={6}>
           {/* Subject Name */}
           <Grid item xs={12} md={6} lg={3}>
 

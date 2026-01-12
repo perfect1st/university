@@ -170,7 +170,7 @@ export default function LectureSessionDetails() {
                 notes: getLectureSessionById?.notes,
                 session_task: getLectureSessionById?.session_task
             });
-            setSwitchStatus(getLectureSessionById?.status=="ended" ? true : false);
+            // setSwitchStatus(getLectureSessionById?.status=="ended" ? true : false);
             // location?.state?.images_array?.map(el => el?.split(baseURL)[1])
         }
     }, [getLectureSessionById]);
@@ -359,7 +359,7 @@ export default function LectureSessionDetails() {
 
 
                 {
-                    me?.role == "doctor" && <Box sx={{my:2}}>
+                    me?.role == "doctor" &&getLectureSessionById?.status!="ended" && <Box sx={{my:2}}>
 
                          <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
                                 انهاء المحاضرة
