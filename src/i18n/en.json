@@ -321,7 +321,9 @@
     "startnow":"start Now",
     "lectureLink":"Enter Lecture Link",
     "enterLecture":"Enter Lecture",
-    "session_task":"Session Task"
+    "session_task":"Session Task",
+    "attachments":"Attachments",
+    "videos":"Videos"
   },
   "lectures":{
     "pending":"not started yet",

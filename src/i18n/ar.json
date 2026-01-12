@@ -359,7 +359,9 @@
     "startnow":"ابدأ الان",
     "lectureLink":"ادخل رابط المحاضرة",
     "enterLecture":"دخول المحاضرة",
-    "session_task":"الواجبات"
+    "session_task":"الواجبات",
+    "attachments":"المرفقات",
+    "videos":"الفيديوهات"
   },
 
   "lectures":{

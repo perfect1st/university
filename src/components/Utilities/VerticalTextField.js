@@ -14,7 +14,8 @@ export default function VerticalTextField({
   helperText,
   type = "text",
   isDisabled = false,
-  isMultiline = false
+  isMultiline = false,
+  isReadOnly = false
 
 }) {
 
@@ -42,6 +43,7 @@ export default function VerticalTextField({
             variant="outlined"
             sx={{ mb: 3, backgroundColor: theme.palette.background.inputBackGround, height: isMultiline ? "auto" : "56px" }}
             disabled={isDisabled}
+            InputProps={{ readOnly: isReadOnly }}
           />
           :
           <TextField

@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, CircularProgress, Grid, Typography, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, FormControlLabel, Grid, Switch, Typography, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
@@ -20,6 +20,10 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import VerticalTextField from "../../components/Utilities/VerticalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
+import axios from "axios";
+import { baseURL } from "../../Api/apolloClient";
+import UploadFileField from "../../components/Utilities/UploadFileField";
+
 // import LoadingPage from "../../../components/LoadingComponent";
 // import Header from "../../../components/PageHeader/header";
 // import ScheduleTable from "../../../components/Utilities/ScheduleTableComponent";
@@ -34,6 +38,114 @@ export default function LectureSessionDetails() {
     const [searchParams, setSearchParams] = useSearchParams();
     const { id } = useParams();
     const isArabic = i18n.language === "ar";
+
+    // المرفقات start
+    const fileInputRef = useRef(null);
+    const [files, setFiles] = useState([]);
+    const [showFiles, setShowFiles] = useState([]);
+    const [progress, setProgress] = useState(0);
+
+    const [switchStatus, setSwitchStatus] = useState(true);
+
+    const handlePickFile = () => {
+        if (fileInputRef.current) fileInputRef.current.click();
+    };
+
+    const handleFilesChange = async (e) => {
+
+        const files = Array.from(e.target.files || []);
+        setShowFiles(files.map(f => f.name)); // لو عايز تعرض الأسماء فقط
+
+        const formData = new FormData();
+        files.forEach((file) => {
+            formData.append("files", file); // اسم key اللي السيرفر متوقعه
+        });
+        // formData.append("file", file);
+
+        try {
+
+            setProgress(0);
+
+            const res = await axios.post(`${baseURL}/api/forms/multiple`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percent = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                    setProgress(percent);
+                },
+            });
+
+            console.log("res", res?.data?.urls);
+            let urlsToSend = res?.data?.urls?.map(el => `${baseURL}${el}`);
+
+            console.log("urlsToSend", urlsToSend);
+
+            setFiles(urlsToSend);
+            //  setSelectedFile(`${baseURL}${res?.data?.url}`);
+            // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
+        } catch (error) {
+            notify(t("errorUplaod"), "error");
+            console.log("error", error.message);
+        }
+
+    }
+
+    // نهاية المرفقات
+
+    // videos start
+    const fileInputRef2 = useRef(null);
+    const [files2, setFiles2] = useState([]);
+    const [showFiles2, setShowFiles2] = useState([]);
+    const [progress2, setProgress2] = useState(0);
+
+    const handlePickFile2 = () => {
+        if (fileInputRef2.current) fileInputRef2.current.click();
+    };
+    const handleImagesChange = async (e) => {
+
+        const files = Array.from(e.target.files || []);
+        setShowFiles2(files.map(f => f.name)); // لو عايز تعرض الأسماء فقط
+
+        const formData = new FormData();
+        files.forEach((file) => {
+            formData.append("files", file); // اسم key اللي السيرفر متوقعه
+        });
+        // formData.append("file", file);
+
+        try {
+
+            setProgress2(0);
+
+            const res = await axios.post(`${baseURL}/api/forms/multiple`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percent = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                    setProgress2(percent);
+                },
+            });
+
+            console.log("res", res?.data?.urls);
+            let urlsToSend = res?.data?.urls?.map(el => `${baseURL}${el}`);
+
+            console.log("urlsToSend", urlsToSend);
+
+            setFiles2(urlsToSend);
+            //  setSelectedFile(`${baseURL}${res?.data?.url}`);
+            // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
+        } catch (error) {
+            notify(t("errorUplaod"), "error");
+            console.log("error", error.message);
+        }
+
+    }
+    // videos end
 
     const me = useSelector(state => state.user.loggedUser);
 
@@ -52,12 +164,58 @@ export default function LectureSessionDetails() {
         }
     ] = useMutation(UPDATE_LECTURE_SESSION_BY_ID, { fetchPolicy: "network-only" });
 
+    useEffect(() => {
+        if (getLectureSessionById?.id) {
+            formik.setValues({
+                notes: getLectureSessionById?.notes,
+                session_task: getLectureSessionById?.session_task
+            });
+            // location?.state?.images_array?.map(el => el?.split(baseURL)[1])
+        }
+    }, [getLectureSessionById]);
+
+    //  const handleOpenFile = (url) => window.open(url, "_blank");
+
+    // const handleDownloadFile = (url) => {
+    //     const link = document.createElement("a");
+    //     link.href = url;
+
+    //     console.log("url",url);
+
+    //     link.download = url.split("/").pop();
+    //     link.click();
+    // };
+
+    const handleDownloadFile = (input) => {
+
+        // لو input array اعمل loop
+        if (Array.isArray(input)) {
+            input.forEach((url, index) => {
+                setTimeout(() => {
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = url.split("/").pop();
+                    link.click();
+                }, index * 800); // عشان المتصفح ما يمنعش multi downloads
+            });
+            return;
+        }
+
+        // لو input رابط واحد فقط
+        const link = document.createElement("a");
+        link.href = input;
+        link.download = input.split("/").pop();
+        link.click();
+    };
+
+
     const formik = useFormik({
         initialValues: {
-            // title_ar: "",
-            // title_en: "",
-            notes: getLectureSessionById?.notes,
-            session_task: getLectureSessionById?.session_task,
+            // getLectureSessionById?.notes,
+            // getLectureSessionById?.session_task,
+            notes: "",
+            session_task: "",
+            attachments: ""
         },
 
         validationSchema: Yup.object({
@@ -79,7 +237,9 @@ export default function LectureSessionDetails() {
                 // operation_type: selectedOperationType
             };
 
-            // if(selectedFile!=null) data.payment_document_file=selectedFile;
+            if (files?.length > 0) data.attachments = files;
+            // lecture_videos
+            if (files2?.length > 0) data.lecture_videos = files2;
 
             try {
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
@@ -93,7 +253,7 @@ export default function LectureSessionDetails() {
                     }
                 });
 
-                // console.log('result', result);
+                console.log('result', result);
 
                 notify(t("success"), "success");
 
@@ -137,6 +297,20 @@ export default function LectureSessionDetails() {
                 onSubmit={formik.handleSubmit}
                 sx={{ width: isMobile ? "90%" : "100%" }}
                 component="form">
+                {/* الفيديوهات */}
+                <UploadFileField
+                    title={t("Dashboard.videos")}
+                    subTitle={t("admissions.addFile")}
+                    fileInputRef={fileInputRef2}
+                    handleFileChange={handleImagesChange}
+                    handlePickFile={handlePickFile2}
+                    selectedToShowFile={showFiles2}
+                    progress={progress2}
+                    isMultiple={true}
+                    hasDownloadBtn={true}
+                    handleDownloadFile={() => handleDownloadFile(getLectureSessionById?.lecture_videos)}
+                    showInput={me?.role == "student" ? false : true}
+                />
 
                 <VerticalTextField
                     isMultiline={true}
@@ -148,6 +322,7 @@ export default function LectureSessionDetails() {
                     onChange={formik.handleChange}
                     error={formik.touched.notes && Boolean(formik.errors.notes)}
                     helperText={formik.touched.notes && formik.errors.notes}
+                    isReadOnly={me?.role == "student" ? true : false}
                 />
 
                 <VerticalTextField
@@ -160,7 +335,51 @@ export default function LectureSessionDetails() {
                     onChange={formik.handleChange}
                     error={formik.touched.session_task && Boolean(formik.errors.session_task)}
                     helperText={formik.touched.session_task && formik.errors.session_task}
+                    isReadOnly={me?.role == "student" ? true : false}
                 />
+
+                {/* المرفقات */}
+                <UploadFileField
+                    title={t("Dashboard.attachments")}
+                    subTitle={t("admissions.addFile")}
+                    fileInputRef={fileInputRef}
+                    handleFileChange={handleFilesChange}
+                    handlePickFile={handlePickFile}
+                    selectedToShowFile={showFiles}
+                    progress={progress}
+                    isMultiple={true}
+                    hasDownloadBtn={true}
+                    handleDownloadFile={() => handleDownloadFile(getLectureSessionById?.lecture_videos)}
+                    showInput={me?.role == "student" ? false : true}
+                />
+
+
+                {
+                    me?.role == "doctor" && <Switch
+                        checked={switchStatus}
+                        onChange={() => setSwitchStatus(!switchStatus)}
+                        sx={{
+                            width: 80,
+                            height: 45,
+                            padding: 0,
+                            '& .MuiSwitch-switchBase': {
+                                padding: 1,
+                                '&.Mui-checked': {
+                                    transform: 'translateX(38px)',
+                                },
+                            },
+                            '& .MuiSwitch-thumb': {
+                                width: 28,
+                                height: 28,
+                            },
+                            '& .MuiSwitch-track': {
+                                borderRadius: 20,
+                            },
+                        }}
+                    />
+                }
+
+
 
 
                 <SubmitButton loading={loading} t={t} />
