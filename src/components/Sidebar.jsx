@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation, matchPath  } from "react-router-dom";
+import { Link, useLocation, matchPath } from "react-router-dom";
 import getAccessibleRoutes from "../hooks/getAccessibleRoutes"; // ✅ الجديد
 
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
@@ -25,7 +25,7 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
-import FlagIcon from '@mui/icons-material/Flag';
+import FlagIcon from "@mui/icons-material/Flag";
 
 const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const theme = useTheme();
@@ -34,231 +34,250 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [openKeys, setOpenKeys] = useState({});
-  const me=useSelector(state=>state.user.loggedUser);
-  
+  const me = useSelector((state) => state.user.loggedUser);
 
   const lang = i18n.language;
 
   // const menuItems = useMemo(() => getAccessibleRoutes("admin"), []);  .role
   let menuItems = [];
 
-  if(me?.role=="student")menuItems=[{
-      icon: AccountBalanceIcon,
-      key: "StudentDashboard",
-      path: "/StudentDashboard",
-      label: {
-        ar: "لوحة التحكم",
-        en: "StudentDashboard",
+  if (me?.role == "student")
+    menuItems = [
+      {
+        icon: AccountBalanceIcon,
+        key: "StudentDashboard",
+        path: "/StudentDashboard",
+        label: {
+          ar: "لوحة التحكم",
+          en: "StudentDashboard",
+        },
       },
-    },
-    {
-      icon: PersonOutlineIcon,
-      key: "profile",
-      path: "/profile",
-      label: {
-        ar: "الصفحة الشخصية",
-        en: "Profile",
+      {
+        icon: PersonOutlineIcon,
+        key: "profile",
+        path: "/profile",
+        label: {
+          ar: "الصفحة الشخصية",
+          en: "Profile",
+        },
       },
-    },
-    {
-       // icon: FlagIcon,
-    key: "StudentlecturesSchedule",
-    path: "/StudentlecturesSchedule",
-    label: {
-      ar: "جداول المحاضرات",
-      en: "Lectures Schedule",
-    },
-    },
-
-    {
-      icon: MonetizationOnOutlinedIcon,
-      key: "FeePayment",
-      path: "/FeePayment",
-      label: {
-        ar: "المدفوعات",
-        en: "Fee Payments",
+      {
+        // icon: FlagIcon,
+        key: "StudentlecturesSchedule",
+        path: "/StudentlecturesSchedule",
+        label: {
+          ar: "جداول المحاضرات",
+          en: "Lectures Schedule",
+        },
       },
-    },
-  ]
-
-  if(me?.role=="admin")menuItems=[
-    {
-    icon: AccountBalanceIcon,
-    key: "dashboard",
-    // path: "/dashboard",
-    label: {
-      ar: "لوحة التحكم",
-      en: "Dashboard",
-    },
-  },
-   {
-    // icon: FlagIcon,
-    key: "departments",
-    path: "/website-departments",
-    label: {
-      ar: "اقسام الموقع",
-      en: "Website Departments",
-    },
-  },
-  {
-    // icon: FlagIcon,
-    key: "departments",
-    path: "/website-articles",
-    label: {
-      ar: "مقالات الموقع",
-      en: "Website Articles",
-    },
-  },
-
-   {
-    // icon: FlagIcon,
-    key: "users",
-    path: "/users",
-    label: {
-      ar: "المستخدمين",
-      en: "Users",
-    },
-  },
-  {
-    // icon: FlagIcon,
-    key: "nationality",
-    path: "/nationality",
-    label: {
-      ar: "الجنسيات",
-      en: "Nationality",
-    },
-  },
-  {
-    // icon: FlagIcon,
-    key: "countries",
-    path: "/countries",
-    label: {
-      ar: "الدول",
-      en: "Countries",
-    },
-  },
-  {
-    // icon: FlagIcon,
-    key: "faculities",
-    path: "/faculities",
-    label: {
-      ar: "الكليات",
-      en: "Faculities",
-    },
-  },
-  {
-    // icon: FlagIcon,
-    key: "departments",
-    path: "/departments",
-    label: {
-      ar: "الاقسام",
-      en: "Departments",
-    },
-  },
-  {
-    // icon: FlagIcon,
-    key: "prices",
-    path: "/prices",
-    label: {
-      ar: "اسعار الكليات",
-      en: "Faculities Prices",
-    },
-  },
-  {
-    // icon: FlagIcon,
-    key: "materials",
-    path: "/materials",
-    label: {
-      ar: "المواد الدراسية",
-      en: "Subjects",
-    },
-  },
-  {
-    // icon: FlagIcon,
-    key: "academyTerms",
-    path: "/academyTerms",
-    label: {
-      ar: "الفصول الدراسية",
-      en: "Academy Terms",
-    },
-  },
-  {
-    // icon: FlagIcon,
-    key: "lecturesSchedule",
-    path: "/lecturesSchedule",
-    label: {
-      ar: "جداول المحاضرات",
-      en: "Lectures Schedule",
-    },
-  },
-
-  {
-     key: "feesTypes",
-    path: "/feesTypes",
-    label: {
-      ar: "انواع الرسوم",
-      en: "Fees Types",
-    },
-  },
-   {
-     key: "transactionTypes",
-    path: "/transactionTypes",
-    label: {
-      ar: "انواع المعاملات المالية",
-      en: "Transaction Types",
-    },
-  },
-  {
-     key: "transactions",
-    path: "/transactions",
-    label: {
-      ar: "المعاملات المالية",
-      en: "Transactions",
-    },
-  },
-  {
-     key: "requiredFees",
-    path: "/requiredFees",
-    label: {
-      ar: "رسوم الطلاب",
-      en: "Student Required Fees",
-    },
-  },
-  
-  {
-    // icon: PersonOutlineIcon,
-    key: "profile",
-    path: "/profile",
-    label: {
-      ar: "الصفحة الشخصية",
-      en: "Profile",
-    },
-  },
-]
-
-if(me?.role=="doctor")menuItems=[
-
-    {
-      icon: PersonOutlineIcon,
-      key: "profile",
-      path: "/profile",
-      label: {
-        ar: "الصفحة الشخصية",
-        en: "Profile",
+      {
+        // icon: FlagIcon,
+        key: "LectureSessionDetails",
+        path: "/LectureSessionDetails",
+        label: {
+          ar: "سجلات المحاضرات",
+          en: "Lectures Records",
+        },
       },
-    },
 
-    {
-       // icon: FlagIcon,
-    key: "DoctorlecturesSchedule",
-    path: "/DoctorlecturesSchedule",
-    label: {
-      ar: "جداول المحاضرات",
-      en: "Lectures Schedule",
-    },
-    },
-  ]
+      {
+        icon: MonetizationOnOutlinedIcon,
+        key: "FeePayment",
+        path: "/FeePayment",
+        label: {
+          ar: "المدفوعات",
+          en: "Fee Payments",
+        },
+      },
+    ];
 
+  if (me?.role == "admin")
+    menuItems = [
+      {
+        icon: AccountBalanceIcon,
+        key: "dashboard",
+        // path: "/dashboard",
+        label: {
+          ar: "لوحة التحكم",
+          en: "Dashboard",
+        },
+      },
+      {
+        // icon: FlagIcon,
+        key: "departments",
+        path: "/website-departments",
+        label: {
+          ar: "اقسام الموقع",
+          en: "Website Departments",
+        },
+      },
+      {
+        // icon: FlagIcon,
+        key: "departments",
+        path: "/website-articles",
+        label: {
+          ar: "مقالات الموقع",
+          en: "Website Articles",
+        },
+      },
+
+      {
+        // icon: FlagIcon,
+        key: "users",
+        path: "/users",
+        label: {
+          ar: "المستخدمين",
+          en: "Users",
+        },
+      },
+      {
+        // icon: FlagIcon,
+        key: "nationality",
+        path: "/nationality",
+        label: {
+          ar: "الجنسيات",
+          en: "Nationality",
+        },
+      },
+      {
+        // icon: FlagIcon,
+        key: "countries",
+        path: "/countries",
+        label: {
+          ar: "الدول",
+          en: "Countries",
+        },
+      },
+      {
+        // icon: FlagIcon,
+        key: "faculities",
+        path: "/faculities",
+        label: {
+          ar: "الكليات",
+          en: "Faculities",
+        },
+      },
+      {
+        // icon: FlagIcon,
+        key: "departments",
+        path: "/departments",
+        label: {
+          ar: "الاقسام",
+          en: "Departments",
+        },
+      },
+      {
+        // icon: FlagIcon,
+        key: "prices",
+        path: "/prices",
+        label: {
+          ar: "اسعار الكليات",
+          en: "Faculities Prices",
+        },
+      },
+      {
+        // icon: FlagIcon,
+        key: "materials",
+        path: "/materials",
+        label: {
+          ar: "المواد الدراسية",
+          en: "Subjects",
+        },
+      },
+      {
+        // icon: FlagIcon,
+        key: "academyTerms",
+        path: "/academyTerms",
+        label: {
+          ar: "الفصول الدراسية",
+          en: "Academy Terms",
+        },
+      },
+      {
+        // icon: FlagIcon,
+        key: "lecturesSchedule",
+        path: "/lecturesSchedule",
+        label: {
+          ar: "جداول المحاضرات",
+          en: "Lectures Schedule",
+        },
+      },
+
+      {
+        key: "feesTypes",
+        path: "/feesTypes",
+        label: {
+          ar: "انواع الرسوم",
+          en: "Fees Types",
+        },
+      },
+      {
+        key: "transactionTypes",
+        path: "/transactionTypes",
+        label: {
+          ar: "انواع المعاملات المالية",
+          en: "Transaction Types",
+        },
+      },
+      {
+        key: "transactions",
+        path: "/transactions",
+        label: {
+          ar: "المعاملات المالية",
+          en: "Transactions",
+        },
+      },
+      {
+        key: "requiredFees",
+        path: "/requiredFees",
+        label: {
+          ar: "رسوم الطلاب",
+          en: "Student Required Fees",
+        },
+      },
+
+      {
+        // icon: PersonOutlineIcon,
+        key: "profile",
+        path: "/profile",
+        label: {
+          ar: "الصفحة الشخصية",
+          en: "Profile",
+        },
+      },
+    ];
+
+  if (me?.role == "doctor")
+    menuItems = [
+      {
+        icon: PersonOutlineIcon,
+        key: "profile",
+        path: "/profile",
+        label: {
+          ar: "الصفحة الشخصية",
+          en: "Profile",
+        },
+      },
+
+      {
+        // icon: FlagIcon,
+        key: "DoctorlecturesSchedule",
+        path: "/DoctorlecturesSchedule",
+        label: {
+          ar: "جداول المحاضرات",
+          en: "Lectures Schedule",
+        },
+      },
+      {
+        // icon: FlagIcon,
+        key: "LectureSessionDetails",
+        path: "/LectureSessionDetails",
+        label: {
+          ar: "سجلات المحاضرات",
+          en: "Lectures Records",
+        },
+      },
+    ];
 
   // useEffect(() => {
   //   const newOpenKeys = {};
@@ -290,21 +309,21 @@ if(me?.role=="doctor")menuItems=[
         pt: 2,
       }}
     >
-       {/* Close Button */}
-          {
-            isMobile&&  <Box
-              sx={{
-                display: "flex",
-                justifyContent: lang === "ar" ? "flex-end" : "flex-start",
-                mb: 2,
-              }}
-            >
-              <IconButton onClick={() => onClose()}>
-                <CloseIcon />
-              </IconButton>
-            </Box>
-          }
-          
+      {/* Close Button */}
+      {isMobile && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: lang === "ar" ? "flex-end" : "flex-start",
+            mb: 2,
+          }}
+        >
+          <IconButton onClick={() => onClose()}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      )}
+
       <List component="nav">
         {menuItems.map((item, index) => {
           const hasChildren = !!item.children;
@@ -372,7 +391,7 @@ if(me?.role=="doctor")menuItems=[
             )
           );
 
-         let  isDirectlyActive=location.pathname?.includes(item?.path);
+          let isDirectlyActive = location.pathname?.includes(item?.path);
           const IconComponent = item.icon;
 
           // console.log("IconComponent", IconComponent);
@@ -548,7 +567,7 @@ if(me?.role=="doctor")menuItems=[
 
   // console.log('sidebaaaaaaaaaaaaaaaar');
 
-  if(me==null) return <CircularProgress />
+  if (me == null) return <CircularProgress />;
   return (
     <>
       <Box
@@ -564,7 +583,7 @@ if(me?.role=="doctor")menuItems=[
       <Drawer
         variant="temporary"
         open={mobileOpen}
-        onClose={()=>onClose()}
+        onClose={() => onClose()}
         ModalProps={{ keepMounted: true }}
         sx={{
           display: { xs: "block", md: "none" },

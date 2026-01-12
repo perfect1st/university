@@ -96,6 +96,7 @@ import EditLecturePage from "./pages/LecturesSchedule/EditLecturePage";
 import DoctorLecturesPage from "./pages/DoctorDashboard/DoctorLectures/DoctorLecturesPage";
 import StudentLecturesPage from "./pages/StudentDashboard/StudentlecturesSchedule/StudentLecturesPage";
 import LectureSessionDetails from "./pages/LectureSessionDetails/LectureSessionDetails";
+import AllLectureSessionsPage from "./pages/LectureSessionDetails/AllLectureSessionsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -898,6 +899,15 @@ function App() {
                   <Route
                     path="/LectureSessionDetails"
                   >
+                    <Route
+                    index
+                    element={
+                      <MainLayout isLoggedIn={true}>
+                        <AllLectureSessionsPage />
+                      </MainLayout>
+                    }
+                     />
+
                     <Route
                     path=":id"
                     element={
