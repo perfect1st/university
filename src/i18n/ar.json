@@ -362,7 +362,8 @@
     "session_task":"الواجبات",
     "attachments":"المرفقات",
     "videos":"الفيديوهات",
-    "lectureSchedules":"سجلات المحاضرات"
+    "lectureSchedules":"سجلات المحاضرات",
+     "exams":"الامتحانات"
   },
 
   "lectures":{

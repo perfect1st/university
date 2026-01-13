@@ -97,6 +97,9 @@ import DoctorLecturesPage from "./pages/DoctorDashboard/DoctorLectures/DoctorLec
 import StudentLecturesPage from "./pages/StudentDashboard/StudentlecturesSchedule/StudentLecturesPage";
 import LectureSessionDetails from "./pages/LectureSessionDetails/LectureSessionDetails";
 import AllLectureSessionsPage from "./pages/LectureSessionDetails/AllLectureSessionsPage";
+import AllExamsPage from "./pages/Exams/AllExamsPage";
+import AddExamPage from "./pages/Exams/AddExamPage";
+import ExamDetailsPage from "./pages/Exams/ExamDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -895,7 +898,7 @@ function App() {
                     }
                   />
 
-                  {/* lecture Session Details    "lecture_id": "6963759c33cdeaa3c00c26c3", */}
+                  {/* lecture Session Details     */}
                   <Route
                     path="/LectureSessionDetails"
                   >
@@ -917,6 +920,35 @@ function App() {
                     }
                      />
                     </Route>
+
+                    <Route
+                    path="/exams"
+                    >
+
+                       <Route
+                    index
+                    element={
+                      <MainLayout isLoggedIn={true}>
+                        <AllExamsPage />
+                      </MainLayout>
+                    }
+                     />
+
+                      <Route path="add" element={
+                      <MainLayout isLoggedIn={true}>
+                        <AddExamPage />
+                      </MainLayout>
+                    } />
+
+                    <Route path="details/:id" element={
+                      <MainLayout isLoggedIn={true}>
+                        <ExamDetailsPage />
+                      </MainLayout>
+                    } />
+
+
+                    </Route>
+
 
                 </Route>
 

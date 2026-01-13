@@ -277,6 +277,15 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
           en: "Lectures Records",
         },
       },
+      {
+        // icon: FlagIcon,
+        key: "exams",
+        path: "/exams",
+        label: {
+          ar: "الامتحانات",
+          en: "Exams",
+        },
+      },
     ];
 
   // useEffect(() => {

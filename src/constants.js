@@ -26,3 +26,17 @@ export const days = [
     { key: "Thursday", labelAr: "الخميس", labelEn: "Thursday" },
     { key: "Friday", labelAr: "الجمعة", labelEn: "Friday" }
 ];
+
+//  "enumValues": [
+//"week",
+//"month",
+//"midterm",
+//"final"
+//],
+
+export const examTypes = [
+    { id: "week", labelAr: "اسبوعي", labelEn: "Weekly" },
+    { id: "month", labelAr: "شهري", labelEn: "Monthly" },
+    { id: "midterm", labelAr: "ميد ترم", labelEn: "Midterm" },
+    { id: "final", labelAr: "فينال", labelEn: "Final" }
+];
