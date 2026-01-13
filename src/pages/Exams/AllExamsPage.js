@@ -95,9 +95,15 @@ export default function AllExamsPage() {
     ];
 
     const examsToShow = exams.map((exam, i) => {
+        // let fromDate=null;
+        const timestamp_from = Number(exam?.date_from); // نتأكد إنه رقم
+        const date_from = new Date(timestamp_from);
+
+        const timestamp_to = Number(exam?.date_to); // نتأكد إنه رقم
+        const date_to = new Date(timestamp_to);
         return {
             ...exam,
-            date_of_exam: `${exam?.date_from} - ${exam?.date_to}`,
+            date_of_exam: `${formatDateToString(date_from)} - ${formatDateToString(date_to)}`,
             type: isArabic ? examTypes?.find(el => el?.id == exam?.exam_type)?.labelAr
                 :
                 examTypes?.find(el => el?.id == exam?.exam_type)?.labelEn
