@@ -204,13 +204,27 @@ export default function AllLecturesPage() {
             state: selectedRow
         });
     }
+
+     let pageLimit;
+    if (!searchParams.get("limit")) {
+        pageLimit = 10;
+    }
+    else {
+        pageLimit = Number(searchParams.get("limit"));
+    }
+
+    console.log("pageLimit", pageLimit);
+
+    const totalPages = parseInt(total / pageLimit) + 1;
+
+    console.log("totalPages", totalPages);
     const hasViewPermission = true;
     const hasAddPermission = true;
     if (!hasViewPermission) return <Navigate to="/profile" />;
 
     console.log('t("Dashboard.Lectures")', t("Dashboard.Lectures"));
     // departments
-    let translateText = isArabic ? "محاضرة" : "Lecture";
+    let translateText = isArabic ? "جدول محاضرة" : "Lecture Table";
     const searchText = isArabic ? "بحث ب بالاسم" : " Search by Name";
     const departmentSearch = isArabic ? " اسم القسم" : "Department name";
     let searchFaculityText = isArabic ? "اسم الكلية" : "Faculity Name";
@@ -289,7 +303,7 @@ export default function AllLecturesPage() {
                         handleEditClick={handleEditClick}
                     />
 
-                    {/* <FilterComponent totalPages={totalPages} /> */}
+                    <FilterComponent totalPages={totalPages} />
                 </Grid>
             </Grid>
         </Box>
