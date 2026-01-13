@@ -143,12 +143,14 @@ query LectureSessionsByDoctor(
     $lecture_date: String
     $page: Int
     $limit: Int
+    $search: String
     ) {
     lectureSessionsByDoctor(
         material_id: $material_id
         lecture_date: $lecture_date
         page: $page
         limit: $limit
+        search: $search
     ) {
         total
         lectureSessions {

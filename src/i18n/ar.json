@@ -361,7 +361,8 @@
     "enterLecture":"دخول المحاضرة",
     "session_task":"الواجبات",
     "attachments":"المرفقات",
-    "videos":"الفيديوهات"
+    "videos":"الفيديوهات",
+    "lectureSchedules":"سجلات المحاضرات"
   },
 
   "lectures":{
@@ -394,6 +395,8 @@
   "day": "اليوم",
   "doctorName": "اسم المحاضر",
   "completeData":"من فضلك اكمل البيانات",
-  "noData":"لا يوجد بيانات"
+  "noData":"لا يوجد بيانات",
+  "Date":"التاريخ",
+  "Time":"الوقت"
 
 }

@@ -175,3 +175,41 @@ query FilteredPagedMaterials(
     }
 }
 `;
+
+export const GET_MATERIALS_BY_DOCTOR=gql`
+query MaterialsByDoctor($doctor_id:ID!) {
+    materialsByDoctor(doctor_id: $doctor_id) {
+        id
+        title_ar
+        title_en
+        status
+        fullmark_degree
+        success_degree
+        material_hours
+        createdAt
+        updatedAt
+        faculty_department_id {
+            id
+            title_ar
+            title_en
+            status
+            createdAt
+            updatedAt
+        }
+        doctor_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
+    }
+}
+`;

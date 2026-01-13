@@ -323,7 +323,8 @@
     "enterLecture":"Enter Lecture",
     "session_task":"Session Task",
     "attachments":"Attachments",
-    "videos":"Videos"
+    "videos":"Videos",
+    "lectureSchedules":"lecture Schedules"
   },
   "lectures":{
     "pending":"not started yet",
@@ -355,5 +356,8 @@
   "day": "Day",
   "doctorName": "Doctor Name",
   "completeData":"Please Complete Data",
-  "noData":"No Data"
+  "noData":"No Data",
+  "Date":"Date",
+  "Time":"Time"
+
 }

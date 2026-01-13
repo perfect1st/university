@@ -97,7 +97,7 @@ export default function AllRequiredFeesPage() {
 
         FilteredPagedUsersRequiredFees({ variables: variablesObj });
 
-    }, [searchParams])
+    }, [searchParams]);
 
 
 
