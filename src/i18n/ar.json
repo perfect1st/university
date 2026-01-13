@@ -363,7 +363,8 @@
     "attachments":"المرفقات",
     "videos":"الفيديوهات",
     "lectureSchedules":"سجلات المحاضرات",
-     "exams":"الامتحانات"
+     "exams":"الامتحانات",
+     "lectureAttendence":"درجة الحضور"
   },
 
   "lectures":{

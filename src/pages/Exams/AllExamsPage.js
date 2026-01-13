@@ -89,7 +89,7 @@ export default function AllExamsPage() {
         { key: "exam_name", label: t("profile.Name") },
         { key: "type", label: t("profile.Gender") },
         { key: "full_mark_degree", label: t("studentDashboard.fullmarkDegree") },
-        { key: "lecture_attendance_mark", label: t("fee.transactionSerial") },
+        { key: "lecture_attendance_mark", label: t("Dashboard.lectureAttendence") },
         { key: "date_of_exam", label: t("Date") },
         // { key: "is_paid", label: t("Status") }
     ];

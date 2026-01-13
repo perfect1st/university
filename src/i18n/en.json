@@ -325,7 +325,8 @@
     "attachments":"Attachments",
     "videos":"Videos",
     "lectureSchedules":"lecture Schedules",
-    "exams":"Exams"
+    "exams":"Exams",
+    "lectureAttendence":"lecture Attendence"
   },
   "lectures":{
     "pending":"not started yet",

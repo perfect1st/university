@@ -28,56 +28,78 @@ export default function VerticalTextField({
         {title}
       </Typography>
       {
-        type == "text" ?
-          <TextField
-            multiline={isMultiline}
-            rows={4}
-            fullWidth
-            id={fieldID}
-            name={fieldName}
-            placeholder={placeholder}
-            value={value}
-            onChange={onChange}
-            error={error}
-            helperText={helperText}
-            variant="outlined"
-            sx={{ mb: 3, backgroundColor: theme.palette.background.inputBackGround, height: isMultiline ? "auto" : "56px" }}
-            disabled={isDisabled}
-            InputProps={{ readOnly: isReadOnly }}
-          />
-          :
-          <TextField
-            type={"number"}
-            fullWidth
-            id={fieldID}
-            name={fieldName}
-            placeholder={placeholder}
-            value={value}
-            onChange={onChange}
-            error={error}
-            helperText={helperText}
-            variant="outlined"
-            inputProps={{
-              formNoValidate: true,
-              inputMode: "numeric",
-              // pattern: "[0-9]*",
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                e.preventDefault();   // يمنع الزيادة/النقصان
-              }
-            }}
-            sx={{
-              mb: 3, backgroundColor: theme.palette.background.inputBackGround,
-              "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
-                display: "none",
-              },
-              "& input[type=number]": {
-                MozAppearance: "textfield",
-              },
-            }}
-            disabled={isDisabled}
-          />
+        type == "text" &&
+        <TextField
+          multiline={isMultiline}
+          rows={4}
+          fullWidth
+          id={fieldID}
+          name={fieldName}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          error={error}
+          helperText={helperText}
+          variant="outlined"
+          sx={{ mb: 3, backgroundColor: theme.palette.background.inputBackGround, height: isMultiline ? "auto" : "56px" }}
+          disabled={isDisabled}
+          InputProps={{ readOnly: isReadOnly }}
+        />
+      }
+      {
+        type == "number" &&
+        <TextField
+          type={"number"}
+          fullWidth
+          id={fieldID}
+          name={fieldName}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          error={error}
+          helperText={helperText}
+          variant="outlined"
+          inputProps={{
+            formNoValidate: true,
+            inputMode: "numeric",
+            // pattern: "[0-9]*",
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+              e.preventDefault();   // يمنع الزيادة/النقصان
+            }
+          }}
+          sx={{
+            mb: 3, backgroundColor: theme.palette.background.inputBackGround,
+            "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+              display: "none",
+            },
+            "& input[type=number]": {
+              MozAppearance: "textfield",
+            },
+          }}
+          disabled={isDisabled}
+        />
+      }
+      {
+        type == "date" && <TextField
+          type="date"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          fullWidth
+          id={fieldID}
+          name={fieldName}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          error={error}
+          helperText={helperText}
+          variant="outlined"
+          sx={{ mb: 3, backgroundColor: theme.palette.background.inputBackGround, height: isMultiline ? "auto" : "56px" }}
+          disabled={isDisabled}
+          InputProps={{ readOnly: isReadOnly }}
+        />
       }
 
     </>
@@ -85,7 +107,7 @@ export default function VerticalTextField({
 }
 
 
-export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange, fieldID, fieldName, onBlur, onKeyDown , height="56px" }) => {
+export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange, fieldID, fieldName, onBlur, onKeyDown, height = "56px" }) => {
   const theme = useTheme();
   return (
     <>
