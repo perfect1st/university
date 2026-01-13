@@ -127,7 +127,7 @@ export default function AddExamPage() {
         },
     });
 
-    console.log("formik", formik.values);
+    // console.log("formik", formik.values);
 
     // material_id ??  ------ academy_term_id->(api) ?????
 

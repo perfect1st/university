@@ -5,4 +5,6 @@ function formatDateToString(date) {
   return `${year}-${month}-${day}`;
 }
 
+
+
 export default formatDateToString;

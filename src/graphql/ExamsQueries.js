@@ -54,3 +54,20 @@ mutation CreateExam($input: CreateExamInput!) {
     }
 }
 `;
+
+export const UPDATE_EXAM_BY_ID=gql`
+mutation UpdateExam($id:ID!,$input: UpdateExamInput!) {
+    updateExam(id: $id, input: $input) {
+        id
+        exam_name
+        exam_type
+        full_mark_degree
+        lecture_attendance_mark
+        date_from
+        date_to
+        notes
+        createdAt
+        updatedAt
+    }
+}
+`;
