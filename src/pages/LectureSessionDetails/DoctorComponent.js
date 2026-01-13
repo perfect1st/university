@@ -15,13 +15,11 @@ import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import { useEffect } from "react";
 import notify from "../../components/notify";
-import { GET_ALL_FEES_TYPES, UPDATE_ONE_FEE_BY_ID, GET_ALL_FEES_TYPES_FILTERED } from "../../graphql/feeTypesQueries";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
-import { days, TrueOrFalseArr } from "../../constants";
+import { days } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import { GET_LECTURE_SESSIONS_FOR_DOCTOR } from "../../graphql/LectureSessionQueries";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
-import { GET_MATERIALS_BY_DEPARTMENT_ID, GET_MATERIALS_BY_DOCTOR } from "../../graphql/materialQueries";
 import { useSelector } from "react-redux";
 
 // GET_LECTURE_SESSIONS_FOR_DOCTOR
@@ -91,7 +89,7 @@ export default function DoctorComponent() {
         { key: "time", label: t("Time") },
         // { key: "transaction_serial", label: t("fee.transactionSerial") },
         // { key: "website_user_id", label: t("Dashboard.createdBy") },
-        // { key: "is_paid", label: t("Status") }
+         { key: "lecture_status", label: t("Status") }
 
     ];
 
@@ -112,6 +110,7 @@ export default function DoctorComponent() {
             lecture_date_2: formatDateToString(date),
             day: lecture_day,
             time: `${item?.timetable_id?.start_time} - ${item?.timetable_id?.end_time}`,
+            lecture_status: t(`lectures.${item?.status}`)
             // create_date:item.create_date,
             // amount:item.amount,
             // transaction_serial:item.transaction_serial,
