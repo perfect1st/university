@@ -14,7 +14,6 @@ import DashboardFilterComponent from "../../components/Utilities/DashboardFilter
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import notify from "../../components/notify";
-import { GET_FILTERED_USER_REQUIRED_FEES, GET_USERS_REQUIRED_FEES, UPDATE_USER_REQUIRED_FEES } from "../../graphql/requiredFeesQueries";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
 import { useEffect } from "react";
 import { GET_FILTERED_EXAMS } from "../../graphql/ExamsQueries";
@@ -74,7 +73,7 @@ export default function AllExamsPage() {
         if (page) variablesObj.page = page;
         if (limit) variablesObj.limit = limit;
         if (searchText) variablesObj.search = searchText;
-        // if (searchParams.get("is_paid") && searchParams.get("is_paid") !== "0") variablesObj.is_paid = searchParams.get("is_paid") === "true" ? true : false;
+        if (searchParams.get("exam_type") && searchParams.get("exam_type") !== "0") variablesObj.exam_type = searchParams.get("exam_type");
 
 
         // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
@@ -188,7 +187,7 @@ export default function AllExamsPage() {
     const onFilterChange = async (filterOBJ) => {
         console.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
-        // if (filterOBJ.hasOwnProperty("is_paid") && filterOBJ.is_paid !== "0") searchParams.set("is_paid", filterOBJ.is_paid);
+        if (filterOBJ.hasOwnProperty("exam_type") && filterOBJ.exam_type !== "0") searchParams.set("exam_type", filterOBJ.exam_type);
         // if (filterOBJ.role) searchParams.set("role", filterOBJ.role);
         // searchParams.get("search", e.target.value);
         setSearchParams(searchParams);
@@ -212,6 +211,7 @@ export default function AllExamsPage() {
     console.log("totalPages", totalPages);
 
     let translateText = isArabic ? "امتحان" : "Exam";
+    let searchText=isArabic ? "اسم الامتحان" : "Exam Name";
 
     if (!hasViewPermission) return <Navigate to="/profile" />;
 
@@ -251,16 +251,16 @@ export default function AllExamsPage() {
                     />
 
                     <DashboardFilterComponent
-                        placeholder={t("Dashboard.searchWith", { search: t("Dashboard.studentName") })}
+                        placeholder={t("Dashboard.searchWith", { search: searchText })}
                         textSearchField={"search"}
-                        // statusKey={"is_paid"}
-                        // TrueOrFalseArr={TrueOrFalseArr}
+                        //  statusKey={"exam_type"}
+                        //  TrueOrFalseArr={examTypes}
                         //    selectKey={"role"}
-                        // selectOptions={isPaidArr}
-                        // arKey={"arKey"}
-                        // enKey={"enKey"}
-                        // selectKey={"is_paid"}
-                        // select2Label={"Status"}
+                        selectOptions={examTypes}
+                        arKey={"labelAr"}
+                        enKey={"labelEn"}
+                        selectKey={"exam_type"}
+                        select2Label={"profile.Gender"}
                         onFilterChange={onFilterChange}
                         t={t}
                     />
