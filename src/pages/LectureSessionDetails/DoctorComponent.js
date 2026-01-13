@@ -32,7 +32,7 @@ export default function DoctorComponent() {
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const [searchParams, setSearchParams] = useSearchParams();
 
-     const me = useSelector((state) => state.user.loggedUser);
+    const me = useSelector((state) => state.user.loggedUser);
     const isArabic = i18n.language === "ar";
 
     // LectureSessionsByDoctor with filter
@@ -47,21 +47,6 @@ export default function DoctorComponent() {
         loading: gettingSessionsLoading
     }] = useLazyQuery(GET_LECTURE_SESSIONS_FOR_DOCTOR, { fetchPolicy: "network-only" });
 
-    // get materials in Department
-    //   const [
-    //     MaterialsByDoctor,
-    //     {
-    //     data: { materialsByDoctor } = {},
-    //     loading: MaterialsLoading
-    //   }] = useLazyQuery(GET_MATERIALS_BY_DOCTOR, {
-    //     fetchPolicy: "network-only"
-    //   });
-
-    //   useEffect(() => {
-    //       if(me?.id){
-    //         MaterialsByDoctor({ variables: { doctor_id: me?.id } });
-    //       }
-    //   },[me]);
 
     useEffect(() => {
         let page;
@@ -91,13 +76,13 @@ export default function DoctorComponent() {
         if (searchText) variablesObj.search = searchText;
         // if (filterOBJ.lecture_date) searchParams.set("lecture_date", filterOBJ.lecture_date);
         // if (searchParams.get("is_paid") && searchParams.get("is_paid") !== "0") variablesObj.is_paid = searchParams.get("is_paid") === "true" ? true : false;
-         if(searchParams.get("lecture_date")) variablesObj.lecture_date=searchParams.get("lecture_date");
+        if (searchParams.get("lecture_date")) variablesObj.lecture_date = searchParams.get("lecture_date");
 
         LectureSessionsByDoctor({ variables: variablesObj });
 
     }, [searchParams]);
 
-     let columns = [
+    let columns = [
         // { key: "ID", label: "ID" },
         { key: "material_id_ar", label: t("studentDashboard.subjectTitleAr") },
         { key: "material_id_en", label: t("studentDashboard.subjectTitleEn") },
@@ -110,22 +95,23 @@ export default function DoctorComponent() {
 
     ];
 
-    const lectureSessionsByDoctorToShow=lectureSessions?.map(item=>{
-            const timestamp = Number(item?.lecture_date); // نتأكد إنه رقم
-            const date = new Date(timestamp);
-            let lecture_day="";
-            if(isArabic){
-                lecture_day=days?.find(day=>day.key==item?.timetable_id?.day)?.labelAr
-            }
-            else{
-                lecture_day=days?.find(day=>day.key==item?.timetable_id?.day)?.labelEn
-            }
+    const lectureSessionsByDoctorToShow = lectureSessions?.map(item => {
+        const timestamp = Number(item?.lecture_date); // نتأكد إنه رقم
+        const date = new Date(timestamp);
+        let lecture_day = "";
+        if (isArabic) {
+            lecture_day = days?.find(day => day.key == item?.timetable_id?.day)?.labelAr
+        }
+        else {
+            lecture_day = days?.find(day => day.key == item?.timetable_id?.day)?.labelEn
+        }
         return {
-            material_id_ar:item?.material_id?.title_ar,
-            material_id_en:item?.material_id?.title_en,
-            lecture_date_2:formatDateToString(date),
+            ...item,
+            material_id_ar: item?.material_id?.title_ar,
+            material_id_en: item?.material_id?.title_en,
+            lecture_date_2: formatDateToString(date),
             day: lecture_day,
-            time:`${item?.timetable_id?.start_time} - ${item?.timetable_id?.end_time}`,
+            time: `${item?.timetable_id?.start_time} - ${item?.timetable_id?.end_time}`,
             // create_date:item.create_date,
             // amount:item.amount,
             // transaction_serial:item.transaction_serial,
@@ -134,44 +120,60 @@ export default function DoctorComponent() {
         }
     });
 
-    console.log("lectureSessionsByDoctorToShow",lectureSessionsByDoctorToShow);
+    console.log("lectureSessionsByDoctorToShow", lectureSessionsByDoctorToShow);
 
-     const fetchAndExport = async (type) => {
-            try {
-                // const exportData = data?.getUsersRequiredFees?.map((user, i) => {
-                //     const timestamp = Number(user?.createdAt); // نتأكد إنه رقم
-                //     const date = new Date(timestamp);
-                //     let total = 0;
-    
-                //     user?.fees_types_ids?.map(fee => {
-                //         if (user?.student_id?.is_inside_yemen == true) total += fee?.inside_yemen_value
-                //         else total += fee?.outside_yemen_value
-                //     })
-                //     return {
-                //         ID: i,
-                //         [t("Dashboard.studentName")]: user?.student_id?.fullname,
-                //         [t("Dashboard.createdAt")]: formatDateToString(date),
-                //         [t("fee.table.amount")]: total,
-                //         [t("fee.transactionSerial")]: user?.transactions_id?.transaction_serial,
-                //         [t("Dashboard.createdBy")]: user?.website_user_id?.fullname,
-                //         [t("Status")]: t(user?.is_paid == true ? "paid" : "unpaid"),
-    
-                //     }
-                // }
-                // );
-    
-                // ExportExcelAndPDF({
-                //     exportData,
-                //     isArabic,
-                //     reportTitle: isArabic ? "قائمة رسوم الطلاب" : "Student  Required Fees List",
-                //     type
-                // });
-            } catch (err) {
-                console.error("Export error:", err);
-            }
-        };
-    
-     const onFilterChange = async (filterOBJ) => {
+    // let daysSelect=days?.map(el=>{
+    //     return {
+    //         id:el?.key,
+    //         ...el
+    //     }
+    // });
+
+    const fetchAndExport = async (type) => {
+        try {
+            // const exportData = data?.getUsersRequiredFees?.map((user, i) => {
+            //     const timestamp = Number(user?.createdAt); // نتأكد إنه رقم
+            //     const date = new Date(timestamp);
+            //     let total = 0;
+
+            //     user?.fees_types_ids?.map(fee => {
+            //         if (user?.student_id?.is_inside_yemen == true) total += fee?.inside_yemen_value
+            //         else total += fee?.outside_yemen_value
+            //     })
+            //     return {
+            //         ID: i,
+            //         [t("Dashboard.studentName")]: user?.student_id?.fullname,
+            //         [t("Dashboard.createdAt")]: formatDateToString(date),
+            //         [t("fee.table.amount")]: total,
+            //         [t("fee.transactionSerial")]: user?.transactions_id?.transaction_serial,
+            //         [t("Dashboard.createdBy")]: user?.website_user_id?.fullname,
+            //         [t("Status")]: t(user?.is_paid == true ? "paid" : "unpaid"),
+
+            //     }
+            // }
+            // );
+
+            // ExportExcelAndPDF({
+            //     exportData,
+            //     isArabic,
+            //     reportTitle: isArabic ? "قائمة رسوم الطلاب" : "Student  Required Fees List",
+            //     type
+            // });
+        } catch (err) {
+            console.error("Export error:", err);
+        }
+    };
+
+    const handleDetailsClick = (selectedRow) => {
+        console.log('handleDetailsClick', selectedRow);
+        let row = lectureSessions?.find(el => el?.id == selectedRow?.id);
+
+        navigate(`/LectureSessionDetails/${selectedRow?.id}`, {
+            state: row
+        });
+    }
+
+    const onFilterChange = async (filterOBJ) => {
         console.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         // if (filterOBJ.hasOwnProperty("is_paid") && filterOBJ.is_paid !== "0") searchParams.set("is_paid", filterOBJ.is_paid);
@@ -202,11 +204,11 @@ export default function DoctorComponent() {
     if (!hasViewPermission) return <Navigate to="/profile" />;
 
     let translateText = isArabic ? " اسم المادة" : "Subject Name";
-    let translateText2= isArabic ? " التاريخ" : "Date";
-//    const searchText=is
+    let translateText2 = isArabic ? " التاريخ" : "Date";
+    //    const searchText=is
     if (gettingSessionsLoading) return <LoadingPage />;
     return (
-      <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
+        <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
             <Grid container spacing={3}>
                 <Grid item
                     sm={12} md={12}
@@ -214,13 +216,13 @@ export default function DoctorComponent() {
                         overflowX: "auto", // ✅ مهم جدًا عشان الجدول يعمل scroll داخل الـ Grid
                     }}
                 >
-                   
+
 
                     <Header
                         title={t("Dashboard.lectureSchedules")}
                         subtitle={t("Dashboard.lectureSchedules")}
                         i18n={i18n}
-                        haveBtn={true}
+                        haveBtn={false}
                         // btn={t("addItem", { item: translateText })}
                         btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
                         // onSubmit={addNavigate}
@@ -237,14 +239,14 @@ export default function DoctorComponent() {
                         textSearchField={"search"}
                         textSearchField2={"lecture_date"}
                         placeholder2={t("Dashboard.searchWith", { search: translateText2 })}
-                        // statusKey={"is_paid"}
+                        statusKey={"status"}
                         // TrueOrFalseArr={TrueOrFalseArr}
                         //    selectKey={"role"}
-                        // selectOptions={isPaidArr}
-                        // arKey={"arKey"}
-                        // enKey={"enKey"}
-                        // selectKey={"is_paid"}
-                        // select2Label={"Status"}
+                        //  selectOptions={daysSelect}
+                        //  arKey={"labelAr"}
+                        //  enKey={"labelEn"}
+                        // // selectKey={"is_paid"}
+                        //  select2Label={t("days")}
                         onFilterChange={onFilterChange}
                         t={t}
                     />
@@ -264,12 +266,12 @@ export default function DoctorComponent() {
                             borderRadius: 1,
                             width: "100%",
                         }}
-                        // handleDetailsClick={handleDetailsClick}
-                        // onStatusChange={onStatusChange}
-                        // arPopulateKey={"fullname"}
-                        // enPopulateKey={"fullname"}
-                        // activeStatusLabel={"paid"}
-                        // inActiveStatusLabel={"unpaid"}
+                        handleDetailsClick={handleDetailsClick}
+                    // onStatusChange={onStatusChange}
+                    // arPopulateKey={"fullname"}
+                    // enPopulateKey={"fullname"}
+                    // activeStatusLabel={"paid"}
+                    // inActiveStatusLabel={"unpaid"}
                     />
 
                     <FilterComponent totalPages={totalPages} />
