@@ -365,6 +365,8 @@
   "noData":"No Data",
   "Date":"Date",
   "Time":"Time",
-  "days":"Days"
+  "days":"Days",
+  "yes": "yes",
+  "no": "no"
 
 }

@@ -2,7 +2,7 @@ import LoadingPage from "../../components/LoadingComponent";
 import { useTheme } from "@emotion/react";
 import { Box, CircularProgress, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import * as XLSX from "xlsx";
@@ -21,6 +21,7 @@ import FilterComponent from "../../components/TableComponent/FilterComponent";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import { examTypes } from "../../constants";
 import { GET_STUDENT_BY_MATERIAL_ID } from "../../graphql/materialQueries";
+import { GET_EXAM_DEGREES } from "../../graphql/studentDegreeQueries";
 
 export default function ExamStudentDegreesPage() {
     const theme = useTheme();
@@ -28,40 +29,115 @@ export default function ExamStudentDegreesPage() {
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const [searchParams, setSearchParams] = useSearchParams();
+    const{id}=useParams();
+
     const isArabic = i18n.language === "ar";
 
-    const location=useLocation();
+    const location = useLocation();
 
-    console.log("location",location.state);
+    console.log("location", location.state);
 
-    const{
-        data:{studentsByMaterial}={},
-        loading:studentsByMaterialLoading
-    }=useQuery(GET_STUDENT_BY_MATERIAL_ID,{
-        variables: {
-            material_id: location?.state?.material_id?.id,
+    // const[
+    //     StudentDegrees
+    //     ,
+    //     data:{
+    //         studentDegrees:{
+    //         studentDegrees,
+    //         total
+    //     }
+    // }={},
+    //     loading:studentsByMaterialLoading
+    // ]=useLazyQuery(GET_EXAM_DEGREES,{
+
+    //     fetchPolicy:"network-only"
+    // });
+    const [
+        StudentDegrees,
+        {
+            data: {
+                studentDegrees: { studentDegrees, total } = {}
+            } = {},
+            loading: studentsByMaterialLoading,
         },
-        fetchPolicy:"network-only"
+    ] = useLazyQuery(GET_EXAM_DEGREES, {
+        fetchPolicy: "network-only",
     });
 
-     const columns = [
-        { key: "fullName", label: t("profile.Name") },
-        { key: "studentDegree", label: t("Dashboard.studentDegree") , isInput:true },
-        { key: "lectureAttendance", label: t("Dashboard.lectureAttendance") , isInput:true },
-        { key: "examAttendance", label: t("Dashboard.examAttendance") , isInput:true },
+      useEffect(() => {
+            let page;
+            let limit;
+            if (!searchParams.get("page")) {
+                page = 1;
+            }
+            else {
+                page = Number(searchParams.get("page"));
+            }
+            if (!searchParams.get("limit")) {
+                limit = 10;
+            }
+            else {
+                limit = Number(searchParams.get("limit"));
+            }
+    
+            let searchText = "";
+    
+            console.log('searchParams.get("search")',searchParams.get("search"));
+
+            if (searchParams.get("search")) {
+                searchText = searchParams.get("search");
+            }
+    
+            let variablesObj = {
+                exam_id:id
+            };
+            if (page) variablesObj.page = page;
+            if (limit) variablesObj.limit = limit;
+            if (searchText) variablesObj.search = searchText;
+            // if (searchParams.get("exam_type") && searchParams.get("exam_type") !== "0") variablesObj.exam_type = searchParams.get("exam_type");
+    
+    
+            // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
+    
+            StudentDegrees({ variables: variablesObj });
+    
+        }, [searchParams]);
+
+
+    const columns = [
+        { key: "name", label: t("profile.Name") },
+        { key: "student_degree", label: t("Dashboard.studentDegree") },
+        { key: "lecture_attendance", label: t("Dashboard.lectureAttendance") },
+        { key: "exam_attendance", label: t("Dashboard.examAttendance") },
         // { key: "date_of_exam", label: t("Date") },
         // { key: "action", label: t("Action") },
         // { key: "is_paid", label: t("Status") }
     ];
 
-    let studentDegreesToShow=studentsByMaterial?.map(material=>{
+    const addNavigate = () => navigate("add");
+
+    let studentDegreesToShow=studentDegrees?.map(material=>{
         return{
             ...material,
-            fullName:`${material?.first_name} ${material?.second_name}`,
+            student_degree:String(material?.student_degree),
+            lecture_attendance: String(material?.lecture_attendance),
+            exam_attendance: material?.exam_attendance ? t("yes") : t("no"),
+            name:material?.student_id?.fullname
         }
-    })
+    });
 
-     const fetchAndExport = async (type) => {
+     const handleDetailsClick = (selectedRow) => {
+        console.log('handleDetailsClick', selectedRow);
+        let row = studentDegrees?.find(el => el?.id == selectedRow?.id);
+
+        navigate(`details/${selectedRow?.id}`, {
+            state: {
+                ...row,
+                material_id:location?.state?.material_id?.id
+            }
+        });
+    }
+
+    const fetchAndExport = async (type) => {
         try {
             // const exportData = data?.getUsersRequiredFees?.map((user, i) => {
             //     const timestamp = Number(user?.createdAt); // نتأكد إنه رقم
@@ -96,7 +172,36 @@ export default function ExamStudentDegreesPage() {
         }
     };
 
-    console.log("studentsByMaterial",studentsByMaterial);
+    console.log("studentDegrees", studentDegrees);
+
+      const onFilterChange = async (filterOBJ) => {
+        console.log("filterOBJ", filterOBJ);
+        if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
+       // if (filterOBJ.hasOwnProperty("exam_type") && filterOBJ.exam_type !== "0") searchParams.set("exam_type", filterOBJ.exam_type);
+        // if (filterOBJ.role) searchParams.set("role", filterOBJ.role);
+        // searchParams.get("search", e.target.value);
+        setSearchParams(searchParams);
+    }
+
+     const hasViewPermission = true;
+    const hasAddPermission = true;
+
+    let pageLimit;
+    if (!searchParams.get("limit")) {
+        pageLimit = 10;
+    }
+    else {
+        pageLimit = Number(searchParams.get("limit"));
+    }
+
+    console.log("pageLimit", pageLimit);
+
+    const totalPages = parseInt(total / pageLimit) + 1;
+
+    console.log("totalPages", totalPages);
+
+    let translateText = isArabic ? "درجة" : "Degree";
+    let searchText = isArabic ? "اسم الطالب" : "Student Name";
 
     if (studentsByMaterialLoading) return <LoadingPage />;
     return (
@@ -120,10 +225,10 @@ export default function ExamStudentDegreesPage() {
                         title={t("Dashboard.studentDegrees")}
                         subtitle={t("Dashboard.studentDegrees")}
                         i18n={i18n}
-                        haveBtn={false}
-                        // btn={t("addItem", { item: translateText })}
+                        haveBtn={true}
+                        btn={t("addItem", { item: translateText })}
                         btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
-                        // onSubmit={addNavigate}
+                        onSubmit={addNavigate}
                         isExcel
                         isPdf
                         isPrinter
@@ -132,7 +237,7 @@ export default function ExamStudentDegreesPage() {
                         onPrinter={() => fetchAndExport("print")}
                     />
 
-                    {/* <DashboardFilterComponent
+                    <DashboardFilterComponent
                         placeholder={t("Dashboard.searchWith", { search: searchText })}
                         textSearchField={"search"}
                         //  statusKey={"exam_type"}
@@ -145,7 +250,7 @@ export default function ExamStudentDegreesPage() {
                         select2Label={"profile.Gender"}
                         onFilterChange={onFilterChange}
                         t={t}
-                    /> */}
+                    />
 
                     <TableComponent
                         columns={columns}
@@ -162,20 +267,20 @@ export default function ExamStudentDegreesPage() {
                             borderRadius: 1,
                             width: "100%",
                         }}
-                        // handleDetailsClick={handleDetailsClick}
-                        // onStatusChange={onStatusChange}
-                        // onClickDetails={studentDegreesNavigate}
+                     handleDetailsClick={handleDetailsClick}
+                    // onStatusChange={onStatusChange}
+                    // onClickDetails={studentDegreesNavigate}
 
-                        // arPopulateKey={"fullname"}
-                        // enPopulateKey={"fullname"}
-                        // showStatusChange={false}
-                        // hasDetailsBtn={true}
-                        // hasEditBtn={true}
+                    // arPopulateKey={"fullname"}
+                    // enPopulateKey={"fullname"}
+                     showStatusChange={false}
+                    // hasDetailsBtn={true}
+                    // hasEditBtn={true}
                     // activeStatusLabel={"paid"}
                     // inActiveStatusLabel={"unpaid"}
                     />
 
-                    {/* <FilterComponent totalPages={totalPages} /> */}
+                    <FilterComponent totalPages={totalPages} />
                 </Grid>
             </Grid>
         </Box>

@@ -101,6 +101,8 @@ import AllExamsPage from "./pages/Exams/AllExamsPage";
 import AddExamPage from "./pages/Exams/AddExamPage";
 import ExamDetailsPage from "./pages/Exams/ExamDetailsPage";
 import ExamStudentDegreesPage from "./pages/Exams/ExamStudentDegreesPage";
+import AddExamStudentDegreePage from "./pages/Exams/AddExamStudentDegreePage";
+import StudentDegreesDetailsPage from "./pages/Exams/StudentDegreesDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -950,6 +952,18 @@ function App() {
                     <Route path="examStudentDegrees/:id" element={
                       <MainLayout isLoggedIn={true}>
                         <ExamStudentDegreesPage />
+                      </MainLayout>
+                    } />
+
+                    <Route path="examStudentDegrees/:id/add" element={
+                      <MainLayout isLoggedIn={true}>
+                        <AddExamStudentDegreePage />
+                      </MainLayout>
+                    } />
+
+                    <Route path="examStudentDegrees/:id/details/:studentDegreeId" element={
+                      <MainLayout isLoggedIn={true}>
+                        <StudentDegreesDetailsPage />
                       </MainLayout>
                     } />
 

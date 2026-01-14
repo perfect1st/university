@@ -24,7 +24,7 @@ import { ReactComponent as InfoIcon } from "../../assets/InfoIcon.svg";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { baseURL } from "../../Api/apolloClient";
-import SaveIcon from '@mui/icons-material/Save';
+import SaveIcon from "@mui/icons-material/Save";
 
 // Define only necessary status styles
 const statusStyles = {
@@ -67,7 +67,7 @@ const TableComponent = ({
   hasEditBtn = false,
   handleEditClick,
   hasDetailsBtn = false,
-  onClickDetails
+  onClickDetails,
 }) => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
@@ -132,7 +132,7 @@ const TableComponent = ({
       component={Paper}
       // PaperProps={{
       //   sx: { boxShadow: "none !important" , width:"50%", }
-      // }} 
+      // }}
       // sx={{ width: "100%", boxShadow: "none !important" ,maxWidth: "100%",overflowX: "auto" }}
       sx={{
         width: isMobile ? "90%" : "100%",
@@ -140,21 +140,21 @@ const TableComponent = ({
         boxShadow: "none",
       }}
     >
-      <Box sx={{
-        overflowX: "auto",
-        // width: "100%",
-        boxShadow: "none !important",
+      <Box
+        sx={{
+          overflowX: "auto",
+          // width: "100%",
+          boxShadow: "none !important",
 
-        width: "100%", // 👈 العرض اللي عايزه
-        [theme.breakpoints.down("sm")]: {
-          width: "60%", // 👈 للموبايل
-          overflow: "scroll"
-        },
-
-      }}>
+          width: "100%", // 👈 العرض اللي عايزه
+          [theme.breakpoints.down("sm")]: {
+            width: "60%", // 👈 للموبايل
+            overflow: "scroll",
+          },
+        }}
+      >
         <Table
           sx={{
-
             minWidth: 600, // ✅ يحافظ على شكل الأعمدة لكن يظل مرن
             borderCollapse: "collapse",
             direction: isArabic ? "ltr" : "rtl",
@@ -162,17 +162,17 @@ const TableComponent = ({
               textAlign: "start",
             },
           }}
-        //       sx={{
-        //         minWidth: 600,
-        //         borderCollapse: "collapse",
-        //         boxShadow: "none !important",
-        //         direction: isArabic ? "ltr" : "rtl",
-        //         overflowX: "auto",
+          //       sx={{
+          //         minWidth: 600,
+          //         borderCollapse: "collapse",
+          //         boxShadow: "none !important",
+          //         direction: isArabic ? "ltr" : "rtl",
+          //         overflowX: "auto",
 
-        // "& .MuiTableCell-root": {
-        //   textAlign:  "start" ,
-        // },
-        //       }}
+          // "& .MuiTableCell-root": {
+          //   textAlign:  "start" ,
+          // },
+          //       }}
         >
           <TableHead>
             <TableRow>
@@ -224,13 +224,16 @@ const TableComponent = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.map((row) => {
+            {data?.map((row, index) => {
               const status = row[statusKey];
               const styles = getStatusStyles(status);
-              console.log("row[column.key]", visibleColumns[visibleColumns?.length - 1].isInput);
+              console.log(
+                "row[column.key]",
+                visibleColumns[visibleColumns?.length - 1].isInput
+              );
 
               // console.log("styles.bgColor",styles.bgColor);
-              // console.log('rrrrrrrr',row);
+              //  console.log('rrrrrrrr',row);
               return (
                 <TableRow key={row.id} hover>
                   {visibleColumns?.map((column) => (
@@ -240,7 +243,7 @@ const TableComponent = ({
                       sx={{
                         border: "1px solid #e0e0e0",
                         py: { xs: 0.75, sm: 1.5 },
-                        textAlign: isArabic ? "right" : "left"
+                        textAlign: isArabic ? "right" : "left",
                       }}
                     >
                       {
@@ -269,9 +272,11 @@ const TableComponent = ({
                           //   }}
                           // />
                           <Chip
-                            label={t(status ? activeStatusLabel : inActiveStatusLabel)}
-                            color={status == true ? "success" : "error"}      // primary | secondary | success | error | info | warning
-                            variant="filled"     // filled | outlined
+                            label={t(
+                              status ? activeStatusLabel : inActiveStatusLabel
+                            )}
+                            color={status == true ? "success" : "error"} // primary | secondary | success | error | info | warning
+                            variant="filled" // filled | outlined
                             sx={{
                               cursor: showStatusChange ? "pointer" : "default",
                               fontWeight: "bold",
@@ -286,14 +291,14 @@ const TableComponent = ({
                               },
                               "&:hover": showStatusChange
                                 ? {
-                                  opacity: 0.9,
-                                  transform: "scale(1.02)",
-                                }
+                                    opacity: 0.9,
+                                    transform: "scale(1.02)",
+                                  }
                                 : {},
                             }}
                           />
                         )
-                        // : 
+                        // :
                         // column.render ? (
                         //   column.render(row)
                         // ) : (
@@ -301,64 +306,90 @@ const TableComponent = ({
                         // )
                       }
                       {
-
                         // /uploads/
-                        typeof row[column.key] === "string" && row[column.key]?.includes("/uploads/")
-                          ?
-
+                        typeof row[column.key] === "string" &&
+                        row[column.key]?.includes("/uploads/") ? (
                           <Box
                             component="img"
                             src={`${baseURL}${row[column.key]}`}
                             alt="وصف الصورة"
                             loading="lazy"
                             sx={{
-                              width: 100,          // ثابت أو '100%' للعرض الكامل
+                              width: 100, // ثابت أو '100%' للعرض الكامل
                               height: "auto",
-                              objectFit: 'cover',  // contain, cover, fill
-                              borderRadius: 2,     // زوايا مدورة
+                              objectFit: "cover", // contain, cover, fill
+                              borderRadius: 2, // زوايا مدورة
                               boxShadow: 1,
                             }}
                           />
-                          :
-                          !row[column.key] || row[column.key] === "null" ?
-                            column?.isInput == true ?
-                              <TextField
-                               
-                                variant="outlined"
-                                fullWidth
-                              />
-                              :
-                              column.key !== statusKey && t("dataNotFound")
-                            :
+                        ) : !row[column.key] || row[column.key] === "null" ? (
+                          column?.isInput == true ? (
+                            <TextField
+                              fullWidth
+                              variant="outlined"
+                              sx={{ px: 2 }}
+                              cl={`textField${index}`}
+                              onChange={(e) => {
+                                console.log("index", index, e.target);
+                                const els =
+                                  document.getElementsByClassName("textField");
+                                const values = Array.from(els).map(
+                                  (el) => el.value
+                                );
+                                console.log(values);
 
-                            // hasObject ? isArabic ? 
-                            // row[column.key]?.arPopulateKey : row[column.key]?.enPopulateKey
-                            // :row[column.key]  visibleColumns[2]?.nested
-                            row[column.key]?.id ?
-                              // row[column.key]?.id[nestedPopulateKey] && column?.nested == "true" ?
-                              // isArabic ? row[column.key]?.[nestedPopulateKey]?.[nestedArPopulateKey] : row[column.key]?.[nestedPopulateKey]?.[nestedEnPopulateKey]
-                              // :
-                              isArabic ? row[column.key]?.[arPopulateKey] : row[column.key]?.[enPopulateKey]
-                              :
-                              row[column.key]
+                                // console.log("oooo",document.getElementsByClassName(`textField${index}`)[0]?.value);
+                              }}
+                            />
+                          ) : (
+                            column.key !== statusKey && t("dataNotFound")
+                          )
+                        ) : // hasObject ? isArabic ?
+                        // row[column.key]?.arPopulateKey : row[column.key]?.enPopulateKey
+                        // :row[column.key]  visibleColumns[2]?.nested
+                        row[column.key]?.id ? (
+                          // row[column.key]?.id[nestedPopulateKey] && column?.nested == "true" ?
+                          // isArabic ? row[column.key]?.[nestedPopulateKey]?.[nestedArPopulateKey] : row[column.key]?.[nestedPopulateKey]?.[nestedEnPopulateKey]
+                          // :
+                          isArabic ? (
+                            row[column.key]?.[arPopulateKey]
+                          ) : (
+                            row[column.key]?.[enPopulateKey]
+                          )
+                        ) : (
+                          row[column.key]
+                        )
                       }
                     </TableCell>
                   ))}
 
-                  {
-                    hasDetailsBtn && <>
-                      <TableCell align="center" sx={{ border: "1px solid #e0e0e0", py: { xs: 0.75, sm: 1.5 }, borderRadius: "0.5" }}>
+                  {hasDetailsBtn && (
+                    <>
+                      <TableCell
+                        align="center"
+                        sx={{
+                          border: "1px solid #e0e0e0",
+                          py: { xs: 0.75, sm: 1.5 },
+                          borderRadius: "0.5",
+                        }}
+                      >
                         <Button
                           onClick={() => onClickDetails(row)}
                           variant="contained"
-
-                          sx={{ mt: 1, mb: 2, py: 1.5, display: "flex", gap: 0.5, backgroundColor: theme.palette.info.main }}
-
+                          sx={{
+                            mt: 1,
+                            mb: 2,
+                            py: 1.5,
+                            display: "flex",
+                            gap: 0.5,
+                            backgroundColor: theme.palette.info.main,
+                          }}
                         >
                           {t("Details")}
                         </Button>
-                      </TableCell></>
-                  }
+                      </TableCell>
+                    </>
+                  )}
                   {!dontShowActions && (
                     <TableCell
                       align="center"
@@ -373,7 +404,7 @@ const TableComponent = ({
                           variant="contained"
                           color="primary"
                           onClick={(e) => {
-                            console.log('uuuuuuuuuuuuuu');
+                            console.log("uuuuuuuuuuuuuu");
                             onActionClick?.(e, row);
                           }}
                           sx={{
@@ -392,7 +423,7 @@ const TableComponent = ({
                         <IconButton
                           size="small"
                           onClick={(e) => {
-                            onActionClick?.(e, row)
+                            onActionClick?.(e, row);
                             // navigate();
                           }}
                           sx={{
@@ -425,7 +456,6 @@ const TableComponent = ({
                       )}
                     </TableCell>
                   )}
-
                 </TableRow>
               );
             })}
