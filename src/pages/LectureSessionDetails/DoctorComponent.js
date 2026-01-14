@@ -266,6 +266,7 @@ export default function DoctorComponent() {
                             width: "100%",
                         }}
                         handleDetailsClick={handleDetailsClick}
+                        showStatusChange={false}
                     // onStatusChange={onStatusChange}
                     // arPopulateKey={"fullname"}
                     // enPopulateKey={"fullname"}

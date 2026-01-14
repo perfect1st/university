@@ -16,6 +16,7 @@ import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../
 import { GET_MATERIALS_BY_DEPARTMENT_ID } from "../../graphql/materialQueries";
 import { SearchByTypingSelect } from "../../components/Utilities/VerticalTextField";
 import MaterialArrComponent from "./MaterialArrComponent";
+import { terms_optionsArr } from "../../constants";
 
 // GET_ONE_ACADEMY_TERM_BY_ID
 export default function AcademyTermDetailsPage() {
@@ -36,11 +37,11 @@ export default function AcademyTermDetailsPage() {
 
   console.log("location", location?.state);
 
-  const terms_optionsArr = [
-    { id: 1, value: 1 },
-    { id: 2, value: 2 },
-    { id: 3, value: 3 },
-  ];
+  // const terms_optionsArr = [
+  //   { id: 1, value: 1 },
+  //   { id: 2, value: 2 },
+  //   { id: 3, value: 3 },
+  // ];
 
   // get term by id
   const [GetAcademyTermById, {

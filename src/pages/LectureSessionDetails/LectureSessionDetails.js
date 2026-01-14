@@ -390,9 +390,11 @@ export default function LectureSessionDetails() {
                 }
 
 
+                {
+                    me?.role == "doctor" &&<SubmitButton loading={loading} t={t} />
+                }
 
-
-                <SubmitButton loading={loading} t={t} />
+                
             </Box>
         </Box>
     )
