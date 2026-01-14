@@ -176,7 +176,7 @@ query FilteredPagedMaterials(
 }
 `;
 
-export const GET_MATERIALS_BY_DOCTOR=gql`
+export const GET_MATERIALS_BY_DOCTOR = gql`
 query MaterialsByDoctor($doctor_id:ID!) {
     materialsByDoctor(doctor_id: $doctor_id) {
         id
@@ -214,7 +214,7 @@ query MaterialsByDoctor($doctor_id:ID!) {
 }
 `;
 
-export const GET_STUDENT_BY_MATERIAL_ID=gql`
+export const GET_STUDENT_BY_MATERIAL_ID = gql`
 query StudentsByMaterial($material_id:ID!) {
     studentsByMaterial(material_id: $material_id) {
         id
@@ -241,6 +241,20 @@ query StudentsByMaterial($material_id:ID!) {
         high_school_student_number
         general_grade
         gpa
+          user_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
         createdAt
         updatedAt
     }

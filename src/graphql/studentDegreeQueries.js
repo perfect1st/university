@@ -52,11 +52,10 @@ export const CREATE_STUDENT_DEGREE=gql`
 mutation CreateStudentDegree($input: CreateStudentDegreeInput!) {
     createStudentDegree(input: $input) {
         id
-        student_id
-        material_id
+        
         lecture_attendance
         exam_attendance
-        exam_id
+        
         student_degree
         createdAt
         updatedAt

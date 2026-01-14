@@ -16,114 +16,123 @@ import { CREATE_ACADEMY_TERM } from "../../graphql/AcademyTerms";
 import { GET_MATERIALS_BY_DEPARTMENT_ID, GET_MATERIALS_BY_DOCTOR, GET_STUDENT_BY_MATERIAL_ID } from "../../graphql/materialQueries";
 import { useSelector } from "react-redux";
 import { ADD_NEW_EXAM } from "../../graphql/ExamsQueries";
-import { examTypes } from "../../constants";
+import { examTypes, YES_OR_NO_ARR } from "../../constants";
 import { CREATE_STUDENT_DEGREE } from "../../graphql/studentDegreeQueries";
 
 export default function AddExamStudentDegreePage() {
     const theme = useTheme();
-        const { t } = useTranslation();
-        const isArabic = i18n.language === "ar";
-        const navigate = useNavigate();
-        const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-        const location = useLocation();
-        const{id}=useParams();
+    const { t } = useTranslation();
+    const isArabic = i18n.language === "ar";
+    const navigate = useNavigate();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+    const location = useLocation();
+    const { id } = useParams();
 
-        const{
-            data:{studentsByMaterial=[]}={},
-            loading:studentsByMaterialLoading
-        }=useQuery(GET_STUDENT_BY_MATERIAL_ID,{
-            variables:{material_id:location?.state?.material_id}
-        });
+    const [selectedStudent, setSelectedStudent] = useState(0);
+    const [selectedExamAttendence, setSelectedExamAttendence] = useState(0);
 
-        const[
-            CreateStudentDegree,
-            {
-                loading:createStudentDegreeLoading
-            }
-        ]=useMutation(CREATE_STUDENT_DEGREE,{fetchPolicy:"network-only"});
+    const {
+        data: { studentsByMaterial = [] } = {},
+        loading: studentsByMaterialLoading
+    } = useQuery(GET_STUDENT_BY_MATERIAL_ID, {
+        variables: { material_id: location?.state?.material_id }
+    });
 
-        const formik = useFormik({
-                initialValues: {
-                    exam_name: "",
-                    full_mark_degree: "",
-                    lecture_attendance_mark: "",
-                    date_from: "",
-                    date_to: "",
-                    notes: "",
-                },
-        
-                validationSchema: Yup.object({
-                    exam_name: Yup.string().required(t("admissions.errors.required")),
-                    full_mark_degree: Yup.string().required(t("admissions.errors.required")),
-                    lecture_attendance_mark: Yup.string().required(t("admissions.errors.required")),
-                    date_from: Yup.string().required(t("admissions.errors.required")),
-                    date_to: Yup.string().required(t("admissions.errors.required")),
-                    // selectedExamType: selectedExamType == 0 && Yup.string()
-                    //     .required(t("admissions.errors.required")),
-                    // selectedMaterial: selectedMaterial == 0 && Yup.string()
-                    //     .required(t("admissions.errors.required")),
-                    //     .notOneOf(["0"], t("admissions.errors.required")),
-                    //   selectedUser: selectedUser == null && Yup.string()
-                    //     .required(t("admissions.errors.required"))
-                    //     .notOneOf(["0"], t("admissions.errors.required")),
-        
-        
-                }),
-                onSubmit: async (values) => {
-        
-        
-                    console.log('xxxxxxxxxxxxxxxxxxxxxxx');
-                    let data = {
-                        exam_name: values?.exam_name,
-                        full_mark_degree: values?.full_mark_degree,
-                        lecture_attendance_mark: values?.lecture_attendance_mark,
-                        notes: values?.notes,
-                        date_from: values?.date_from,
-                        date_to: values?.date_to,
-                       
-                        // fees_types_ids: selectedFeeType,
-                        // student_id: selectedUser,
-                        // website_user_id: me?.id
-                        // amount: values?.amount,
-                    };
-        
-                    // if(selectedFile!=null) data.payment_document_file=selectedFile;
-        
-                    try {
-                        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                        console.log(data);
-        
-                        // return;
-                        const result = await CreateStudentDegree({
-                            variables: {
-                                input: data
-                            }
-                        });
-        
-                        console.log('result', result);
-        
-                        notify(t("success"), "success");
-        
-                        navigate(location.pathname.split('/add')[0]);
-        
-                    } catch (error) {
-                        console.error("Error logging in:", error);
-                        notify(t("error"), "error");
-        
-                    } finally {
-                        //  setIsLoading(false);
+    const [
+        CreateStudentDegree,
+        {
+            loading: createStudentDegreeLoading
+        }
+    ] = useMutation(CREATE_STUDENT_DEGREE, { fetchPolicy: "network-only" });
+
+    const formik = useFormik({
+        initialValues: {
+            student_degree: "",
+            lecture_attendance: "",
+            // exam_attendance: "",
+            // date_from: "",
+            // date_to: "",
+            // notes: "",
+        },
+
+        validationSchema: Yup.object({
+            student_degree: Yup.string().required(t("admissions.errors.required")),
+            lecture_attendance: Yup.string().required(t("admissions.errors.required")),
+            // lecture_attendance_mark: Yup.string().required(t("admissions.errors.required")),
+            // date_from: Yup.string().required(t("admissions.errors.required")),
+            // date_to: Yup.string().required(t("admissions.errors.required")),
+            selectedStudent: selectedStudent == 0 && Yup.string()
+                .required(t("admissions.errors.required")),
+            selectedExamAttendence: selectedExamAttendence == 0 && Yup.string()
+                .required(t("admissions.errors.required")),
+            //     .notOneOf(["0"], t("admissions.errors.required")),
+            //   selectedUser: selectedUser == null && Yup.string()
+            //     .required(t("admissions.errors.required"))
+            //     .notOneOf(["0"], t("admissions.errors.required")),
+
+
+        }),
+        onSubmit: async (values) => {
+
+
+            console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+            console.log("selectedExamAttendence",selectedExamAttendence);
+          
+            let data = {
+                student_id: selectedStudent,
+                student_degree: values?.student_degree,
+                lecture_attendance: values?.lecture_attendance,
+                exam_attendance:  selectedExamAttendence === "true",
+                material_id:location?.state?.material_id,
+                exam_id:id
+                // student_id: selectedUser,
+                // website_user_id: me?.id
+                // amount: values?.amount,
+            };
+
+            console.log("data",data);
+            //   return;
+
+            // if(selectedFile!=null) data.payment_document_file=selectedFile;
+
+            try {
+                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                console.log(data);
+
+                // return;
+                const result = await CreateStudentDegree({
+                    variables: {
+                        input: data
                     }
-                },
-            });
+                });
 
-        console.log("location",location.state);
-        console.log("studentsByMaterial",studentsByMaterial);
+                console.log('result', result);
 
-        if(studentsByMaterialLoading) return <LoadingPage/>;
-  return (
-    <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
-            {/* <Header
-                title={t("Dashboard.exams")}
+                notify(t("success"), "success");
+
+                // navigate(location.pathname.split('/add')[0]);
+                navigate(-1);
+
+            } catch (error) {
+                console.error("Error logging in:", error);
+                notify(t("error"), "error");
+
+            } finally {
+                //  setIsLoading(false);
+            }
+        },
+    });
+
+    console.log("location", location.state);
+    console.log("studentsByMaterial", studentsByMaterial);
+
+    let translateText = isArabic ? "درجة" : "Degree";
+    if (studentsByMaterialLoading) return <LoadingPage />;
+
+    return (
+        <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
+            <Header
+                title={t("Dashboard.studentDegrees")}
                 subtitle={t("addItem", { item: translateText })}
                 i18n={i18n}
                 haveBtn={false}
@@ -133,7 +142,7 @@ export default function AddExamStudentDegreePage() {
                 isExcel={false}
                 isPdf={false}
                 isPrinter={false}
-            /> */}
+            />
 
             <Box
                 onSubmit={formik.handleSubmit}
@@ -142,76 +151,57 @@ export default function AddExamStudentDegreePage() {
 
             >
 
-                {/* <VerticalTextField
-                    title={t("profile.Name", { item: translateText2 })}
-                    fieldID={"exam_name"}
-                    fieldName={"exam_name"}
-                    placeholder={t("profile.Name", { item: translateText2 })}
-                    value={formik.values.exam_name}
-                    onChange={formik.handleChange}
-                    error={formik.touched.exam_name && Boolean(formik.errors.exam_name)}
-                    helperText={formik.touched.exam_name && formik.errors.exam_name}
-                /> */}
+              
 
-                {/* <VerticalTextField
-                    type={"number"}
-                    title={t("studentDashboard.fullmarkDegree", { item: translateText2 })}
-                    fieldID={"full_mark_degree"}
-                    fieldName={"full_mark_degree"}
-                    placeholder={t("studentDashboard.fullmarkDegree", { item: translateText2 })}
-                    value={formik.values.full_mark_degree}
-                    onChange={formik.handleChange}
-                    error={formik.touched.full_mark_degree && Boolean(formik.errors.full_mark_degree)}
-                    helperText={formik.touched.full_mark_degree && formik.errors.full_mark_degree}
-                /> */}
 
-                {/* <VerticalTextField
-                    type={"number"}
-                    title={t("Dashboard.lectureAttendence", { item: translateText2 })}
-                    fieldID={"lecture_attendance_mark"}
-                    fieldName={"lecture_attendance_mark"}
-                    placeholder={t("Dashboard.lectureAttendence", { item: translateText2 })}
-                    value={formik.values.lecture_attendance_mark}
-                    onChange={formik.handleChange}
-                    error={formik.touched.lecture_attendance_mark && Boolean(formik.errors.lecture_attendance_mark)}
-                    helperText={formik.touched.lecture_attendance_mark && formik.errors.lecture_attendance_mark}
-                /> */}
 
-                {/* <VerticalTextFieldSelect
+                <VerticalTextFieldSelect
                     t={t}
-                    title={t("profile.Gender")} defaultOptionLabel={t("select")}
+                    title={t("Dashboard.studentName")} defaultOptionLabel={t("select")}
                     backgroundColor={theme.palette.background.inputBackGround}
-                    value={selectedExamType}
-                    setValue={setSelectedExamType}
+                    value={selectedStudent}
+                    setValue={setSelectedStudent}
                     onBlur={(e) => {
-                        console.log('blur', selectedExamType);
-                        if (selectedExamType != 0) formik.setFieldError("selectedExamType", undefined);
+                        console.log('blur', selectedStudent);
+                        if (selectedStudent != 0) formik.setFieldError("selectedStudent", undefined);
 
                     }}
-                    error={formik.errors.selectedSemester && t("admissions.errors.required")}
-                    helperText={formik.errors.selectedSemester && t("admissions.errors.required")}
+                    error={formik.errors.selectedStudent && t("admissions.errors.required")}
+                    helperText={formik.errors.selectedStudent && t("admissions.errors.required")}
 
                 >
                     <MenuItem value={0} selected>{t("select")}</MenuItem>
                     {
-                        examTypes?.map(el => <MenuItem key={el?.id} value={el?.id}>
-                            {isArabic ? el?.labelAr : el?.labelEn}
+                        studentsByMaterial?.map(el => <MenuItem key={el?.user_id?.id} value={el?.user_id?.id}>
+                            {el?.user_id?.fullname}
                         </MenuItem>)
                     }
-                </VerticalTextFieldSelect> */}
+                </VerticalTextFieldSelect>
 
 
-                {/* <VerticalTextField
-                    type="date"
-                    title={t("from", { item: translateText2 })}
-                    fieldID={"date_from"}
-                    fieldName={"date_from"}
-                    placeholder={t("from", { item: translateText2 })}
-                    value={formik.values.date_from}
+                <VerticalTextField
+                    type={"number"}
+                    title={t("Dashboard.studentDegree")}
+                    fieldID={"student_degree"}
+                    fieldName={"student_degree"}
+                    placeholder={t("Dashboard.studentDegree")}
+                    value={formik.values.student_degree}
                     onChange={formik.handleChange}
-                    error={formik.touched.date_from && Boolean(formik.errors.date_from)}
-                    helperText={formik.touched.date_from && formik.errors.date_from}
-                /> */}
+                    error={formik.touched.student_degree && Boolean(formik.errors.student_degree)}
+                    helperText={formik.touched.student_degree && formik.errors.student_degree}
+                />
+
+                <VerticalTextField
+                    type={"number"}
+                    title={t("Dashboard.lectureAttendence")}
+                    fieldID={"lecture_attendance"}
+                    fieldName={"lecture_attendance"}
+                    placeholder={t("Dashboard.lectureAttendence")}
+                    value={formik.values.lecture_attendance}
+                    onChange={formik.handleChange}
+                    error={formik.touched.lecture_attendance && Boolean(formik.errors.lecture_attendance)}
+                    helperText={formik.touched.lecture_attendance && formik.errors.lecture_attendance}
+                />
 
                 {/* <VerticalTextField
                     type="date"
@@ -225,37 +215,32 @@ export default function AddExamStudentDegreePage() {
                     helperText={formik.touched.date_to && formik.errors.date_to}
                 /> */}
 
-              
-                {/* <VerticalTextFieldSelect
+
+                <VerticalTextFieldSelect
                     t={t}
-                    title={t("studentDashboard.chooseMaterial")} defaultOptionLabel={t("select")}
+                    title={t("Dashboard.examAttendance")} defaultOptionLabel={t("select")}
                     backgroundColor={theme.palette.background.inputBackGround}
-                    value={selectedMaterial}
-                    setValue={setSelectedMaterial}
+                    value={selectedExamAttendence}
+                    setValue={setSelectedExamAttendence}
                     onBlur={(e) => {
-                        console.log('blur', selectedMaterial);
-                        if (selectedMaterial != 0) formik.setFieldError("selectedMaterial", undefined);
+                        console.log('blur', selectedExamAttendence);
+                        if (selectedExamAttendence != 0) formik.setFieldError("selectedExamAttendence", undefined);
 
                     }}
-                    error={formik.errors.selectedMaterial && t("admissions.errors.required")}
-                    helperText={formik.errors.selectedMaterial && t("admissions.errors.required")}
+                    error={formik.errors.selectedExamAttendence && t("admissions.errors.required")}
+                    helperText={formik.errors.selectedExamAttendence && t("admissions.errors.required")}
 
                 >
                     <MenuItem value={0} selected>{t("select")}</MenuItem>
                     {
-                        materialsByDoctor?.map(el => <MenuItem key={el?.id} value={el?.id}>
-                            {isArabic ? el?.title_ar : el?.title_en}
+                        YES_OR_NO_ARR?.map(el => <MenuItem key={el?.id} value={el?.id}>
+                            {isArabic ? el?.labelAr : el?.labelEn}
                         </MenuItem>)
                     }
-                </VerticalTextFieldSelect> */}
-
-               
-             
-
-
+                </VerticalTextFieldSelect>
 
                 <SubmitButton loading={createStudentDegreeLoading} t={t} />
             </Box>
         </Box>
-  )
+    )
 }

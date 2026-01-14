@@ -40,3 +40,8 @@ export const examTypes = [
     { id: "midterm", labelAr: "ميد ترم", labelEn: "Midterm" },
     { id: "final", labelAr: "فينال", labelEn: "Final" }
 ];
+
+export const YES_OR_NO_ARR = [
+    { id: "true", labelAr: "نعم", labelEn: "Yes" },
+    { id: "false", labelAr: "لا", labelEn: "No" }
+];

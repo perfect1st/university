@@ -115,6 +115,7 @@ export default function ExamStudentDegreesPage() {
 
     const addNavigate = () => navigate("add",{
         state:{
+            ...location?.state,
             material_id:location?.state?.material_id?.id
         }
     });
