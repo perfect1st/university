@@ -113,7 +113,11 @@ export default function ExamStudentDegreesPage() {
         // { key: "is_paid", label: t("Status") }
     ];
 
-    const addNavigate = () => navigate("add");
+    const addNavigate = () => navigate("add",{
+        state:{
+            material_id:location?.state?.material_id?.id
+        }
+    });
 
     let studentDegreesToShow=studentDegrees?.map(material=>{
         return{
