@@ -368,7 +368,8 @@
     "studentDegrees": "درجات الطلاب",
     "studentDegree": "درجة الطالب",
     "lectureAttendance": "حضور المحاضرات",
-    "examAttendance": "حضور الامتحان"
+    "examAttendance": "حضور الامتحان",
+    "studentTotalDegree": "درجات الطالب"
   },
   "lectures": {
     "pending": "لم تبدأ بعد",
