@@ -286,6 +286,16 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
           en: "Exams",
         },
       },
+
+      {
+        // icon: FlagIcon,
+        key: "allStudentDegrees",
+        path: "/allStudentDegrees",
+        label: {
+          ar: "درجات الطلاب",
+          en: "Student Degrees",
+        },
+      },
     ];
 
   // useEffect(() => {

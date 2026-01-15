@@ -1,5 +1,40 @@
 import { gql } from "@apollo/client";
 
+export const GET_ALL_STUDENT_DEGREES=gql`
+query StudentDegreesAll($doctor_id: ID)
+   {
+    studentDegreesAll(doctor_id: $doctor_id) {
+        student {
+            fullname
+            email
+        }
+        subjects {
+            material_id {
+                title_en
+                title_ar
+            }
+            exams {
+                exam_id {
+                    exam_type
+                    exam_name
+                }
+                student_degree
+                lecture_attendance
+                total_exam_degree
+                exam_attendance
+                full_mark
+            }
+            totals {
+                total_full_mark
+                total_student_degree
+                total_lecture_attendance
+                total_exam_degree
+            }
+        }
+    }
+}
+`;
+
 export const GET_EXAM_DEGREES=gql`
 query StudentDegrees(
 $material_id: ID
