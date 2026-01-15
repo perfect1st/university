@@ -236,6 +236,7 @@ export default function ExamStudentDegreesPage() {
                         onExcel={() => fetchAndExport("excel")}
                         onPdf={() => fetchAndExport("pdf")}
                         onPrinter={() => fetchAndExport("print")}
+                         hasNavigate={true}
                     />
 
                     <DashboardFilterComponent
