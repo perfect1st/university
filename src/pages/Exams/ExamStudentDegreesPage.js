@@ -120,7 +120,7 @@ export default function ExamStudentDegreesPage() {
      const studentDegreesNavigate=(row) => {
         console.log("row",row);
 
-        navigate(`examStudentDegrees/${row?.id}`,{
+        navigate(`/exams/studentDegrees/${row?.student_id?.id}`,{
             state:row
         });
     };

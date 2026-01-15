@@ -76,8 +76,33 @@ mutation UpdateStudentDegree($id:ID!,$input: UpdateStudentDegreeInput!) {
 `;
 
 
-//    student_id: "6919cc6cb19a6335c3805d7d"
-//             material_id: "690b32d1ae33204319ed82ad"
-//             lecture_attendance: 20
-//             exam_id: "69676625af554e260cad3b82"
-//             exam_attendance:true
+export const GET_STUDENT_DEGRESS_BY_STUDENT_ID=gql`
+query StudentDegreeByStudent($student_id: ID!) {
+    studentDegreeByStudent(student_id: $student_id) {
+        exams {
+            exam_attendance
+            full_mark
+            student_degree
+            lecture_attendance
+            total_exam_degree
+             exam_id {
+                exam_name
+                exam_type
+                full_mark_degree
+                lecture_attendance_mark
+                date_from
+                date_to
+                notes
+                createdAt
+                updatedAt
+            }
+        }
+        totals {
+            total_full_mark
+            total_student_degree
+            total_lecture_attendance
+            total_exam_degree
+        }
+    }
+}
+`;
