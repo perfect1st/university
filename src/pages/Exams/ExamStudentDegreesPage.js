@@ -37,20 +37,7 @@ export default function ExamStudentDegreesPage() {
 
     console.log("location", location.state);
 
-    // const[
-    //     StudentDegrees
-    //     ,
-    //     data:{
-    //         studentDegrees:{
-    //         studentDegrees,
-    //         total
-    //     }
-    // }={},
-    //     loading:studentsByMaterialLoading
-    // ]=useLazyQuery(GET_EXAM_DEGREES,{
-
-    //     fetchPolicy:"network-only"
-    // });
+   
     const [
         StudentDegrees,
         {
@@ -130,6 +117,13 @@ export default function ExamStudentDegreesPage() {
         }
     });
 
+     const studentDegreesNavigate=(row) => {
+        console.log("row",row);
+
+        navigate(`examStudentDegrees/${row?.id}`,{
+            state:row
+        });
+    };
      const handleDetailsClick = (selectedRow) => {
         console.log('handleDetailsClick', selectedRow);
         let row = studentDegrees?.find(el => el?.id == selectedRow?.id);
@@ -207,6 +201,8 @@ export default function ExamStudentDegreesPage() {
 
     let translateText = isArabic ? "درجة" : "Degree";
     let searchText = isArabic ? "اسم الطالب" : "Student Name";
+    
+    let translateText2=isArabic ? "درجات الطالب":"Student Degrees"
 
     if (studentsByMaterialLoading) return <LoadingPage />;
     return (
@@ -274,12 +270,13 @@ export default function ExamStudentDegreesPage() {
                         }}
                      handleDetailsClick={handleDetailsClick}
                     // onStatusChange={onStatusChange}
-                    // onClickDetails={studentDegreesNavigate}
+                     onClickDetails={studentDegreesNavigate}
 
                     // arPopulateKey={"fullname"}
                     // enPopulateKey={"fullname"}
                      showStatusChange={false}
-                    // hasDetailsBtn={true}
+                     hasDetailsBtn={true}
+                     DetailsNavigate={t("detailsItem", { item: translateText2 })}
                     // hasEditBtn={true}
                     // activeStatusLabel={"paid"}
                     // inActiveStatusLabel={"unpaid"}

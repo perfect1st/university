@@ -152,28 +152,7 @@ export default function StudentDegreesDetailsPage() {
 
       >
 
-        {/* <HorizentalTextFieldSelect
-          t={t}
-          title={t("Dashboard.studentName")} defaultOptionLabel={t("select")}
-          backgroundColor={theme.palette.background.inputBackGround}
-          value={selectedStudent}
-          setValue={setSelectedStudent}
-          onBlur={(e) => {
-            console.log('blur', selectedStudent);
-            if (selectedStudent != 0) formik.setFieldError("selectedStudent", undefined);
-
-          }}
-          error={formik.errors.selectedStudent && t("admissions.errors.required")}
-          helperText={formik.errors.selectedStudent && t("admissions.errors.required")}
-
-        >
-          <MenuItem value={0} selected>{t("select")}</MenuItem>
-          {
-            studentsByMaterial?.map(el => <MenuItem key={el?.user_id?.id} value={el?.user_id?.id}>
-              {el?.user_id?.fullname}
-            </MenuItem>)
-          }
-        </HorizentalTextFieldSelect> */}
+       
 
          <HorizentalTextField
           title={t("Dashboard.studentName")}

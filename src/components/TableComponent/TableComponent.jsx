@@ -68,6 +68,7 @@ const TableComponent = ({
   handleEditClick,
   hasDetailsBtn = false,
   onClickDetails,
+  DetailsNavigate="Details"
 }) => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
@@ -385,7 +386,7 @@ const TableComponent = ({
                             backgroundColor: theme.palette.info.main,
                           }}
                         >
-                          {t("Details")}
+                          {t(DetailsNavigate)}
                         </Button>
                       </TableCell>
                     </>
