@@ -203,17 +203,7 @@ export default function AddExamStudentDegreePage() {
                     helperText={formik.touched.lecture_attendance && formik.errors.lecture_attendance}
                 />
 
-                {/* <VerticalTextField
-                    type="date"
-                    title={t("to", { item: translateText2 })}
-                    fieldID={"date_to"}
-                    fieldName={"date_to"}
-                    placeholder={t("to", { item: translateText2 })}
-                    value={formik.values.date_to}
-                    onChange={formik.handleChange}
-                    error={formik.touched.date_to && Boolean(formik.errors.date_to)}
-                    helperText={formik.touched.date_to && formik.errors.date_to}
-                /> */}
+               
 
 
                 <VerticalTextFieldSelect
