@@ -59,11 +59,20 @@ export default function AllDegreesForStudentPage() {
 
   // console.log("studentDegreeByStudent",studentDegreeByStudent);
 
+  let total_full_mark_degree = 0;
+  let total_lecture_attendance = 0;
+
+  let total_total_exam_degree = 0;
+
   let studentDegreeByStudentToShow = studentDegreeByStudent?.map((degree) => {
 
     console.log("degree?.exams", degree?.totals?.total_exam_degree);
     let exam = degree?.exams[0];
 
+    total_full_mark_degree+=degree?.totals?.total_full_mark;
+    total_lecture_attendance+=degree?.totals?.total_lecture_attendance;
+   
+    total_total_exam_degree+=degree?.totals?.total_exam_degree;
 
     return {
       ...exam,
@@ -79,6 +88,7 @@ export default function AllDegreesForStudentPage() {
     }
   });
 
+  console.log("llllllllll",total_full_mark_degree,total_lecture_attendance,total_total_exam_degree)
     const fetchAndExport = async (type) => {
         try {
             // const exportData = data?.getUsersRequiredFees?.map((user, i) => {
@@ -140,13 +150,7 @@ export default function AllDegreesForStudentPage() {
                         overflowX: "auto", // ✅ مهم جدًا عشان الجدول يعمل scroll داخل الـ Grid
                     }}
                 >
-                    {/* {
-                        updatingStatus && <CircularProgress
-                            size={26}
-                            thickness={8}
-                            sx={{ color: "black" }}
-                        />
-                    } */}
+                   
 
                     <Header
                         title={t("Dashboard.studentTotalDegree")}
