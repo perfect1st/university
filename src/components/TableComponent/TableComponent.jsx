@@ -23,6 +23,7 @@ import { ReactComponent as InfoIcon } from "../../assets/InfoIcon.svg";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { baseURL } from "../../Api/apolloClient";
+import SaveIcon from '@mui/icons-material/Save';
 
 // Define only necessary status styles
 const statusStyles = {
@@ -63,7 +64,9 @@ const TableComponent = ({
   activeStatusLabel="true",
   inActiveStatusLabel="false",
   hasEditBtn=false,
-  handleEditClick
+  handleEditClick,
+  hasDetailsBtn=false,
+  onClickDetails
 }) => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
@@ -352,6 +355,20 @@ const TableComponent = ({
                     </TableCell>
                   ))}
 
+                  {
+                    hasDetailsBtn&&<>
+                    <TableCell align="center" sx={{ border: "1px solid #e0e0e0", py: { xs: 0.75, sm: 1.5 } , borderRadius:"0.5" }}>
+                    <Button
+                               onClick={()=>onClickDetails(row)} 
+                                  variant="contained"
+                                 
+                                  sx={{ mt: 1, mb: 2, py: 1.5, display: "flex", gap: 0.5 , backgroundColor : theme.palette.info.main }}
+                                
+                                >
+                                        {t("Details")} 
+                                </Button>  
+                    </TableCell></>
+                  }
                   {!dontShowActions && (
                     <TableCell
                       align="center"
@@ -418,6 +435,7 @@ const TableComponent = ({
                       )}
                     </TableCell>
                   )}
+                  
                 </TableRow>
               );
             })}

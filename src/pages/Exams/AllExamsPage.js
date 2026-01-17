@@ -90,6 +90,7 @@ export default function AllExamsPage() {
         { key: "full_mark_degree", label: t("studentDashboard.fullmarkDegree") },
         { key: "lecture_attendance_mark", label: t("Dashboard.lectureAttendence") },
         { key: "date_of_exam", label: t("Date") },
+        // { key: "action", label: t("Action") },
         // { key: "is_paid", label: t("Status") }
     ];
 
@@ -144,6 +145,14 @@ export default function AllExamsPage() {
     };
 
     const addNavigate = () => navigate('add');
+
+    const studentDegreesNavigate=(row) => {
+        console.log("row",row);
+
+        navigate(`examStudentDegrees/${row?.id}`,{
+            state:row
+        });
+    };
 
     const handleDetailsClick = (selectedRow) => {
         console.log('handleDetailsClick', selectedRow);
@@ -282,10 +291,13 @@ export default function AllExamsPage() {
                         }}
                         handleDetailsClick={handleDetailsClick}
                         onStatusChange={onStatusChange}
+                        onClickDetails={studentDegreesNavigate}
 
                         arPopulateKey={"fullname"}
                         enPopulateKey={"fullname"}
                         showStatusChange={false}
+                        hasDetailsBtn={true}
+                        // hasEditBtn={true}
                     // activeStatusLabel={"paid"}
                     // inActiveStatusLabel={"unpaid"}
                     />

@@ -213,3 +213,36 @@ query MaterialsByDoctor($doctor_id:ID!) {
     }
 }
 `;
+
+export const GET_STUDENT_BY_MATERIAL_ID=gql`
+query StudentsByMaterial($material_id:ID!) {
+    studentsByMaterial(material_id: $material_id) {
+        id
+        first_name
+        second_name
+        third_name
+        fourth_name
+        birthdate
+        gender
+        is_paid
+        paid_document_file
+        high_school_certificate_file
+        address
+        status
+        mobile
+        home_tel
+        email
+        is_inside_yemen
+        transactions_id
+        national_id_type
+        national_id
+        education_year
+        study_place
+        high_school_student_number
+        general_grade
+        gpa
+        createdAt
+        updatedAt
+    }
+}
+`;

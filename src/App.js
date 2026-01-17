@@ -100,6 +100,7 @@ import AllLectureSessionsPage from "./pages/LectureSessionDetails/AllLectureSess
 import AllExamsPage from "./pages/Exams/AllExamsPage";
 import AddExamPage from "./pages/Exams/AddExamPage";
 import ExamDetailsPage from "./pages/Exams/ExamDetailsPage";
+import ExamStudentDegreesPage from "./pages/Exams/ExamStudentDegreesPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -777,7 +778,7 @@ function App() {
 
                   </Route>
 
-                    {/* المحاضرات */}
+                  {/* المحاضرات */}
                   <Route path="/lecturesSchedule">
                     <Route index element={
                       <MainLayout isLoggedIn={true}>
@@ -795,7 +796,7 @@ function App() {
                         <LectureDetailsPage />
                       </MainLayout>
                     } />
-                     <Route path="edit/:id" element={
+                    <Route path="edit/:id" element={
                       <MainLayout isLoggedIn={true}>
                         <EditLecturePage />
                       </MainLayout>
@@ -866,7 +867,7 @@ function App() {
 
                   </Route>
 
-                     {/* رسوم الطلاب */}
+                  {/* رسوم الطلاب */}
                   <Route path="/requiredFees">
                     <Route index element={
                       <MainLayout isLoggedIn={true}>
@@ -888,8 +889,8 @@ function App() {
 
                   </Route>
 
-                    {/* Doctor Dashboard Pages */}
-                     <Route
+                  {/* Doctor Dashboard Pages */}
+                  <Route
                     path="/DoctorlecturesSchedule"
                     element={
                       <MainLayout isLoggedIn={true}>
@@ -903,38 +904,38 @@ function App() {
                     path="/LectureSessionDetails"
                   >
                     <Route
-                    index
-                    element={
-                      <MainLayout isLoggedIn={true}>
-                        <AllLectureSessionsPage />
-                      </MainLayout>
-                    }
-                     />
+                      index
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <AllLectureSessionsPage />
+                        </MainLayout>
+                      }
+                    />
 
                     <Route
-                    path=":id"
-                    element={
-                      <MainLayout isLoggedIn={true}>
-                        <LectureSessionDetails />
-                      </MainLayout>
-                    }
-                     />
-                    </Route>
+                      path=":id"
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <LectureSessionDetails />
+                        </MainLayout>
+                      }
+                    />
+                  </Route>
 
-                    <Route
+                  <Route
                     path="/exams"
-                    >
+                  >
 
-                       <Route
-                    index
-                    element={
-                      <MainLayout isLoggedIn={true}>
-                        <AllExamsPage />
-                      </MainLayout>
-                    }
-                     />
+                    <Route
+                      index
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <AllExamsPage />
+                        </MainLayout>
+                      }
+                    />
 
-                      <Route path="add" element={
+                    <Route path="add" element={
                       <MainLayout isLoggedIn={true}>
                         <AddExamPage />
                       </MainLayout>
@@ -946,8 +947,14 @@ function App() {
                       </MainLayout>
                     } />
 
+                    <Route path="examStudentDegrees/:id" element={
+                      <MainLayout isLoggedIn={true}>
+                        <ExamStudentDegreesPage />
+                      </MainLayout>
+                    } />
 
-                    </Route>
+
+                  </Route>
 
 
                 </Route>
