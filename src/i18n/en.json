@@ -326,7 +326,11 @@
     "videos":"Videos",
     "lectureSchedules":"lecture Schedules",
     "exams":"Exams",
-    "lectureAttendence":"lecture Attendence"
+    "lectureAttendence":"lecture Attendence",
+    "studentDegrees":"student Degrees",
+     "studentDegree": "Student Degree",
+  "lectureAttendance": "Lecture Attendance",
+  "examAttendance": "Exam Attendance"
   },
   "lectures":{
     "pending":"not started yet",

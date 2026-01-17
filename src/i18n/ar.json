@@ -181,7 +181,7 @@
     "minAcademyHours": "اقل عدد ساعات",
     "maxAcademyHours": "اقصي عدد ساعات",
     "hoursError": " يجب ان يكون عدد الساعات اكبر من الحد الادني واقل من الحد الاقصي للترم",
-    "section":"السكشن"
+    "section": "السكشن"
   },
   "registrationSteps": {
     "title": "خطوات التسجيل",
@@ -264,7 +264,7 @@
     "name_en": "اسم {{item}} بالانجليزية",
     "flag": "علم الدولة",
     "save": "حفظ",
-    "close":"اغلاق"
+    "close": "اغلاق"
   },
   "Users": "المستخدمون",
   "Users Details": "تفاصيل المستخدمين",
@@ -354,24 +354,27 @@
     "LecturesSchedule": "جدول المحاضرات",
     "subjectDetails": "أدخل تفاصيل المادة لإضافتها إلى الجدول",
     "saveSubject": "حفظ المادة",
-    "confirm":"هل أنت متأكد من الحذف؟",
-    "toDayLectures":"محاضرات اليوم",
-    "startnow":"ابدأ الان",
-    "lectureLink":"ادخل رابط المحاضرة",
-    "enterLecture":"دخول المحاضرة",
-    "session_task":"الواجبات",
-    "attachments":"المرفقات",
-    "videos":"الفيديوهات",
-    "lectureSchedules":"سجلات المحاضرات",
-     "exams":"الامتحانات",
-     "lectureAttendence":"درجة الحضور"
+    "confirm": "هل أنت متأكد من الحذف؟",
+    "toDayLectures": "محاضرات اليوم",
+    "startnow": "ابدأ الان",
+    "lectureLink": "ادخل رابط المحاضرة",
+    "enterLecture": "دخول المحاضرة",
+    "session_task": "الواجبات",
+    "attachments": "المرفقات",
+    "videos": "الفيديوهات",
+    "lectureSchedules": "سجلات المحاضرات",
+    "exams": "الامتحانات",
+    "lectureAttendence": "درجة الحضور",
+    "studentDegrees": "درجات الطلاب",
+    "studentDegree": "درجة الطالب",
+    "lectureAttendance": "حضور المحاضرات",
+    "examAttendance": "حضور الامتحانات"
   },
-
-  "lectures":{
-    "pending":"لم تبدأ بعد",
-    "started":"نشطة",
-    "ended":"منتهية",
-    "canceled":"ملغاه"
+  "lectures": {
+    "pending": "لم تبدأ بعد",
+    "started": "نشطة",
+    "ended": "منتهية",
+    "canceled": "ملغاه"
   },
   "submit": "تأكيد",
   "error": "حدث خطأ حاول مرة اخري",
@@ -396,10 +399,9 @@
   "to": "الى",
   "day": "اليوم",
   "doctorName": "اسم المحاضر",
-  "completeData":"من فضلك اكمل البيانات",
-  "noData":"لا يوجد بيانات",
-  "Date":"التاريخ",
-  "Time":"الوقت",
-  "days":"الايام"
-
+  "completeData": "من فضلك اكمل البيانات",
+  "noData": "لا يوجد بيانات",
+  "Date": "التاريخ",
+  "Time": "الوقت",
+  "days": "الايام"
 }

@@ -16,6 +16,7 @@ import {
   alpha,
   Button,
   useMediaQuery,
+  TextField,
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { ReactComponent as SortIcon } from "../../assets/Sort-icon.svg";
@@ -41,7 +42,7 @@ const statusStyles = {
 
 const TableComponent = ({
   columns,
-  hasNavigateBtn=false,
+  hasNavigateBtn = false,
   navigateBtnTitle,
   navigateTo,
   data,
@@ -49,7 +50,7 @@ const TableComponent = ({
   onViewDetails,
   statusKey = "status",
   showStatusChange = true,
-  hasObject=false,
+  hasObject = false,
   arPopulateKey,
   enPopulateKey,
   nestedPopulateKey,
@@ -61,11 +62,11 @@ const TableComponent = ({
   onActionClick,
   onSortClick,
   handleDetailsClick,
-  activeStatusLabel="true",
-  inActiveStatusLabel="false",
-  hasEditBtn=false,
+  activeStatusLabel = "true",
+  inActiveStatusLabel = "false",
+  hasEditBtn = false,
   handleEditClick,
-  hasDetailsBtn=false,
+  hasDetailsBtn = false,
   onClickDetails
 }) => {
   const { t, i18n } = useTranslation();
@@ -75,9 +76,9 @@ const TableComponent = ({
   const [selectedRow, setSelectedRow] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
-  const location=useLocation();
+  const location = useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  
+
   const chipRefs = useRef({});
   const [maxChipWidth, setMaxChipWidth] = useState(0);
 
@@ -127,51 +128,51 @@ const TableComponent = ({
   const visibleColumns = columns?.filter((col) => !col.isPrivate);
 
   return (
-    <TableContainer 
-      component={Paper}  
+    <TableContainer
+      component={Paper}
       // PaperProps={{
       //   sx: { boxShadow: "none !important" , width:"50%", }
       // }} 
       // sx={{ width: "100%", boxShadow: "none !important" ,maxWidth: "100%",overflowX: "auto" }}
       sx={{
         width: isMobile ? "90%" : "100%",
-    overflowX: "auto", // ✅ لو الأعمدة كتيرة بيعمل scroll تلقائي
-    boxShadow: "none",
+        overflowX: "auto", // ✅ لو الأعمدة كتيرة بيعمل scroll تلقائي
+        boxShadow: "none",
       }}
     >
-      <Box sx={{ 
-        overflowX: "auto", 
+      <Box sx={{
+        overflowX: "auto",
         // width: "100%",
         boxShadow: "none !important",
-        
-    width: "100%", // 👈 العرض اللي عايزه
-    [theme.breakpoints.down("sm")]: {
-      width: "60%", // 👈 للموبايل
-      overflow:"scroll"
-    },
-  
-          }}>
+
+        width: "100%", // 👈 العرض اللي عايزه
+        [theme.breakpoints.down("sm")]: {
+          width: "60%", // 👈 للموبايل
+          overflow: "scroll"
+        },
+
+      }}>
         <Table
-         sx={{
-     
-      minWidth: 600, // ✅ يحافظ على شكل الأعمدة لكن يظل مرن
-      borderCollapse: "collapse",
-      direction: isArabic ? "ltr" : "rtl",
-      "& .MuiTableCell-root": {
-        textAlign: "start",
-      },
-    }}
-    //       sx={{
-    //         minWidth: 600,
-    //         borderCollapse: "collapse",
-    //         boxShadow: "none !important",
-    //         direction: isArabic ? "ltr" : "rtl",
-    //         overflowX: "auto",
-            
-    // "& .MuiTableCell-root": {
-    //   textAlign:  "start" ,
-    // },
-    //       }}
+          sx={{
+
+            minWidth: 600, // ✅ يحافظ على شكل الأعمدة لكن يظل مرن
+            borderCollapse: "collapse",
+            direction: isArabic ? "ltr" : "rtl",
+            "& .MuiTableCell-root": {
+              textAlign: "start",
+            },
+          }}
+        //       sx={{
+        //         minWidth: 600,
+        //         borderCollapse: "collapse",
+        //         boxShadow: "none !important",
+        //         direction: isArabic ? "ltr" : "rtl",
+        //         overflowX: "auto",
+
+        // "& .MuiTableCell-root": {
+        //   textAlign:  "start" ,
+        // },
+        //       }}
         >
           <TableHead>
             <TableRow>
@@ -209,7 +210,7 @@ const TableComponent = ({
               ))}
               {!dontShowActions && (
                 <TableCell
-                 // align={i18n.dir() === "rtl" ? "right" : "left"}
+                  // align={i18n.dir() === "rtl" ? "right" : "left"}
                   sx={{
                     backgroundColor: theme.palette.background.secDefault,
                     border: "1px solid #F5F0F2",
@@ -226,16 +227,16 @@ const TableComponent = ({
             {data?.map((row) => {
               const status = row[statusKey];
               const styles = getStatusStyles(status);
-               // console.log("row[column.key]",visibleColumns[visibleColumns?.length-1].key);
+              console.log("row[column.key]", visibleColumns[visibleColumns?.length - 1].isInput);
 
               // console.log("styles.bgColor",styles.bgColor);
-             // console.log('rrrrrrrr',row.amount);
+              // console.log('rrrrrrrr',row);
               return (
                 <TableRow key={row.id} hover>
                   {visibleColumns?.map((column) => (
                     <TableCell
                       key={`${row.id}-${column.key}`}
-                     // align={i18n.dir() === "rtl" ? "left" : "left"}
+                      // align={i18n.dir() === "rtl" ? "left" : "left"}
                       sx={{
                         border: "1px solid #e0e0e0",
                         py: { xs: 0.75, sm: 1.5 },
@@ -243,131 +244,120 @@ const TableComponent = ({
                       }}
                     >
                       {
-                      column.key === statusKey && (
-                        // <Chip
-                        //   label={t(status)}
-                        //   ref={(el) => (chipRefs.current[row.id] = el)}
-                        //   sx={{
-                        //     cursor: showStatusChange ? "pointer" : "default",
-                        //     color:"success",
-                        //     variant:"filled",
-                        //     backgroundColor: styles.bgColor,
-                        //     border: `1px solid ${styles.borderColor}`,
-                        //     fontWeight: "bold",
-                        //     minWidth: maxChipWidth,
-                        //     borderRadius: 1,
-                        //     textTransform: "none",
-                        //     py: 0.5,
-                            
-                        //     "&:hover": showStatusChange
-                        //       ? {
-                        //           opacity: 0.9,
-                        //           transform: "scale(1.02)",
-                        //         }
-                        //       : {},
-                        //   }}
-                        // />
-                        <Chip
-                          label={t(status ? activeStatusLabel : inActiveStatusLabel)}
-                          color={status==true ? "success" : "error"}      // primary | secondary | success | error | info | warning
-                          variant="filled"     // filled | outlined
-                             sx={{
-                            cursor: showStatusChange ? "pointer" : "default",
-                            fontWeight: "bold",
-                            // display:"inline-flex",
-                            width:"100px",
-                            borderRadius: 2,
-                            textTransform: "none",
-                            py: 2,
-                            "& .MuiChip-label": {
-      width: "100%",
-      textAlign: "center",
-    },
-                            "&:hover": showStatusChange
-                              ? {
+                        column.key === statusKey && (
+                          // <Chip
+                          //   label={t(status)}
+                          //   ref={(el) => (chipRefs.current[row.id] = el)}
+                          //   sx={{
+                          //     cursor: showStatusChange ? "pointer" : "default",
+                          //     color:"success",
+                          //     variant:"filled",
+                          //     backgroundColor: styles.bgColor,
+                          //     border: `1px solid ${styles.borderColor}`,
+                          //     fontWeight: "bold",
+                          //     minWidth: maxChipWidth,
+                          //     borderRadius: 1,
+                          //     textTransform: "none",
+                          //     py: 0.5,
+
+                          //     "&:hover": showStatusChange
+                          //       ? {
+                          //           opacity: 0.9,
+                          //           transform: "scale(1.02)",
+                          //         }
+                          //       : {},
+                          //   }}
+                          // />
+                          <Chip
+                            label={t(status ? activeStatusLabel : inActiveStatusLabel)}
+                            color={status == true ? "success" : "error"}      // primary | secondary | success | error | info | warning
+                            variant="filled"     // filled | outlined
+                            sx={{
+                              cursor: showStatusChange ? "pointer" : "default",
+                              fontWeight: "bold",
+                              // display:"inline-flex",
+                              width: "100px",
+                              borderRadius: 2,
+                              textTransform: "none",
+                              py: 2,
+                              "& .MuiChip-label": {
+                                width: "100%",
+                                textAlign: "center",
+                              },
+                              "&:hover": showStatusChange
+                                ? {
                                   opacity: 0.9,
                                   transform: "scale(1.02)",
                                 }
-                              : {},
-                          }}
-                        />
-                      ) 
-                      // : 
-                      // column.render ? (
-                      //   column.render(row)
-                      // ) : (
-                      //   row[column.key]
-                      // )
+                                : {},
+                            }}
+                          />
+                        )
+                        // : 
+                        // column.render ? (
+                        //   column.render(row)
+                        // ) : (
+                        //   row[column.key]
+                        // )
                       }
                       {
-                      
-                        // /uploads/
-                     typeof row[column.key] === "string"&& row[column.key]?.includes("/uploads/") 
-                      ?
-                      
-                      <Box
-      component="img"
-      src={`${baseURL}${row[column.key]}`}
-      alt="وصف الصورة"
-      loading="lazy"
-      sx={{
-        width: 100,          // ثابت أو '100%' للعرض الكامل
-        height: "auto",
-        objectFit: 'cover',  // contain, cover, fill
-        borderRadius: 2,     // زوايا مدورة
-        boxShadow: 1,
-      }}
-    />
-    :  
-    !row[column.key] || row[column.key] === "null" ?
-    hasNavigateBtn && column.key=="navigate" ? 
-      <Button
-                    variant="contained"
-                    onClick={() => navigate(`${navigateTo}/${row?.id}`,{
-                      state:row
-                    })}
-                    sx={{
-                      borderRadius: 2,
-                      // px: 3,
-                      py: 1,
-                      textTransform: "none",
-                      fontWeight: "bold",
-                    }}
-                    aria-label="سجل الآن"
-                  >
-                    {navigateBtnTitle}
-                  </Button>
-    :
-    column.key !== statusKey &&  t("dataNotFound")   
-     :
 
-      // hasObject ? isArabic ? 
-      // row[column.key]?.arPopulateKey : row[column.key]?.enPopulateKey
-      // :row[column.key]  visibleColumns[2]?.nested
-      row[column.key]?.id ?
-      // row[column.key]?.id[nestedPopulateKey] && column?.nested == "true" ?
-      // isArabic ? row[column.key]?.[nestedPopulateKey]?.[nestedArPopulateKey] : row[column.key]?.[nestedPopulateKey]?.[nestedEnPopulateKey]
-      // :
-      isArabic ? row[column.key]?.[arPopulateKey] : row[column.key]?.[enPopulateKey]
-      :
-      row[column.key]
+                        // /uploads/
+                        typeof row[column.key] === "string" && row[column.key]?.includes("/uploads/")
+                          ?
+
+                          <Box
+                            component="img"
+                            src={`${baseURL}${row[column.key]}`}
+                            alt="وصف الصورة"
+                            loading="lazy"
+                            sx={{
+                              width: 100,          // ثابت أو '100%' للعرض الكامل
+                              height: "auto",
+                              objectFit: 'cover',  // contain, cover, fill
+                              borderRadius: 2,     // زوايا مدورة
+                              boxShadow: 1,
+                            }}
+                          />
+                          :
+                          !row[column.key] || row[column.key] === "null" ?
+                            column?.isInput == true ?
+                              <TextField
+                               
+                                variant="outlined"
+                                fullWidth
+                              />
+                              :
+                              column.key !== statusKey && t("dataNotFound")
+                            :
+
+                            // hasObject ? isArabic ? 
+                            // row[column.key]?.arPopulateKey : row[column.key]?.enPopulateKey
+                            // :row[column.key]  visibleColumns[2]?.nested
+                            row[column.key]?.id ?
+                              // row[column.key]?.id[nestedPopulateKey] && column?.nested == "true" ?
+                              // isArabic ? row[column.key]?.[nestedPopulateKey]?.[nestedArPopulateKey] : row[column.key]?.[nestedPopulateKey]?.[nestedEnPopulateKey]
+                              // :
+                              isArabic ? row[column.key]?.[arPopulateKey] : row[column.key]?.[enPopulateKey]
+                              :
+                              row[column.key]
                       }
                     </TableCell>
                   ))}
 
                   {
-                    hasDetailsBtn&&<>
-                    <TableCell align="center" sx={{ border: "1px solid #e0e0e0", py: { xs: 0.75, sm: 1.5 } , borderRadius:"0.5" }}>
-                    <Button
-                               onClick={()=>onClickDetails(row)} 
-                                  variant="contained"
-                                 
-                                  sx={{ mt: 1, mb: 2, py: 1.5, display: "flex", gap: 0.5 , backgroundColor : theme.palette.info.main }}
-                                
-                                >
-                                        {t("Details")} 
-                                </Button>  
-                    </TableCell></>
+                    hasDetailsBtn && <>
+                      <TableCell align="center" sx={{ border: "1px solid #e0e0e0", py: { xs: 0.75, sm: 1.5 }, borderRadius: "0.5" }}>
+                        <Button
+                          onClick={() => onClickDetails(row)}
+                          variant="contained"
+
+                          sx={{ mt: 1, mb: 2, py: 1.5, display: "flex", gap: 0.5, backgroundColor: theme.palette.info.main }}
+
+                        >
+                          {t("Details")}
+                        </Button>
+                      </TableCell></>
                   }
                   {!dontShowActions && (
                     <TableCell
@@ -375,17 +365,17 @@ const TableComponent = ({
                       sx={{
                         border: "1px solid #e0e0e0",
                         py: { xs: 0.75, sm: 1.5 },
-                        textAlign:isArabic ? "right" : "left",
+                        textAlign: isArabic ? "right" : "left",
                       }}
                     >
                       {actionIconType === "details" ? (
                         <Button
                           variant="contained"
                           color="primary"
-                          onClick={(e) =>{
+                          onClick={(e) => {
                             console.log('uuuuuuuuuuuuuu');
                             onActionClick?.(e, row);
-                          } }
+                          }}
                           sx={{
                             textTransform: "none",
                             fontWeight: "bold",
@@ -403,7 +393,7 @@ const TableComponent = ({
                           size="small"
                           onClick={(e) => {
                             onActionClick?.(e, row)
-                           // navigate();
+                            // navigate();
                           }}
                           sx={{
                             border: `1px solid ${theme.palette.primary.main}`,
@@ -418,10 +408,10 @@ const TableComponent = ({
                       ) : (
                         <IconButton
                           size="small"
-                          onClick={(e) =>{
+                          onClick={(e) => {
                             // console.log('llllllllllllllllllllllllll');
-                              handleClick(e, row);
-                          } }
+                            handleClick(e, row);
+                          }}
                           sx={{
                             border: `1px solid ${theme.palette.info.main}`,
                             borderRadius: 1,
@@ -435,7 +425,7 @@ const TableComponent = ({
                       )}
                     </TableCell>
                   )}
-                  
+
                 </TableRow>
               );
             })}
@@ -463,10 +453,10 @@ const TableComponent = ({
         {/* Details */}
         {!isInDetails && (
           <MenuItem
-            onClick={()=>{
+            onClick={() => {
               handleDetailsClick(selectedRow);
 
-           // console.log('handleDetailsClick',selectedRow);
+              // console.log('handleDetailsClick',selectedRow);
             }}
             sx={{
               borderLeft: isArabic
@@ -483,9 +473,9 @@ const TableComponent = ({
         )}
 
         {/* edit */}
-         {hasEditBtn && (
+        {hasEditBtn && (
           <MenuItem
-            onClick={()=>{
+            onClick={() => {
               handleEditClick(selectedRow);
             }}
             sx={{
@@ -498,10 +488,10 @@ const TableComponent = ({
               py: 1,
             }}
           >
-           تعديل
+            تعديل
           </MenuItem>
         )}
-        
+
         {/* Status options - only show if enabled */}
         {showStatusChange && selectedRow && (
           <>
