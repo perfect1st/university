@@ -368,5 +368,7 @@
   "Time": "Time",
   "days": "Days",
   "yes": "yes",
-  "no": "no"
+  "no": "no",
+  "admin": "admin",
+  "doctor": "doctor"
 }
