@@ -328,7 +328,8 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       sx={{
         width: 230,
         // minHeight: "100%",
-          height: "auto",
+          // height: "auto",
+           height: isMobile ? "initial" : "-webkit-fill-available",
         
         background: theme.palette.background.secDefault,
         color: theme.palette.primary.main,
@@ -368,7 +369,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
           // console.log("IconComponent", IconComponent);
 
           return (
-            <React.Fragment key={item.key}>
+            <React.Fragment key={item.key} sx={{height:"100%"}}>
               <Box sx={{ px: 1, mb: 0.5 }}>
                 <ListItemButton
                   component={item.path ? Link : "div"}
@@ -552,8 +553,8 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
           display: { xs: "none", md: "block" },
           width: 230,
           flexShrink: 0,
-          height:"fit-content",
-          minHeight:"100vh",
+          height:"-webkit-fill-available",
+          // minHeight:"100vh",
         }}
       >
         {drawerContent}
