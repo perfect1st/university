@@ -322,7 +322,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
     <Box
       sx={{
         width: 230,
-        height: "100%",
+        // height: "100%",
         background: theme.palette.background.secDefault,
         color: theme.palette.primary.main,
         pt: 2,

@@ -167,6 +167,7 @@ function App() {
     () =>
       createTheme({
         direction: i18n.language === "ar" ? "rtl" : "ltr",
+        
         palette: {
           mode,
           primary: {

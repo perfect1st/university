@@ -149,7 +149,15 @@ const TableComponent = ({
 
           width: "100%", // 👈 العرض اللي عايزه
           [theme.breakpoints.down("sm")]: {
-            width: "60%", // 👈 للموبايل
+            width: "90%", // 👈 للموبايل
+            overflow: "scroll",
+          },
+           [theme.breakpoints.down(500)]: {
+            width: "75%", // 👈 للموبايل
+            overflow: "scroll",
+          },
+           [theme.breakpoints.down(400)]: {
+            width: "65%", // 👈 للموبايل
             overflow: "scroll",
           },
         }}
