@@ -5,6 +5,8 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { getUserCookie } from "../../hooks/authCookies";
 import { Close } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { openNav } from "../../redux/slices/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 
 export default function SecondHeader() {
@@ -12,8 +14,15 @@ export default function SecondHeader() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const[searchParams,setSearchParams]=useSearchParams();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isNavOpen=useSelector(state=>state.user.isNavOpen);
+
+  // console.log("isNavOpen",isNavOpen);
+
+  // isNavOpen
   
   
   const currentPath = location.pathname;
@@ -47,8 +56,9 @@ export default function SecondHeader() {
         
         {
           isMobile&&<IconButton onClick={() => {
-          searchParams.set("mobileOpen",true);
-          setSearchParams(searchParams);
+          // searchParams.set("mobileOpen",true);
+          // setSearchParams(searchParams);
+            dispatch(openNav());
         }}>
          <MenuIcon fontSize="large" />
         </IconButton>

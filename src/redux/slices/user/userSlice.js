@@ -8,7 +8,8 @@ const initialState = {
   loading: false,
   error: null,
   oneUser: null,
-  loggedUser: null
+  loggedUser: null,
+  isNavOpen: false
 };
 
 const userSlice = createSlice({
@@ -77,9 +78,18 @@ const userSlice = createSlice({
     storeLoggedUser:(state,action)=>{
      // console.log('action',action);
       state.loggedUser = action.payload
-    }
+    },
+
+    openNav:(state,action)=>{
+      state.isNavOpen = true;
+    },
+
+    closeNav:(state,action)=>{
+      state.isNavOpen = false;
+    },
+
   }
 });
 
-export const { storeLoggedUser } = userSlice.actions;
+export const { storeLoggedUser , openNav , closeNav } = userSlice.actions;
 export default userSlice.reducer;

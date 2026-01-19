@@ -24,8 +24,10 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 // import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import CloseIcon from "@mui/icons-material/Close";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import FlagIcon from "@mui/icons-material/Flag";
+import { closeNav } from "../redux/slices/user/userSlice";
+
 
 const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const theme = useTheme();
@@ -33,8 +35,11 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const location = useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+  const dispatch = useDispatch();
+
   const [openKeys, setOpenKeys] = useState({});
   const me = useSelector((state) => state.user.loggedUser);
+  const isNavOpen=useSelector(state=>state.user.isNavOpen);
 
   const lang = i18n.language;
 
@@ -337,7 +342,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
             mb: 2,
           }}
         >
-          <IconButton onClick={() => onClose()}>
+          <IconButton onClick={() => dispatch(closeNav())}>
             <CloseIcon />
           </IconButton>
         </Box>
@@ -601,8 +606,8 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
 
       <Drawer
         variant="temporary"
-        open={mobileOpen}
-        onClose={() => onClose()}
+        open={isNavOpen}
+        onClose={() =>dispatch(closeNav())}
         ModalProps={{ keepMounted: true }}
         sx={{
           display: { xs: "block", md: "none" },

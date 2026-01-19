@@ -38,12 +38,12 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
 
  console.log('isMobile',isMobileOpen);
 
- const onClose=()=>{
-   // localStorage.setItem()
-    searchParams.set("mobileOpen",false);
-    setSearchParams(searchParams);
-    setIsMobileOpen(false);
- }
+//  const onClose=()=>{
+//    // localStorage.setItem()
+//     searchParams.set("mobileOpen",false);
+//     setSearchParams(searchParams);
+//     setIsMobileOpen(false);
+//  }
   
 
   const loggedUser=useSelector(state=>state.user.loggedUser);
@@ -69,7 +69,7 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
 console.log("hideSecandHeader",!hideSecandHeader)
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
-     {isAuthenticated && !hideSecandHeader &&<Sidebar mobileOpen={isMobileOpen} onClose={onClose} />}
+     {isAuthenticated && !hideSecandHeader &&<Sidebar   />}
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
         {/* Header لو عندك */}
         <Box component="main" sx={{ flex: 1 }}>
