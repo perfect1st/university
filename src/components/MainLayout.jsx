@@ -16,7 +16,7 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const[searchParams,setSearchParams]=useSearchParams();
 
- const [isMobileOpen, setIsMobileOpen] = useState(false);
+//  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
  const {
      data: { me } = {},
@@ -24,9 +24,7 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
      error: userError,
    } = useQuery(GET_LOGGED_USER_BY_TOKEN, { fetchPolicy: "network-only" });
 
- useEffect(()=>{
-  if(searchParams.get("mobileOpen")) setIsMobileOpen(searchParams.get("mobileOpen")==="true");
- },[searchParams]);
+ 
 
   useEffect(() => {
      if(me?.id){
@@ -36,14 +34,9 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
  
 
 
- console.log('isMobile',isMobileOpen);
+ 
 
-//  const onClose=()=>{
-//    // localStorage.setItem()
-//     searchParams.set("mobileOpen",false);
-//     setSearchParams(searchParams);
-//     setIsMobileOpen(false);
-//  }
+
   
 
   const loggedUser=useSelector(state=>state.user.loggedUser);
