@@ -76,7 +76,6 @@ export default function EditSupportTicketPage() {
                     subject: values?.subject,
                     message: values?.message,
                     type: selectedType,
-                    user_id:location?.state?.user_id?.id,
                     admin_reply:values?.admin_reply
                 };
     
@@ -200,6 +199,19 @@ export default function EditSupportTicketPage() {
                     error={formik.touched.message && Boolean(formik.errors.message)}
                     helperText={formik.touched.message && formik.errors.message}
                      isDisabled={me?.role!=="admin" ? true :false}
+                />
+
+                 <HorizentalTextField
+                    isMultiline={true}
+                    title={t("Dashboard.adminReply", { item: translateText2 })}
+                    fieldID={"admin_reply"}
+                    fieldName={"admin_reply"}
+                    placeholder={t("Dashboard.adminReply", { item: translateText2 })}
+                    value={formik.values.admin_reply}
+                    onChange={formik.handleChange}
+                    error={formik.touched.admin_reply && Boolean(formik.errors.admin_reply)}
+                    helperText={formik.touched.admin_reply && formik.errors.admin_reply}
+                    isDisabled={me?.role!=="admin" ? true :false}
                 />
 
                
