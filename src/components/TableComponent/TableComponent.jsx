@@ -136,7 +136,7 @@ const TableComponent = ({
       // }}
       // sx={{ width: "100%", boxShadow: "none !important" ,maxWidth: "100%",overflowX: "auto" }}
       sx={{
-        width: isMobile ? "90%" : "100%",
+        width: isMobile ? "70%" : "100%",
         overflowX: "auto", // ✅ لو الأعمدة كتيرة بيعمل scroll تلقائي
         boxShadow: "none",
       }}
@@ -198,10 +198,10 @@ const TableComponent = ({
                 >
                   <Box
                     sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      width: "100%",
+                      // display: "flex",
+                      // alignItems: "center",
+                      // justifyContent: "space-between",
+                      // width: "100%",
                     }}
                   >
                     {column.label}
