@@ -28,7 +28,6 @@ import { useDispatch, useSelector } from "react-redux";
 import FlagIcon from "@mui/icons-material/Flag";
 import { closeNav } from "../redux/slices/user/userSlice";
 
-
 const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const theme = useTheme();
   const { i18n } = useTranslation();
@@ -39,7 +38,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
 
   const [openKeys, setOpenKeys] = useState({});
   const me = useSelector((state) => state.user.loggedUser);
-  const isNavOpen=useSelector(state=>state.user.isNavOpen);
+  const isNavOpen = useSelector((state) => state.user.isNavOpen);
 
   const lang = i18n.language;
 
@@ -92,6 +91,15 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
         label: {
           ar: "المدفوعات",
           en: "Fee Payments",
+        },
+      },
+
+      {
+        key: "support",
+        path: "/Support",
+        label: {
+          ar: "الدعم الفني",
+          en: "Support",
         },
       },
     ];
@@ -250,6 +258,14 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
           en: "Profile",
         },
       },
+      {
+        key: "support",
+        path: "/Support",
+        label: {
+          ar: "الدعم الفني",
+          en: "Support",
+        },
+      },
     ];
 
   if (me?.role == "doctor")
@@ -301,24 +317,17 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
           en: "Student Degrees",
         },
       },
+      {
+        key: "support",
+        path: "/Support",
+        label: {
+          ar: "الدعم الفني",
+          en: "Support",
+        },
+      },
     ];
 
-  // useEffect(() => {
-  //   const newOpenKeys = {};
-  //   menuItems.forEach((item) => {
-  //     if (item.children) {
-  //       const isChildActive = item.children.some((child) =>
-  //         matchPath(child.path, location.pathname)
-  //       );
-  //       if (isChildActive) {
-  //         newOpenKeys[item.key] = true;
-  //       }
-  //     }
-  //   });
-  //   setOpenKeys((prev) => ({ ...prev, ...newOpenKeys }));
-  // }, [location.pathname, menuItems]);
-
-  console.log("menuItems", menuItems);
+  
 
   const toggleOpen = (key) =>
     setOpenKeys((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -327,10 +336,14 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
     <Box
       sx={{
         width: 230,
-  //       minHeight: "100vh",
-  // height: "fit-content",
-         height: isMobile ?(me?.role=="admin" ? "auto" : "100vh")  : "-webkit-fill-available",
-        
+        //       minHeight: "100vh",
+        // height: "fit-content",
+        height: isMobile
+          ? me?.role == "admin"
+            ? "auto"
+            : "100vh"
+          : "-webkit-fill-available",
+
         background: theme.palette.background.secDefault,
         color: theme.palette.primary.main,
         pt: 2,
@@ -354,12 +367,11 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       <List component="nav">
         {menuItems.map((item, index) => {
           const hasChildren = !!item.children;
-         
 
           const isActiveParent = !!(
             hasChildren &&
             item.children.some((child) =>
-              matchPath(child.path, location.pathname)
+              matchPath(child.path, location.pathname),
             )
           );
 
@@ -369,14 +381,14 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
           // console.log("IconComponent", IconComponent);
 
           return (
-            <React.Fragment key={item.key} sx={{height:"100%"}}>
+            <React.Fragment key={item.key} sx={{ height: "100%" }}>
               <Box sx={{ px: 1, mb: 0.5 }}>
                 <ListItemButton
                   component={item.path ? Link : "div"}
                   to={item.path || undefined}
-                  onClick={() =>{
-                    if(hasChildren){
-                      toggleOpen(item.key)
+                  onClick={() => {
+                    if (hasChildren) {
+                      toggleOpen(item.key);
                     }
 
                     dispatch(closeNav());
@@ -465,7 +477,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                       {item.children.map((child) => {
                         const isChildActive = !!matchPath(
                           child.path,
-                          location.pathname
+                          location.pathname,
                         );
 
                         return (
@@ -553,7 +565,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
           display: { xs: "none", md: "block" },
           width: 230,
           flexShrink: 0,
-          height:"-webkit-fill-available",
+          height: "-webkit-fill-available",
           // minHeight:"100vh",
         }}
       >
@@ -563,13 +575,12 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       <Drawer
         variant="temporary"
         open={isNavOpen}
-        onClose={() =>dispatch(closeNav())}
+        onClose={() => dispatch(closeNav())}
         ModalProps={{ keepMounted: true }}
         sx={{
           display: { xs: "block", md: "none" },
           "& .MuiDrawer-paper": {
             width: 250,
-            
           },
         }}
       >

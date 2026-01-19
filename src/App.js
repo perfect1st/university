@@ -105,6 +105,9 @@ import AddExamStudentDegreePage from "./pages/Exams/AddExamStudentDegreePage";
 import StudentDegreesDetailsPage from "./pages/Exams/StudentDegreesDetailsPage";
 import AllDegreesForStudentPage from "./pages/Exams/AllDegreesForStudentPage";
 import AllStudentDegreesPage from "./pages/StudentDegrees/AllStudentDegreesPage";
+import GetAllSupportTicketsPage from "./pages/SupportTickets/GetAllSupportTicketsPage";
+import AddSupportTicketPage from "./pages/SupportTickets/AddSupportTicketPage";
+import EditSupportTicketPage from "./pages/SupportTickets/EditSupportTicketPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -984,6 +987,31 @@ function App() {
                           <AllStudentDegreesPage />
                         </MainLayout>
                       }  />
+
+                    {/* Support tickets */}
+                    <Route
+                    path="/Support" 
+                    >
+                      <Route
+                        index
+                        element={
+                          <MainLayout isLoggedIn={true}>
+                            <GetAllSupportTicketsPage />
+                          </MainLayout>
+                        }
+                      />
+                      <Route path="add" element={
+                      <MainLayout isLoggedIn={true}>
+                        <AddSupportTicketPage />
+                      </MainLayout>
+                    } />
+
+                    <Route path="details/:id" element={
+                      <MainLayout isLoggedIn={true}>
+                        <EditSupportTicketPage />
+                      </MainLayout>
+                    } />
+                    </Route>
                 </Route>
 
                 <Route path="/Maintenance" element={<Maintenance />} />

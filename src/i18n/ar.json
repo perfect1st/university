@@ -369,7 +369,10 @@
     "studentDegree": "درجة الطالب",
     "lectureAttendance": "حضور المحاضرات",
     "examAttendance": "حضور الامتحان",
-    "studentTotalDegree": "درجات الطالب"
+    "studentTotalDegree": "درجات الطالب",
+    "support":"الدعم الفني",
+    "message":"الرسالة",
+    "adminReply":"رد الادمن"
   },
   "lectures": {
     "pending": "لم تبدأ بعد",
@@ -408,7 +411,8 @@
   "yes": "نعم",
   "no": "لا",
   "admin": "ادمن",
-  "doctor": "معلم"
+  "doctor": "معلم",
+  "title":"العنوان"
  
   
 }

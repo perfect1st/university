@@ -45,3 +45,14 @@ export const YES_OR_NO_ARR = [
     { id: "true", labelAr: "نعم", labelEn: "Yes" },
     { id: "false", labelAr: "لا", labelEn: "No" }
 ];
+
+export const ticketTypes=[
+    { id: "complaint", labelAr: "شكوى", labelEn: "Complaint" },
+    { id: "suggestion", labelAr: "مقترح", labelEn: "Suggestion" },
+    { id: "postgraduate_studies", labelAr: "طلب دراسات عليا", labelEn: "Postgraduate Studies" }
+];
+
+export const isOpen = [
+    { id: "open", labelAr: "مفتوح", labelEn: "Open" },
+    { id: "closed", labelAr: "مغلق", labelEn: "Closed" }
+];

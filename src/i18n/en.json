@@ -331,7 +331,10 @@
     "studentDegree": "Student Degree",
     "lectureAttendance": "Lecture Attendance",
     "examAttendance": "Exam Attendance",
-    "studentTotalDegree": "Student Total Degree"
+    "studentTotalDegree": "Student Total Degree",
+    "support":"Support",
+    "message":"Message",
+    "adminReply":"Admin Reply"
   },
   "lectures": {
     "pending": "not started yet",
@@ -370,5 +373,6 @@
   "yes": "yes",
   "no": "no",
   "admin": "admin",
-  "doctor": "doctor"
+  "doctor": "doctor",
+  "title":"Title"
 }
