@@ -327,9 +327,9 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
     <Box
       sx={{
         width: 230,
-        // minHeight: "100%",
-          // height: "auto",
-           height: isMobile ? "initial" : "-webkit-fill-available",
+  //       minHeight: "100vh",
+  // height: "fit-content",
+         height: isMobile ?(me?.role=="admin" ? "auto" : "100vh")  : "-webkit-fill-available",
         
         background: theme.palette.background.secDefault,
         color: theme.palette.primary.main,
@@ -569,6 +569,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
           display: { xs: "block", md: "none" },
           "& .MuiDrawer-paper": {
             width: 250,
+            
           },
         }}
       >
