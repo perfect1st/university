@@ -327,7 +327,9 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
     <Box
       sx={{
         width: 230,
-        // height: "100%",
+        // minHeight: "100%",
+          height: "auto",
+        
         background: theme.palette.background.secDefault,
         color: theme.palette.primary.main,
         pt: 2,
@@ -550,6 +552,8 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
           display: { xs: "none", md: "block" },
           width: 230,
           flexShrink: 0,
+          height:"fit-content",
+          minHeight:"100vh",
         }}
       >
         {drawerContent}

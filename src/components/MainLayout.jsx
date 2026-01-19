@@ -16,7 +16,7 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const[searchParams,setSearchParams]=useSearchParams();
 
-//  const [isMobileOpen, setIsMobileOpen] = useState(false);
+ 
 
  const {
      data: { me } = {},
@@ -24,7 +24,7 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
      error: userError,
    } = useQuery(GET_LOGGED_USER_BY_TOKEN, { fetchPolicy: "network-only" });
 
- 
+//  
 
   useEffect(() => {
      if(me?.id){
@@ -62,7 +62,7 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
 console.log("hideSecandHeader",!hideSecandHeader)
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
-     {isAuthenticated && !hideSecandHeader &&<Sidebar   />}
+     {isAuthenticated && !hideSecandHeader &&<Sidebar  />}
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
         {/* Header لو عندك */}
         <Box component="main" sx={{ flex: 1 }}>
