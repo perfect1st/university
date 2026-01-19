@@ -201,7 +201,7 @@ export default function GetAllSupportTicketsPage() {
                         title={t("Dashboard.support")}
                         subtitle={t("Dashboard.support")}
                         i18n={i18n}
-                        haveBtn={true}
+                        haveBtn={ me?.role == "admin" ? false :true}
                         btn={t("addItem", { item: translateText })}
                         btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
                         onSubmit={addNavigate}

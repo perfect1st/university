@@ -147,46 +147,20 @@ export default function EditSupportTicketPage() {
                     onChange={formik.handleChange}
                     error={formik.touched.subject && Boolean(formik.errors.subject)}
                     helperText={formik.touched.subject && formik.errors.subject}
-                    isDisabled={me?.role!=="admin" ? true :false}
+                    isDisabled={true}
                 />
 
-                {/* الكلية */}
-                {
-                    me?.role=="admin"?<HorizentalTextFieldSelect
-                    t={t}
-                    title={t("profile.Gender")} defaultOptionLabel={t("select")}
-                    backgroundColor={theme.palette.background.inputBackGround}
-                    value={selectedType}
-                    setValue={setSelectedType}
-
-
-                    onBlur={(e) => {
-                        // console.log('blur',selectedSemester);
-                        if (selectedType != 0) formik.setFieldError("selectedType", undefined);
-
-                    }}
-
-                    error={formik.errors.selectedType && t("admissions.errors.required")}
-                    helperText={formik.errors.selectedType && t("admissions.errors.required")}
-                     isDisabled={me?.role!=="admin" ? true :false}
-
-
-                >
-                    <MenuItem value={0} selected>{t("select")}</MenuItem>
-                    {
-                        ticketTypes?.map(el => <MenuItem key={el?.id} value={el?.id}>{isArabic ? el?.labelAr : el?.labelEn}</MenuItem>)
-                    }
-                </HorizentalTextFieldSelect>
-                :
+                {/* نوع الشكوي */}
+               
                 <HorizentalTextField
                     title={t("profile.Gender", { item: translateText2 })}
                     fieldID={"message"}
                     fieldName={"message"}
                     placeholder={t("profile.Gender", { item: translateText2 })}
                     value={ isArabic ? ticketTypes?.find(el=>el?.id==selectedType)?.labelAr : ticketTypes?.find(el=>el?.id==selectedType)?.labelEn}
-                     isDisabled={me?.role!=="admin" ? true :false}
+                     isDisabled={true}
                 />
-                }
+               
                 
 
                 <HorizentalTextField
@@ -199,7 +173,7 @@ export default function EditSupportTicketPage() {
                     onChange={formik.handleChange}
                     error={formik.touched.message && Boolean(formik.errors.message)}
                     helperText={formik.touched.message && formik.errors.message}
-                     isDisabled={me?.role!=="admin" ? true :false}
+                     isDisabled={true}
                 />
 
                  <HorizentalTextField
