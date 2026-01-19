@@ -76,7 +76,8 @@ export default function EditSupportTicketPage() {
                     subject: values?.subject,
                     message: values?.message,
                     type: selectedType,
-                    admin_reply:values?.admin_reply
+                    admin_reply:values?.admin_reply,
+                    status:"closed"
                 };
     
     

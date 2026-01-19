@@ -49,7 +49,7 @@ export default function GetAllSupportTicketsPage() {
     });
 
     // get tickets for admin
-     const [
+    const [
         GetSupportTickets,
         {
             data: { getSupportTickets } = {},
@@ -65,53 +65,65 @@ export default function GetAllSupportTicketsPage() {
 
         if (me?.id) {
 
-            if(me?.role=="admin"){
+            if (me?.role == "admin") {
                 GetSupportTickets();
             }
-            else{
+            else {
                 GetSupportTicketsByUser({
-                variables: {
-                    userId: me.id,
-                },
-            });
+                    variables: {
+                        userId: me.id,
+                    },
+                });
             }
-            
+
         }
 
     }, [me]);
 
-    const columns = [
-    { key: "subject", label: t("title") },
-    { key: "type", label: t("profile.Gender") },
-    { key: "status", label: t("Status") },
-    // { key: "is_paid", label: t("Status") }
-  ];
+    let columns = [];
+
+    if (me?.role == "admin") {
+          columns = [
+            { key: "subject", label: t("title") },
+            { key: "type", label: t("profile.Gender") },
+            {key:"user_name",label:t("Dashboard.userName")},
+            { key: "status", label: t("Status") },
+        ];
+    }
+    else {
+        columns = [
+            { key: "subject", label: t("title") },
+            { key: "type", label: t("profile.Gender") },
+            { key: "status", label: t("Status") },
+        ];
+    }
 
     let ticketsToShow;
 
-    if(me?.role=="admin"){
-        ticketsToShow=getSupportTickets?.map((ticket) => {
-        return {
-            ...ticket,
-            subject: ticket?.subject,
-            type: isArabic ? ticketTypes.find((type) => type.id === ticket?.type)?.labelAr : ticketTypes.find((type) => type.id === ticket?.type)?.labelEn,
-            status: ticket?.status=="open" ? true :false
-        }
-    });
+    if (me?.role == "admin") {
+        ticketsToShow = getSupportTickets?.map((ticket) => {
+            return {
+                ...ticket,
+                subject: ticket?.subject,
+                type: isArabic ? ticketTypes.find((type) => type.id === ticket?.type)?.labelAr : ticketTypes.find((type) => type.id === ticket?.type)?.labelEn,
+                status: ticket?.status == "open" ? true : false,
+                user_name:ticket?.user_id?.fullname
+            }
+        });
     }
-    else{
-        ticketsToShow=getSupportTicketsByUser?.map((ticket) => {
-        return {
-            ...ticket,
-            subject: ticket?.subject,
-            type: isArabic ? ticketTypes.find((type) => type.id === ticket?.type)?.labelAr : ticketTypes.find((type) => type.id === ticket?.type)?.labelEn,
-            status: ticket?.status=="open" ? true :false
-        }
-    });
+    else {
+        ticketsToShow = getSupportTicketsByUser?.map((ticket) => {
+            return {
+                ...ticket,
+                subject: ticket?.subject,
+                type: isArabic ? ticketTypes.find((type) => type.id === ticket?.type)?.labelAr : ticketTypes.find((type) => type.id === ticket?.type)?.labelEn,
+                status: ticket?.status == "open" ? true : false
+            }
+        });
 
     }
 
-    console.log("ticketsToShow",ticketsToShow);
+    console.log("ticketsToShow", ticketsToShow);
 
     const fetchAndExport = async (type) => {
         try {
@@ -149,26 +161,26 @@ export default function GetAllSupportTicketsPage() {
     };
     const addNavigate = () => navigate('add');
 
-     const handleDetailsClick = (selectedRow) => {
-    console.log('handleDetailsClick', selectedRow);
-    
-    
-    let row ;
+    const handleDetailsClick = (selectedRow) => {
+        console.log('handleDetailsClick', selectedRow);
 
-    if(me?.role=="admin"){
-        row = getSupportTickets?.find(el => el?.id == selectedRow?.id);
+
+        let row;
+
+        if (me?.role == "admin") {
+            row = getSupportTickets?.find(el => el?.id == selectedRow?.id);
+        }
+        else {
+            row = getSupportTicketsByUser?.find(el => el?.id == selectedRow?.id);
+        }
+
+        console.log("row", row);
+
+        navigate(`details/${selectedRow?.id}`, {
+            state: row
+        });
+
     }
-    else{
-        row = getSupportTicketsByUser?.find(el => el?.id == selectedRow?.id);
-    }
-
-    console.log("row",row);
-
-    navigate(`details/${selectedRow?.id}`, {
-      state: row
-    });
-    
-  }
 
     console.log("getSupportTicketsByUser", getSupportTicketsByUser);
 
@@ -202,25 +214,25 @@ export default function GetAllSupportTicketsPage() {
                     />
 
                     <TableComponent
-                                columns={columns}
-                                data={ticketsToShow}
-                                // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
-                                loading={pageLoading}
-                                // isUsers={true}
-                                statusKey="status"
-                                arPopulateKey={"title_ar"}
-                                enPopulateKey={"title_en"}
-                                sx={{
-                                  flex: 1,
-                                  overflow: "auto",
-                                  boxShadow: 1,
-                                  borderRadius: 1,
-                                  width: "100%",
-                                }}
-                                handleDetailsClick={handleDetailsClick}
-                                // onStatusChange={onStatusChange}
-                                showStatusChange={false}
-                              />
+                        columns={columns}
+                        data={ticketsToShow}
+                        // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
+                        loading={pageLoading}
+                        // isUsers={true}
+                        statusKey="status"
+                        arPopulateKey={"title_ar"}
+                        enPopulateKey={"title_en"}
+                        sx={{
+                            flex: 1,
+                            overflow: "auto",
+                            boxShadow: 1,
+                            borderRadius: 1,
+                            width: "100%",
+                        }}
+                        handleDetailsClick={handleDetailsClick}
+                        // onStatusChange={onStatusChange}
+                        showStatusChange={false}
+                    />
                 </Grid>
             </Grid>
         </Box>
