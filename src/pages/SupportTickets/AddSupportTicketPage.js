@@ -26,7 +26,6 @@ export default function AddSupportTicketPage() {
     const location = useLocation();
 
     const [selectedType, setSelectedType] = useState(0);
-    const [selectedDepartment, setSelectedDepartment] = useState(0);
 
     const me = useSelector((state) => state.user.loggedUser);
 

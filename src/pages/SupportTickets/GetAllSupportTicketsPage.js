@@ -21,7 +21,7 @@ import { GET_FILTERED_EXAMS } from "../../graphql/ExamsQueries";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import { examTypes, isOpen, ticketTypes } from "../../constants";
-import { GET_SUPPORT_TICKETS_BY_USER_ID } from "../../graphql/supportTicketQueries";
+import { GET_ALL_SUPPORT_TICKETS, GET_SUPPORT_TICKETS_BY_USER_ID } from "../../graphql/supportTicketQueries";
 
 
 
@@ -37,6 +37,7 @@ export default function GetAllSupportTicketsPage() {
     const isArabic = i18n.language === "ar";
     const me = useSelector((state) => state.user.loggedUser);
 
+    // get tickets for student and doctor
     const [
         GetSupportTicketsByUser,
         {
@@ -47,16 +48,34 @@ export default function GetAllSupportTicketsPage() {
         fetchPolicy: "network-only",
     });
 
+    // get tickets for admin
+     const [
+        GetSupportTickets,
+        {
+            data: { getSupportTickets } = {},
+            loading: pageAdminLoading,
+        },
+    ] = useLazyQuery(GET_ALL_SUPPORT_TICKETS, {
+        fetchPolicy: "network-only",
+    });
+
 
     useEffect(() => {
         console.log("me", me);
 
         if (me?.id) {
-            GetSupportTicketsByUser({
+
+            if(me?.role=="admin"){
+                GetSupportTickets();
+            }
+            else{
+                GetSupportTicketsByUser({
                 variables: {
                     userId: me.id,
                 },
             });
+            }
+            
         }
 
     }, [me]);
@@ -68,13 +87,29 @@ export default function GetAllSupportTicketsPage() {
     // { key: "is_paid", label: t("Status") }
   ];
 
-    let ticketsToShow=getSupportTicketsByUser?.map((ticket) => {
+    let ticketsToShow;
+
+    if(me?.role=="admin"){
+        ticketsToShow=getSupportTickets?.map((ticket) => {
         return {
+            ...ticket,
             subject: ticket?.subject,
             type: isArabic ? ticketTypes.find((type) => type.id === ticket?.type)?.labelAr : ticketTypes.find((type) => type.id === ticket?.type)?.labelEn,
             status: ticket?.status=="open" ? true :false
         }
     });
+    }
+    else{
+        ticketsToShow=getSupportTicketsByUser?.map((ticket) => {
+        return {
+            ...ticket,
+            subject: ticket?.subject,
+            type: isArabic ? ticketTypes.find((type) => type.id === ticket?.type)?.labelAr : ticketTypes.find((type) => type.id === ticket?.type)?.labelEn,
+            status: ticket?.status=="open" ? true :false
+        }
+    });
+
+    }
 
     console.log("ticketsToShow",ticketsToShow);
 
@@ -116,17 +151,30 @@ export default function GetAllSupportTicketsPage() {
 
      const handleDetailsClick = (selectedRow) => {
     console.log('handleDetailsClick', selectedRow);
-    let row = getSupportTicketsByUser?.find(el => el?.id == selectedRow?.id);
+    
+    
+    let row ;
+
+    if(me?.role=="admin"){
+        row = getSupportTickets?.find(el => el?.id == selectedRow?.id);
+    }
+    else{
+        row = getSupportTicketsByUser?.find(el => el?.id == selectedRow?.id);
+    }
+
+    console.log("row",row);
+
     navigate(`details/${selectedRow?.id}`, {
       state: row
     });
+    
   }
 
     console.log("getSupportTicketsByUser", getSupportTicketsByUser);
 
     let translateText = isArabic ? "تذكرة" : "Ticket";
 
-    if (pageLoading) return <LoadingPage />;
+    if (pageLoading || pageAdminLoading) return <LoadingPage />;
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
             <Grid container spacing={3}>
@@ -171,6 +219,7 @@ export default function GetAllSupportTicketsPage() {
                                 }}
                                 handleDetailsClick={handleDetailsClick}
                                 // onStatusChange={onStatusChange}
+                                showStatusChange={false}
                               />
                 </Grid>
             </Grid>

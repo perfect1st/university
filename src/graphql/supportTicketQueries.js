@@ -44,3 +44,47 @@ query GetSupportTicketsByUser($userId: ID!) {
 }
 
 `;
+
+export const UPDATE_SUPPORT_TICKET_BY_ID=gql`
+mutation UpdateSupportTicket($id:ID!,$input:UpdateSupportTicketInput!) {
+    updateSupportTicket(id: $id, input: $input) {
+        id
+        subject
+        message
+        type
+        status
+        admin_reply
+        createdAt
+        updatedAt
+    }
+}
+`;
+
+export const GET_ALL_SUPPORT_TICKETS=gql`
+query GetSupportTickets {
+    getSupportTickets {
+        id
+        subject
+        message
+        type
+        status
+        admin_reply
+        createdAt
+        updatedAt
+        user_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
+    }
+}
+`;
