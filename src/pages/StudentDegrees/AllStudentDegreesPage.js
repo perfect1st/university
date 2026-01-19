@@ -58,7 +58,7 @@ export default function AllStudentDegreesPage() {
           },[me]);
 
     const columns = [
-    { key: "exam_name", label: t("profile.Name") },
+    { key: "student_name", label: t("profile.Name") },
     { key: "type", label: t("profile.Gender") },
     { key: "full_mark_degree", label: t("studentDashboard.fullmarkDegree") },
 

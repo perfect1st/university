@@ -56,7 +56,7 @@ export default function ScheduleTable({rows,canDelete=false}) {
         <TableContainer
             component={Paper}
             sx={{
-                maxWidth: isMobile? "90%" : "100%",
+                maxWidth: isMobile? "80%" : "100%",
                 overflowX: "auto", // <-- responsive scroll للموبايل
                 position: "relative"
             }}

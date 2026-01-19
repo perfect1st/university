@@ -119,7 +119,7 @@ export default function DoctorLecturesPage() {
 
                     <ScheduleTable rows={groupedTimeTablesByMainTimeTable} canDelete={false} />
 
-                    <Box display="flex" width={isMobile ? "55%" : "100%"} flexDirection="column" gap={3} py={3} borderTop="1px solid #cfd7e7">
+                    <Box display="flex" width={isMobile ? "80%" : "100%"} flexDirection="column" gap={3} py={3} borderTop="1px solid #cfd7e7">
                         {/* Title */}
                         <Box display="flex" gap={1}>
                             <Typography variant="h6" fontWeight={700}>

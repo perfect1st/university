@@ -136,7 +136,7 @@ const TableComponent = ({
       // }}
       // sx={{ width: "100%", boxShadow: "none !important" ,maxWidth: "100%",overflowX: "auto" }}
       sx={{
-        width: isMobile ? "70%" : "100%",
+        width: isMobile ? "90%" : "100%",
         overflowX: "auto", // ✅ لو الأعمدة كتيرة بيعمل scroll تلقائي
         boxShadow: "none",
       }}
