@@ -351,62 +351,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       <List component="nav">
         {menuItems.map((item, index) => {
           const hasChildren = !!item.children;
-          // let isDirectlyActive =
-          //   (!hasChildren && matchPath(item.path, location.pathname)) ||
-          //   (item.key === "Passengers" &&
-          //     matchPath("/riderDetails/:id", location.pathname)) ||
-          //   (item.key === "Trips" &&
-          //     matchPath("/tripDetails/:id", location.pathname)) ||
-          //   (item.key === "Drivers" &&
-          //     matchPath("/DriverDetails/:id", location.pathname)) ||
-          //   (item.key === "CarTypes" &&
-          //     (matchPath("/CarTypeDetails/:id", location.pathname) ||
-          //       matchPath("/CarTypes/AddCarType", location.pathname))) ||
-          //   (item.key === "Cars" &&
-          //     (matchPath("/Cars/AddCar", location.pathname) ||
-          //       matchPath("/CarDetails/:id", location.pathname))) ||
-          //   (item.key === "users" &&
-          //     (matchPath("/users/AddUser", location.pathname) ||
-          //       matchPath("/userDetails/:id", location.pathname))) ||
-          //   (item.key === "CarDriver" &&
-          //     (matchPath("/CarDriverDetails/AddCarDrive", location.pathname) ||
-          //       matchPath("/CarDriverDetails/:id", location.pathname))) ||
-          //   (item.key === "Wallet" &&
-          //     (matchPath("/Wallet/AddTransaction", location.pathname) ||
-          //       matchPath("/walletDetails/:id", location.pathname))) ||
-          //   (item.key === "PaymentMethods" &&
-          //     (matchPath(
-          //       "/PaymentMethod/AddPaymentMethod",
-          //       location.pathname
-          //     ) ||
-          //       matchPath("/paymentMethodDetails/:id", location.pathname))) ||
-          //   (item.key === "PermissionGroups" &&
-          //     matchPath(
-          //       "/PermissionGroups/showpermissiongroup/:id",
-          //       location.pathname
-          //     )) ||
-          //   (item.key === "TrafficTime" &&
-          //     (matchPath("/TrafficTime/AddTrafficTime", location.pathname) ||
-          //       matchPath("/TrafficTimeDetails/:id", location.pathname))) ||
-          //   (item.key === "Commission" &&
-          //     matchPath("/CommissionDetails/:id", location.pathname)) ||
-          //   (item.key === "CommissionCategory" &&
-          //     matchPath("/CommissionCategoryDetails/:id", location.pathname)) ||
-          //   (item.key === "CommissionCategory" &&
-          //     matchPath(
-          //       "/CommissionCategory/AddCommissionCategory",
-          //       location.pathname
-          //     )) ||
-          //   (item.key === "Coupons" &&
-          //     matchPath("/couponDetails/:id", location.pathname)) ||
-          //   (item.key === "Coupons" &&
-          //     matchPath("/Coupons/addCoupon", location.pathname)) ||
-          //   (item.key === "Offers" &&
-          //     matchPath("/offerDetails/:id", location.pathname)) ||
-          //   (item.key === "Offers" &&
-          //     matchPath("/Offers/addOffer", location.pathname)) ||
-          //   (item.key === "Liqudation" &&
-          //     matchPath("/LiqudationDetails/:id", location.pathname));
+         
 
           const isActiveParent = !!(
             hasChildren &&
@@ -426,7 +371,13 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                 <ListItemButton
                   component={item.path ? Link : "div"}
                   to={item.path || undefined}
-                  onClick={() => hasChildren && toggleOpen(item.key)}
+                  onClick={() =>{
+                    if(hasChildren){
+                      toggleOpen(item.key)
+                    }
+
+                    dispatch(closeNav());
+                  }}
                   selected={!!(isDirectlyActive || isActiveParent)}
                   sx={{
                     pl: 3,
