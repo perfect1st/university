@@ -10,10 +10,12 @@ import * as Yup from "yup";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import LoadingPage from "../../components/LoadingComponent";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { UPDATE_MATERIAL_BY_ID } from "../../graphql/materialQueries";
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
 import { FILTERED_USERS } from "../../graphql/userQueriesForAdmin";
+import { baseURL } from "../../Api/apolloClient";
+import axios from "axios";
 
 export default function MaterialDetailsPage() {
     const theme = useTheme();
@@ -23,11 +25,61 @@ export default function MaterialDetailsPage() {
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const location = useLocation();
 
-    // console.log('location', location?.state);
+     console.log('location', location?.state);
     //   const [selectedSemester, setSelectedSemester] = useState(0);
     const [selectedFaculity, setSelectedFaculity] = useState(() => location?.state?.faculty_id?.id);
     const [selectedDepartment, setSelectedDepartment] = useState(() => location?.state?.faculty_department_id?.id);
     const [selectedDoctor, setSelectedDoctor] = useState(() => location?.state?.doctor_id?.id || 0);
+
+    // المكتبة الالكترونية
+      const fileInputRef = useRef(null);
+      const [selectedFile, setSelectedFile] = useState(null);
+      const [selectedToShowFile, setSelectedToShowFile] = useState(null);
+      const [progress, setProgress] = useState(0);
+    
+      const handlePickFile = () => {
+        if (fileInputRef.current) fileInputRef.current.click();
+      };
+    
+      const handleFileChange = async (e) => {
+        const file = e.target.files?.[0] ?? null;
+    
+    
+        console.log("ppppppppppppppppppppppp", file);
+    
+        // fileInputRef.current=file?.name;
+    
+        setSelectedToShowFile(file?.name);
+    
+        const formData = new FormData();
+        formData.append("file", file);
+    
+        try {
+    
+          setProgress(0);
+    
+          const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            onUploadProgress: (progressEvent) => {
+              const percent = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              setProgress(percent);
+            },
+          });
+    
+          console.log("res", res?.data?.url);
+          setSelectedFile(res?.data?.url);
+          // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
+        } catch (error) {
+          notify(t("errorUplaod"), "error");
+          console.log("error", error.message);
+        }
+    
+    
+      };
 
     // console.log('selectedFaculity',selectedFaculity,"selectedDepartment",selectedDepartment);
 

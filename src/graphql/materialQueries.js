@@ -139,6 +139,7 @@ query FilteredPagedMaterials(
             fullmark_degree
             success_degree
             material_hours
+            file
               doctor_id {
                 id
                 username

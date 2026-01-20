@@ -34,54 +34,54 @@ export default function AddMaterialPage() {
   const [selectedDoctor, setSelectedDoctor] = useState(0);
 
   // المكتبة الالكترونية
- const fileInputRef = useRef(null);
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [selectedToShowFile, setSelectedToShowFile] = useState(null);
-    const [progress, setProgress] = useState(0);
+  const fileInputRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedToShowFile, setSelectedToShowFile] = useState(null);
+  const [progress, setProgress] = useState(0);
 
-   const handlePickFile = () => {
-        if (fileInputRef.current) fileInputRef.current.click();
-    };
+  const handlePickFile = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
 
-    const handleFileChange = async (e) => {
-        const file = e.target.files?.[0] ?? null;
-
-
-        console.log("ppppppppppppppppppppppp", file);
-
-        // fileInputRef.current=file?.name;
-
-        setSelectedToShowFile(file?.name);
-
-        const formData = new FormData();
-        formData.append("file", file);
-
-        try {
-
-            setProgress(0);
-
-            const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-                onUploadProgress: (progressEvent) => {
-                    const percent = Math.round(
-                        (progressEvent.loaded * 100) / progressEvent.total
-                    );
-                    setProgress(percent);
-                },
-            });
-
-            console.log("res", res?.data?.url);
-            setSelectedFile(res?.data?.url);
-            // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
-        } catch (error) {
-            notify(t("errorUplaod"), "error");
-            console.log("error", error.message);
-        }
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0] ?? null;
 
 
-    };
+    console.log("ppppppppppppppppppppppp", file);
+
+    // fileInputRef.current=file?.name;
+
+    setSelectedToShowFile(file?.name);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+
+      setProgress(0);
+
+      const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setProgress(percent);
+        },
+      });
+
+      console.log("res", res?.data?.url);
+      setSelectedFile(res?.data?.url);
+      // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
+    } catch (error) {
+      notify(t("errorUplaod"), "error");
+      console.log("error", error.message);
+    }
+
+
+  };
 
 
   // get all faculities
@@ -197,7 +197,7 @@ export default function AddMaterialPage() {
         material_hours: values?.material_hours
       };
 
-      if(selectedFile!=null) data.file=selectedFile;
+      if (selectedFile != null) data.file = selectedFile;
 
 
       try {
