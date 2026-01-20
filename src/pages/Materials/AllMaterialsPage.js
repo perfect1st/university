@@ -20,6 +20,7 @@ import { GET_ALL_MATERIALS, UPDATE_MATERIAL_BY_ID, GET_ALL_FILTERED_MATERIALS } 
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
+import { useSelector } from "react-redux";
 
 
 export default function AllMaterialsPage() {
@@ -31,6 +32,11 @@ export default function AllMaterialsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
   const isArabic = i18n.language === "ar";
+
+  console.log("location",location.pathname);
+  
+  const me=useSelector(state=>state.user.loggedUser);
+  const storedStudentForm = JSON.parse(localStorage.getItem("registerForm"));
 
   const firstRenderRef = useRef(true);
 
@@ -112,6 +118,13 @@ export default function AllMaterialsPage() {
     if (searchParams.get("status")) variablesObj.status = searchParams.get("status") === "true" ? true : false;
     // faculty_department_id
     if (searchParams.get("faculty_department_id")) variablesObj.faculty_department_id = searchParams.get("faculty_department_id");
+
+    if(storedStudentForm?.faculty_department_id?.id){
+      variablesObj.faculty_department_id = storedStudentForm?.faculty_department_id?.id;
+      searchParams.set("faculty_department_id", storedStudentForm?.faculty_department_id?.id);
+
+      setSearchParams(searchParams);
+    } 
     
     FilteredPagedMaterials({ variables: variablesObj });
 
@@ -268,7 +281,7 @@ export default function AllMaterialsPage() {
             title={t("studentDashboard.subjects")}
             subtitle={`${t("studentDashboard.subjects")}`}
             i18n={i18n}
-            haveBtn={hasAddPermission}
+            haveBtn={ me?.role=="admin" ? true : false}
             btn={t("addItem", { item: translateText })}
             btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
             onSubmit={addNavigate}
@@ -280,7 +293,9 @@ export default function AllMaterialsPage() {
             onPrinter={() => fetchAndExport("print")}
           />
 
-          <DashboardFilterComponent
+          {
+            me?.role=="admin" ?
+              <DashboardFilterComponent
             placeholder={searchText}
             textSearchField={"search"}
             statusKey={"status"}
@@ -293,6 +308,24 @@ export default function AllMaterialsPage() {
             onFilterChange={onFilterChange}
             t={t}
           />
+            :
+
+            <DashboardFilterComponent
+            placeholder={searchText}
+            textSearchField={"search"}
+            statusKey={"status"}
+            TrueOrFalseArr={TrueOrFalseArr}
+            // selectKey={"faculty_department_id"}
+            // selectOptions={facultyDepartments}
+            // arKey={"title_ar"}
+            // enKey={"title_en"}
+            // select2Label={departmentSearch}
+            onFilterChange={onFilterChange}
+            t={t}
+          />
+
+          }
+          
 
 
           <TableComponent
@@ -316,6 +349,8 @@ export default function AllMaterialsPage() {
             }}
             handleDetailsClick={handleDetailsClick}
             onStatusChange={onStatusChange}
+            
+            showStatusChange={me?.role=="admin" ? true : false}
           />
 
           <FilterComponent totalPages={totalPages} />

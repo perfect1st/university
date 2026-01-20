@@ -16,6 +16,7 @@ import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components
 import { FILTERED_USERS } from "../../graphql/userQueriesForAdmin";
 import { baseURL } from "../../Api/apolloClient";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 export default function MaterialDetailsPage() {
     const theme = useTheme();
@@ -24,6 +25,7 @@ export default function MaterialDetailsPage() {
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const location = useLocation();
+    const me=useSelector(state=>state.user.loggedUser);
 
     console.log('location', location?.state);
     //   const [selectedSemester, setSelectedSemester] = useState(0);
@@ -132,8 +134,8 @@ export default function MaterialDetailsPage() {
     }, []);
 
     const handleDownloadFile = (input) => {
-
-        // لو input array اعمل loop
+        try{
+            // لو input array اعمل loop
         if (Array.isArray(input)) {
             input.forEach((url, index) => {
                 setTimeout(() => {
@@ -153,6 +155,12 @@ export default function MaterialDetailsPage() {
         link.rel = "noopener noreferrer";
         link.download = input.split("/").pop();
         link.click();
+        
+        }
+        catch(e){
+            console.log("error",e.message);
+        }
+        
     };
 
 
@@ -294,6 +302,7 @@ export default function MaterialDetailsPage() {
                     onChange={formik.handleChange}
                     error={formik.touched.title_ar && Boolean(formik.errors.title_ar)}
                     helperText={formik.touched.title_ar && formik.errors.title_ar}
+                    isDisabled={me?.role !== "admin"}
                 />
 
                 <HorizentalTextField
@@ -305,6 +314,7 @@ export default function MaterialDetailsPage() {
                     onChange={formik.handleChange}
                     error={formik.touched.title_en && Boolean(formik.errors.title_en)}
                     helperText={formik.touched.title_en && formik.errors.title_en}
+                     isDisabled={me?.role !== "admin"}
                 />
 
                 <HorizentalTextField
@@ -317,6 +327,7 @@ export default function MaterialDetailsPage() {
                     onChange={formik.handleChange}
                     error={formik.touched.fullmark_degree && Boolean(formik.errors.fullmark_degree)}
                     helperText={formik.touched.fullmark_degree && formik.errors.fullmark_degree}
+                     isDisabled={me?.role !== "admin"}
                 />
 
                 <HorizentalTextField
@@ -329,6 +340,7 @@ export default function MaterialDetailsPage() {
                     onChange={formik.handleChange}
                     error={formik.touched.success_degree && Boolean(formik.errors.success_degree)}
                     helperText={formik.touched.success_degree && formik.errors.success_degree}
+                     isDisabled={me?.role !== "admin"}
                 />
 
                 <HorizentalTextField
@@ -341,6 +353,7 @@ export default function MaterialDetailsPage() {
                     onChange={formik.handleChange}
                     error={formik.touched.material_hours && Boolean(formik.errors.material_hours)}
                     helperText={formik.touched.material_hours && formik.errors.material_hours}
+                     isDisabled={me?.role !== "admin"}
                 />
 
 
@@ -363,6 +376,7 @@ export default function MaterialDetailsPage() {
 
                     error={formik.errors.selectedFaculity && t("admissions.errors.required")}
                     helperText={formik.errors.selectedFaculity && t("admissions.errors.required")}
+                    isDisabled={me?.role !== "admin"}
                 // error={selectError}
                 // setError={setSelectError}
 
@@ -389,6 +403,7 @@ export default function MaterialDetailsPage() {
                     setValue={setSelectedDepartment}
                     error={formik.errors.selectedDepartment && t("admissions.errors.required")}
                     helperText={formik.errors.selectedDepartment && t("admissions.errors.required")}
+                    isDisabled={me?.role !== "admin"}
                 >
                     <MenuItem value={0} selected>{t("select")}</MenuItem>
                     {
@@ -410,6 +425,7 @@ export default function MaterialDetailsPage() {
                         if (selectedDoctor != 0) formik.setFieldError("selectedDoctor", undefined);
 
                     }}
+                    isDisabled={me?.role !== "admin"}
                 >
                     <MenuItem value={0} selected>{t("select")}</MenuItem>
                     {
@@ -429,13 +445,16 @@ export default function MaterialDetailsPage() {
                     handleChange={handleFileChange}
                     handleDownloadFile={() => handleDownloadFile(location?.state?.file)}
                     type={"file"}
+                    isDisabled={me?.role !== "admin"}
                 />
 
                 {progress > 0 && (
                     <LinearProgress variant="determinate" value={progress} />
                 )}
 
-                <SubmitButton loading={loading} t={t} />
+              {
+                me?.role=="admin"&&<SubmitButton loading={loading} t={t} />
+              }  
 
 
 

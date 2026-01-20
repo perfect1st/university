@@ -356,7 +356,7 @@ export default function CustomTextFieldAdmin({ searchKey, width = "100%", height
 //   );
 // }
 
-function CustomSelect({ children, t, height, label, backgroundColor, value, setValue, error, setError, onChange, fieldID, fieldName, onBlur, onKeyDown }) {
+function CustomSelect({ children, t, height, label, backgroundColor, value, setValue, error, setError, onChange, fieldID, fieldName, onBlur, onKeyDown , isDisabled=false }) {
   const theme = useTheme();
   // const { placeholder, helperText, error, ...rest } = props;
 
@@ -409,6 +409,11 @@ function CustomSelect({ children, t, height, label, backgroundColor, value, setV
           border: "none !important",
         },
 
+        "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: `${theme.palette.primary?.disabled} !important`, // لون النص
+                    fontWeight: "700"
+                  },
+
       }}
 
       value={value}
@@ -428,6 +433,7 @@ function CustomSelect({ children, t, height, label, backgroundColor, value, setV
       onBlur={onBlur}
       error={error}
       helperText={error}
+      disabled={isDisabled}
     >
 
       {children}

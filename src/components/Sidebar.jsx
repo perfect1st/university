@@ -39,8 +39,11 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const [openKeys, setOpenKeys] = useState({});
   const me = useSelector((state) => state.user.loggedUser);
   const isNavOpen = useSelector((state) => state.user.isNavOpen);
+   const storedStudentForm = JSON.parse(localStorage.getItem("registerForm"));
 
   const lang = i18n.language;
+
+  console.log("storedStudentForm",storedStudentForm);
 
   // const menuItems = useMemo(() => getAccessibleRoutes("admin"), []);  .role
   let menuItems = [];
@@ -91,6 +94,15 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
         label: {
           ar: "المدفوعات",
           en: "Fee Payments",
+        },
+      },
+      {
+        // icon: FlagIcon,
+        key: "materials",
+        path: `/materials?faculty_department_id=${storedStudentForm?.faculty_department_id?.id}`,
+        label: {
+          ar: "المواد الدراسية",
+          en: "Subjects",
         },
       },
 
@@ -375,7 +387,11 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
             )
           );
 
-          let isDirectlyActive = location.pathname?.includes(item?.path);
+          const cleanPath = item?.path?.split("?")[0];
+          let isDirectlyActive = location.pathname?.includes(cleanPath);
+          
+          console.log("isDirectlyActive",isDirectlyActive);
+
           const IconComponent = item.icon;
 
           // console.log("IconComponent", IconComponent);

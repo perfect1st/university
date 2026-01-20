@@ -44,8 +44,9 @@ export default function HorizentalTextField({
 
       <Typography variant="subtitle2" sx={{ fontWeight: "bold", width: "40%" , display:"flex", gap:5 }}>
         {title}
+      </Typography>
 
-        {
+       {
                   handleDownloadFile && (
                     <Button color='primary' variant='contained' onClick={handleDownloadFile}>
                       <IconButton size="small" sx={{ color: "white" }} >
@@ -56,7 +57,6 @@ export default function HorizentalTextField({
         
                   )
                 }
-      </Typography>
 
       {
         type == "file" ?
@@ -108,7 +108,7 @@ export default function HorizentalTextField({
             
 
 
-            <CreateIcon color="action" sx={{ margin: "15px", cursor: "pointer" }} onClick={handleClick} />
+          {!isDisabled && <CreateIcon color="action" sx={{ margin: "15px", cursor: "pointer" }} onClick={handleClick} />}  
 
             {/* Input مخفي */}
             <input
@@ -117,6 +117,7 @@ export default function HorizentalTextField({
               style={{ display: "none" }} // المخفي
               onChange={handleChange}
               multiple={isMultiImages}
+              disabled={isDisabled}
             />
           </Box>
       )
@@ -167,6 +168,10 @@ export default function HorizentalTextField({
                 "& input[type=number]": {
                   MozAppearance: "textfield",
                 },
+                 "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: `${theme.palette.primary?.disabled} !important`, // لون النص
+                    fontWeight: "700"
+                  },
               }}
             />
             :
@@ -216,7 +221,7 @@ export default function HorizentalTextField({
 }
 
 
-export const HorizentalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange }) => {
+export const HorizentalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange, isDisabled=false }) => {
   const theme = useTheme();
   return (
     <Box sx={{ display: "flex", flexWrap: "wrap", mb: 4, backgroundColor: theme.palette.primary?.gray, gap: 3, p: 1, height: "60px" }}>
@@ -226,7 +231,7 @@ export const HorizentalTextFieldSelect = ({ t, backgroundColor, title, defaultOp
       </Typography>
 
       <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
-        <CustomSelect t={t} label={defaultOptionLabel} backgroundColor={theme.palette.primary?.gray} value={value} setValue={setValue} error={error} setError={setError} onChange={onChange}  >
+        <CustomSelect t={t} label={defaultOptionLabel} backgroundColor={theme.palette.primary?.gray} value={value} setValue={setValue} error={error} setError={setError} onChange={onChange} isDisabled={isDisabled}  >
           {children}
         </CustomSelect>
 

@@ -188,8 +188,8 @@ export default function LectureSessionDetails() {
     // };
 
     const handleDownloadFile = (input) => {
-
-        // لو input array اعمل loop
+        try{
+             // لو input array اعمل loop
         if (Array.isArray(input)) {
             input.forEach((url, index) => {
                 setTimeout(() => {
@@ -207,6 +207,11 @@ export default function LectureSessionDetails() {
         link.href = input;
         link.download = input.split("/").pop();
         link.click();
+        }
+        catch(e){
+            console.error("error",e.message);
+        }
+       
     };
 
 
