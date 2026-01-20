@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom"
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
-import { Box, CircularProgress, MenuItem, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, CircularProgress, LinearProgress, MenuItem, Typography, useMediaQuery, useTheme } from "@mui/material";
 import Header from "../../components/PageHeader/header";
 import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
@@ -72,6 +72,8 @@ export default function MaterialDetailsPage() {
     
           console.log("res", res?.data?.url);
           setSelectedFile(res?.data?.url);
+
+          formik.values.file=`${res?.data?.url}`;
           // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
         } catch (error) {
           notify(t("errorUplaod"), "error");
@@ -141,6 +143,7 @@ export default function MaterialDetailsPage() {
             fullmark_degree: location?.state?.fullmark_degree,
             success_degree: location?.state?.success_degree,
             material_hours: location?.state?.material_hours,
+            file:location?.state?.file
 
         },
 
@@ -198,7 +201,7 @@ export default function MaterialDetailsPage() {
                 material_hours: values?.material_hours
             };
 
-
+            if (selectedFile != null) data.file = selectedFile;
 
 
             try {
@@ -388,6 +391,23 @@ export default function MaterialDetailsPage() {
                         users?.map(el => <MenuItem key={el?.id} value={el?.id}>{el?.fullname}</MenuItem>)
                     }
                 </HorizentalTextFieldSelect>
+
+
+                <HorizentalTextField
+                                          title={t("Dashboard.library")}
+                                          subTitle={t("admissions.addFile")}
+                                          fieldID={"file"}
+                                          fieldName={"file"}
+                                          placeholder={t("Dashboard.library")}
+                                          value={formik?.values?.file}
+                                          onChange={formik.handleChange}
+                                          handleChange={handleFileChange}
+                                          type={"file"}
+                                        />
+                                
+                                         {progress > 0 && (
+                                                  <LinearProgress variant="determinate" value={progress} />
+                                                )}
 
                 <SubmitButton loading={loading} t={t} />
 
