@@ -53,6 +53,7 @@ export default function ProfilePage() {
     try {
       const link = document.createElement("a");
       link.href = url;
+      link.target = "_blank";
       link.download = url.split("/").pop();
       link.click();
     } catch (error) {

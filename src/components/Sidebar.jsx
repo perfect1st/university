@@ -88,7 +88,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       },
 
       {
-        icon: MonetizationOnOutlinedIcon,
+        // icon: MonetizationOnOutlinedIcon,
         key: "FeePayment",
         path: "/FeePayment",
         label: {
