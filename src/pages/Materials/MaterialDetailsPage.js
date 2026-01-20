@@ -25,63 +25,63 @@ export default function MaterialDetailsPage() {
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const location = useLocation();
 
-     console.log('location', location?.state);
+    console.log('location', location?.state);
     //   const [selectedSemester, setSelectedSemester] = useState(0);
     const [selectedFaculity, setSelectedFaculity] = useState(() => location?.state?.faculty_id?.id);
     const [selectedDepartment, setSelectedDepartment] = useState(() => location?.state?.faculty_department_id?.id);
     const [selectedDoctor, setSelectedDoctor] = useState(() => location?.state?.doctor_id?.id || 0);
 
     // المكتبة الالكترونية
-      const fileInputRef = useRef(null);
-      const [selectedFile, setSelectedFile] = useState(null);
-      const [selectedToShowFile, setSelectedToShowFile] = useState(null);
-      const [progress, setProgress] = useState(0);
-    
-      const handlePickFile = () => {
+    const fileInputRef = useRef(null);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedToShowFile, setSelectedToShowFile] = useState(null);
+    const [progress, setProgress] = useState(0);
+
+    const handlePickFile = () => {
         if (fileInputRef.current) fileInputRef.current.click();
-      };
-    
-      const handleFileChange = async (e) => {
+    };
+
+    const handleFileChange = async (e) => {
         const file = e.target.files?.[0] ?? null;
-    
-    
+
+
         console.log("ppppppppppppppppppppppp", file);
-    
+
         // fileInputRef.current=file?.name;
-    
+
         setSelectedToShowFile(file?.name);
-    
+
         const formData = new FormData();
         formData.append("file", file);
-    
-        try {
-    
-          setProgress(0);
-    
-          const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-            onUploadProgress: (progressEvent) => {
-              const percent = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
-              );
-              setProgress(percent);
-            },
-          });
-    
-          console.log("res", res?.data?.url);
-          setSelectedFile(res?.data?.url);
 
-          formik.values.file=`${res?.data?.url}`;
-          // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
+        try {
+
+            setProgress(0);
+
+            const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percent = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                    setProgress(percent);
+                },
+            });
+
+            console.log("res", res?.data?.url);
+            setSelectedFile(res?.data?.url);
+
+            formik.values.file = `${res?.data?.url}`;
+            // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
         } catch (error) {
-          notify(t("errorUplaod"), "error");
-          console.log("error", error.message);
+            notify(t("errorUplaod"), "error");
+            console.log("error", error.message);
         }
-    
-    
-      };
+
+
+    };
 
     // console.log('selectedFaculity',selectedFaculity,"selectedDepartment",selectedDepartment);
 
@@ -131,6 +131,31 @@ export default function MaterialDetailsPage() {
         });
     }, []);
 
+    const handleDownloadFile = (input) => {
+
+        // لو input array اعمل loop
+        if (Array.isArray(input)) {
+            input.forEach((url, index) => {
+                setTimeout(() => {
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = url.split("/").pop();
+                    link.click();
+                }, index * 800); // عشان المتصفح ما يمنعش multi downloads
+            });
+            return;
+        }
+
+        // لو input رابط واحد فقط
+        const link = document.createElement("a");
+        link.href = `${baseURL}${input}`;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.download = input.split("/").pop();
+        link.click();
+    };
+
+
     const [UpdateMaterial, {
         data,
         loading
@@ -143,7 +168,7 @@ export default function MaterialDetailsPage() {
             fullmark_degree: location?.state?.fullmark_degree,
             success_degree: location?.state?.success_degree,
             material_hours: location?.state?.material_hours,
-            file:location?.state?.file
+            file: location?.state?.file
 
         },
 
@@ -394,20 +419,21 @@ export default function MaterialDetailsPage() {
 
 
                 <HorizentalTextField
-                                          title={t("Dashboard.library")}
-                                          subTitle={t("admissions.addFile")}
-                                          fieldID={"file"}
-                                          fieldName={"file"}
-                                          placeholder={t("Dashboard.library")}
-                                          value={formik?.values?.file}
-                                          onChange={formik.handleChange}
-                                          handleChange={handleFileChange}
-                                          type={"file"}
-                                        />
-                                
-                                         {progress > 0 && (
-                                                  <LinearProgress variant="determinate" value={progress} />
-                                                )}
+                    title={t("Dashboard.library")}
+                    subTitle={t("admissions.addFile")}
+                    fieldID={"file"}
+                    fieldName={"file"}
+                    placeholder={t("Dashboard.library")}
+                    value={formik?.values?.file}
+                    onChange={formik.handleChange}
+                    handleChange={handleFileChange}
+                    handleDownloadFile={() => handleDownloadFile(location?.state?.file)}
+                    type={"file"}
+                />
+
+                {progress > 0 && (
+                    <LinearProgress variant="determinate" value={progress} />
+                )}
 
                 <SubmitButton loading={loading} t={t} />
 

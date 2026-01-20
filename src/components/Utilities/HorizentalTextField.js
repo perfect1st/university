@@ -1,8 +1,9 @@
-import { Box, InputAdornment, TextField, Typography, useTheme } from '@mui/material'
+import { Box, Button, IconButton, InputAdornment, TextField, Typography, useTheme } from '@mui/material'
 import CreateIcon from '@mui/icons-material/Create';
 import { baseURL } from '../../Api/apolloClient';
 import { useRef } from 'react';
 import { CustomSelect } from './CustomTextField';
+import DownloadIcon from "@mui/icons-material/Download";
 
 
 export default function HorizentalTextField({
@@ -18,7 +19,8 @@ export default function HorizentalTextField({
   handleChange,
   isDisabled = false,
   isMultiline = false,
-  isMultiImages=false
+  isMultiImages=false,
+  handleDownloadFile=null
 
 }) {
   const theme = useTheme();
@@ -40,15 +42,28 @@ export default function HorizentalTextField({
   return (
     <Box sx={{ display: "flex", flexWrap: "wrap", mb: 4, alignItems: "center", backgroundColor: theme.palette.primary?.gray, gap: 3, p: 1 }}>
 
-      <Typography variant="subtitle2" sx={{ fontWeight: "bold", width: "40%" }}>
+      <Typography variant="subtitle2" sx={{ fontWeight: "bold", width: "40%" , display:"flex", gap:5 }}>
         {title}
+
+        {
+                  handleDownloadFile && (
+                    <Button color='primary' variant='contained' onClick={handleDownloadFile}>
+                      <IconButton size="small" sx={{ color: "white" }} >
+                      <DownloadIcon fontSize="small" color='white' />
+                    </IconButton>
+                    </Button>
+                    
+        
+                  )
+                }
       </Typography>
 
       {
         type == "file" ?
-          <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", flexGrow: "1" }}>
-           
-            <Box
+      (
+        <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", flexGrow: "1" }}>
+           {
+            !handleDownloadFile &&<Box
               sx={{
                 display: "flex",
                 gap: 1,
@@ -89,6 +104,8 @@ export default function HorizentalTextField({
 
               }
             </Box>
+           }
+            
 
 
             <CreateIcon color="action" sx={{ margin: "15px", cursor: "pointer" }} onClick={handleClick} />
@@ -102,6 +119,8 @@ export default function HorizentalTextField({
               multiple={isMultiImages}
             />
           </Box>
+      )
+          
 
           :
           type == "number" ?
