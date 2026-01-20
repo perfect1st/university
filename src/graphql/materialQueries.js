@@ -9,6 +9,7 @@ query Materials {
         status
         fullmark_degree
         success_degree
+        file
         material_hours
         doctor_id {
                 id
@@ -58,6 +59,7 @@ mutation CreateMaterial($input:MaterialInput!) {
         fullmark_degree
         success_degree
         material_hours
+        file
         createdAt
         updatedAt
          
@@ -75,6 +77,7 @@ mutation UpdateMaterial($id:ID!,$input:MaterialInput!) {
         fullmark_degree
         success_degree
         material_hours
+        file
         createdAt
         updatedAt
     }

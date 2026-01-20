@@ -11,9 +11,13 @@ import VerticalTextField, { VerticalTextFieldSelect } from "../../components/Uti
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import LoadingPage from "../../components/LoadingComponent";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CREATE_NEW_MATERIAL } from "../../graphql/materialQueries";
 import { FILTERED_USERS } from "../../graphql/userQueriesForAdmin";
+import { baseURL } from "../../Api/apolloClient";
+import axios from "axios";
+import UploadFileField from "../../components/Utilities/UploadFileField";
+
 //import MaterialArrComponent from "./MaterialArrComponent";
 
 export default function AddMaterialPage() {
@@ -28,6 +32,57 @@ export default function AddMaterialPage() {
   const [selectedFaculity, setSelectedFaculity] = useState(0);
   const [selectedDepartment, setSelectedDepartment] = useState(0);
   const [selectedDoctor, setSelectedDoctor] = useState(0);
+
+  // المكتبة الالكترونية
+ const fileInputRef = useRef(null);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedToShowFile, setSelectedToShowFile] = useState(null);
+    const [progress, setProgress] = useState(0);
+
+   const handlePickFile = () => {
+        if (fileInputRef.current) fileInputRef.current.click();
+    };
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files?.[0] ?? null;
+
+
+        console.log("ppppppppppppppppppppppp", file);
+
+        // fileInputRef.current=file?.name;
+
+        setSelectedToShowFile(file?.name);
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+
+            setProgress(0);
+
+            const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percent = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                    setProgress(percent);
+                },
+            });
+
+            console.log("res", res?.data?.url);
+            setSelectedFile(res?.data?.url);
+            // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
+        } catch (error) {
+            notify(t("errorUplaod"), "error");
+            console.log("error", error.message);
+        }
+
+
+    };
+
 
   // get all faculities
   const [
@@ -142,7 +197,7 @@ export default function AddMaterialPage() {
         material_hours: values?.material_hours
       };
 
-
+      if(selectedFile!=null) data.file=selectedFile;
 
 
       try {
@@ -343,6 +398,20 @@ export default function AddMaterialPage() {
           }
         </VerticalTextFieldSelect>
 
+        {/* المرفقات */}
+        <UploadFileField
+          title={t("Dashboard.library")}
+          subTitle={t("admissions.addFile")}
+          fileInputRef={fileInputRef}
+          handleFileChange={handleFileChange}
+          handlePickFile={handlePickFile}
+          selectedToShowFile={selectedToShowFile}
+          progress={progress}
+          isMultiple={false}
+          hasDownloadBtn={false}
+        //  handleDownloadFile={() => handleDownloadFile(getLectureSessionById?.lecture_videos)}
+        // showInput={me?.role == "student" ? false : true}
+        />
 
         {/* <MaterialArrComponent rows={rows} setRows={setRows} /> */}
 

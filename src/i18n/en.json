@@ -334,7 +334,8 @@
     "studentTotalDegree": "Student Total Degree",
     "support":"Support",
     "message":"Message",
-    "adminReply":"Admin Reply"
+    "adminReply":"Admin Reply",
+    "library":"Library"
   },
   "lectures": {
     "pending": "not started yet",
