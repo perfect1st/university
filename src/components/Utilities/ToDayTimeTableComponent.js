@@ -24,7 +24,7 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import VerticalTextField from "./VerticalTextField";
 import { useMutation } from "@apollo/client/react";
-import { CANCEL_LECTURE_SESSION, CREATE_LECTURE_SESSION } from "../../graphql/LectureSessionQueries";
+import { ATTEND_LECTURE_FOR_STUDENT, CANCEL_LECTURE_SESSION, CREATE_LECTURE_SESSION } from "../../graphql/LectureSessionQueries";
 import ConfirmModal from "./ConfirmModal";
 
 
@@ -61,6 +61,9 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
             loading: cancelingSession
         }
     ] = useMutation(CANCEL_LECTURE_SESSION, { fetchPolicy: "network-only" });
+
+    // حضور المحاضرة للطالب
+    const [AttendLecture] = useMutation(ATTEND_LECTURE_FOR_STUDENT, { fetchPolicy: "network-only" });
 
     const handleAddLectureLink = async () => {
         let data = {};
@@ -204,8 +207,21 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
                                                     color="primary"
                                                     variant="contained"
                                                     size="small"
-                                                    onClick={() => {
-                                                        window.open(row?.lecture_url, "_blank")
+                                                    onClick={async () => {
+                                                        try {
+
+                                                            console.log("clicked", row);
+                                                            const result = await AttendLecture({ variables: { lecture_session_id: row?.lecture_id } });
+
+                                                            // console.log("result", result);
+                                                        } catch (error) {
+                                                            console.log("error", error);
+                                                            
+                                                        }
+                                                        finally {
+                                                            window.open(row?.lecture_url, "_blank");
+                                                        }
+
                                                     }}
                                                 >
                                                     {t("Dashboard.enterLecture")}

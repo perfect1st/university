@@ -334,3 +334,14 @@ query LectureSessionsByStudent(
     }
 }
 `;
+
+export const ATTEND_LECTURE_FOR_STUDENT=gql`
+mutation AttendLecture($lecture_session_id:ID!) {
+    attendLecture(lecture_session_id: $lecture_session_id) {
+        id
+        attended_at
+        createdAt
+        updatedAt
+    }
+}
+`;
