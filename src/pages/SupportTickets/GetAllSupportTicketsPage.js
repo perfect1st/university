@@ -219,7 +219,7 @@ export default function GetAllSupportTicketsPage() {
                         // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
                         loading={pageLoading}
                         // isUsers={true}
-                        statusKey="status"
+                        // statusKey="status"
                         arPopulateKey={"title_ar"}
                         enPopulateKey={"title_en"}
                         sx={{

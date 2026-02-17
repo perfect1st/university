@@ -305,9 +305,9 @@ export default function Admissions() {
         case "mobile":
           // return value ? "" : t("admissions.errors.invalidPhone") || "Required";
           if (!value) return t("admissions.errors.required") || "Required";
-          if (!phoneRegex.test(value))
-            return t("admissions.errors.invalidPhone") || "Invalid phone";
-          return "";
+          // if (!phoneRegex.test(value))
+          //   return t("admissions.errors.invalidPhone") || "Invalid phone";
+          // return "";
 
         case "home_tel":
           return value ? "" : t("admissions.errors.required") || "Required";

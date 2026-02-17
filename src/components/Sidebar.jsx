@@ -101,8 +101,8 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
         key: "materials",
         path: `/materials?faculty_department_id=${storedStudentForm?.faculty_department_id?.id}`,
         label: {
-          ar: "المواد الدراسية",
-          en: "Subjects",
+          ar: "المكتبة الالكترونية",
+          en: "Electronic Library",
         },
       },
 
