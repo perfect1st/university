@@ -61,7 +61,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       },
       {
         icon: PersonOutlineIcon,
-        key: "profile",
+        key: "profile3",
         path: "/profile",
         label: {
           ar: "الصفحة الشخصية",
@@ -79,7 +79,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       },
       {
         // icon: FlagIcon,
-        key: "LectureSessionDetails",
+        key: "LectureSessionDetails2",
         path: "/LectureSessionDetails",
         label: {
           ar: "سجلات المحاضرات",
@@ -98,7 +98,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       },
       {
         // icon: FlagIcon,
-        key: "materials",
+        key: "materials2",
         path: `/materials?faculty_department_id=${storedStudentForm?.faculty_department_id?.id}`,
         label: {
           ar: "المكتبة الالكترونية",
@@ -107,7 +107,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       },
 
       {
-        key: "support",
+        key: "support1",
         path: "/Support",
         label: {
           ar: "الدعم الفني",
@@ -202,7 +202,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       },
       {
         // icon: FlagIcon,
-        key: "materials",
+        key: "materials3",
         path: "/materials",
         label: {
           ar: "المواد الدراسية",
@@ -263,7 +263,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
 
       {
         // icon: PersonOutlineIcon,
-        key: "profile",
+        key: "profile2",
         path: "/profile",
         label: {
           ar: "الصفحة الشخصية",
@@ -271,7 +271,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
         },
       },
       {
-        key: "support",
+        key: "support2",
         path: "/Support",
         label: {
           ar: "الدعم الفني",
@@ -284,7 +284,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
     menuItems = [
       {
         icon: PersonOutlineIcon,
-        key: "profile",
+        key: "profile1",
         path: "/profile",
         label: {
           ar: "الصفحة الشخصية",
@@ -330,7 +330,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
         },
       },
       {
-        key: "support",
+        key: "support3",
         path: "/Support",
         label: {
           ar: "الدعم الفني",
@@ -394,7 +394,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
 
           const IconComponent = item.icon;
 
-          // console.log("IconComponent", IconComponent);
+          console.log("item.key", item.key);
 
           return (
             <React.Fragment key={item.key} sx={{ height: "100%" }}>

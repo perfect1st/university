@@ -267,12 +267,16 @@ export default function MaterialDetailsPage() {
     let translateText = isArabic ? "مادة" : "Subject";
     let translateText2 = isArabic ? "المادة" : "Subject";
 
+    if(me?.role!=="admin") {
+        translateText =  "" ;
+    }
+
     if (faculitiesLoading) return <LoadingPage />;
 
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper", maxWidth: "100%" }}>
             <Header
-                title={t("studentDashboard.subjects")}
+                title={me?.role=="admin" ? t("studentDashboard.subjects") : t("Dashboard.library")}
                 subtitle={t("detailsItem", { item: translateText })}
                 i18n={i18n}
                 haveBtn={false}

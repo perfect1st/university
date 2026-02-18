@@ -278,8 +278,8 @@ export default function AllMaterialsPage() {
           }}
         >
           <Header
-            title={t("studentDashboard.subjects")}
-            subtitle={`${t("studentDashboard.subjects")}`}
+            title={ me?.role=="admin" ? t("studentDashboard.subjects") : t("Dashboard.library") }
+            subtitle={me?.role=="admin" ? t("studentDashboard.subjects") : t("Dashboard.library")}
             i18n={i18n}
             haveBtn={ me?.role=="admin" ? true : false}
             btn={t("addItem", { item: translateText })}
