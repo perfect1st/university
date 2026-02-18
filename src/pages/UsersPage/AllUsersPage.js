@@ -155,7 +155,7 @@ export default function AllUsersPage() {
         console.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
-        if (filterOBJ.role) searchParams.set("role", filterOBJ.role);
+        if (filterOBJ.role !="0") searchParams.set("role", filterOBJ.role);
         // searchParams.get("search", e.target.value);
         setSearchParams(searchParams);
     }

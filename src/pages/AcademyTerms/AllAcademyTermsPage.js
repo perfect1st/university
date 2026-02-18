@@ -84,6 +84,12 @@ export default function AllAcademyTermsPage() {
     });
 
     useEffect(() => {
+    Faculties();
+    FacultyDepartments();
+}, []);
+
+
+    useEffect(() => {
         // GetAcademyTerms();
 
         let page;
@@ -117,13 +123,6 @@ export default function AllAcademyTermsPage() {
         // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
 
         FilteredPagedAcademyTerms({ variables: variablesObj });
-
-        if (firstRenderRef) {
-            Faculties();
-            FacultyDepartments();
-            firstRenderRef.current = false;
-        }
-
     }, [searchParams]);
 
     let getAcademyTermsToShow = getAcademyTerms?.map(el => {
