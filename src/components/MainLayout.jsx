@@ -56,7 +56,7 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
      
   console.log('isAuthenticated',isAuthenticated);
 
-  const hideSecandHeader = location.pathname == "/home" || location.pathname == "/visionsArticals" || location.pathname == "/news";
+  const hideSecandHeader = location.pathname == "/home" || location.pathname == "/visionsArticals" || location.pathname == "/news" || location.pathname.includes("/ArticalDetails/");
 
  // const hideSecandHeader=false;
 console.log("hideSecandHeader",!hideSecandHeader)
