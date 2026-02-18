@@ -94,6 +94,7 @@ export default function UserDetailsPage() {
   let translateText = isArabic ? "مستخدم" : "User";
   let translateText2 = isArabic ? "المستخدم" : "User";
 
+  let userRulesWithOutStudent=userRules.filter(item=>item!="student");
 
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
@@ -189,7 +190,7 @@ export default function UserDetailsPage() {
         >
           <MenuItem value={0} selected>{t("select")}</MenuItem>
           {
-            userRules?.map((el, i) => <MenuItem key={i} value={el}>{t(`Dashboard.${el}`)}</MenuItem>)
+            userRulesWithOutStudent?.map((el, i) => <MenuItem key={i} value={el}>{t(`Dashboard.${el}`)}</MenuItem>)
           }
         </HorizentalTextFieldSelect>
 

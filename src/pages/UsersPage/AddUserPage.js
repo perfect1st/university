@@ -96,6 +96,8 @@ export default function AddUserPage() {
 
     let translateText = isArabic ? "مستخدم" : "User";
     let translateText2 = isArabic ? "المستخدم" : "User";
+
+    let userRulesWithOutStudent=userRules.filter(item=>item!="student");
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
             <Header
@@ -185,7 +187,7 @@ export default function AddUserPage() {
                 >
                     <MenuItem value={0} selected>{t("select")}</MenuItem>
                     {
-                        userRules?.map((el, i) => <MenuItem key={i} value={el}>{t(`Dashboard.${el}`)}</MenuItem>)
+                        userRulesWithOutStudent?.map((el, i) => <MenuItem key={i} value={el}>{t(`Dashboard.${el}`)}</MenuItem>)
                     }
                 </VerticalTextFieldSelect>
 
