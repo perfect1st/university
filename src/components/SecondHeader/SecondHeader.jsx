@@ -29,9 +29,10 @@ export default function SecondHeader() {
   const user = getUserCookie();
   const isAuthenticated = Boolean(user); 
 
+  // isAuthenticated ? "/StudentDashboard" :"/admissions"
   const navItems = [
     { key: "home", path: "/home" },
-    { key: "admissions.title", path: isAuthenticated ? "/StudentDashboard" :"/admissions" },
+    { key: "admissions.title", path: "/admissions" },
     { key: "support", path: "/support" },
   ];
 

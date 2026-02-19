@@ -144,7 +144,8 @@ const Header = ({ onAction }) => {
   const handleLogout = () => {
     clearAllCookies();
     localStorage.clear();
-    navigate("/login");
+    // navigate("/login");
+    window.location.href = "/login";
   };
 
   const changeLanguage = (lang) => {

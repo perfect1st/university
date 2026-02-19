@@ -351,7 +351,7 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
           </Grid>
 
           {/* Time */}
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={12} md={6} lg={5}>
             <FormControl fullWidth>
               <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
                 {t("time")}
