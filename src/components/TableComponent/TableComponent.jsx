@@ -68,7 +68,7 @@ const TableComponent = ({
   handleEditClick,
   hasDetailsBtn = false,
   onClickDetails,
-  DetailsNavigate="Details"
+  DetailsNavigate = "Details",
 }) => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
@@ -85,7 +85,7 @@ const TableComponent = ({
 
   useEffect(() => {
     const widths = Object.values(chipRefs.current)?.map(
-      (ref) => ref?.offsetWidth || 0
+      (ref) => ref?.offsetWidth || 0,
     );
     const largest = Math.max(...widths);
     setMaxChipWidth(largest);
@@ -131,57 +131,23 @@ const TableComponent = ({
   return (
     <TableContainer
       component={Paper}
-      // PaperProps={{
-      //   sx: { boxShadow: "none !important" , width:"50%", }
-      // }}
-      // sx={{ width: "100%", boxShadow: "none !important" ,maxWidth: "100%",overflowX: "auto" }}
       sx={{
-        width: isMobile ? "90%" : "100%",
-        overflowX: "auto", // ✅ لو الأعمدة كتيرة بيعمل scroll تلقائي
+        width: "100%",
+        maxWidth: "100vw",
+        overflowX: "auto",
         boxShadow: "none",
       }}
     >
-      <Box
-        sx={{
-          overflowX: "auto",
-          // width: "100%",
-          boxShadow: "none !important",
-
-          width: "100%", // 👈 العرض اللي عايزه
-          [theme.breakpoints.down("sm")]: {
-            width: "90%", // 👈 للموبايل
-            overflow: "scroll",
-          },
-           [theme.breakpoints.down(500)]: {
-            width: "75%", // 👈 للموبايل
-            overflow: "scroll",
-          },
-           [theme.breakpoints.down(400)]: {
-            width: "65%", // 👈 للموبايل
-            overflow: "scroll",
-          },
-        }}
-      >
+      <Box sx={{ width: "100%", minWidth: "max-content", overflowX: "auto" }}>
         <Table
           sx={{
-            minWidth: 600, // ✅ يحافظ على شكل الأعمدة لكن يظل مرن
+            minWidth: 900,
             borderCollapse: "collapse",
             direction: isArabic ? "ltr" : "rtl",
             "& .MuiTableCell-root": {
               textAlign: "start",
             },
           }}
-          //       sx={{
-          //         minWidth: 600,
-          //         borderCollapse: "collapse",
-          //         boxShadow: "none !important",
-          //         direction: isArabic ? "ltr" : "rtl",
-          //         overflowX: "auto",
-
-          // "& .MuiTableCell-root": {
-          //   textAlign:  "start" ,
-          // },
-          //       }}
         >
           <TableHead>
             <TableRow>
@@ -197,12 +163,14 @@ const TableComponent = ({
                   }}
                 >
                   <Box
-                    sx={{
-                      // display: "flex",
-                      // alignItems: "center",
-                      // justifyContent: "space-between",
-                      // width: "100%",
-                    }}
+                    sx={
+                      {
+                        // display: "flex",
+                        // alignItems: "center",
+                        // justifyContent: "space-between",
+                        // width: "100%",
+                      }
+                    }
                   >
                     {column.label}
                     {/* {false && column.label !== t("Account status") &&
@@ -238,7 +206,7 @@ const TableComponent = ({
               const styles = getStatusStyles(status);
               console.log(
                 "row[column.key]",
-                visibleColumns[visibleColumns?.length - 1].isInput
+                visibleColumns[visibleColumns?.length - 1].isInput,
               );
 
               // console.log("styles.bgColor",styles.bgColor);
@@ -282,7 +250,7 @@ const TableComponent = ({
                           // />
                           <Chip
                             label={t(
-                              status ? activeStatusLabel : inActiveStatusLabel
+                              status ? activeStatusLabel : inActiveStatusLabel,
                             )}
                             color={status == true ? "success" : "error"} // primary | secondary | success | error | info | warning
                             variant="filled" // filled | outlined
@@ -343,7 +311,7 @@ const TableComponent = ({
                                 const els =
                                   document.getElementsByClassName("textField");
                                 const values = Array.from(els).map(
-                                  (el) => el.value
+                                  (el) => el.value,
                                 );
                                 console.log(values);
 
