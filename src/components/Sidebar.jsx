@@ -395,7 +395,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
           console.log("item.key", item.key);
 
           return (
-            <React.Fragment key={item.key} sx={{ height: "100%" }}>
+            <React.Fragment key={item.key}>
               <Box sx={{ px: 1, mb: 0.5 }}>
                 <ListItemButton
                   component={item.path ? Link : "div"}
