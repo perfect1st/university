@@ -52,46 +52,33 @@ export default function AddUserPage() {
             mobile: Yup.string().required(t("admissions.errors.required"))
 
         }),
+   
         onSubmit: async (values) => {
+    let data = {
+        username: values?.username,
+        fullname: values?.fullname,
+        email: values?.email,
+        mobile: values?.mobile,
+        password: values?.password
+    };
+    data.role = selectedRule;
 
-            console.log('xxxxxxxxxxxxxxxxxxxxxxx');
-            let data = {
-                username: values?.username,
-                fullname: values?.fullname,
-                email: values?.email,
-                mobile: values?.mobile,
-                password:values?.password
-            };
+    try {
+        const result = await CreateUser({
+            variables: { input: data }
+        });
+        notify(t("success"), "success");
+        navigate(location.pathname.split('/add')[0]);
+    } catch (error) {
+        console.error("Error:", error);
+        // أضف رسالة الخطأ الفعلية
+        const errorMessage = error?.graphQLErrors?.[0]?.message 
+            || error?.message 
+            || t("error");
+        notify(errorMessage, "error");
+    }
+},
 
-            data.role = selectedRule;
-
-            // if(selectedFile!=null) data.payment_document_file=selectedFile;
-
-            try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                console.log(data);
-
-                // return;
-                const result = await CreateUser({
-                    variables: {
-                        input: data
-                    }
-                });
-
-                console.log('result', result);
-
-                notify(t("success"), "success");
-
-                navigate(location.pathname.split('/add')[0]);
-
-            } catch (error) {
-                console.error("Error logging in:", error);
-                notify(t("error"), "error");
-
-            } finally {
-                //  setIsLoading(false);
-            }
-        },
     });
 
     let translateText = isArabic ? "مستخدم" : "User";
