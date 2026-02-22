@@ -39,11 +39,11 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const [openKeys, setOpenKeys] = useState({});
   const me = useSelector((state) => state.user.loggedUser);
   const isNavOpen = useSelector((state) => state.user.isNavOpen);
-   const storedStudentForm = JSON.parse(localStorage.getItem("registerForm"));
+  const storedStudentForm = JSON.parse(localStorage.getItem("registerForm"));
 
   const lang = i18n.language;
 
-  console.log("storedStudentForm",storedStudentForm);
+  console.log("storedStudentForm", storedStudentForm);
 
   // const menuItems = useMemo(() => getAccessibleRoutes("admin"), []);  .role
   let menuItems = [];
@@ -129,7 +129,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       },
       {
         // icon: FlagIcon,
-        key: "departments",
+        key: "website-departments",
         path: "/website-departments",
         label: {
           ar: "اقسام الموقع",
@@ -138,7 +138,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       },
       {
         // icon: FlagIcon,
-        key: "departments",
+        key: "website-articles",
         path: "/website-articles",
         label: {
           ar: "مقالات الموقع",
@@ -184,7 +184,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       },
       {
         // icon: FlagIcon,
-        key: "departments",
+        key: "academic-departments",
         path: "/departments",
         label: {
           ar: "الاقسام",
@@ -339,8 +339,6 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       },
     ];
 
-  
-
   const toggleOpen = (key) =>
     setOpenKeys((prev) => ({ ...prev, [key]: !prev[key] }));
 
@@ -389,8 +387,8 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
 
           const cleanPath = item?.path?.split("?")[0];
           let isDirectlyActive = location.pathname?.includes(cleanPath);
-          
-          console.log("isDirectlyActive",isDirectlyActive);
+
+          console.log("isDirectlyActive", isDirectlyActive);
 
           const IconComponent = item.icon;
 
