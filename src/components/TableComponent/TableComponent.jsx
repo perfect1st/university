@@ -132,16 +132,17 @@ const TableComponent = ({
     <TableContainer
       component={Paper}
       sx={{
-        width: "100%",
+        width: { xs: "90%", sm: "100%" },
         maxWidth: "100vw",
         overflowX: "auto",
         boxShadow: "none",
+        mx: { xs: "auto", sm: 0 },
       }}
     >
-      <Box sx={{ width: "100%", minWidth: "max-content", overflowX: "auto" }}>
+      <Box sx={{ width: "100%", minWidth: { xs: "100%", sm: "max-content" }, overflowX: "auto" }}>
         <Table
           sx={{
-            minWidth: 900,
+            minWidth: { xs: "auto", sm: 900 },
             borderCollapse: "collapse",
             direction: isArabic ? "ltr" : "rtl",
             "& .MuiTableCell-root": {
