@@ -148,7 +148,11 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
                                         <TableCell>
                                             {
                                                 me?.role == "doctor" &&
-                                                <Box>
+                                                <Box sx={{
+                                                    display:"flex",
+                                                    flexWrap:"wrap",
+                                                    gap:"5px"
+                                                }}>
                                                     {
                                                         row?.lecture_status == "pending" &&
                                                         <>
@@ -163,7 +167,7 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
 
                                                             <Button variant="contained" size="small" color="error"
                                                                 sx={{
-                                                                    mx: 1
+                                                                    // mx: 1
                                                                 }}
                                                                 onClick={() => {
                                                                     setSelectedRow(row);
