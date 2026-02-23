@@ -139,14 +139,29 @@ const TableComponent = ({
         mx: { xs: "auto", sm: 0 },
       }}
     >
-      <Box sx={{ width: "100%", minWidth: { xs: "100%", sm: "max-content" }, overflowX: "auto" }}>
+      <Box
+        sx={{
+          width: "100%",
+          minWidth: "max-content",
+          overflowX: "auto",
+          [theme.breakpoints.down("md")]: {
+            minWidth: "901px",
+          },
+        }}
+      >
         <Table
           sx={{
-            minWidth: { xs: "auto", sm: 900 },
+            minWidth: "max-content",
+            width: "max-content",
+            display: "inline-table",
             borderCollapse: "collapse",
             direction: isArabic ? "ltr" : "rtl",
             "& .MuiTableCell-root": {
               textAlign: "start",
+              whiteSpace: "nowrap",
+            },
+            [theme.breakpoints.down("md")]: {
+              minWidth: "901px",
             },
           }}
         >
