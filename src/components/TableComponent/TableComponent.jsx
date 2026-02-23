@@ -142,26 +142,29 @@ const TableComponent = ({
       <Box
         sx={{
           width: "100%",
-          minWidth: "max-content",
+          minWidth: "100%",
           overflowX: "auto",
-          [theme.breakpoints.down("md")]: {
+          [theme.breakpoints.down("sm")]: {
             minWidth: "901px",
           },
         }}
       >
         <Table
           sx={{
-            minWidth: "max-content",
-            width: "max-content",
-            display: "inline-table",
+            width: "100%", // full width on large screens
             borderCollapse: "collapse",
             direction: isArabic ? "ltr" : "rtl",
             "& .MuiTableCell-root": {
               textAlign: "start",
-              whiteSpace: "nowrap",
             },
-            [theme.breakpoints.down("md")]: {
+            [theme.breakpoints.down("sm")]: {
+              // on small screens render by-content so horizontal scroll can appear
+              width: "max-content",
+              display: "inline-table",
               minWidth: "901px",
+              "& .MuiTableCell-root": {
+                whiteSpace: "nowrap",
+              },
             },
           }}
         >
