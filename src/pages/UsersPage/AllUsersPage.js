@@ -208,7 +208,13 @@ export default function AllUsersPage() {
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid item
+          sx={{
+            overflowX: "auto", // ✅ مهم جدًا عشان الجدول يعمل scroll داخل الـ Grid
+          }}
+        xs={12}
+        md={12}
+        >
           {updatingStatus && (
             <CircularProgress size={26} thickness={8} sx={{ color: "black" }} />
           )}
