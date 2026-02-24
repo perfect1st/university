@@ -143,8 +143,13 @@ export default function AddLecturePage() {
                 navigate(location.pathname.split('/add')[0]);
 
             } catch (error) {
-                console.error("Error logging in:", error);
-                notify(t("error"), "error");
+                // console.error("Error logging in:", error);
+                // notify(t("error"), "error");
+                 // أضف رسالة الخطأ الفعلية
+                        const errorMessage = error?.graphQLErrors?.[0]?.message 
+                            || error?.message 
+                            || t("error");
+                        notify(errorMessage, "error");
 
             } finally {
                 //  setIsLoading(false);
