@@ -245,11 +245,11 @@ export default function Admissions() {
     { value: "BANK_TRANSFER", label: t("admissions.bankTransfer") },
     { value: "ONLINE", label: t("admissions.onlinePayment") },
   ];
-  const nationalities = nationalitiesData?.nationalities;
+  const nationalities = nationalitiesData?.nationalities?.filter(el=>el.status);
 
   console.log("nationalities", nationalities);
 
-  const countries = countriesData?.countries ? countriesData?.countries : null;
+  const countries = countriesData?.countries ? countriesData?.countries?.filter(el=>el?.status) : null;
 
   console.log("citiesInCountry", citiesInCountry?.getCitiesByCountry);
 
