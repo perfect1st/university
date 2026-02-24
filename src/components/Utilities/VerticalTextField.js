@@ -213,4 +213,100 @@ export const SearchByTypingSelect = ({ options, value, setValue, title, label, e
 
   );
 }
+export const SearchByTypingSelect2 = ({ 
+  options, value, setValue, title, error, onBlur, 
+  multiple = false, labelToShow, findKey, onChangeFn 
+}) => {
+  const theme = useTheme();
 
+  return (
+    <Box sx={{ 
+      display: "flex", 
+      flexWrap: "wrap", 
+      mb: 4, 
+      backgroundColor: theme.palette.primary?.gray, 
+      gap: 3, 
+      p: 1, 
+      minHeight: "60px" // استخدمنا minHeight بدلاً من height للسماح بالتمدد عند اختيار عناصر كثيرة
+    }}>
+      
+      {/* قسم العنوان - مطابق تماماً لـ HorizentalTextFieldSelect */}
+      <Typography variant="subtitle2" sx={{ 
+        fontWeight: "bold", 
+        height: "55px", 
+        display: "flex", 
+        flexDirection: "column", 
+        alignItems: "start", 
+        justifyContent: "center", 
+        width: "40%" 
+      }}>
+        {title}
+      </Typography>
+
+      {/* قسم الحقل - مطابق تماماً في الهيكلية */}
+      <Box sx={{ 
+        flexGrow: 1, 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "center", 
+        flexDirection: "column",
+        width: "50%" // لضمان التوازن مع الـ 40% الخاصة بالعنوان والـ gap
+      }}>
+        <Autocomplete
+          multiple={multiple}
+          options={options || []}
+          getOptionLabel={(option) => labelToShow(option)}
+          value={multiple 
+            ? (options?.filter(opt => value?.includes(opt[findKey])) || []) 
+            : (options?.find(opt => opt[findKey] === value) || null)
+          }
+          onChange={(e, newValue, reason) => {
+            if (reason === "clear") {
+              multiple ? setValue([]) : setValue(null);
+              if (onChangeFn) onChangeFn([]);
+            } else if (reason === "selectOption" || reason === "removeOption") {
+              if (multiple) {
+                const newIds = newValue.map(opt => opt[findKey]);
+                setValue(newIds);
+                if (onChangeFn) onChangeFn(newIds);
+              } else {
+                setValue(newValue ? newValue[findKey] : null);
+              }
+            }
+          }}
+          onBlur={onBlur}
+          fullWidth
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              placeholder={`${title} ...`}
+              error={Boolean(error)}
+              helperText={error}
+              variant="outlined"
+              size="small"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: theme.palette.primary?.gray,
+                  borderRadius: "8px",
+                  "& fieldset": { border: "none" },
+                  "&:hover fieldset": { border: "none" },
+                  "&.Mui-focused fieldset": { border: "none" },
+                },
+              }}
+            />
+          )}
+          // تنسيق إضافي ليتناسب مع شكل الـ Select
+          sx={{
+            width: "100%",
+            "& .MuiAutocomplete-popupIndicator": { color: theme.palette.info.main },
+            "& .MuiChip-root": {
+                height: "24px",
+                backgroundColor: theme.palette.background.paper, // لون الـ chips
+                border: `1px solid ${theme.palette.divider}`
+            }
+          }}
+        />
+      </Box>
+    </Box>
+  );
+}

@@ -10,7 +10,7 @@ import * as Yup from "yup";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import { useState } from "react";
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
-import { SearchByTypingSelect } from "../../components/Utilities/VerticalTextField"; // Import your Search component
+import { SearchByTypingSelect2 } from "../../components/Utilities/VerticalTextField"; // Import your Search component
 import { userRules } from "../../constants";
 import { UPDATE_USER_BY_ADMIN } from "../../graphql/userQueriesForAdmin";
 import { GET_GROUPS } from "../../graphql/groupQueries";
@@ -57,7 +57,7 @@ export default function UserDetailsPage() {
         mobile: values.mobile,
         role: selectedRule,
         // تأكد أن القيم هنا IDs فقط (Strings) وليس Objects
-        group_id: values.groupIds.map(id => (typeof id === 'object' ? id.id : id))
+        groups: values.groupIds.map(id => (typeof id === 'object' ? id.id : id))
       };
 
 if (values.password && values.password.trim() !== "") {
@@ -121,7 +121,7 @@ if (values.password && values.password.trim() !== "") {
         />
 
         {/* Group Multi-Select Integration */}
-        <SearchByTypingSelect
+        <SearchByTypingSelect2
           title={t("Groups")}
           options={groupsData?.groups || []}
           multiple={true}

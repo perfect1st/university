@@ -262,6 +262,14 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       },
 
       {
+        key: "PermissionsGroups",
+        path: "/PermissionsGroups",
+        label: {
+          ar: "مجموعات الصلاحيات",
+          en: "Permissions Groups",
+        },
+      },
+      {
         // icon: PersonOutlineIcon,
         key: "profile2",
         path: "/profile",

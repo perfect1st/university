@@ -38,7 +38,7 @@ mutation CreateUser($input: AdminCreateUserInput!) {
 `;
 
 export const UPDATE_USER_BY_ADMIN = gql`
-  mutation UpdateUser($id: ID!, $input: UserUpdateInput!) {
+  mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
     updateUser(id: $id, input: $input) {
       id
       username
@@ -86,6 +86,11 @@ export const FILTERED_USERS = gql`
             is_inside_yemen
             createdAt
             updatedAt
+              groups {
+            id
+            name_ar
+            name_en
+        }
       }
     }
   }

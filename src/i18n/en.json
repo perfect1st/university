@@ -402,5 +402,6 @@
   "view": "View",
   "create": "Create",
   "update": "Update",
-  "delete": "Delete"
+  "delete": "Delete",
+  "Groups": "Permissions Groups"
 }
