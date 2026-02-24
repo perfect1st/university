@@ -108,6 +108,8 @@ import AllStudentDegreesPage from "./pages/StudentDegrees/AllStudentDegreesPage"
 import GetAllSupportTicketsPage from "./pages/SupportTickets/GetAllSupportTicketsPage";
 import AddSupportTicketPage from "./pages/SupportTickets/AddSupportTicketPage";
 import EditSupportTicketPage from "./pages/SupportTickets/EditSupportTicketPage";
+import PermissionsGroupsPage from "./pages/PermissionsGroupsPage/PermissionsGroupsPage";
+import GroupFormPage from "./pages/PermissionsGroupsPage/GroupFormPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -550,6 +552,35 @@ function App() {
                       }
                     />
                   </Route>
+
+                  {/* المستخدمين */}
+                  <Route path="/PermissionsGroups">
+                    <Route
+                      index
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <PermissionsGroupsPage />
+                        </MainLayout>
+                      }
+                    />
+                     <Route
+                      path="add"
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <GroupFormPage />
+                        </MainLayout>
+                      }
+                    />
+
+                    <Route
+                      path="details/:id"
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <GroupFormPage />
+                        </MainLayout>
+                      }
+                    />
+                    </Route>
 
                   {/* المستخدمين */}
                   <Route path="/users">

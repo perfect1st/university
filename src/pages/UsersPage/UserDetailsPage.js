@@ -1,5 +1,5 @@
-import { useLocation, useNavigate } from "react-router-dom"
-import { useMutation } from "@apollo/client/react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useMutation, useQuery } from "@apollo/client/react"; // Added useQuery
 import i18n from "../../i18n/i18n";
 import { Box, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import Header from "../../components/PageHeader/header";
@@ -10,121 +10,92 @@ import * as Yup from "yup";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import { useState } from "react";
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
-import { UPDATE_TRANSACTION_TYPE } from "../../graphql/transactionTypeQueries"
-import { transactionTypesArr, userRules } from "../../constants";
+import { SearchByTypingSelect } from "../../components/Utilities/VerticalTextField"; // Import your Search component
+import { userRules } from "../../constants";
 import { UPDATE_USER_BY_ADMIN } from "../../graphql/userQueriesForAdmin";
+import { GET_GROUPS } from "../../graphql/groupQueries";
 
 export default function UserDetailsPage() {
   const theme = useTheme();
   const { t } = useTranslation();
   const isArabic = i18n.language === "ar";
   const navigate = useNavigate();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const location = useLocation();
+  const userData = location?.state;
 
-  const [selectedRule, setSelectedRule] = useState(location?.state?.role);
+  // Fetch Groups for the selection list
+  const { data: groupsData } = useQuery(GET_GROUPS);
 
-  const [UpdateUser, {
-    loading: updating
-  }] = useMutation(UPDATE_USER_BY_ADMIN, { fetchPolicy: "network-only" });
+  const [selectedRule, setSelectedRule] = useState(userData?.role || 0);
+
+  const [UpdateUser, { loading: updating }] = useMutation(UPDATE_USER_BY_ADMIN);
 
   const formik = useFormik({
     initialValues: {
-      username: location?.state?.username,
-      fullname: location?.state?.fullname,
-      email: location?.state?.email,
-      mobile: location?.state?.mobile,
-      // password:""
+      username: userData?.username || "",
+      fullname: userData?.fullname || "",
+      email: userData?.email || "",
+      mobile: userData?.mobile || "",
+      password: "",
+      // Initialize groupIds from location state (assuming the API returns objects, we map to IDs)
+      groupIds: userData?.groups?.map(g => g.id) || userData?.groupIds || [],
     },
 
     validationSchema: Yup.object({
-      selectedRule: selectedRule == 0 && Yup.string()
-        .required(t("admissions.errors.required"))
-        .notOneOf(["0"], t("admissions.errors.required")),
       username: Yup.string().required(t("admissions.errors.required")),
       fullname: Yup.string().required(t("admissions.errors.required")),
-      email: Yup.string().email(t("admissions.errors.invalidEmail"))
-        .required(t("admissions.errors.required")),
-      mobile: Yup.string().required(t("admissions.errors.required"))
-
+      email: Yup.string().email(t("admissions.errors.invalidEmail")).required(t("admissions.errors.required")),
+      mobile: Yup.string().required(t("admissions.errors.required")),
+      groupIds: Yup.array().min(1, t("admissions.errors.required")), // Optional: require at least one group
     }),
-    onSubmit: async (values) => {
 
-      console.log('xxxxxxxxxxxxxxxxxxxxxxx');
-      let data = {
-        username: values?.username,
-        fullname: values?.fullname,
-        email: values?.email,
-        mobile: values?.mobile,
-        // password:values?.password
+    onSubmit: async (values) => {
+      const input = {
+        username: values.username,
+        fullname: values.fullname,
+        email: values.email,
+        mobile: values.mobile,
+        role: selectedRule,
+        // تأكد أن القيم هنا IDs فقط (Strings) وليس Objects
+        group_id: values.groupIds.map(id => (typeof id === 'object' ? id.id : id))
       };
 
-      data.role = selectedRule;
-
-      // if(selectedFile!=null) data.payment_document_file=selectedFile;
-
+if (values.password && values.password.trim() !== "") {
+    input.password = values.password;
+  }
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-        console.log(data);
-
-        // return;
-        const result = await UpdateUser({
+        await UpdateUser({
           variables: {
-            id: location?.state?.id,
-            input: data
+            id: userData?.id,
+            input: input
           }
         });
 
-        console.log('result', result);
-
-        notify(t("success"), "success");
-
+        notify(t("updatedSuccessfully"), "success");
         navigate(location.pathname.split('/details')[0]);
-
       } catch (error) {
-        console.error("Error logging in:", error);
-        notify(t("error"), "error");
-
-      } finally {
-        //  setIsLoading(false);
+        notify(error.message || t("error"), "error");
       }
     },
   });
 
-  let translateText = isArabic ? "مستخدم" : "User";
-  let translateText2 = isArabic ? "المستخدم" : "User";
-
-  let userRulesWithOutStudent=userRules.filter(item=>item!="student");
+  const userRulesWithOutStudent = userRules.filter(item => item !== "student");
 
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Header
         title={t("Users")}
-        subtitle={t("detailsItem", { item: translateText })}
+        subtitle={t("detailsItem", { item: isArabic ? "مستخدم" : "User" })}
         i18n={i18n}
-        haveBtn={false}
-        hasAddOrEditBtn={true}
-        sub2={t("detailsItem", { item: translateText })}
         hasNavigate={true}
-        isExcel={false}
-        isPdf={false}
-        isPrinter={false}
       />
 
-      <Box component="form"
-        onSubmit={
-          formik.handleSubmit
-        }
-        sx={{
-          width: "100%"
-        }}
-      >
+      <Box component="form" onSubmit={formik.handleSubmit} sx={{ width: "100%" }}>
 
+        {/* Basic Fields */}
         <HorizentalTextField
-          title={t("Dashboard.userName", { item: translateText2 })}
-          fieldID={"username"}
-          fieldName={"username"}
-          placeholder={t("Dashboard.userName", { item: translateText2 })}
+          title={t("Dashboard.userName")}
+          fieldName="username"
           value={formik.values.username}
           onChange={formik.handleChange}
           error={formik.touched.username && Boolean(formik.errors.username)}
@@ -132,10 +103,8 @@ export default function UserDetailsPage() {
         />
 
         <HorizentalTextField
-          title={t("admissions.fullName", { item: translateText2 })}
-          fieldID={"fullname"}
-          fieldName={"fullname"}
-          placeholder={t("admissions.fullName", { item: translateText2 })}
+          title={t("admissions.fullName")}
+          fieldName="fullname"
           value={formik.values.fullname}
           onChange={formik.handleChange}
           error={formik.touched.fullname && Boolean(formik.errors.fullname)}
@@ -143,63 +112,42 @@ export default function UserDetailsPage() {
         />
 
         <HorizentalTextField
-          title={t("admissions.email", { item: translateText2 })}
-          fieldID={"email"}
-          fieldName={"email"}
-          placeholder={t("admissions.email", { item: translateText2 })}
+          title={t("admissions.email")}
+          fieldName="email"
           value={formik.values.email}
           onChange={formik.handleChange}
           error={formik.touched.email && Boolean(formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
         />
 
-        <HorizentalTextField
-          title={t("Mobile", { item: translateText2 })}
-          fieldID={"mobile"}
-          fieldName={"mobile"}
-          placeholder={t("Mobile", { item: translateText2 })}
-          value={formik.values.mobile}
-          onChange={formik.handleChange}
-          error={formik.touched.mobile && Boolean(formik.errors.mobile)}
-          helperText={formik.touched.mobile && formik.errors.mobile}
-        />
-
-        <HorizentalTextField
-          title={t("form.password", { item: translateText2 })}
-          fieldID={"password"}
-          fieldName={"password"}
-          placeholder={t("form.password", { item: translateText2 })}
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
+        {/* Group Multi-Select Integration */}
+        <SearchByTypingSelect
+          title={t("Groups")}
+          options={groupsData?.groups || []}
+          multiple={true}
+          findKey="id"
+          labelToShow={(opt) => (isArabic ? opt.name_ar : opt.name_en)}
+          value={formik.values.groupIds}
+          setValue={(val) => formik.setFieldValue("groupIds", val)}
+          onBlur={() => formik.setFieldTouched("groupIds", true)}
+          error={formik.touched.groupIds && formik.errors.groupIds}
         />
 
         <HorizentalTextFieldSelect
           t={t}
-          title={t("Dashboard.userType")} defaultOptionLabel={t("select")}
-          backgroundColor={theme.palette.background.inputBackGround}
+          title={t("Dashboard.userType")}
           value={selectedRule}
           setValue={setSelectedRule}
-          onBlur={(e) => {
-            if (selectedRule != 0) formik.setFieldError("selectedRule", undefined);
-
-          }}
-          error={formik.errors.selectedRule && t("admissions.errors.required")}
-          helperText={formik.errors.selectedRule && t("admissions.errors.required")}
+          backgroundColor={theme.palette.background.inputBackGround}
         >
-          <MenuItem value={0} selected>{t("select")}</MenuItem>
-          {
-            userRulesWithOutStudent?.map((el, i) => <MenuItem key={i} value={el}>{t(`Dashboard.${el}`)}</MenuItem>)
-          }
+          <MenuItem value={0}>{t("select")}</MenuItem>
+          {userRulesWithOutStudent.map((el, i) => (
+            <MenuItem key={i} value={el}>{t(`Dashboard.${el}`)}</MenuItem>
+          ))}
         </HorizentalTextFieldSelect>
 
-
-
-
         <SubmitButton loading={updating} t={t} />
-
       </Box>
     </Box>
-  )
+  );
 }

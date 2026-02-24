@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { useMutation } from "@apollo/client/react";
+import { useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import { Box, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import Header from "../../components/PageHeader/header";
@@ -7,12 +7,13 @@ import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import VerticalTextField, { VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
+import VerticalTextField, { SearchByTypingSelect, VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import LoadingPage from "../../components/LoadingComponent";
 import { useState } from "react";
 import { CREATE_USER_BY_ADMIN } from "../../graphql/userQueriesForAdmin";
 import { userRules } from "../../constants";
+import { GET_GROUPS } from "../../graphql/groupQueries";
 
 
 export default function AddUserPage() {
@@ -24,6 +25,9 @@ export default function AddUserPage() {
     const location = useLocation();
 
     const [selectedRule, setSelectedRule] = useState(0);
+  const { data, loading, error } = useQuery(GET_GROUPS, {
+    fetchPolicy: "network-only",
+  });
 
     const [
         CreateUser,
@@ -38,7 +42,8 @@ export default function AddUserPage() {
             fullname: "",
             email: "",
             mobile: "",
-            password:""
+            password:"",
+            groupIds: [],
         },
 
         validationSchema: Yup.object({
@@ -49,7 +54,8 @@ export default function AddUserPage() {
             fullname: Yup.string().required(t("admissions.errors.required")),
             email: Yup.string().email(t("admissions.errors.invalidEmail"))
             .required(t("admissions.errors.required")),
-            mobile: Yup.string().required(t("admissions.errors.required"))
+            mobile: Yup.string().required(t("admissions.errors.required")),
+            groupIds: Yup.array().min(1, t("admissions.errors.required")).required(t("admissions.errors.required")),
 
         }),
    
@@ -59,7 +65,8 @@ export default function AddUserPage() {
         fullname: values?.fullname,
         email: values?.email,
         mobile: values?.mobile,
-        password: values?.password
+        password: values?.password,
+        group_id: values.groupIds
     };
     data.role = selectedRule;
 
@@ -81,6 +88,7 @@ export default function AddUserPage() {
 
     });
 
+    const groupsOptions = data?.groups || [];
     let translateText = isArabic ? "مستخدم" : "User";
     let translateText2 = isArabic ? "المستخدم" : "User";
 
@@ -177,7 +185,17 @@ export default function AddUserPage() {
                         userRulesWithOutStudent?.map((el, i) => <MenuItem key={i} value={el}>{t(`Dashboard.${el}`)}</MenuItem>)
                     }
                 </VerticalTextFieldSelect>
-
+<SearchByTypingSelect
+    title={t("Groups")}
+    options={groupsOptions}
+    multiple={true} // Enable multi-select
+    findKey="id"    // The key in the object to store (group_id)
+    labelToShow={(option) => (isArabic ? option.name_ar : option.name_en)}
+    value={formik.values.groupIds}
+    setValue={(newIds) => formik.setFieldValue("groupIds", newIds)}
+    onBlur={() => formik.setFieldTouched("groupIds", true)}
+    error={formik.touched.groupIds && formik.errors.groupIds}
+/>
 
                 <SubmitButton loading={CreateUserLoading} t={t} />
             </Box>

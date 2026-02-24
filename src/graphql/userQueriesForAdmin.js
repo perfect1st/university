@@ -38,22 +38,23 @@ mutation CreateUser($input: AdminCreateUserInput!) {
 `;
 
 export const UPDATE_USER_BY_ADMIN = gql`
-mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
+  mutation UpdateUser($id: ID!, $input: UserUpdateInput!) {
     updateUser(id: $id, input: $input) {
+      id
+      username
+      fullname
+      email
+      mobile
+      role
+      status
+      groups {
         id
-        username
-        fullname
-        email
-        mobile
-        role
-        status
-        profile_image
-        qid_number
-        createdAt
-        updatedAt
+        name_ar
+        name_en
+      }
+      updatedAt
     }
-}
-
+  }
 `;
 
 export const FILTERED_USERS = gql`
