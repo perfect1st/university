@@ -1,7 +1,19 @@
 import { useTheme } from "@emotion/react";
-import { Box, CircularProgress, Grid, Typography, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Grid,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -11,7 +23,11 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { useEffect, useRef, useState } from "react";
 
 import { useSelector } from "react-redux";
-import { GET_TIME_TABLE_BY_ACADEMY_TERM_ID, GET_TIME_TABLE_BY_DOCTOR_ID, TODAY_TIME_TABLE } from "../../../graphql/TimeTableQueries";
+import {
+  GET_TIME_TABLE_BY_ACADEMY_TERM_ID,
+  GET_TIME_TABLE_BY_DOCTOR_ID,
+  TODAY_TIME_TABLE,
+} from "../../../graphql/TimeTableQueries";
 import i18n from "../../../i18n/i18n";
 import LoadingPage from "../../../components/LoadingComponent";
 import Header from "../../../components/PageHeader/header";
@@ -35,108 +51,155 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("time
 
   const [
     TimeTablesByTerm,
-    {
-      data: { timeTablesByTerm } = {},
-      loading: getTimeTableLoading
-    }
-  ] = useLazyQuery(GET_TIME_TABLE_BY_ACADEMY_TERM_ID, { fetchPolicy: "network-only" });
+    { data: { timeTablesByTerm } = {}, loading: getTimeTableLoading },
+  ] = useLazyQuery(GET_TIME_TABLE_BY_ACADEMY_TERM_ID, {
+    fetchPolicy: "network-only",
+  });
 
   const [
     TodayTimeTable,
-    {
-      data: { todayTimeTable } = {},
-      loading: getTodayTimeTableLoading
-    }
+    { data: { todayTimeTable } = {}, loading: getTodayTimeTableLoading },
   ] = useLazyQuery(TODAY_TIME_TABLE, { fetchPolicy: "network-only" });
 
-  const me = useSelector(state => state.user.loggedUser);
+  const me = useSelector((state) => state.user.loggedUser);
 
   useEffect(() => {
     if (me?.id) {
       // console.log('meeeee', me?.id);
       const date = new Date();
-      const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+      const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
 
       console.log("dayName", dayName);
-      TimeTablesByTerm({ variables: { academy_term_id: storedStudentForm?.academyTerm_id?.id } });
-      TodayTimeTable({ variables: { academy_term_id: storedStudentForm?.academyTerm_id?.id ,day:dayName } });
+      TimeTablesByTerm({
+        variables: { academy_term_id: storedStudentForm?.academyTerm_id?.id },
+      });
+      TodayTimeTable({
+        variables: {
+          academy_term_id: storedStudentForm?.academyTerm_id?.id,
+          day: dayName,
+        },
+      });
       // data({variables:{doctor_id:me?.id}});
     }
   }, [me]);
 
-  const groupedTimeTablesByMainTimeTable =
-    timeTablesByTerm?.reduce((acc, item) => {
-      // هل في جروب نفس البداية والنهاية؟
-      const existingGroup = acc.find(
-        (g) =>
-          g.start_time === item.start_time &&
-          g.end_time === item.end_time
-      );
+  // تقسيم الوقت لساعات متساوية
+  const groupedTimeTablesByMainTimeTable = (() => {
+    if (!timeTablesByTerm?.length) return [];
 
-      if (existingGroup) {
-        // ضيف العنصر للجروب القديم
-        existingGroup.items.push(item);
-      } else {
-        // اعمل جروب جديد
-        acc.push({
-          start_time: item.start_time,
-          end_time: item.end_time,
-          items: [item]
-        });
-      }
+    // ترتيب الأوقات (8 AM first, then PM)
+    const timeOrder = [
+      "08:00",
+      "09:00",
+      "10:00",
+      "11:00",
+      "12:00",
+      "01:00",
+      "02:00",
+      "03:00",
+      "04:00",
+      "05:00",
+      "06:00",
+      "07:00",
+    ];
 
-      return acc;
-    }, []);
+    // استخرج كل الـ time boundaries
+    const allTimes = new Set();
+    allTimes.add("08:00");
+    timeTablesByTerm.forEach((item) => {
+      allTimes.add(item.start_time);
+      allTimes.add(item.end_time);
+    });
 
-  console.log("timeTablesByTerm", timeTablesByTerm);
-  console.log("todayTimeTable",todayTimeTable);
+    // رتب الأوقات حسب الترتيب الصحيح (8,9,10,11,12,1,2,3...)
+    const sortedTimes = [...allTimes].sort((a, b) => {
+      const indexA = timeOrder.indexOf(a);
+      const indexB = timeOrder.indexOf(b);
+      if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      return indexA - indexB;
+    });
+
+    // اصنع rows لكل ساعة
+    const rows = [];
+    for (let i = 0; i < sortedTimes.length - 1; i++) {
+      const slotStart = sortedTimes[i];
+      const slotEnd = sortedTimes[i + 1];
+
+      const items = timeTablesByTerm.filter((lecture) => {
+        const startIndex = timeOrder.indexOf(lecture.start_time);
+        const endIndex = timeOrder.indexOf(lecture.end_time);
+        const slotIndex = timeOrder.indexOf(slotStart);
+
+        if (startIndex === -1 || endIndex === -1 || slotIndex === -1)
+          return false;
+
+        return startIndex <= slotIndex && endIndex > slotIndex;
+      });
+
+      rows.push({
+        start_time: slotStart,
+        end_time: slotEnd,
+        items: items || [],
+      });
+    }
+
+    return rows;
+  })();
+
     if (!view) return <NoPermissionPage />;
 
-  if (getTimeTableLoading || getTodayTimeTableLoading) return <LoadingPage />
+  if (getTimeTableLoading || getTodayTimeTableLoading) return <LoadingPage />;
 
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
-            <Grid container>
-                <Grid item
-                    sm={12} md={12}
-                    sx={{
+      <Grid container>
+        <Grid item sm={12} md={12} sx={{}}>
+          <Header
+            title={t("Dashboard.LecturesSchedule")}
+            subtitle={`${t("Dashboard.LecturesSchedule")}`}
+            i18n={i18n}
+            haveBtn={false}
+            // btn={t("addItem", { item: translateText })}
+            btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
+            // onSubmit={addNavigate}
+            isExcel
+            isPdf
+            isPrinter
+            // onExcel={() => fetchAndExport("excel")}
+            // onPdf={() => fetchAndExport("pdf")}
+            // onPrinter={() => fetchAndExport("print")}
+          />
 
-                    }}
-                >
-                    <Header
-                        title={t("Dashboard.LecturesSchedule")}
-                        subtitle={`${t("Dashboard.LecturesSchedule")}`}
-                        i18n={i18n}
-                        haveBtn={false}
-                        // btn={t("addItem", { item: translateText })}
-                        btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
-                        // onSubmit={addNavigate}
-                        isExcel
-                        isPdf
-                        isPrinter
-                    // onExcel={() => fetchAndExport("excel")}
-                    // onPdf={() => fetchAndExport("pdf")}
-                    // onPrinter={() => fetchAndExport("print")}
-                    />
+          <ScheduleTable
+            rows={groupedTimeTablesByMainTimeTable}
+            canDelete={false}
+          />
 
-                    <ScheduleTable rows={groupedTimeTablesByMainTimeTable} canDelete={false} />
+          <Box
+            display="flex"
+            width={isMobile ? "55%" : "100%"}
+            flexDirection="column"
+            gap={3}
+            py={3}
+            borderTop="1px solid #cfd7e7"
+          >
+            {/* Title */}
+            <Box display="flex" gap={1}>
+              <Typography variant="h6" fontWeight={700}>
+                {t("Dashboard.toDayLectures")}
+              </Typography>
+            </Box>
 
-                    <Box display="flex" width={isMobile ? "55%" : "100%"} flexDirection="column" gap={3} py={3} borderTop="1px solid #cfd7e7">
-                        {/* Title */}
-                        <Box display="flex" gap={1}>
-                            <Typography variant="h6" fontWeight={700}>
-                                {t("Dashboard.toDayLectures")}
-                            </Typography>
-
-                        </Box>
-
-                        <ToDayTimeTableComponent rows={todayTimeTable} canEdit={true} func={TodayTimeTable} />
-                    </Box>
-
-
-
-                </Grid>
-            </Grid>
-        </Box>
-  )
+            <ToDayTimeTableComponent
+              rows={todayTimeTable}
+              canEdit={true}
+              func={TodayTimeTable}
+            />
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
+  );
 }

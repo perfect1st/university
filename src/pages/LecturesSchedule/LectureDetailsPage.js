@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import ScheduleTable from '../../components/Utilities/ScheduleTableComponent'
+import React, { useState } from "react";
+import ScheduleTable from "../../components/Utilities/ScheduleTableComponent";
 import {
   Box,
   Grid,
@@ -12,27 +12,30 @@ import {
   FormControl,
   useTheme,
   useMediaQuery,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 
 import BookIcon from "@mui/icons-material/MenuBook";
 import PersonIcon from "@mui/icons-material/Person";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ScheduleIcon from "@mui/icons-material/Schedule";
-import Header from '../../components/PageHeader/header';
-import { useTranslation } from 'react-i18next';
-import i18n from '../../i18n/i18n';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
-import { GET_MATERIALS_BY_DEPARTMENT_ID } from '../../graphql/materialQueries';
-import VerticalTextField, { VerticalTextFieldSelect } from '../../components/Utilities/VerticalTextField';
-import { days } from '../../constants';
-import LoadingPage from '../../components/LoadingComponent';
-import notify from '../../components/notify';
-import { CREATE_TIME_TABLE , GET_TIME_TABLES_BY_MAIN_TABLE_ID , DELETE_TIME_TABLE_BY_ID } from '../../graphql/TimeTableQueries';
-
-
-
+import Header from "../../components/PageHeader/header";
+import { useTranslation } from "react-i18next";
+import i18n from "../../i18n/i18n";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
+import { GET_MATERIALS_BY_DEPARTMENT_ID } from "../../graphql/materialQueries";
+import VerticalTextField, {
+  VerticalTextFieldSelect,
+} from "../../components/Utilities/VerticalTextField";
+import { days } from "../../constants";
+import LoadingPage from "../../components/LoadingComponent";
+import notify from "../../components/notify";
+import {
+  CREATE_TIME_TABLE,
+  GET_TIME_TABLES_BY_MAIN_TABLE_ID,
+  DELETE_TIME_TABLE_BY_ID,
+} from "../../graphql/TimeTableQueries";
 
 export default function LectureDetailsPage() {
   const theme = useTheme();
@@ -42,7 +45,8 @@ export default function LectureDetailsPage() {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const location = useLocation();
 
-  const [selectedMaterialDepartment, setSelectedMaterialDepartment] = useState(0);
+  const [selectedMaterialDepartment, setSelectedMaterialDepartment] =
+    useState(0);
   const [selectedDay, setSelectedDay] = useState(0);
   // const [sectionInput, setSectionInput] = useState("");
   // const [rows, setRows] = useState([]);
@@ -52,176 +56,213 @@ export default function LectureDetailsPage() {
 
   console.log("location", location.state);
 
-  const [
-    CreateTimeTable,
+  const [CreateTimeTable, { loading: creating }] = useMutation(
+    CREATE_TIME_TABLE,
     {
-      loading: creating
-    }
-  ] = useMutation(CREATE_TIME_TABLE, { 
-    refetchQueries: [
-    {
-      query: GET_TIME_TABLES_BY_MAIN_TABLE_ID,   // أو أي query عايز تحدثها
-      variables: {
-        main_time_table_id: location?.state?.id
-      }
-    }
-  ],
-   });
-
-    
+      refetchQueries: [
+        {
+          query: GET_TIME_TABLES_BY_MAIN_TABLE_ID, // أو أي query عايز تحدثها
+          variables: {
+            main_time_table_id: location?.state?.id,
+          },
+        },
+      ],
+    },
+  );
 
   // get time tables by main time table
-  const{
-    data:{
-      timeTablesByMainTimeTable
-    }={},
-    loading: timeTablesLoading
-  }=useQuery(
-    GET_TIME_TABLES_BY_MAIN_TABLE_ID,
-    {
-      variables: {
-        main_time_table_id: location?.state?.id
-      },
-      fetchPolicy: "network-only",
-      // onCompleted: (data) => {
-      //   console.log("completed",data);
-      // }
-    }
-  );
-  
- 
-  console.log("timeTablesByMainTimeTable",timeTablesByMainTimeTable);
+  const {
+    data: { timeTablesByMainTimeTable } = {},
+    loading: timeTablesLoading,
+  } = useQuery(GET_TIME_TABLES_BY_MAIN_TABLE_ID, {
+    variables: {
+      main_time_table_id: location?.state?.id,
+    },
+    fetchPolicy: "network-only",
+    // onCompleted: (data) => {
+    //   console.log("completed",data);
+    // }
+  });
 
-//   const groupedTimeTablesByMainTimeTable = timeTablesByMainTimeTable?.reduce((acc, item) => {
-//   const key = `${item.start_time}-${item.end_time}`;
+  console.log("timeTablesByMainTimeTable", timeTablesByMainTimeTable);
 
-//   if (!acc[key]) {
-//     acc[key] = {
-//       items: []
-//     };
-//   }
+  //   const groupedTimeTablesByMainTimeTable = timeTablesByMainTimeTable?.reduce((acc, item) => {
+  //   const key = `${item.start_time}-${item.end_time}`;
 
-//   acc[key].items.push(item);
-//   return acc;
-// }, {});
-const groupedTimeTablesByMainTimeTable =
-  timeTablesByMainTimeTable?.reduce((acc, item) => {
-    // هل في جروب نفس البداية والنهاية؟
-    const existingGroup = acc.find(
-      (g) =>
-        g.start_time === item.start_time &&
-        g.end_time === item.end_time
-    );
+  //   if (!acc[key]) {
+  //     acc[key] = {
+  //       items: []
+  //     };
+  //   }
 
-    if (existingGroup) {
-      // ضيف العنصر للجروب القديم
-      existingGroup.items.push(item);
-    } else {
-      // اعمل جروب جديد
-      acc.push({
-        start_time: item.start_time,
-        end_time: item.end_time,
-        items: [item]
+  //   acc[key].items.push(item);
+  //   return acc;
+  // }, {});
+
+  // تقسيم الوقت لساعات متساوية
+  const groupedTimeTablesByMainTimeTable = (() => {
+    if (!timeTablesByMainTimeTable?.length) return [];
+
+    // ترتيب الأوقات (8 AM first, then PM)
+    const timeOrder = [
+      "08:00",
+      "09:00",
+      "10:00",
+      "11:00",
+      "12:00",
+      "01:00",
+      "02:00",
+      "03:00",
+      "04:00",
+      "05:00",
+      "06:00",
+      "07:00",
+    ];
+
+    // استخرج كل الـ time boundaries
+    const allTimes = new Set();
+    allTimes.add("08:00");
+    timeTablesByMainTimeTable.forEach((item) => {
+      allTimes.add(item.start_time);
+      allTimes.add(item.end_time);
+    });
+
+    // رتب الأوقات حسب الترتيب الصحيح (8,9,10,11,12,1,2,3...)
+    const sortedTimes = [...allTimes].sort((a, b) => {
+      const indexA = timeOrder.indexOf(a);
+      const indexB = timeOrder.indexOf(b);
+      // لو مش موجود في القائمة، استخدم string comparison
+      if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      return indexA - indexB;
+    });
+
+    // اصنع rows لكل ساعة
+    const rows = [];
+    for (let i = 0; i < sortedTimes.length - 1; i++) {
+      const slotStart = sortedTimes[i];
+      const slotEnd = sortedTimes[i + 1];
+
+      // اجمع المحاضرات اللي في هذا الوقت لكل يوم
+      const items = timeTablesByMainTimeTable.filter((lecture) => {
+        // نشوف إذا الـ lecture تقع في هذا الـ slot
+        const startIndex = timeOrder.indexOf(lecture.start_time);
+        const endIndex = timeOrder.indexOf(lecture.end_time);
+        const slotIndex = timeOrder.indexOf(slotStart);
+
+        if (startIndex === -1 || endIndex === -1 || slotIndex === -1)
+          return false;
+
+        return startIndex <= slotIndex && endIndex > slotIndex;
+      });
+
+      rows.push({
+        start_time: slotStart,
+        end_time: slotEnd,
+        items: items || [],
       });
     }
 
-    return acc;
-  }, []);
+    return rows;
+  })();
 
-
-console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable);
+  console.log(
+    "groupedTimeTablesByMainTimeTable",
+    groupedTimeTablesByMainTimeTable,
+  );
 
   // get materials in Department
   const {
     data: { materialsByDepartment } = {},
-    loading: DepartmentMaterialsLoading
+    loading: DepartmentMaterialsLoading,
   } = useQuery(GET_MATERIALS_BY_DEPARTMENT_ID, {
     variables: {
-      faculty_department_id: location?.state?.faculty_department_id?.id
+      faculty_department_id: location?.state?.faculty_department_id?.id,
     },
-    fetchPolicy: "network-only"
+    fetchPolicy: "network-only",
   });
 
   const colors = ["#e3f2fd", "#f3e5f5", "#e8f5e9"];
 
   const addRowToTable = async () => {
-
     try {
-      if (selectedDay == 0 || selectedMaterialDepartment == 0) return notify(t("completeData"), "error");
+      if (selectedDay == 0 || selectedMaterialDepartment == 0)
+        return notify(t("completeData"), "error");
 
-   
+      let fromString = from == "00:00" ? "12:00" : from;
+      let toString = to == "00:00" ? "12:00" : to;
 
-    let fromString = from == "00:00" ? "12:00" : from;
-    let toString = to == "00:00" ? "12:00" : to;
+      let data = {
+        start_time: fromString,
+        end_time: toString,
+        day: selectedDay,
+        section: "1",
+        doctor_id: materialsByDepartment?.find(
+          (el) => el?.id == selectedMaterialDepartment,
+        )?.doctor_id?.id,
+        main_time_table_id: location?.state?.id,
+        material_id: selectedMaterialDepartment,
+        academy_term_id: location?.state?.academy_term_id?.id,
+      };
 
-    let data = {
-      start_time: fromString,
-      end_time: toString,
-      day: selectedDay,
-       section: "1",
-      doctor_id: materialsByDepartment?.find(el => el?.id == selectedMaterialDepartment)?.doctor_id?.id,
-      main_time_table_id: location?.state?.id,
-      material_id: selectedMaterialDepartment,
-      academy_term_id:location?.state?.academy_term_id?.id
-    };
+      console.log("data to send", data);
 
-    console.log("data to send", data);
+      const result = await CreateTimeTable({
+        variables: {
+          input: data,
+        },
+      });
 
-    const result = await CreateTimeTable({
-      variables: {
-        input: data
-      }
-    });
+      console.log("result", result?.data);
+      // let time = fromString + " - " + toString;
 
-    console.log("result", result?.data);
-    // let time = fromString + " - " + toString;
+      // if (selectedDay == 0 || selectedDoctor == 0 || selectedMaterialDepartment == 0) return notify(t("completeData"), "error");
 
-    // if (selectedDay == 0 || selectedDoctor == 0 || selectedMaterialDepartment == 0) return notify(t("completeData"), "error");
+      // rowOBJ.time = time;
 
-    // rowOBJ.time = time;
+      // let newObj;
 
-    // let newObj;
+      // newObj = materialsByDepartment?.find(el => el?.id == selectedMaterialDepartment);
 
-    // newObj = materialsByDepartment?.find(el => el?.id == selectedMaterialDepartment);
+      // const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      // newObj = {
+      //   ...newObj,
+      //   // teacher: users?.find(el => el?.id == selectedDoctor),
+      //   color: randomColor
+      // }
 
-    // const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    // newObj = {
-    //   ...newObj,
-    //   // teacher: users?.find(el => el?.id == selectedDoctor),
-    //   color: randomColor
-    // }
+      // rowOBJ[selectedDay] = newObj;
+      // console.log("rowOBJ", rowOBJ);
+      // console.log("selectedDoctor", selectedDoctor);
 
-    // rowOBJ[selectedDay] = newObj;
-    // console.log("rowOBJ", rowOBJ);
-    // console.log("selectedDoctor", selectedDoctor);
+      // setRows(prev => {
+      //   // هل يوجد صف بنفس الوقت؟
+      //   const existingRowIndex = prev.findIndex(r => r.time === rowOBJ.time);
 
-    // setRows(prev => {
-    //   // هل يوجد صف بنفس الوقت؟
-    //   const existingRowIndex = prev.findIndex(r => r.time === rowOBJ.time);
+      //   // لو الوقت موجود بالفعل → حدث نفس الصف
+      //   if (existingRowIndex !== -1) {
+      //     const updated = [...prev];
 
-    //   // لو الوقت موجود بالفعل → حدث نفس الصف
-    //   if (existingRowIndex !== -1) {
-    //     const updated = [...prev];
+      //     // نعدل اليوم فقط داخل نفس الصف
+      //     updated[existingRowIndex] = {
+      //       ...updated[existingRowIndex],
+      //       [selectedDay]: rowOBJ[selectedDay]   // أضف المادة لليوم
+      //     };
 
-    //     // نعدل اليوم فقط داخل نفس الصف
-    //     updated[existingRowIndex] = {
-    //       ...updated[existingRowIndex],
-    //       [selectedDay]: rowOBJ[selectedDay]   // أضف المادة لليوم
-    //     };
+      //     return updated;
+      //   }
 
-    //     return updated;
-    //   }
-
-    //   // لو وقت جديد → أضف row جديد
-    //   return [...prev, rowOBJ];
-    // });
-
+      //   // لو وقت جديد → أضف row جديد
+      //   return [...prev, rowOBJ];
+      // });
     } catch (error) {
-      console.log("error",error.message);
-      error?.message ? notify(error.message, "error") :  notify(t("error"), "error");
+      console.log("error", error.message);
+      error?.message
+        ? notify(error.message, "error")
+        : notify(t("error"), "error");
     }
-    
-  }
+  };
 
   // console.log("rows", rows);
   console.log("materialsByDepartment", materialsByDepartment);
@@ -244,10 +285,21 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
         isPdf={false}
         isPrinter={false}
       />
-      {<ScheduleTable rows={groupedTimeTablesByMainTimeTable} canDelete={true} />}
+      {
+        <ScheduleTable
+          rows={groupedTimeTablesByMainTimeTable}
+          canDelete={true}
+        />
+      }
 
-      <Box display="flex" width={isMobile ? "55%" :"100%"} flexDirection="column" gap={3} pt={3} borderTop="1px solid #cfd7e7">
-
+      <Box
+        display="flex"
+        width={isMobile ? "55%" : "100%"}
+        flexDirection="column"
+        gap={3}
+        pt={3}
+        borderTop="1px solid #cfd7e7"
+      >
         {/* Title */}
         <Box display="flex" flexDirection="column" gap={1}>
           <Typography variant="h6" fontWeight={700}>
@@ -262,12 +314,14 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
         <Grid container spacing={6}>
           {/* Subject Name */}
           <Grid item xs={12} md={6} lg={3}>
-
             <VerticalTextFieldSelect
               t={t}
               title={
-                isArabic ? t("studentDashboard.subjectTitleAr") : t("studentDashboard.subjectTitleEn")
-              } defaultOptionLabel={t("select")}
+                isArabic
+                  ? t("studentDashboard.subjectTitleAr")
+                  : t("studentDashboard.subjectTitleEn")
+              }
+              defaultOptionLabel={t("select")}
               backgroundColor={theme.palette.background.inputBackGround}
               value={selectedMaterialDepartment}
               setValue={setSelectedMaterialDepartment}
@@ -284,17 +338,19 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
               onBlur={(e) => {
                 // console.log('blur',selectedSemester);
                 // if (selectedFaculity != 0) formik.setFieldError("selectedFaculity", undefined);
-
               }}
 
-            // error={formik.errors.selectedFaculity && t("admissions.errors.required")}
-            // helperText={formik.errors.selectedFaculity && t("admissions.errors.required")}
-
+              // error={formik.errors.selectedFaculity && t("admissions.errors.required")}
+              // helperText={formik.errors.selectedFaculity && t("admissions.errors.required")}
             >
-              <MenuItem value={0} selected>{t("select")}</MenuItem>
-              {
-                materialsByDepartment?.map(el => <MenuItem key={el?.id} value={el?.id}>{isArabic ? el?.title_ar : el?.title_en}</MenuItem>)
-              }
+              <MenuItem value={0} selected>
+                {t("select")}
+              </MenuItem>
+              {materialsByDepartment?.map((el) => (
+                <MenuItem key={el?.id} value={el?.id}>
+                  {isArabic ? el?.title_ar : el?.title_en}
+                </MenuItem>
+              ))}
             </VerticalTextFieldSelect>
           </Grid>
 
@@ -313,12 +369,10 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
           {/* Day */}
           <Grid item xs={12} md={6} lg={3}>
             <FormControl fullWidth>
-
               <VerticalTextFieldSelect
                 t={t}
-                title={
-                  t("day")
-                } defaultOptionLabel={t("select")}
+                title={t("day")}
+                defaultOptionLabel={t("select")}
                 backgroundColor={theme.palette.background.inputBackGround}
                 value={selectedDay}
                 setValue={setSelectedDay}
@@ -335,17 +389,19 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
                 onBlur={(e) => {
                   // console.log('blur',selectedSemester);
                   // if (selectedFaculity != 0) formik.setFieldError("selectedFaculity", undefined);
-
                 }}
 
-              // error={formik.errors.selectedFaculity && t("admissions.errors.required")}
-              // helperText={formik.errors.selectedFaculity && t("admissions.errors.required")}
-
+                // error={formik.errors.selectedFaculity && t("admissions.errors.required")}
+                // helperText={formik.errors.selectedFaculity && t("admissions.errors.required")}
               >
-                <MenuItem value={0} selected>{t("select")}</MenuItem>
-                {
-                  days?.map(el => <MenuItem key={el?.id} value={el?.key}>{isArabic ? el?.labelAr : el?.labelEn}</MenuItem>)
-                }
+                <MenuItem value={0} selected>
+                  {t("select")}
+                </MenuItem>
+                {days?.map((el) => (
+                  <MenuItem key={el?.id} value={el?.key}>
+                    {isArabic ? el?.labelAr : el?.labelEn}
+                  </MenuItem>
+                ))}
               </VerticalTextFieldSelect>
             </FormControl>
           </Grid>
@@ -353,7 +409,10 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
           {/* Time */}
           <Grid item xs={12} md={6} lg={5}>
             <FormControl fullWidth>
-              <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ fontWeight: "bold", mb: 1 }}
+              >
                 {t("time")}
               </Typography>
 
@@ -364,7 +423,6 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
                   type="time"
                   value={from}
                   onChange={(e) => setFrom(e.target.value)}
-
                 />
 
                 {/* وقت النهاية */}
@@ -390,15 +448,18 @@ console.log("groupedTimeTablesByMainTimeTable",groupedTimeTablesByMainTimeTable)
             onClick={() => addRowToTable()}
             disabled={creating}
           >
-            {
-              creating ? <CircularProgress size={26}
+            {creating ? (
+              <CircularProgress
+                size={26}
                 thickness={8}
-                sx={{ color: "black" }} /> : t("Dashboard.saveSubject")
-            }
+                sx={{ color: "black" }}
+              />
+            ) : (
+              t("Dashboard.saveSubject")
+            )}
           </Button>
         </Box>
       </Box>
-
     </Box>
-  )
+  );
 }
