@@ -127,51 +127,65 @@ export default function ActivitiesPrograms({ Activities = [] }) {
       <TitleComponent title={t("Activities & Programs")} />
 
       {/* Tabs */}
-      <Tabs
-        value={tab}
-        onChange={handleChange}
-        textColor="inherit"
+ <Box sx={{ width: '100%', overflow: 'hidden' }}> {/* حاوية إضافية لضمان عدم الخروج */}
+  <Tabs
+    value={tab}
+    onChange={handleChange}
+    textColor="inherit"
+    variant="scrollable" 
+    scrollButtons="auto"
+    allowScrollButtonsMobile
+    // إزالة السهم الافتراضي لتقليل الازدحام في الموبايل (اختياري)
+    sx={{
+      mb: 3,
+      width: "100%", // ضمان ألا يتخطى عرض الأب
+      minHeight: { xs: "48px", sm: "64px" },
+      position: "relative",
+      // تأكد من أن الـ flex container الخاص بالتابس لا يخرج عن الحدود
+      "& .MuiTabs-scroller": {
+        overflow: "auto !important", // إجبار السكرول
+      },
+      "&::before": {
+        content: '""',
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        // تغيير العرض هنا من 100% إلى قيمة تمنع خروجه
+        width: "100%", 
+        height: "3px",
+        bgcolor: "background.secDefault",
+        zIndex: 0,
+      },
+      "& .MuiTabs-indicator": {
+        backgroundColor: "secondary.main",
+        height: "3px",
+        zIndex: 1,
+      },
+    }}
+  >
+    {Activities?.map((activity) => (
+      <Tab
+        key={activity.id}
+        value={activity.id}
+        label={isArabic ? activity.title_ar : activity.title_en}
         sx={{
-          mb: 3,
-          position: "relative",
-          // 🔹 ثابت الخط الأساسي تحت كل التابات
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            height: "3px",
-            bgcolor: "background.secDefault",
-            zIndex: 0,
-          },
-          // 🔹 مؤشر التاب المختار
-          "& .MuiTabs-indicator": {
-            backgroundColor: "secondary.main",
-            height: "3px",
-            zIndex: 1,
+          fontWeight: "bold",
+          color: "primary.main",
+          // 🔹 أهم تعديل: منع التاب الواحد من أخذ عرض كبير
+          minWidth: { xs: "min-content", sm: "160px" }, 
+          // منع النص من كسر السطر أو التمدد بشكل عشوائي
+          whiteSpace: "nowrap",
+          flexShrink: 0, 
+          fontSize: { xs: "0.85rem", sm: "1rem" },
+          padding: { xs: "6px 12px", sm: "12px 24px" },
+          "&.Mui-selected": {
+            color: "secondary.main",
           },
         }}
-      >
-        {Activities?.map((activity) => (
-          <Tab
-            key={activity.id}
-            value={activity.id}
-            label={isArabic ? activity.title_ar : activity.title_en}
-            id={`tab-${activity.id}`}
-            aria-controls={`tabpanel-${activity.id}`}
-            sx={{
-              fontWeight: "bold", // 🔹 make text bold
-              color: "primary.main",
-              "&.Mui-selected": {
-                color: "secondary.main", // 🔹 active tab color
-                fontWeight: "bold",
-              },
-            }}
-          />
-        ))}
-      </Tabs>
-
+      />
+    ))}
+  </Tabs>
+</Box>
       {/* Loading / Error */}
       {(!tab || loading) ? (
         <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>

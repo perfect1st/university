@@ -40,10 +40,15 @@ const Home = () => {
   if (loading) return <LoadingComponent />;
 
   return (
-    <Box sx={{ backgroundColor: theme.palette.background.secDefault}}>
-      <HomeHero HomeSliderData={HomeSliderData?.getArticlesByDepartment} />
-      <News news={newsArticalesData?.getArticlesByDepartment}/>
-      <ActivitiesPrograms Activities={getDepartmentByFatherIdData?.getDepartmentsByFather} />
+<Box sx={{ 
+    backgroundColor: theme.palette.background.secDefault,
+    maxWidth: "100vw", // يمنع تجاوز عرض الشاشة
+    overflowX: "hidden", // يمنع ظهور السكرول العرضي نهائياً
+    display: "flex",
+    flexDirection: "column"
+  }}>      <HomeHero HomeSliderData={HomeSliderData?.getArticlesByDepartment} />
+       <News news={newsArticalesData?.getArticlesByDepartment}/>
+     <ActivitiesPrograms Activities={getDepartmentByFatherIdData?.getDepartmentsByFather} /> 
       <FutureVision visionArticalesData={visionArticalesData?.getArticlesByDepartment} />
     </Box>
   );
