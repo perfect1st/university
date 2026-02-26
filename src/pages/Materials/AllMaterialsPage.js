@@ -21,6 +21,8 @@ import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import { useSelector } from "react-redux";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import NoPermissionPage from "../../components/NoPermissionPage";
 
 
 export default function AllMaterialsPage() {
@@ -32,6 +34,7 @@ export default function AllMaterialsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
   const isArabic = i18n.language === "ar";
+const { view, create, update, delete: canDelete } = usePermissionsByModule("materials");
 
   console.log("location",location.pathname);
   
@@ -186,7 +189,7 @@ export default function AllMaterialsPage() {
   const addNavigate = () => navigate("add");
 
   const handleDetailsClick = (selectedRow) => {
-    console.log('handleDetailsClick', selectedRow);
+      if(!update) return notify(t("no_permission.title"),"error");
     navigate(`details/${selectedRow?.id}`, {
       state: selectedRow
     });
@@ -249,9 +252,7 @@ export default function AllMaterialsPage() {
 
   console.log("totalPages", totalPages);
 
-  const hasViewPermission = true;
-  const hasAddPermission = true;
-  if (!hasViewPermission) return <Navigate to="/profile" />;
+    if (!view) return <NoPermissionPage />;
 
   // departments
   let translateText = isArabic ? "مادة" : "Subject";

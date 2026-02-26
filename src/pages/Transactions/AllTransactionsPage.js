@@ -19,6 +19,8 @@ import { GET_ALL_TRANSACTIONS, UPDATE_TRANSACTION_BY_ID, GET_FILTERED_TRANSACTIO
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { paymentMethodsArr, transactionTypesArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
+import NoPermissionPage from "../../components/NoPermissionPage";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 
 export default function AllTransactionsPage() {
     const theme = useTheme();
@@ -26,6 +28,7 @@ export default function AllTransactionsPage() {
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const [searchParams, setSearchParams] = useSearchParams();
+const { view, create, update, delete: canDelete } = usePermissionsByModule("transactions");
 
     const isArabic = i18n.language === "ar";
 
@@ -134,7 +137,7 @@ export default function AllTransactionsPage() {
     const addNavigate = () => navigate('add');
 
     const handleDetailsClick = (selectedRow) => {
-        console.log('handleDetailsClick', selectedRow);
+      if(!update) return notify(t("no_permission.title"),"error");
         navigate(`details/${selectedRow?.id}`, {
             state: selectedRow
         });
@@ -163,10 +166,7 @@ export default function AllTransactionsPage() {
         setSearchParams(searchParams);
     }
 
-    const hasViewPermission = true;
-    const hasAddPermission = true;
-
-    if (!hasViewPermission) return <Navigate to="/profile" />;
+    if (!view) return <NoPermissionPage />;
 
     let translateText = isArabic ? "معاملة مالية" : "Transaction";
 
@@ -189,7 +189,7 @@ export default function AllTransactionsPage() {
                         title={t("Dashboard.transactions")}
                         subtitle={t("Dashboard.transactions")}
                         i18n={i18n}
-                        haveBtn={hasAddPermission}
+                        haveBtn={create}
                         btn={t("addItem", { item: translateText })}
                         btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
                         onSubmit={addNavigate}

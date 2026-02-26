@@ -19,6 +19,8 @@ import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 import notify from "../../components/notify";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import NoPermissionPage from "../../components/NoPermissionPage";
 
 
 
@@ -30,6 +32,7 @@ export default function AllCountriesPage() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [searchParams, setSearchParams] = useSearchParams();
+const { view, create, update, delete: canDelete } = usePermissionsByModule("countries");
 
   const isArabic = i18n.language === "ar";
 
@@ -142,7 +145,7 @@ export default function AllCountriesPage() {
   const addCountryNavigate = () => navigate('add');
 
   const handleDetailsClick = (selectedRow) => {
-    console.log('handleDetailsClick', selectedRow);
+      if(!update) return notify(t("no_permission.title"),"error");
     navigate(`details/${selectedRow?.id}`, {
       state: selectedRow
     });
@@ -198,10 +201,8 @@ export default function AllCountriesPage() {
   const totalPages = parseInt(total / pageLimit) + 1;
 
   console.log("totalPages", totalPages);
-  const hasViewPermission = true;
-  const hasAddPermission = true;
+    if (!view) return <NoPermissionPage />;
 
-  if (!hasViewPermission) return <Navigate to="/profile" />;
 
   let translateText = isArabic ? "دولة" : "Country";
   const searchText = isArabic ? "ابحث ب  اسم الدولة" : "Search by Country Name";
@@ -229,7 +230,7 @@ export default function AllCountriesPage() {
             title={t("countries")}
             subtitle={t("countries")}
             i18n={i18n}
-            haveBtn={hasAddPermission}
+            haveBtn={create}
             btn={t("addItem", { item: translateText })}
             btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
             onSubmit={addCountryNavigate}

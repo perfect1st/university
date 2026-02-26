@@ -22,6 +22,8 @@ import FilterComponent from "../../components/TableComponent/FilterComponent";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import { examTypes, isOpen, ticketTypes } from "../../constants";
 import { GET_ALL_SUPPORT_TICKETS, GET_SUPPORT_TICKETS_BY_USER_ID } from "../../graphql/supportTicketQueries";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import NoPermissionPage from "../../components/NoPermissionPage";
 
 
 
@@ -36,6 +38,7 @@ export default function GetAllSupportTicketsPage() {
 
     const isArabic = i18n.language === "ar";
     const me = useSelector((state) => state.user.loggedUser);
+const { view, create, update, delete: canDelete } = usePermissionsByModule("supportTickets");
 
     // get tickets for student and doctor
     const [
@@ -162,7 +165,7 @@ export default function GetAllSupportTicketsPage() {
     const addNavigate = () => navigate('add');
 
     const handleDetailsClick = (selectedRow) => {
-        console.log('handleDetailsClick', selectedRow);
+      if(!update) return notify(t("no_permission.title"),"error");
 
 
         let row;
@@ -185,6 +188,7 @@ export default function GetAllSupportTicketsPage() {
     console.log("getSupportTicketsByUser", getSupportTicketsByUser);
 
     let translateText = isArabic ? "تذكرة" : "Ticket";
+    if (!view) return <NoPermissionPage />;
 
     if (pageLoading || pageAdminLoading) return <LoadingPage />;
     return (

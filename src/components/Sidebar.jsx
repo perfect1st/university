@@ -17,7 +17,6 @@ import {
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, matchPath } from "react-router-dom";
-import getAccessibleRoutes from "../hooks/getAccessibleRoutes"; // ✅ الجديد
 
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
@@ -27,6 +26,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
 import FlagIcon from "@mui/icons-material/Flag";
 import { closeNav } from "../redux/slices/user/userSlice";
+import useAccessibleRoutes from "../hooks/getAccessibleRoutes";
 
 const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const theme = useTheme();
@@ -42,310 +42,310 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const storedStudentForm = JSON.parse(localStorage.getItem("registerForm"));
 
   const lang = i18n.language;
-
-  console.log("storedStudentForm", storedStudentForm);
+const accessibleRoutes = useAccessibleRoutes();
+  console.log("accessibleRoutes", accessibleRoutes);
 
   // const menuItems = useMemo(() => getAccessibleRoutes("admin"), []);  .role
-  let menuItems = [];
+  let menuItems = accessibleRoutes;
 
-  if (me?.role == "student")
-    menuItems = [
-      {
-        icon: AccountBalanceIcon,
-        key: "StudentDashboard",
-        path: "/StudentDashboard",
-        label: {
-          ar: "لوحة التحكم",
-          en: "StudentDashboard",
-        },
-      },
-      {
-        icon: PersonOutlineIcon,
-        key: "profile3",
-        path: "/profile",
-        label: {
-          ar: "الصفحة الشخصية",
-          en: "Profile",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "StudentlecturesSchedule",
-        path: "/StudentlecturesSchedule",
-        label: {
-          ar: "جداول المحاضرات",
-          en: "Lectures Schedule",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "LectureSessionDetails2",
-        path: "/LectureSessionDetails",
-        label: {
-          ar: "سجلات المحاضرات",
-          en: "Lectures Records",
-        },
-      },
+  // if (me?.role == "student")
+  //   menuItems = [
+  //     {
+  //       icon: AccountBalanceIcon,
+  //       key: "StudentDashboard",
+  //       path: "/StudentDashboard",
+  //       label: {
+  //         ar: "لوحة التحكم",
+  //         en: "StudentDashboard",
+  //       },
+  //     },
+  //     {
+  //       icon: PersonOutlineIcon,
+  //       key: "profile3",
+  //       path: "/profile",
+  //       label: {
+  //         ar: "الصفحة الشخصية",
+  //         en: "Profile",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "StudentlecturesSchedule",
+  //       path: "/StudentlecturesSchedule",
+  //       label: {
+  //         ar: "جداول المحاضرات",
+  //         en: "Lectures Schedule",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "LectureSessionDetails2",
+  //       path: "/LectureSessionDetails",
+  //       label: {
+  //         ar: "سجلات المحاضرات",
+  //         en: "Lectures Records",
+  //       },
+  //     },
 
-      {
-        // icon: MonetizationOnOutlinedIcon,
-        key: "FeePayment",
-        path: "/FeePayment",
-        label: {
-          ar: "المدفوعات",
-          en: "Fee Payments",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "materials2",
-        path: `/materials?faculty_department_id=${storedStudentForm?.faculty_department_id?.id}`,
-        label: {
-          ar: "المكتبة الالكترونية",
-          en: "Electronic Library",
-        },
-      },
+  //     {
+  //       // icon: MonetizationOnOutlinedIcon,
+  //       key: "FeePayment",
+  //       path: "/FeePayment",
+  //       label: {
+  //         ar: "المدفوعات",
+  //         en: "Fee Payments",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "materials2",
+  //       path: `/materials?faculty_department_id=${storedStudentForm?.faculty_department_id?.id}`,
+  //       label: {
+  //         ar: "المكتبة الالكترونية",
+  //         en: "Electronic Library",
+  //       },
+  //     },
 
-      {
-        key: "support1",
-        path: "/Support",
-        label: {
-          ar: "الدعم الفني",
-          en: "Support",
-        },
-      },
-    ];
+  //     {
+  //       key: "support1",
+  //       path: "/Support",
+  //       label: {
+  //         ar: "الدعم الفني",
+  //         en: "Support",
+  //       },
+  //     },
+  //   ];
 
-  if (me?.role == "admin")
-    menuItems = [
-      {
-        icon: AccountBalanceIcon,
-        key: "dashboard",
-        // path: "/dashboard",
-        label: {
-          ar: "لوحة التحكم",
-          en: "Dashboard",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "website-departments",
-        path: "/website-departments",
-        label: {
-          ar: "اقسام الموقع",
-          en: "Website Departments",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "website-articles",
-        path: "/website-articles",
-        label: {
-          ar: "مقالات الموقع",
-          en: "Website Articles",
-        },
-      },
+  // if (me?.role == "admin")
+  //   menuItems = [
+  //     {
+  //       icon: AccountBalanceIcon,
+  //       key: "dashboard",
+  //       // path: "/dashboard",
+  //       label: {
+  //         ar: "لوحة التحكم",
+  //         en: "Dashboard",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "website-departments",
+  //       path: "/website-departments",
+  //       label: {
+  //         ar: "اقسام الموقع",
+  //         en: "Website Departments",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "website-articles",
+  //       path: "/website-articles",
+  //       label: {
+  //         ar: "مقالات الموقع",
+  //         en: "Website Articles",
+  //       },
+  //     },
 
-      {
-        // icon: FlagIcon,
-        key: "users",
-        path: "/users",
-        label: {
-          ar: "المستخدمين",
-          en: "Users",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "nationality",
-        path: "/nationality",
-        label: {
-          ar: "الجنسيات",
-          en: "Nationality",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "countries",
-        path: "/countries",
-        label: {
-          ar: "الدول",
-          en: "Countries",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "faculities",
-        path: "/faculities",
-        label: {
-          ar: "الكليات",
-          en: "Faculities",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "academic-departments",
-        path: "/departments",
-        label: {
-          ar: "الاقسام",
-          en: "Departments",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "prices",
-        path: "/prices",
-        label: {
-          ar: "اسعار الكليات",
-          en: "Faculities Prices",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "materials3",
-        path: "/materials",
-        label: {
-          ar: "المواد الدراسية",
-          en: "Subjects",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "academyTerms",
-        path: "/academyTerms",
-        label: {
-          ar: "الفصول الدراسية",
-          en: "Academy Terms",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "lecturesSchedule",
-        path: "/lecturesSchedule",
-        label: {
-          ar: "جداول المحاضرات",
-          en: "Lectures Schedule",
-        },
-      },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "users",
+  //       path: "/users",
+  //       label: {
+  //         ar: "المستخدمين",
+  //         en: "Users",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "nationality",
+  //       path: "/nationality",
+  //       label: {
+  //         ar: "الجنسيات",
+  //         en: "Nationality",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "countries",
+  //       path: "/countries",
+  //       label: {
+  //         ar: "الدول",
+  //         en: "Countries",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "faculities",
+  //       path: "/faculities",
+  //       label: {
+  //         ar: "الكليات",
+  //         en: "Faculities",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "academic-departments",
+  //       path: "/departments",
+  //       label: {
+  //         ar: "الاقسام",
+  //         en: "Departments",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "prices",
+  //       path: "/prices",
+  //       label: {
+  //         ar: "اسعار الكليات",
+  //         en: "Faculities Prices",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "materials3",
+  //       path: "/materials",
+  //       label: {
+  //         ar: "المواد الدراسية",
+  //         en: "Subjects",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "academyTerms",
+  //       path: "/academyTerms",
+  //       label: {
+  //         ar: "الفصول الدراسية",
+  //         en: "Academy Terms",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "lecturesSchedule",
+  //       path: "/lecturesSchedule",
+  //       label: {
+  //         ar: "جداول المحاضرات",
+  //         en: "Lectures Schedule",
+  //       },
+  //     },
 
-      {
-        key: "feesTypes",
-        path: "/feesTypes",
-        label: {
-          ar: "انواع الرسوم",
-          en: "Fees Types",
-        },
-      },
-      {
-        key: "transactionTypes",
-        path: "/transactionTypes",
-        label: {
-          ar: "انواع المعاملات المالية",
-          en: "Transaction Types",
-        },
-      },
-      {
-        key: "transactions",
-        path: "/transactions",
-        label: {
-          ar: "المعاملات المالية",
-          en: "Transactions",
-        },
-      },
-      {
-        key: "requiredFees",
-        path: "/requiredFees",
-        label: {
-          ar: "رسوم الطلاب",
-          en: "Student Required Fees",
-        },
-      },
+  //     {
+  //       key: "feesTypes",
+  //       path: "/feesTypes",
+  //       label: {
+  //         ar: "انواع الرسوم",
+  //         en: "Fees Types",
+  //       },
+  //     },
+  //     {
+  //       key: "transactionTypes",
+  //       path: "/transactionTypes",
+  //       label: {
+  //         ar: "انواع المعاملات المالية",
+  //         en: "Transaction Types",
+  //       },
+  //     },
+  //     {
+  //       key: "transactions",
+  //       path: "/transactions",
+  //       label: {
+  //         ar: "المعاملات المالية",
+  //         en: "Transactions",
+  //       },
+  //     },
+  //     {
+  //       key: "requiredFees",
+  //       path: "/requiredFees",
+  //       label: {
+  //         ar: "رسوم الطلاب",
+  //         en: "Student Required Fees",
+  //       },
+  //     },
 
-      {
-        key: "PermissionsGroups",
-        path: "/PermissionsGroups",
-        label: {
-          ar: "مجموعات الصلاحيات",
-          en: "Permissions Groups",
-        },
-      },
-      {
-        // icon: PersonOutlineIcon,
-        key: "profile2",
-        path: "/profile",
-        label: {
-          ar: "الصفحة الشخصية",
-          en: "Profile",
-        },
-      },
-      {
-        key: "support2",
-        path: "/Support",
-        label: {
-          ar: "الدعم الفني",
-          en: "Support",
-        },
-      },
-    ];
+  //     {
+  //       key: "PermissionsGroups",
+  //       path: "/PermissionsGroups",
+  //       label: {
+  //         ar: "مجموعات الصلاحيات",
+  //         en: "Permissions Groups",
+  //       },
+  //     },
+  //     {
+  //       // icon: PersonOutlineIcon,
+  //       key: "profile2",
+  //       path: "/profile",
+  //       label: {
+  //         ar: "الصفحة الشخصية",
+  //         en: "Profile",
+  //       },
+  //     },
+  //     {
+  //       key: "support2",
+  //       path: "/Support",
+  //       label: {
+  //         ar: "الدعم الفني",
+  //         en: "Support",
+  //       },
+  //     },
+  //   ];
 
-  if (me?.role == "doctor")
-    menuItems = [
-      {
-        icon: PersonOutlineIcon,
-        key: "profile1",
-        path: "/profile",
-        label: {
-          ar: "الصفحة الشخصية",
-          en: "Profile",
-        },
-      },
+  // if (me?.role == "doctor")
+  //   menuItems = [
+  //     {
+  //       icon: PersonOutlineIcon,
+  //       key: "profile1",
+  //       path: "/profile",
+  //       label: {
+  //         ar: "الصفحة الشخصية",
+  //         en: "Profile",
+  //       },
+  //     },
 
-      {
-        // icon: FlagIcon,
-        key: "DoctorlecturesSchedule",
-        path: "/DoctorlecturesSchedule",
-        label: {
-          ar: "جداول المحاضرات",
-          en: "Lectures Schedule",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "LectureSessionDetails",
-        path: "/LectureSessionDetails",
-        label: {
-          ar: "سجلات المحاضرات",
-          en: "Lectures Records",
-        },
-      },
-      {
-        // icon: FlagIcon,
-        key: "exams",
-        path: "/exams",
-        label: {
-          ar: "الامتحانات",
-          en: "Exams",
-        },
-      },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "DoctorlecturesSchedule",
+  //       path: "/DoctorlecturesSchedule",
+  //       label: {
+  //         ar: "جداول المحاضرات",
+  //         en: "Lectures Schedule",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "LectureSessionDetails",
+  //       path: "/LectureSessionDetails",
+  //       label: {
+  //         ar: "سجلات المحاضرات",
+  //         en: "Lectures Records",
+  //       },
+  //     },
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "exams",
+  //       path: "/exams",
+  //       label: {
+  //         ar: "الامتحانات",
+  //         en: "Exams",
+  //       },
+  //     },
 
-      {
-        // icon: FlagIcon,
-        key: "allStudentDegrees",
-        path: "/allStudentDegrees",
-        label: {
-          ar: "درجات الطلاب",
-          en: "Student Degrees",
-        },
-      },
-      {
-        key: "support3",
-        path: "/Support",
-        label: {
-          ar: "الدعم الفني",
-          en: "Support",
-        },
-      },
-    ];
+  //     {
+  //       // icon: FlagIcon,
+  //       key: "allStudentDegrees",
+  //       path: "/allStudentDegrees",
+  //       label: {
+  //         ar: "درجات الطلاب",
+  //         en: "Student Degrees",
+  //       },
+  //     },
+  //     {
+  //       key: "support3",
+  //       path: "/Support",
+  //       label: {
+  //         ar: "الدعم الفني",
+  //         en: "Support",
+  //       },
+  //     },
+  //   ];
 
   const toggleOpen = (key) =>
     setOpenKeys((prev) => ({ ...prev, [key]: !prev[key] }));

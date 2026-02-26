@@ -22,6 +22,8 @@ import { useEffect } from "react";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { isPaidArr, TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
+import NoPermissionPage from "../../components/NoPermissionPage";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 
 
 export default function AllRequiredFeesPage() {
@@ -30,6 +32,7 @@ export default function AllRequiredFeesPage() {
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const [searchParams, setSearchParams] = useSearchParams();
+const { view, create, update, delete: canDelete } = usePermissionsByModule("usersRequiredFees");
 
     const isArabic = i18n.language === "ar";
 
@@ -174,7 +177,7 @@ export default function AllRequiredFeesPage() {
     const addNavigate = () => navigate('add');
 
     const handleDetailsClick = (selectedRow) => {
-        console.log('handleDetailsClick', selectedRow);
+      if(!update) return notify(t("no_permission.title"),"error");
         let row = getUsersRequiredFees?.find(el => el?.id == selectedRow?.id);
 
         navigate(`details/${selectedRow?.id}`, {
@@ -220,8 +223,7 @@ export default function AllRequiredFeesPage() {
         // searchParams.get("search", e.target.value);
         setSearchParams(searchParams);
     }
-    const hasViewPermission = true;
-    const hasAddPermission = true;
+
 
     let pageLimit;
     if (!searchParams.get("limit")) {
@@ -237,8 +239,8 @@ export default function AllRequiredFeesPage() {
 
     console.log("totalPages", totalPages);
 
-    if (!hasViewPermission) return <Navigate to="/profile" />;
 
+    if (!view) return <NoPermissionPage />;
     let translateText = isArabic ? "رسوم مطلوبة" : "Required Fees";
 
     console.log("isPaidArr", isPaidArr);
@@ -266,7 +268,7 @@ export default function AllRequiredFeesPage() {
                         title={t("Dashboard.requiredFees")}
                         subtitle={t("Dashboard.requiredFees")}
                         i18n={i18n}
-                        haveBtn={true}
+                        haveBtn={create}
                         btn={t("addItem", { item: translateText })}
                         btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
                         onSubmit={addNavigate}

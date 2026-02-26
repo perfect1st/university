@@ -68,7 +68,7 @@ const LoginPage = () => {
         }
        });
 
-       console.log('response',response?.data?.login);
+       console.log('response',response);
         
 
 

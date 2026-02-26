@@ -16,6 +16,8 @@ import Header from "../../components/PageHeader/header";
 import notify from "../../components/notify";
 
 import { GetWebsiteArticles, UPDATE_WEBSITE_ARTICLE_BY_ID } from "../../graphql/articleQueries";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import NoPermissionPage from "../../components/NoPermissionPage";
 
 export default function AllArticlesPage() {
   const theme = useTheme();
@@ -24,6 +26,7 @@ export default function AllArticlesPage() {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [searchParams, setSearchParams] = useSearchParams();
   const isArabic = i18n.language === "ar";
+  const { view, create, update, delete: canDelete } = usePermissionsByModule("websiteArticles");
 
   const {
     data: { getWebsiteArticles } = {},
@@ -34,7 +37,7 @@ export default function AllArticlesPage() {
     loading: updatingStatus
   }] = useMutation(UPDATE_WEBSITE_ARTICLE_BY_ID, { fetchPolicy: "network-only" });
 
-   let columns = [
+  let columns = [
     // { key: "ID", label: "ID" },
     { key: "title_ar", label: t("Dashboard.NameInArabic") },
     { key: "title_en", label: t("Dashboard.NameInEnglish") },
@@ -114,8 +117,8 @@ export default function AllArticlesPage() {
   const addNavigate = () => navigate('add');
 
   const handleDetailsClick = (selectedRow) => {
-    console.log('handleDetailsClick', selectedRow);
-       let row=getWebsiteArticles?.find(el=>el?.id==selectedRow?.id);
+    if (!update) return notify(t("no_permission.title"), "error");
+    let row = getWebsiteArticles?.find(el => el?.id == selectedRow?.id);
 
     navigate(`details/${selectedRow?.id}`, {
       state: row
@@ -130,13 +133,13 @@ export default function AllArticlesPage() {
       // // return;
       let data = {
         status: newStatus == "inActive" ? "draft" : "published",
-        title_ar:selectedRow?.title_ar,
-        title_en:selectedRow?.title_en,
-        desc_ar:selectedRow?.desc_ar,
-        desc_en:selectedRow?.desc_en,
-        article_date:selectedRow?.article_date,
-        website_department_id:selectedRow?.website_department_id,
-        users_id:selectedRow?.users_id?.id
+        title_ar: selectedRow?.title_ar,
+        title_en: selectedRow?.title_en,
+        desc_ar: selectedRow?.desc_ar,
+        desc_en: selectedRow?.desc_en,
+        article_date: selectedRow?.article_date,
+        website_department_id: selectedRow?.website_department_id,
+        users_id: selectedRow?.users_id?.id
         //   operation_type:row?.operation_type
       }
       const result = await UpdateWebsiteArticle({
@@ -157,17 +160,16 @@ export default function AllArticlesPage() {
 
   console.log("GetWebsiteArticles", getWebsiteArticles);
 
-  const getWebsiteArticlesToShow=getWebsiteArticles?.map(el=>{
-    return{
+  const getWebsiteArticlesToShow = getWebsiteArticles?.map(el => {
+    return {
       ...el,
-      status:el?.status=="published" ? true :false
+      status: el?.status == "published" ? true : false
     }
   })
 
-  const hasViewPermission = true;
-  const hasAddPermission = true;
 
-  if (!hasViewPermission) return <Navigate to="/profile" />;
+
+  if (!view) return <NoPermissionPage />;
 
   let translateText = isArabic ? "مقالة" : "Website Article";
 
@@ -193,7 +195,7 @@ export default function AllArticlesPage() {
             title={t("Dashboard.ArticleDepartment")}
             subtitle={t("Dashboard.ArticleDepartment")}
             i18n={i18n}
-            haveBtn={true}
+            haveBtn={create}
             btn={t("addItem", { item: translateText })}
             btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
             onSubmit={addNavigate}
@@ -205,28 +207,28 @@ export default function AllArticlesPage() {
             onPrinter={() => fetchAndExport("print")}
           />
 
-           <DashboardFilterComponent t={t} />
+          <DashboardFilterComponent t={t} />
 
-           <TableComponent
-                      columns={columns}
-                      hasNavigateBtn={true}
-                      data={getWebsiteArticlesToShow}
-                      // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
-                      loading={getArticlesLoading}
-                      // isUsers={true}
-                      statusKey="status"
-                      sx={{
-                        flex: 1,
-                        overflow: "auto",
-                        boxShadow: 1,
-                        borderRadius: 1,
-                        width: "100%",
-                      }}
-                      handleDetailsClick={handleDetailsClick}
-                      onStatusChange={onStatusChange}
-                      arPopulateKey={"fullname"}
-                      enPopulateKey={"fullname"}
-                    />
+          <TableComponent
+            columns={columns}
+            hasNavigateBtn={true}
+            data={getWebsiteArticlesToShow}
+            // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
+            loading={getArticlesLoading}
+            // isUsers={true}
+            statusKey="status"
+            sx={{
+              flex: 1,
+              overflow: "auto",
+              boxShadow: 1,
+              borderRadius: 1,
+              width: "100%",
+            }}
+            handleDetailsClick={handleDetailsClick}
+            onStatusChange={onStatusChange}
+            arPopulateKey={"fullname"}
+            enPopulateKey={"fullname"}
+          />
 
         </Grid>
       </Grid>

@@ -17,6 +17,8 @@ import LoadingPage from "../../../components/LoadingComponent";
 import Header from "../../../components/PageHeader/header";
 import ScheduleTable from "../../../components/Utilities/ScheduleTableComponent";
 import ToDayTimeTableComponent from "../../../components/Utilities/ToDayTimeTableComponent";
+import usePermissionsByModule from "../../../hooks/getPermissionsByScreen";
+import NoPermissionPage from "../../../components/NoPermissionPage";
 export default function StudentLecturesPage() {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -27,6 +29,7 @@ export default function StudentLecturesPage() {
   const { id } = useParams();
   const isArabic = i18n.language === "ar";
   const storedStudentForm = JSON.parse(localStorage.getItem("registerForm"));
+const { view, create, update, delete: canDelete } = usePermissionsByModule("timeTables");
 
   console.log("storedStudentForm", storedStudentForm);
 
@@ -87,6 +90,7 @@ export default function StudentLecturesPage() {
 
   console.log("timeTablesByTerm", timeTablesByTerm);
   console.log("todayTimeTable",todayTimeTable);
+    if (!view) return <NoPermissionPage />;
 
   if (getTimeTableLoading || getTodayTimeTableLoading) return <LoadingPage />
 

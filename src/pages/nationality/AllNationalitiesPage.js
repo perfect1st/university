@@ -24,6 +24,8 @@ import DashboardFilterComponent from "../../components/Utilities/DashboardFilter
 import { TrueOrFalseArr } from "../../constants";
 import notify from "../../components/notify";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import NoPermissionPage from "../../components/NoPermissionPage";
 
 
 export default function AllNationalitiesPage() {
@@ -33,6 +35,7 @@ export default function AllNationalitiesPage() {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+const { view, create, update, delete: canDelete } = usePermissionsByModule("nationalities");
 
   // update nationality
   const [
@@ -150,8 +153,9 @@ export default function AllNationalitiesPage() {
   const addUserNavigate = () => navigate('add');
 
   const handleDetailsClick = (selectedRow) => {
-    console.log('handleDetailsClick', selectedRow);
-    navigate(`details/${selectedRow?.id}`, {
+      if(!update) return notify(t("no_permission.title"),"error");
+
+      navigate(`details/${selectedRow?.id}`, {
       state: selectedRow
     });
   }
@@ -206,9 +210,8 @@ export default function AllNationalitiesPage() {
   console.log("totalPages", totalPages);
   // const onActionClick=()=>navigate('details')
   // Permissions: for the dummy page we allow viewing. Replace with your real permission check if needed.
-  const hasViewPermission = true;
-  const hasAddPermission = true;
-  if (!hasViewPermission) return <Navigate to="/profile" />;
+    if (!view) return <NoPermissionPage />;
+
 
   let translateText = isArabic ? "جنسية" : "Nationality";
   const searchText = isArabic ? "بحث ب اسم الجنسية" : " Search by Nationality Name";
@@ -235,7 +238,7 @@ export default function AllNationalitiesPage() {
             title={t("Nationalities")}
             subtitle={t("Nationalities")}
             i18n={i18n}
-            haveBtn={hasAddPermission}
+            haveBtn={create}
             btn={t("addItem", { item: translateText })}
             btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
             onSubmit={addUserNavigate}

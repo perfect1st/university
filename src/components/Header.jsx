@@ -46,7 +46,6 @@ import { ReactComponent as LanguageIcon } from "../assets/language.svg";
 import { ReactComponent as NotificationIcon } from "../assets/natification.svg";
 import { ReactComponent as SettingIcon } from "../assets/setting.svg";
 import useBaseImageUrl from "../hooks/useBaseImageUrl";
-import getAccessibleRoutes from "../hooks/getAccessibleRoutes";
 import { clearAllCookies, getUserCookie } from "../hooks/authCookies";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -59,6 +58,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useQuery } from "@apollo/client/react";
 import { GET_LOGGED_USER_BY_TOKEN } from "../graphql/usersQueries";
 import { storeLoggedUser } from "../redux/slices/user/userSlice";
+import useAccessibleRoutes from "../hooks/getAccessibleRoutes";
 
 const typeColors = {
   new_driver: "#81C784",
@@ -166,7 +166,7 @@ const Header = ({ onAction }) => {
   };
   // Mobile drawer content
   // Mobile drawer content
-  const menuItems = useMemo(() => getAccessibleRoutes("admin"), []);
+const menuItems = useAccessibleRoutes();
   const [openKeys, setOpenKeys] = useState({});
 
   useEffect(() => {

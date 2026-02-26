@@ -31,6 +31,8 @@ import { useEffect, useState } from "react";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr, userRules } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import NoPermissionPage from "../../components/NoPermissionPage";
 
 export default function AllUsersPage() {
   const theme = useTheme();
@@ -38,6 +40,7 @@ export default function AllUsersPage() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [searchParams, setSearchParams] = useSearchParams();
+const { view, create, update, delete: canDelete } = usePermissionsByModule("users");
 
   const isArabic = i18n.language === "ar";
   // const totalPages = 10;
@@ -124,7 +127,7 @@ export default function AllUsersPage() {
   const addNavigate = () => navigate("add");
 
   const handleDetailsClick = (selectedRow) => {
-    console.log("handleDetailsClick", selectedRow);
+      if(!update) return notify(t("no_permission.title"),"error");
     let row = filteredPagedUsers?.users?.find(
       (el) => el?.id == selectedRow?.id,
     );
@@ -195,10 +198,9 @@ export default function AllUsersPage() {
 
   console.log("totalPages", totalPages);
 
-  const hasViewPermission = true;
-  const hasAddPermission = true;
 
-  if (!hasViewPermission) return <Navigate to="/profile" />;
+
+    if (!view) return <NoPermissionPage />;
 
   let translateText = isArabic ? "مستخدم" : "User";
 
@@ -223,7 +225,7 @@ export default function AllUsersPage() {
             title={t("Users")}
             subtitle={t("Users")}
             i18n={i18n}
-            haveBtn={true}
+            haveBtn={create}
             btn={t("addItem", { item: translateText })}
             btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
             onSubmit={addNavigate}

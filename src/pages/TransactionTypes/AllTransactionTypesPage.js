@@ -19,6 +19,8 @@ import { useEffect } from "react";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { paymentMethodsArr, transactionTypesArr, TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
+import NoPermissionPage from "../../components/NoPermissionPage";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 
 // t(`fee.transactionType.${el}
 // t(`fee.transactionType.${el}`, { lng: "ar" })
@@ -29,6 +31,7 @@ export default function AllTransactionTypesPage() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [searchParams, setSearchParams] = useSearchParams();
+const { view, create, update, delete: canDelete } = usePermissionsByModule("transactionTypes");
 
   const isArabic = i18n.language === "ar";
 
@@ -143,7 +146,7 @@ export default function AllTransactionTypesPage() {
   const addNavigate = () => navigate('add');
 
   const handleDetailsClick = (selectedRow) => {
-    console.log('handleDetailsClick', selectedRow);
+      if(!update) return notify(t("no_permission.title"),"error");
     let row = getTransactionTypes?.find(el => el?.id == selectedRow?.id);
 
     navigate(`details/${selectedRow?.id}`, {
@@ -199,10 +202,8 @@ export default function AllTransactionTypesPage() {
   }
 
 
-  const hasViewPermission = true;
-  const hasAddPermission = true;
+     if (!view) return <NoPermissionPage />;
 
-  if (!hasViewPermission) return <Navigate to="/profile" />;
 
   let translateText = isArabic ? "نوع معاملة مالية" : "Transaction Type";
 
@@ -229,7 +230,7 @@ export default function AllTransactionTypesPage() {
             title={t("Dashboard.transactionTypes")}
             subtitle={t("Dashboard.transactionTypes")}
             i18n={i18n}
-            haveBtn={hasAddPermission}
+            haveBtn={create}
             btn={t("addItem", { item: translateText })}
             btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
             onSubmit={addNavigate}

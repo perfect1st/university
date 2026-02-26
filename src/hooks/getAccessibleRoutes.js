@@ -1,42 +1,53 @@
+import { useSelector } from "react-redux";
+import { useMemo } from "react";
 import routesData from "../data/routes";
-import { getUserCookie } from "./authCookies";
 
-const getAccessibleRoutes = (userType = "admin") => {
-  const user = getUserCookie();
-  if (!user) return [];
+const useAccessibleRoutes = () => {
+  const user = useSelector((state) => state.user.loggedUser);
 
-  if (user?.super_admin) return routesData[userType] || [];
+  const filteredRoutes = useMemo(() => {
+    if (!user || !user.groups) return [];
 
-  const allowedScreens = new Set();
+    const userType = user.role?.toLowerCase();
 
-  user?.groups?.forEach(group => {
-    group?.screens?.forEach(screen => {
-      if (screen.permissions?.view) {
-        allowedScreens.add(screen.screen);
-      }
-    });
-  });
-
-  const isRouteAllowed = (key) =>
-    allowedScreens.has(key) ||
-    allowedScreens.has(key.toLowerCase()) ||
-    allowedScreens.has(key.charAt(0).toUpperCase() + key.slice(1));
-
-  const filteredRoutes = (routesData[userType] || [])
-    .map(route => {
-      if (route.children) {
-        const filteredChildren = route.children.filter(child => isRouteAllowed(child.key));
-        if (filteredChildren.length > 0) {
-          return { ...route, children: filteredChildren };
+    // 1. Extract modules the user can "view"
+    // Converts "users.view" -> "users"
+    const allowedModules = new Set();
+    user.groups.forEach(group => {
+      group.permissions?.forEach(perm => {
+        if (perm.endsWith(".view")) {
+          const moduleName = perm.split(".")[0];
+          allowedModules.add(moduleName.toLowerCase());
         }
-        return null;
-      }
+      });
+    });
 
-      return isRouteAllowed(route.key) ? route : null;
-    })
-    .filter(Boolean);
+    // Special Case: Always allow Profile and Dashboard if they don't have specific perms
+    const alwaysAllowed = ["profile", "dashboard", "studentdashboard"];
+
+    // داخل filteredRoutes.map
+    const isRouteAllowed = (route) => {
+      if (route.isPublic) return true; // لو الـ route معلم كـ public يظهر فورا
+
+      const key = route.key?.toLowerCase();
+      return allowedModules.has(key) || alwaysAllowed.includes(key);
+    };
+
+    // وتعديل الـ map ليمرر الكائن كاملاً
+    return (routesData[userType] || [])
+      .map(route => {
+        if (route.children) {
+          const filteredChildren = route.children.filter(child => isRouteAllowed(child));
+          return filteredChildren.length > 0 ? { ...route, children: filteredChildren } : null;
+        }
+        return isRouteAllowed(route) ? route : null;
+      })
+      .filter(Boolean);
+
+
+  }, [user]);
 
   return filteredRoutes;
 };
 
-export default getAccessibleRoutes;
+export default useAccessibleRoutes;

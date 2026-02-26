@@ -61,6 +61,14 @@ query Me {
         qid_number
         createdAt
         updatedAt
+               groups {
+            id
+            name_ar
+            name_en
+            permissions
+            createdAt
+            updatedAt
+        }
     }
 }
 `;  

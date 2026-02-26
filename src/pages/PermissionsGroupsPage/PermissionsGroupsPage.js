@@ -15,6 +15,9 @@ import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 
 // GraphQL Queries
 import { GET_GROUPS } from "../../graphql/groupQueries";
+import NoPermissionPage from "../../components/NoPermissionPage";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import notify from "../../components/notify";
 
 export default function PermissionsGroupsPage() {
   const theme = useTheme();
@@ -22,6 +25,7 @@ export default function PermissionsGroupsPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const isArabic = i18n.language === "ar";
+const { view, create, update, delete: canDelete } = usePermissionsByModule("groups");
 
   // 1. Fetch Groups Data
   const { data, loading, error } = useQuery(GET_GROUPS, {
@@ -71,7 +75,7 @@ export default function PermissionsGroupsPage() {
   };
 
   const handleDetailsClick = (selectedRow) => {
-    // Navigate to details and pass the specific group data in state
+      if(!update) return notify(t("no_permission.title"),"error");
     navigate(`details/${selectedRow.id}`, {
       state: selectedRow,
     });
@@ -99,6 +103,7 @@ export default function PermissionsGroupsPage() {
       console.error("Export error:", err);
     }
   };
+    if (!view) return <NoPermissionPage />;
 
   // 6. Conditional Rendering
   if (loading) return <LoadingPage />;
@@ -113,7 +118,7 @@ export default function PermissionsGroupsPage() {
             title={t("Permissions Groups")}
             subtitle={t("Manage system access groups")}
             i18n={i18n}
-            haveBtn={true}
+            haveBtn={create}
             btn={t("addItem", { item: isArabic ? "مجموعة" : "Group" })}
             btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
             onSubmit={addNavigate}

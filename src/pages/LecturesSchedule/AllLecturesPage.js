@@ -21,6 +21,8 @@ import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import { GET_FILTERED_MAIN_TABLES, UPDATE_MAIN_TIME_TABLE_BY_ID } from "../../graphql/TimeTableQueries";
+import NoPermissionPage from "../../components/NoPermissionPage";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 export default function AllLecturesPage() {
     const theme = useTheme();
     const { t } = useTranslation();
@@ -30,6 +32,7 @@ export default function AllLecturesPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const { id } = useParams();
     const isArabic = i18n.language === "ar";
+const { view, create, update, delete: canDelete } = usePermissionsByModule("mainTimeTables");
 
     // all main tables with filter
     const [
@@ -192,7 +195,7 @@ export default function AllLecturesPage() {
         setSearchParams(searchParams);
     }
     const handleDetailsClick = (selectedRow) => {
-        console.log('handleDetailsClick', selectedRow);
+      if(!update) return notify(t("no_permission.title"),"error");
         navigate(`details/${selectedRow?.id}`, {
             state: selectedRow
         });
@@ -218,9 +221,8 @@ export default function AllLecturesPage() {
     const totalPages = parseInt(total / pageLimit) + 1;
 
     console.log("totalPages", totalPages);
-    const hasViewPermission = true;
-    const hasAddPermission = true;
-    if (!hasViewPermission) return <Navigate to="/profile" />;
+    if (!view) return <NoPermissionPage />;
+
 
     console.log('t("Dashboard.Lectures")', t("Dashboard.Lectures"));
     // departments
@@ -251,7 +253,7 @@ export default function AllLecturesPage() {
                         title={t("Dashboard.LecturesSchedule")}
                         subtitle={`${t("Dashboard.LecturesSchedule")}`}
                         i18n={i18n}
-                        haveBtn={hasAddPermission}
+                        haveBtn={create}
                         btn={t("addItem", { item: translateText })}
                         btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
                         onSubmit={addNavigate}

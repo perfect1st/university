@@ -1,33 +1,42 @@
-// src/hooks/getPermissionsByScreen.js
+import { useSelector } from "react-redux";
+import { useMemo } from "react";
 
-import { getUserCookie } from "./authCookies";
+const usePermissionsByModule = (moduleName) => {
+  const user = useSelector((state) => state.user.loggedUser);
 
+  return useMemo(() => {
+    if (!user) return { view: false, create: false, update: false, delete: false };
 
-function getPermissionsByScreen(screenName) {
-  const user = getUserCookie();
-  if (!user) return null;
-
-  // ✅ if user is super_admin → grant full access
-  if (user.super_admin) {
-    return {
-      view: true,
-      edit: true,
-      delete: true,
-      add: true,
-    };
-  }
-
-  if (!user.groups) return null;
-
-  // Otherwise → check permissions normally
-  for (const group of user.groups) {
-    const screen = group.screens.find((s) => s.screen === screenName);
-    if (screen) {
-      return screen.permissions;
+    // 1. إذا كان super_admin له كل الصلاحيات
+    if (user.role === "super_admin" || user.username === "admin") {
+      return { view: true, create: true, update: true, delete: true, pay: true };
     }
-  }
 
-  return null; // not found
-}
+    if (!user.groups) return { view: false, create: false, update: false, delete: false };
 
-export default getPermissionsByScreen;
+    // 2. البحث في مصفوفة الصلاحيات (التنسيق: "module.action")
+    const permissions = {
+      view: false,
+      create: false,
+      update: false,
+      delete: false,
+      pay: false, // مضافة لأنها موجودة في الـ JSON الخاص بك (usersRequiredFees.pay)
+    };
+
+    user.groups.forEach((group) => {
+      group.permissions?.forEach((perm) => {
+        const [permModule, permAction] = perm.split("."); // "users.view" -> ["users", "view"]
+
+        if (permModule.toLowerCase() === moduleName.toLowerCase()) {
+          // تحويل update لـ edit إذا كنت تفضل استخدام edit في الـ UI
+          const actionKey = permAction === "update" ? "update" : permAction;
+          permissions[actionKey] = true;
+        }
+      });
+    });
+
+    return permissions;
+  }, [user, moduleName]);
+};
+
+export default usePermissionsByModule;

@@ -20,6 +20,8 @@ import { GET_ALL_DEPARTMENTS, GET_ALL_FACULITIES } from "../../graphql/facultyQu
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
+import NoPermissionPage from "../../components/NoPermissionPage";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 
 
 export default function AllAcademyTermsPage() {
@@ -32,6 +34,7 @@ export default function AllAcademyTermsPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const { id } = useParams();
     const isArabic = i18n.language === "ar";
+const { view, create, update, delete: canDelete } = usePermissionsByModule("academyTerms");
 
     let firstRenderRef = useRef(true);
 
@@ -174,7 +177,7 @@ export default function AllAcademyTermsPage() {
     const addNavigate = () => navigate("add");
 
     const handleDetailsClick = (selectedRow) => {
-        console.log('handleDetailsClick', selectedRow);
+      if(!update) return notify(t("no_permission.title"),"error");
         navigate(`details/${selectedRow?.id}`, {
             state: selectedRow
         });
@@ -238,9 +241,7 @@ export default function AllAcademyTermsPage() {
 
     console.log("totalPages", totalPages);
 
-    const hasViewPermission = true;
-    const hasAddPermission = true;
-    if (!hasViewPermission) return <Navigate to="/profile" />;
+      if (!view) return <NoPermissionPage />;
 
     // departments
     let translateText = isArabic ? "فصل دراسي" : "AcademyTerm";
@@ -268,7 +269,7 @@ export default function AllAcademyTermsPage() {
                         title={t("admissions.departmentTerm")}
                         subtitle={`${t("admissions.departmentTerm")}`}
                         i18n={i18n}
-                        haveBtn={hasAddPermission}
+                        haveBtn={create}
                         btn={t("addItem", { item: translateText })}
                         btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
                         onSubmit={addNavigate}

@@ -15,6 +15,8 @@ import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import notify from "../../components/notify";
 import { GET_WEBSITE_DEPARTMENTS_BY_ADMIN, UPDATE_WEBSITE_DEPARTMENT_BY_ID } from "../../graphql/departmentsQueries";
+import NoPermissionPage from "../../components/NoPermissionPage";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 
 export default function AllDepartmentsPage() {
     const theme = useTheme();
@@ -22,6 +24,7 @@ export default function AllDepartmentsPage() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [searchParams, setSearchParams] = useSearchParams();
+const { view, create, update, delete: canDelete } = usePermissionsByModule("websiteDepartments");
 
   const isArabic = i18n.language === "ar";
   const {
@@ -113,9 +116,9 @@ export default function AllDepartmentsPage() {
     const addNavigate = () => navigate('add');
   
     const handleDetailsClick = (selectedRow) => {
-      console.log('handleDetailsClick', selectedRow);
-    //   let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
+
       
+      if(!update) return notify(t("no_permission.title"),"error");
       navigate(`details/${selectedRow?.id}`, {
         state: selectedRow
       });
@@ -150,10 +153,8 @@ export default function AllDepartmentsPage() {
     // الاقسام الرئيسية
     let mainDepartments=websiteDepartments?.filter(el=>el?.father_id==null);  
 
-    const hasViewPermission = true;
-    const hasAddPermission = true;
   
-    if (!hasViewPermission) return <Navigate to="/profile" />;
+    if (!view) return <NoPermissionPage />;
   
     let translateText = isArabic ? "قسم موقع" : "Website Department";
   

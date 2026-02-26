@@ -19,6 +19,8 @@ import notify from "../../components/notify";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
+import NoPermissionPage from "../../components/NoPermissionPage";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 
 export default function AllfaculitiesPage() {
     const theme = useTheme();
@@ -26,6 +28,7 @@ export default function AllfaculitiesPage() {
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const [searchParams, setSearchParams] = useSearchParams();
+const { view, create, update, delete: canDelete } = usePermissionsByModule("faculties");
 
     const isArabic = i18n.language === "ar";
 
@@ -125,7 +128,7 @@ export default function AllfaculitiesPage() {
     const addFaculityNavigate = () => navigate('add');
 
     const handleDetailsClick = (selectedRow) => {
-        console.log('handleDetailsClick', selectedRow);
+      if(!update) return notify(t("no_permission.title"),"error");
         navigate(`details/${selectedRow?.id}`, {
             state: selectedRow
         });
@@ -177,10 +180,8 @@ export default function AllfaculitiesPage() {
 
     console.log("filteredPagedFaculties", filteredPagedFaculties);
 
-    const hasViewPermission = true;
-    const hasAddPermission = true;
+    if (!view) return <NoPermissionPage />;
 
-    if (!hasViewPermission) return <Navigate to="/profile" />;
 
     let translateText = isArabic ? "كلية" : "Faculity";
 
@@ -207,7 +208,7 @@ export default function AllfaculitiesPage() {
                         title={t("faculties")}
                         subtitle={t("faculties")}
                         i18n={i18n}
-                        haveBtn={hasAddPermission}
+                        haveBtn={create}
                         btn={t("addItem", { item: translateText })}
                         btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
                         onSubmit={addFaculityNavigate}
