@@ -256,11 +256,7 @@ export default function AddAcademyTermPage() {
         onSubmit={
           formik.handleSubmit
         }
-        sx={{
-          width: "100%", [theme.breakpoints.down("sm")]: {
-            width: "60%", // 👈 للموبايل
-          },
-        }}
+      
       >
 
         <VerticalTextField

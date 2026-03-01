@@ -137,7 +137,7 @@ export default function AddFaculityPricePage() {
 
     if (faculitiesLoading) return <LoadingPage />;
     return (
-        <Box sx={{ p: 3, backgroundColor: "background.paper", maxWidth: "100%" }}>
+        <Box sx={{p: { xs: 2, md: 3 },backgroundColor: "background.paper", maxWidth: "100%" }}>
             <Header
                 title={t("Dashboard.facultyPrices")}
                 subtitle={t("addItem", { item: translateText })}
@@ -154,15 +154,9 @@ export default function AddFaculityPricePage() {
                 onSubmit={
                     formik.handleSubmit
                 }
-                sx={{
-                    width: "100%", [theme.breakpoints.down("sm")]: {
-                        width: "60%", // 👈 للموبايل
-                    },
-                }}
             >
 
                 {/* الكلية */}
-
                 <VerticalTextFieldSelect
                     t={t}
                     title={t("admissions.faculty")} defaultOptionLabel={t("select")}

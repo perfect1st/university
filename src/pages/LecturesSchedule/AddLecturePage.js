@@ -184,11 +184,7 @@ export default function AddLecturePage() {
                 onSubmit={
                     formik.handleSubmit
                 }
-                sx={{
-                    width: "100%", [theme.breakpoints.down("sm")]: {
-                        width: "60%", // 👈 للموبايل
-                    },
-                }}
+           
             >
 
                 <VerticalTextField

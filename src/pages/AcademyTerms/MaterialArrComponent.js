@@ -68,11 +68,8 @@ export default function MaterialArrComponent({rows,setRows}) {
 
             <TableContainer sx={{
                 width: "100%",
-                [theme.breakpoints.down("sm")]: {
-                    width: "100%", // 👈 للموبايل
-                    overflow: "scroll"
-                },
-                maxWidth: "100%",
+             
+                maxWidth: "90vw",
                 overflowX: "auto", // ✅ لو الأعمدة كتيرة بيعمل scroll تلقائي
 
 

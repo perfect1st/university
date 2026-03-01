@@ -294,7 +294,6 @@ export default function LectureDetailsPage() {
 
       <Box
         display="flex"
-        width={isMobile ? "55%" : "100%"}
         flexDirection="column"
         gap={3}
         pt={3}
@@ -447,6 +446,7 @@ export default function LectureDetailsPage() {
             variant="contained"
             onClick={() => addRowToTable()}
             disabled={creating}
+            fullWidth={isMobile}
           >
             {creating ? (
               <CircularProgress

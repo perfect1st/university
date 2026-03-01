@@ -272,11 +272,6 @@ export default function AcademyTermDetailsPage() {
         onSubmit={
           formik.handleSubmit
         }
-        sx={{
-          width: "100%", [theme.breakpoints.down("sm")]: {
-            width: "60%", // 👈 للموبايل
-          },
-        }}
       >
         <HorizentalTextField
           title={t("form.name_ar", { item: translateText2 })}

@@ -129,90 +129,139 @@ export const VerticalTextFieldSelect = ({ t, backgroundColor, title, defaultOpti
   );
 }
 
-export const SearchByTypingSelect = ({ options, value, setValue, title, label, error, onBlur, multiple = false, labelToShow, findKey, onChangeFn }) => {
+export const SearchByTypingSelect = ({ 
+  options, value, setValue, title, label, error, onBlur, 
+  multiple = false, labelToShow, findKey, onChangeFn 
+}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  console.log("auto error", error);
   return (
-    <Box sx={{ width: "100%", maxWidth: isMobile ? 400 : "100%" }}>
-      <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
-        {title}
-      </Typography>
+    <Box sx={{ mb: 2, width: "100%" }}>
+      
+      {/* TABLE LAYOUT — ضامن إن الـ autocomplete مينزلش تحت الـ label */}
+      <Box sx={{
+        display: "table",
+        tableLayout: "fixed",
+        width: "100%",
+        borderCollapse: "separate",
+        borderSpacing: "8px 0",
+      }}>
 
-      <Autocomplete
-        multiple={multiple}
-        options={options}
-        getOptionLabel={(option) => labelToShow(option)}
-        value={multiple ? options?.filter(opt => value.includes(opt[findKey])) : options?.find(opt => opt[findKey] === value) || null}
-        clearOnEscape={false}
-        disableClearable={false}
+        {/* Label Cell */}
+        {title && (
+          <Box sx={{
+            display: "table-cell",
+            width: "130px",
+            minWidth: "130px",
+            maxWidth: "130px",
+            verticalAlign: "middle",
+            fontWeight: "bold",
+            fontSize: "0.875rem",
+            whiteSpace: "nowrap",
+            pr: 1,
+          }}>
+            {title}
+          </Box>
+        )}
 
-        onChange={(e, newValue, reason) => {
-          if (reason === "clear") {
-
-            // لو المستخدم ضغط على clear icon
-            multiple ? setValue([]) : setValue(null);
-
-            if (onChangeFn) onChangeFn([]);
-            return;
-          }
-
-          if (reason === "selectOption" || reason === "removeOption") {
-            if (!newValue) return; // safety
-            // المستخدم اختار اختيار فعلي
-            if (multiple) {
-              // newValue هترجع array من objects المختارين
-              const newIds = newValue.map(opt => opt[findKey]);
-              setValue(newIds); // value = array of ids
-
-              if (onChangeFn) onChangeFn(newIds);
+        {/* Autocomplete Cell */}
+        <Box sx={{
+          display: "table-cell",
+          width: "100%",
+          maxWidth: 0,          // ← مع tableLayout:fixed بيجبر الـ cell تتقلص
+          verticalAlign: "middle",
+          overflow: "hidden",
+        }}>
+          <Autocomplete
+            multiple={multiple}
+            options={options}
+            getOptionLabel={(option) => labelToShow(option)}
+            value={
+              multiple
+                ? options?.filter(opt => value.includes(opt[findKey]))
+                : options?.find(opt => opt[findKey] === value) || null
             }
-            else {
-              setValue(newValue[findKey] || isNullableType);
-            }
-            return;
-          }
-
-          // لو المستخدم قفل البوكس فقط (blur)
-          if (reason === "blur") {
-            // خليه يحتفظ بالقيمة الحالية — متعملش setValue(null)
-            onBlur();
-            return;
-          }
-
-
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            placeholder={`${title} ...`}
-            error={error}
-            helperText={error}
-            onBlur={onBlur}
+            clearOnEscape={false}
+            disableClearable={false}
+            onChange={(e, newValue, reason) => {
+              if (reason === "clear") {
+                multiple ? setValue([]) : setValue(null);
+                if (onChangeFn) onChangeFn([]);
+                return;
+              }
+              if (reason === "selectOption" || reason === "removeOption") {
+                if (!newValue) return;
+                if (multiple) {
+                  const newIds = newValue.map(opt => opt[findKey]);
+                  setValue(newIds);
+                  if (onChangeFn) onChangeFn(newIds);
+                } else {
+                  setValue(newValue[findKey] || null);
+                }
+                return;
+              }
+              if (reason === "blur") {
+                onBlur && onBlur();
+                return;
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder={`${title} ...`}
+                error={!!error}
+                onBlur={onBlur}
+                sx={{
+                  width: "100%",
+                  "& .MuiInputBase-root": {
+                    backgroundColor: theme.palette.background.inputBackGround,
+                    flexWrap: multiple ? "wrap" : "nowrap", // ← multiple chips تتوزع
+                    overflow: "hidden",
+                  },
+                  // ← ellipsis على الـ input نفسه
+                  "& .MuiInputBase-input": {
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    minWidth: "0 !important",
+                  },
+                }}
+              />
+            )}
             sx={{
-              "& .MuiInputBase-root": {
-                backgroundColor: theme.palette.background.inputBackGround, // 👈 هنا
+              width: "100%",
+              minWidth: 0,
+              "& .MuiAutocomplete-popupIndicator": {
+                color: theme.palette.info.main,
+              },
+              "& .MuiAutocomplete-clearIndicator": {
+                color: theme.palette.error.main,
+              },
+              // ← الـ tags في multiple مش بتتمد برا الـ container
+              "& .MuiAutocomplete-tag": {
+                maxWidth: "calc(100% - 30px)",
+                overflow: "hidden",
               },
             }}
           />
-        )}
+        </Box>
+      </Box>
 
-        sx={{
-          mb: 3,
-          "& .MuiAutocomplete-popupIndicator": {
-            color: theme.palette.info.main, // 👈 لون السهم هنا
-          },
-          "& .MuiAutocomplete-clearIndicator": {
-            color: theme.palette.error.main,   // 👈 لو عايز تغيّر لون Clear icon
-          },
-        }}
-
-      />
+      {/* Error — تحت دايماً */}
+      {error && (
+        <Typography variant="caption" sx={{
+          color: "error.main",
+          display: "block",
+          mt: 0.5,
+          pl: "138px",  // ← aligned تحت الـ autocomplete
+        }}>
+          {error}
+        </Typography>
+      )}
     </Box>
-
   );
-}
+};
 export const SearchByTypingSelect2 = ({ 
   options, value, setValue, title, error, onBlur, 
   multiple = false, labelToShow, findKey, onChangeFn 

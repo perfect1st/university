@@ -38,7 +38,6 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("facu
         data
     }=useQuery(GET_ALL_DEPARTMENTS, { fetchPolicy: "network-only" });
 
-     console.log("departments",data);
 
     const [
         FilteredPagedFacultyDepartments,

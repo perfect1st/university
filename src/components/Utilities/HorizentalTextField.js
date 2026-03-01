@@ -61,7 +61,7 @@ export default function HorizentalTextField({
       {
         type == "file" ?
       (
-        <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", flexGrow: "1" }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", flexGrow: "1" }}>
            {
             !handleDownloadFile &&<Box
               sx={{
@@ -229,7 +229,7 @@ export default function HorizentalTextField({
 export const HorizentalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange, isDisabled=false }) => {
   const theme = useTheme();
   return (
-    <Box sx={{ display: "flex", flexWrap: "wrap", mb: 4, backgroundColor: theme.palette.primary?.gray, gap: 3, p: 1, height: "60px" }}>
+    <Box sx={{ display: "flex", flexWrap: "nowrap !important", mb: 4, backgroundColor: theme.palette.primary?.gray, gap: 3, p: 1, height: "60px" }}>
 
       <Typography variant="subtitle2" sx={{ fontWeight: "bold", height: "55px", display: "flex", flexDirection: "column", alignItems: "start", justifyContent: "center", width: "40%" }}>
         {title}
