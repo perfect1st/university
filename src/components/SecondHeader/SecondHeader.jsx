@@ -55,7 +55,7 @@ export default function SecondHeader() {
         }}
       >
         
-        {
+        {/* {
           isMobile&&<IconButton onClick={() => {
           // searchParams.set("mobileOpen",true);
           // setSearchParams(searchParams);
@@ -64,7 +64,7 @@ export default function SecondHeader() {
          <MenuIcon fontSize="large" />
         </IconButton>
         }
-        
+         */}
         {navItems.map((item) => {
           const active = getActive(item.path);
           return (

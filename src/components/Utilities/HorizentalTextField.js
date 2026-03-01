@@ -72,35 +72,40 @@ export default function HorizentalTextField({
             >
               {Array.isArray(value) ?
                 value.map((img, index) => (
-                  <Box
-                    key={index}
-                    component="img"
-                    src={`${baseURL}${img}`}
-                    alt={`صورة-${index}`}
-                    loading="lazy"
-                    sx={{
-                      width: 100,
-                      height: 100,
-                      objectFit: "cover",
-                      borderRadius: 2,
-                      boxShadow: 1,
-                    }}
-                  />
+                <Box
+  key={index}
+  component="img"
+  src={`${baseURL}${img}`}
+  alt={`صورة-${index}`}
+  loading="lazy"
+  sx={{
+    width: 40,
+    height: 28,
+    objectFit: "cover",
+    objectPosition: "center",
+    borderRadius: "4px",
+    boxShadow: "0px 1px 2px rgba(0,0,0,0.15)",
+    border: "1px solid #e0e0e0",
+    display: "inline-block",
+  }}
+/>
                 ))
                 :
-                <Box
-                  component="img"
-                  src={`${baseURL}${value}`}
-                  alt="وصف الصورة"
-                  loading="lazy"
-                  sx={{
-                    width: 100,          // ثابت أو '100%' للعرض الكامل
-                    height: "auto",
-                    objectFit: 'cover',  // contain, cover, fill
-                    borderRadius: 2,     // زوايا مدورة
-                    boxShadow: 1,
-                  }}
-                />
+         <Box
+  component="img"
+  src={`${baseURL}${value}`}
+  alt="Flag"
+  loading="lazy"
+  sx={{
+    width: 40,
+    height: 28,
+    objectFit: "cover",
+    objectPosition: "center",
+    borderRadius: "4px",
+    boxShadow: "0px 1px 2px rgba(0,0,0,0.1)",
+    border: "1px solid #eee",
+  }}
+/>
 
               }
             </Box>

@@ -273,60 +273,76 @@ export default function WebSiteDepartmentDetailsPage() {
                 isPrinter={false}
             />
 
-            <Box component="form" onSubmit={formik.handleSubmit} sx={{
-                width: isMobile ? "50%" : "100%"
-            }}>
+         <Grid 
+  container 
+  component="form" 
+  onSubmit={formik.handleSubmit} 
+  spacing={3} // Adds consistent vertical/horizontal gap
+//   sx={{ width: isMobile ? "50%" : "100%" }}
+>
+    {/* Arabic Title */}
+    <Grid item xs={12}>
+        <HorizentalTextField
+            title={t("form.name_ar", { item: translateText2 })}
+            fieldID={"title_ar"}
+            fieldName={"title_ar"}
+            placeholder={t("form.name_ar", { item: translateText2 })}
+            value={formik.values.title_ar}
+            onChange={formik.handleChange}
+            error={formik.touched.title_ar && Boolean(formik.errors.title_ar)}
+            helperText={formik.touched.title_ar && formik.errors.title_ar}
+        />
+    </Grid>
 
-                <HorizentalTextField
-                    title={t("form.name_ar", { item: translateText2 })}
-                    fieldID={"title_ar"}
-                    fieldName={"title_ar"}
-                    placeholder={t("form.name_ar", { item: translateText2 })}
-                    value={formik.values.title_ar}
-                    onChange={formik.handleChange}
-                    error={formik.touched.title_ar && Boolean(formik.errors.title_ar)}
-                    helperText={formik.touched.title_ar && formik.errors.title_ar}
-                />
+    {/* English Title */}
+    <Grid item xs={12}>
+        <HorizentalTextField
+            title={t("form.name_en", { item: translateText2 })}
+            fieldID={"title_en"}
+            fieldName={"title_en"}
+            placeholder={t("form.name_en", { item: translateText2 })}
+            value={formik.values.title_en}
+            onChange={formik.handleChange}
+            error={formik.touched.title_en && Boolean(formik.errors.title_en)}
+            helperText={formik.touched.title_en && formik.errors.title_en}
+        />
+    </Grid>
 
-                <HorizentalTextField
-                    title={t("form.name_en", { item: translateText2 })}
-                    fieldID={"title_en"}
-                    fieldName={"title_en"}
-                    placeholder={t("form.name_en", { item: translateText2 })}
-                    value={formik.values.title_en}
-                    onChange={formik.handleChange}
-                    error={formik.touched.title_en && Boolean(formik.errors.title_en)}
-                    helperText={formik.touched.title_en && formik.errors.title_en}
-                />
+    {/* Arabic Description */}
+    <Grid item xs={12}>
+        <HorizentalTextField
+            isMultiline={true}
+            title={t("Dashboard.arDescription", { item: translateText2 })}
+            fieldID={"desc_ar"}
+            fieldName={"desc_ar"}
+            placeholder={t("Dashboard.arDescription", { item: translateText2 })}
+            value={formik.values.desc_ar}
+            onChange={formik.handleChange}
+            error={formik.touched.desc_ar && Boolean(formik.errors.desc_ar)}
+            helperText={formik.touched.desc_ar && formik.errors.desc_ar}
+        />
+    </Grid>
 
-                <HorizentalTextField
-                    isMultiline={true}
-                    title={t("Dashboard.arDescription", { item: translateText2 })}
-                    fieldID={"desc_ar"}
-                    fieldName={"desc_ar"}
-                    placeholder={t("Dashboard.arDescription", { item: translateText2 })}
-                    value={formik.values.desc_ar}
-                    onChange={formik.handleChange}
-                    error={formik.touched.desc_ar && Boolean(formik.errors.desc_ar)}
-                    helperText={formik.touched.desc_ar && formik.errors.desc_ar}
-                />
+    {/* English Description */}
+    <Grid item xs={12}>
+        <HorizentalTextField
+            isMultiline={true}
+            title={t("Dashboard.enDescription", { item: translateText2 })}
+            fieldID={"desc_en"}
+            fieldName={"desc_en"}
+            placeholder={t("Dashboard.enDescription", { item: translateText2 })}
+            value={formik.values.desc_en}
+            onChange={formik.handleChange}
+            error={formik.touched.desc_en && Boolean(formik.errors.desc_en)}
+            helperText={formik.touched.desc_en && formik.errors.desc_en}
+        />
+    </Grid>
 
-                <HorizentalTextField
-                    isMultiline={true}
-                    title={t("Dashboard.enDescription", { item: translateText2 })}
-                    fieldID={"desc_en"}
-                    fieldName={"desc_en"}
-                    placeholder={t("Dashboard.enDescription", { item: translateText2 })}
-                    value={formik.values.desc_en}
-                    onChange={formik.handleChange}
-                    error={formik.touched.desc_en && Boolean(formik.errors.desc_en)}
-                    helperText={formik.touched.desc_en && formik.errors.desc_en}
-                />
-
-
-                <SubmitButton loading={loading} t={t} />
-
-            </Box>
+    {/* Submit Button */}
+    <Grid item xs={12}>
+        <SubmitButton loading={loading} t={t} />
+    </Grid>
+</Grid>
 
             {
                 loading && <CircularProgress
@@ -369,13 +385,7 @@ export default function WebSiteDepartmentDetailsPage() {
                         loading={getDepartmentsByFatherLoading}
                         // isUsers={true}
                         statusKey="status"
-                        sx={{
-                            flex: 1,
-                            overflow: "auto",
-                            boxShadow: 1,
-                            borderRadius: 1,
-                            width: "100%",
-                        }}
+                 
                         handleDetailsClick={handleDetailsClick}
                         onStatusChange={onStatusChange}
                     />

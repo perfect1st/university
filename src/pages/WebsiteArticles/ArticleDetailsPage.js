@@ -246,7 +246,7 @@ export default function ArticleDetailsPage() {
 
       <Box
         onSubmit={formik.handleSubmit}
-        sx={{ width: isMobile ? "90%" : "100%" }}
+        // sx={{ width: isMobile ? "90%" : "100%" }}
         component="form">
         <HorizentalTextField
           title={t("form.name_ar", { item: translateText2 })}

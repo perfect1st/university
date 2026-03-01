@@ -131,9 +131,7 @@ export default function EditSupportTicketPage() {
                     formik.handleSubmit
                 }
                 sx={{
-                    width: "100%", [theme.breakpoints.down("sm")]: {
-                        width: "60%", // 👈 للموبايل
-                    },
+                    width: "100%",
                 }}
             >
 

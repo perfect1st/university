@@ -203,11 +203,9 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("nati
     pageLimit = Number(searchParams.get("limit"));
   }
 
-  console.log("pageLimit", pageLimit);
-
+  
   const totalPages = parseInt(total / pageLimit) + 1;
 
-  console.log("totalPages", totalPages);
   // const onActionClick=()=>navigate('details')
   // Permissions: for the dummy page we allow viewing. Replace with your real permission check if needed.
     if (!view) return <NoPermissionPage />;

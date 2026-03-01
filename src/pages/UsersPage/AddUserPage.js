@@ -109,7 +109,7 @@ export default function AddUserPage() {
             />
             <Box
                 onSubmit={formik.handleSubmit}
-                sx={{ width: isMobile ? "90%" : "100%" }}
+                // sx={{ width: isMobile ? "90%" : "100%" }}
                 component="form">
 
                 <VerticalTextField

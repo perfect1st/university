@@ -24,7 +24,6 @@ import { ReactComponent as InfoIcon } from "../../assets/InfoIcon.svg";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { baseURL } from "../../Api/apolloClient";
-import SaveIcon from "@mui/icons-material/Save";
 
 // Define only necessary status styles
 const statusStyles = {
@@ -42,25 +41,16 @@ const statusStyles = {
 
 const TableComponent = ({
   columns,
-  hasNavigateBtn = false,
-  navigateBtnTitle,
-  navigateTo,
   data,
   onStatusChange,
-  onViewDetails,
   statusKey = "status",
   showStatusChange = true,
-  hasObject = false,
   arPopulateKey,
   enPopulateKey,
-  nestedPopulateKey,
-  nestedArPopulateKey,
-  nestedEnPopulateKey,
   actionIconType = "more",
   isInDetails = false,
   dontShowActions = false,
   onActionClick,
-  onSortClick,
   handleDetailsClick,
   activeStatusLabel = "true",
   inActiveStatusLabel = "false",
@@ -132,11 +122,11 @@ const TableComponent = ({
     <TableContainer
       component={Paper}
       sx={{
-        width: { xs: "90%", sm: "100%" },
-        maxWidth: "100vw",
+        width: { xs: "100%", sm: "100%" },
+        maxWidth: "90vw",
         overflowX: "auto",
         boxShadow: "none",
-        mx: { xs: "auto", sm: 0 },
+        // mx: { xs: "auto", sm: 0 },
       }}
     >
       <Box
@@ -145,7 +135,7 @@ const TableComponent = ({
           minWidth: "100%",
           overflowX: "auto",
           [theme.breakpoints.down("sm")]: {
-            minWidth: "901px",
+            // minWidth: "901px",
           },
         }}
       >
@@ -159,9 +149,9 @@ const TableComponent = ({
             },
             [theme.breakpoints.down("sm")]: {
               // on small screens render by-content so horizontal scroll can appear
-              width: "max-content",
-              display: "inline-table",
-              minWidth: "901px",
+              // width: "max-content",
+              // display: "inline-table",
+              // minWidth: "901px",
               "& .MuiTableCell-root": {
                 whiteSpace: "nowrap",
               },
@@ -287,9 +277,9 @@ const TableComponent = ({
                               },
                               "&:hover": showStatusChange
                                 ? {
-                                    opacity: 0.9,
-                                    transform: "scale(1.02)",
-                                  }
+                                  opacity: 0.9,
+                                  transform: "scale(1.02)",
+                                }
                                 : {},
                             }}
                           />
@@ -304,18 +294,25 @@ const TableComponent = ({
                       {
                         // /uploads/
                         typeof row[column.key] === "string" &&
-                        row[column.key]?.includes("/uploads/") ? (
+                          row[column.key]?.includes("/uploads/") ? (
                           <Box
                             component="img"
                             src={`${baseURL}${row[column.key]}`}
-                            alt="وصف الصورة"
+                            alt="img"
                             loading="lazy"
                             sx={{
-                              width: 100, // ثابت أو '100%' للعرض الكامل
-                              height: "auto",
-                              objectFit: "cover", // contain, cover, fill
-                              borderRadius: 2, // زوايا مدورة
-                              boxShadow: 1,
+                              width: 40,
+                              height: 28,
+
+                              objectFit: "cover",
+                              objectPosition: "center",
+
+                              borderRadius: "4px",
+                              boxShadow: "0px 1px 3px rgba(0,0,0,0.2)",
+                              border: "1px solid #e0e0e0",
+
+                              display: "block",
+                              my: 0.5
                             }}
                           />
                         ) : !row[column.key] || row[column.key] === "null" ? (
@@ -341,20 +338,20 @@ const TableComponent = ({
                             column.key !== statusKey && t("dataNotFound")
                           )
                         ) : // hasObject ? isArabic ?
-                        // row[column.key]?.arPopulateKey : row[column.key]?.enPopulateKey
-                        // :row[column.key]  visibleColumns[2]?.nested
-                        row[column.key]?.id ? (
-                          // row[column.key]?.id[nestedPopulateKey] && column?.nested == "true" ?
-                          // isArabic ? row[column.key]?.[nestedPopulateKey]?.[nestedArPopulateKey] : row[column.key]?.[nestedPopulateKey]?.[nestedEnPopulateKey]
-                          // :
-                          isArabic ? (
-                            row[column.key]?.[arPopulateKey]
+                          // row[column.key]?.arPopulateKey : row[column.key]?.enPopulateKey
+                          // :row[column.key]  visibleColumns[2]?.nested
+                          row[column.key]?.id ? (
+                            // row[column.key]?.id[nestedPopulateKey] && column?.nested == "true" ?
+                            // isArabic ? row[column.key]?.[nestedPopulateKey]?.[nestedArPopulateKey] : row[column.key]?.[nestedPopulateKey]?.[nestedEnPopulateKey]
+                            // :
+                            isArabic ? (
+                              row[column.key]?.[arPopulateKey]
+                            ) : (
+                              row[column.key]?.[enPopulateKey]
+                            )
                           ) : (
-                            row[column.key]?.[enPopulateKey]
+                            row[column.key]
                           )
-                        ) : (
-                          row[column.key]
-                        )
                       }
                     </TableCell>
                   ))}
