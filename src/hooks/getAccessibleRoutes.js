@@ -5,45 +5,48 @@ import routesData from "../data/routes";
 const useAccessibleRoutes = () => {
   const user = useSelector((state) => state.user.loggedUser);
 
-  const filteredRoutes = useMemo(() => {
-    if (!user || !user.groups) return [];
+const filteredRoutes = useMemo(() => {
+    if (!user) return [];
 
     const userType = user.role?.toLowerCase();
+    const routes = routesData[userType] || [];
 
-    // 1. Extract modules the user can "view"
-    // Converts "users.view" -> "users"
+    // 1. إذا لم يكن المستخدم Admin، أظهر له كل مساراته الثابتة مباشرة
+    if (userType !== "admin") {
+      return routes;
+    }
+
+    // 2. إذا كان Admin، نطبق نظام الـ Permissions
+    if (!user.groups) return [];
+
     const allowedModules = new Set();
     user.groups.forEach(group => {
       group.permissions?.forEach(perm => {
-        if (perm.endsWith(".view")) {
+        if (typeof perm === "string" && perm.endsWith(".view")) {
           const moduleName = perm.split(".")[0];
           allowedModules.add(moduleName.toLowerCase());
         }
       });
     });
 
-    // Special Case: Always allow Profile and Dashboard if they don't have specific perms
     const alwaysAllowed = ["profile", "dashboard", "studentdashboard"];
 
-    // داخل filteredRoutes.map
     const isRouteAllowed = (route) => {
-      if (route.isPublic) return true; // لو الـ route معلم كـ public يظهر فورا
-
+      if (route.isPublic) return true;
       const key = route.key?.toLowerCase();
       return allowedModules.has(key) || alwaysAllowed.includes(key);
     };
 
-    // وتعديل الـ map ليمرر الكائن كاملاً
-    return (routesData[userType] || [])
+    return routes
       .map(route => {
         if (route.children) {
           const filteredChildren = route.children.filter(child => isRouteAllowed(child));
+          // نرجع المسار فقط إذا كان لديه أبناء مسموح بهم
           return filteredChildren.length > 0 ? { ...route, children: filteredChildren } : null;
         }
         return isRouteAllowed(route) ? route : null;
       })
       .filter(Boolean);
-
 
   }, [user]);
 

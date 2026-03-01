@@ -5,32 +5,40 @@ const usePermissionsByModule = (moduleName) => {
   const user = useSelector((state) => state.user.loggedUser);
 
   return useMemo(() => {
-    if (!user) return { view: false, create: false, update: false, delete: false };
+    // 1. إذا لم يوجد مستخدم، لا توجد صلاحيات
+    if (!user) return { view: false, create: false, update: false, delete: false, pay: false };
 
-    // 1. إذا كان super_admin له كل الصلاحيات
-    if (user.role === "super_admin" || user.username === "admin") {
+    const userType = user.role?.toLowerCase();
+
+    // 2. الحالات التي تمنح صلاحيات كاملة تلقائياً:
+    // - إذا كان super_admin أو username هو admin
+    // - إذا كان المستخدم ليس Admin (طالب، دكتور، إلخ) لأن صلاحياتهم ثابتة ومحددة بالـ Routes
+    if (
+      userType === "super_admin" || 
+      userType !== "admin"
+    ) {
       return { view: true, create: true, update: true, delete: true, pay: true };
     }
 
-    if (!user.groups) return { view: false, create: false, update: false, delete: false };
+    // 3. إذا كان المستخدم Admin (وليس super)، نطبق نظام المجموعات (Groups)
+    if (!user.groups) return { view: false, create: false, update: false, delete: false, pay: false };
 
-    // 2. البحث في مصفوفة الصلاحيات (التنسيق: "module.action")
     const permissions = {
       view: false,
       create: false,
       update: false,
       delete: false,
-      pay: false, // مضافة لأنها موجودة في الـ JSON الخاص بك (usersRequiredFees.pay)
+      pay: false,
     };
 
     user.groups.forEach((group) => {
       group.permissions?.forEach((perm) => {
-        const [permModule, permAction] = perm.split("."); // "users.view" -> ["users", "view"]
+        if (typeof perm === "string" && perm.includes(".")) {
+          const [permModule, permAction] = perm.split(".");
 
-        if (permModule.toLowerCase() === moduleName.toLowerCase()) {
-          // تحويل update لـ edit إذا كنت تفضل استخدام edit في الـ UI
-          const actionKey = permAction === "update" ? "update" : permAction;
-          permissions[actionKey] = true;
+          if (permModule.toLowerCase() === moduleName?.toLowerCase()) {
+            permissions[permAction] = true;
+          }
         }
       });
     });

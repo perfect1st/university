@@ -409,5 +409,6 @@
     "description": "Sorry, you do not have the necessary permissions to access this page. Please contact your administrator if you believe this is an error.",
     "back_home": "Back to Dashboard",
     "support": "Contact Support"
-  }
+  },
+  "perPage":"per page"
 }
