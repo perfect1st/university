@@ -103,23 +103,7 @@ export default function LectureDetailsPage() {
   const groupedTimeTablesByMainTimeTable = (() => {
     if (!timeTablesByMainTimeTable?.length) return [];
 
-    // ترتيب الأوقات (8 AM first, then PM)
-    const timeOrder = [
-      "08:00",
-      "09:00",
-      "10:00",
-      "11:00",
-      "12:00",
-      "01:00",
-      "02:00",
-      "03:00",
-      "04:00",
-      "05:00",
-      "06:00",
-      "07:00",
-    ];
-
-    // استخرج كل الـ time boundaries
+    // استخرج كل الأوقات من البيانات
     const allTimes = new Set();
     allTimes.add("08:00");
     timeTablesByMainTimeTable.forEach((item) => {
@@ -127,15 +111,17 @@ export default function LectureDetailsPage() {
       allTimes.add(item.end_time);
     });
 
-    // رتب الأوقات حسب الترتيب الصحيح (8,9,10,11,12,1,2,3...)
+    // ترتيب الأوقات: 7-8-9-10-11-12-1-2-3-4-5-6-7-8-9-10-11-12
     const sortedTimes = [...allTimes].sort((a, b) => {
-      const indexA = timeOrder.indexOf(a);
-      const indexB = timeOrder.indexOf(b);
-      // لو مش موجود في القائمة، استخدم string comparison
-      if (indexA === -1 && indexB === -1) return a.localeCompare(b);
-      if (indexA === -1) return 1;
-      if (indexB === -1) return -1;
-      return indexA - indexB;
+      const hoursA = parseInt(a.split(":")[0]);
+      const hoursB = parseInt(b.split(":")[0]);
+
+      const getOrder = (h) => {
+        if (h >= 7) return h;
+        return h + 24;
+      };
+
+      return getOrder(hoursA) - getOrder(hoursB);
     });
 
     // اصنع rows لكل ساعة
@@ -144,17 +130,19 @@ export default function LectureDetailsPage() {
       const slotStart = sortedTimes[i];
       const slotEnd = sortedTimes[i + 1];
 
+      // حوّل للـ 12-hour
+      const to12Hour = (h) => (h >= 13 ? h - 12 : h === 0 ? 12 : h);
+      const slotStart12 = to12Hour(parseInt(slotStart.split(":")[0]));
+      const slotEnd12 = to12Hour(parseInt(slotEnd.split(":")[0]));
+
       // اجمع المحاضرات اللي في هذا الوقت لكل يوم
       const items = timeTablesByMainTimeTable.filter((lecture) => {
-        // نشوف إذا الـ lecture تقع في هذا الـ slot
-        const startIndex = timeOrder.indexOf(lecture.start_time);
-        const endIndex = timeOrder.indexOf(lecture.end_time);
-        const slotIndex = timeOrder.indexOf(slotStart);
+        const lectureStart12 = to12Hour(
+          parseInt(lecture.start_time.split(":")[0]),
+        );
+        const lectureEnd12 = to12Hour(parseInt(lecture.end_time.split(":")[0]));
 
-        if (startIndex === -1 || endIndex === -1 || slotIndex === -1)
-          return false;
-
-        return startIndex <= slotIndex && endIndex > slotIndex;
+        return lectureStart12 <= slotStart12 && lectureEnd12 > slotStart12;
       });
 
       rows.push({
