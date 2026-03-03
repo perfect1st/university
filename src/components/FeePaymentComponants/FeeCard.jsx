@@ -482,13 +482,18 @@ export default function FeeCard({
 
                 if (method == "BANK_TRANSFER")
                   paymentOBJ.payment_document_file = bankTransferDocument;
-
-                const result = await PayUserRequiredFees({
-                  variables: {
-                    // payUserRequiredFeesId: data.id,
-                    input: paymentOBJ,
-                  },
-                });
+try{
+  const result = await PayUserRequiredFees({
+    variables: {
+      // payUserRequiredFeesId: data.id,
+      input: paymentOBJ,
+    },
+  });
+} catch(error){
+  console.log("error", error);
+  notify(t("error"), "error");
+  return;
+}
 
                 console.log("result", result);
 
