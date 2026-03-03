@@ -52,6 +52,31 @@ export default function DashboardFilterComponent({
     () => searchParams.get(selectKey2) || "0",
   );
 
+const handleCancel = () => {
+  // 1. Clear the URL
+  setSearchParams({});
+  
+  // 2. Reset all local input states so the text boxes actually empty out
+  setSearchValue("");
+  setSearchValue2("");
+  setStatusSearch("0");
+  setSelect2Search("0");
+  setSelect3Search("0");
+
+  // 3. CRITICAL: Tell the parent page to show ALL data again
+  onFilterChange({});
+};
+
+const handleSearch = () => {
+  let filterOBJ = {};
+  if (searchValue) filterOBJ[textSearchField] = searchValue?.trim();
+  if (statusSearch !== "0") filterOBJ[statusKey] = statusSearch;
+  if (selectKey) filterOBJ[selectKey] = select2Search;
+  if (searchValue2) filterOBJ[textSearchField2] = searchValue2?.trim();
+  if (selectKey2) filterOBJ[selectKey2] = select3Search;
+  
+  onFilterChange(filterOBJ);
+};
   return (
     <Grid
       container
@@ -227,24 +252,14 @@ export default function DashboardFilterComponent({
           {isMobile ? (
             <Box sx={{ width: "80%", mx: "auto", display: "flex", gap: 1 }}>
               <Button
-                onClick={() => {
-                  let filterOBJ = {};
-                  if (searchValue)
-                    filterOBJ[textSearchField] = searchValue?.trim();
-                  if (statusSearch !== "0") filterOBJ[statusKey] = statusSearch;
-                  if (selectKey) filterOBJ[selectKey] = select2Search;
-                  if (searchValue2)
-                    filterOBJ[textSearchField2] = searchValue2?.trim();
-                  if (selectKey2) filterOBJ[selectKey2] = select3Search;
-                  onFilterChange(filterOBJ);
-                }}
+                onClick={handleSearch}
                 variant="contained"
                 sx={{ background: theme.palette.info?.main, flex: 1 }}
               >
                 {t("Search")}
               </Button>
               <Button
-                onClick={() => setSearchParams({})}
+                onClick={handleCancel}
                 variant="outlined"
                 color="error"
                 sx={{ flex: 1 }}

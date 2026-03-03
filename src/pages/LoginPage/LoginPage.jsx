@@ -69,15 +69,20 @@ const LoginPage = () => {
        });
 
        console.log('response',response);
+      //  if(response?.data?.login?.status == true){
+
+         setTimeout(()=>{
+           setUserCookie(response?.data?.login?.token);
+           // navigate("/profile");
+           window.location.href="/profile";
+           
+         },1000);
+      //  }else{
+      //   notify(t('user_not_active'),"error");
+      //  }
         
 
 
-        setTimeout(()=>{
-          setUserCookie(response?.data?.login?.token);
-          // navigate("/profile");
-          window.location.href="/profile";
-          
-        },1000);
         // if (response?.payload?.token && response?.payload?.admin) {
         //   const { groups } = response.payload.admin;
 

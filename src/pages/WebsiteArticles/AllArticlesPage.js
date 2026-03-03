@@ -167,6 +167,8 @@ export default function AllArticlesPage() {
     }
   })
 
+  
+
 
 
   if (!view) return <NoPermissionPage />;

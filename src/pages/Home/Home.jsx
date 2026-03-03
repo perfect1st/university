@@ -35,6 +35,12 @@ const Home = () => {
     fetchPolicy: "network-only",
   });
 
+  const news = newsArticalesData?.getArticlesByDepartment.filter((el)=>el.status == "published") || [];
+  const vision = visionArticalesData?.getArticlesByDepartment.filter((el)=>el.status == "published") || [];
+  const Activities = getDepartmentByFatherIdData?.getDepartmentsByFather.filter((el)=>el.status == true) || [];
+  console.log("News Articles:", news);
+  console.log("Vision Articles:", vision);
+  console.log("Activities Articles:", getDepartmentByFatherIdData);
   
   const loading = HomeSliderLoading || newsArticalesLoading || visionArticalesLoading || getDepartmentByFatherIdLoading;
   if (loading) return <LoadingComponent />;
@@ -47,9 +53,9 @@ const Home = () => {
     display: "flex",
     flexDirection: "column"
   }}>      <HomeHero HomeSliderData={HomeSliderData?.getArticlesByDepartment} />
-       <News news={newsArticalesData?.getArticlesByDepartment}/>
-     <ActivitiesPrograms Activities={getDepartmentByFatherIdData?.getDepartmentsByFather} /> 
-      <FutureVision visionArticalesData={visionArticalesData?.getArticlesByDepartment} />
+       <News news={news}/>
+     <ActivitiesPrograms Activities={Activities} /> 
+      <FutureVision visionArticalesData={vision} />
     </Box>
   );
 };

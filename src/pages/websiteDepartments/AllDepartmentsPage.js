@@ -17,6 +17,7 @@ import notify from "../../components/notify";
 import { GET_WEBSITE_DEPARTMENTS_BY_ADMIN, UPDATE_WEBSITE_DEPARTMENT_BY_ID } from "../../graphql/departmentsQueries";
 import NoPermissionPage from "../../components/NoPermissionPage";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import { useState } from "react";
 
 export default function AllDepartmentsPage() {
     const theme = useTheme();
@@ -149,9 +150,30 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("webs
         notify(t("error"), "error");
       }
     }
-  
-    // الاقسام الرئيسية
-    let mainDepartments=websiteDepartments?.filter(el=>el?.father_id==null);  
+
+
+    const [filters, setFilters] = useState({});
+
+
+const onFilterChange = (filterOBJ) => {
+  setFilters(filterOBJ);
+};
+
+let filteredData = websiteDepartments?.filter(el => el?.father_id == null) || [];
+
+if (filters.title) {
+  const s = filters.title.toLowerCase();
+  filteredData = filteredData.filter(el => 
+    el.title_ar?.toLowerCase().includes(s) || 
+    el.title_en?.toLowerCase().includes(s)
+  );
+}
+
+if (filters.status && filters.status !== "0") {
+  // Make sure this logic matches your "active"/"inActive" strings
+  const isActive = filters.status === "active";
+  filteredData = filteredData.filter(el => el.status === isActive);
+}
 
   
     if (!view) return <NoPermissionPage />;
@@ -192,12 +214,20 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("webs
             onPrinter={() => fetchAndExport("print")}
           />
 
-           <DashboardFilterComponent t={t} />
+<DashboardFilterComponent 
+        t={t} 
+        onFilterChange={onFilterChange}
+        textSearchField="title" 
+        placeholder={t("Search by Name")}
+        statusKey="status"
+        select1Label="Status"
+        TrueOrFalseArr={["active", "inActive"]} // These keys should match your translation files
+      />
 
          <TableComponent
             columns={columns}
             hasNavigateBtn={true}
-            data={mainDepartments}
+            data={filteredData}
             // onViewDetails={(r) => navigate(`/userDetails/${r.id}`)}
             loading={loading}
             // isUsers={true}

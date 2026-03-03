@@ -49,11 +49,11 @@ import useBaseImageUrl from "../hooks/useBaseImageUrl";
 import { clearAllCookies, getUserCookie } from "../hooks/authCookies";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
-import {
-  getAllNotifications,
-  MarkAllasRead,
-  MarkRead,
-} from "../redux/slices/setting/thunk";
+// import {
+//   // getAllNotifications,
+//   MarkAllasRead,
+//   MarkRead,
+// } from "../redux/slices/setting/thunk";
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery } from "@apollo/client/react";
 import { GET_LOGGED_USER_BY_TOKEN } from "../graphql/usersQueries";
@@ -87,7 +87,8 @@ const Header = ({ onAction }) => {
   const [settingMenuOpen, setSettingMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [settingMenuAnchor, setSettingMenuAnchor] = useState(null);
-  const { Notifications, loading } = useSelector((state) => state.setting);
+  const loading = false;
+  const Notifications = [];
   
 
   const handleSettingMenuOpen = (event) => {
@@ -344,7 +345,7 @@ const menuItems = useAccessibleRoutes();
             const target = e.currentTarget; // ✅ خد نسخة قبل await
             console.log("notificationAnchor", target, e);
 
-            await dispatch(getAllNotifications());
+            // await dispatch(getAllNotifications());
             setNotificationAnchor(target);
           }}
         >
@@ -444,7 +445,7 @@ const menuItems = useAccessibleRoutes();
 
                 const handleClick = () => {
                   setNotificationAnchor(null);
-                  if (!isRead) dispatch(MarkRead({ id: notif?._id }));
+                  // if (!isRead) dispatch(MarkRead({ id: notif?._id }));
 
                   switch (notif?.type) {
                     case "new_driver":
@@ -563,7 +564,7 @@ const menuItems = useAccessibleRoutes();
               onClick={async () => {
                 setIsLoading(true);
                 try {
-                  await dispatch(MarkAllasRead()).unwrap();
+                  // await dispatch(MarkAllasRead()).unwrap();
                   setNotificationAnchor(null);
                 } catch (error) {
                   console.error("Error marking all as read:", error);
@@ -943,7 +944,7 @@ const menuItems = useAccessibleRoutes();
             <Button
               onClick={async (e) => {
                 setNotificationAnchor(e.currentTarget);
-                await dispatch(getAllNotifications());
+                // await dispatch(getAllNotifications());
               }}
               sx={{ color: theme.palette.primary.main }}
             >

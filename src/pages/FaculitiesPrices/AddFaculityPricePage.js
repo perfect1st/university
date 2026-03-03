@@ -132,8 +132,8 @@ export default function AddFaculityPricePage() {
         },
     });
 
-    let translateText = isArabic ? "سعر الكلية" : "Faculity Price";
-    let translateText2 = isArabic ? "سعر الكلية" : "Faculity Price";
+    let translateText = isArabic ? "رسوم الكلية" : "Faculity Price";
+    let translateText2 = isArabic ? "رسوم الكلية" : "Faculity Price";
 
     if (faculitiesLoading) return <LoadingPage />;
     return (

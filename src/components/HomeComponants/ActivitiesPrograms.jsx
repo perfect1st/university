@@ -103,8 +103,8 @@ export default function ActivitiesPrograms({ Activities = [] }) {
     fetchPolicy: "network-only",
   });
 
-  const articles = newsData?.getArticlesByDepartment ?? [];
-
+  const articles = newsData?.getArticlesByDepartment?.filter((el)=>el.status == "published") ?? [];
+console.log("Articles for selected activity:", articles);
   const handleChange = (event, newValue) => {
     setTab(newValue);
   };

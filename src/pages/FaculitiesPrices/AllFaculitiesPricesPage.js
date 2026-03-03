@@ -228,8 +228,8 @@ export default function AllFaculitiesPricesPage() {
   const hasAddPermission = true;
   if (!hasViewPermission) return <Navigate to="/profile" />;
 
-  let translateText = isArabic ? "سعر كلية" : "Faculity Price";
-  let searchText = isArabic ? "سعر الكلية" : "Faculity Price";
+  let translateText = isArabic ? "رسوم كلية" : "Faculity Price";
+  let searchText = isArabic ? "رسوم الكلية" : "Faculity Price";
   let searchFaculityText = isArabic ? "اسم الكلية" : "Faculity Name";
   let searchFaculityDepartmentText = isArabic ? "قسم الكلية" : "Faculity Dep.";
 

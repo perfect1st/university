@@ -111,13 +111,15 @@ export default function ProfilePage() {
                 value={me?.fullname}
               />
             </Grid>
-            <Grid item xs={12}>
+          {me.role !== "admin" &&
+          <>
+          <Grid item xs={12}>
               <LabelValueRow
                 label={t("profile.Gender")}
                 value={isArabic ? gender?.ar : gender?.en}
               />
             </Grid>
-            <Grid item xs={12}>
+               <Grid item xs={12}>
               <LabelValueRow
                 label={t("profile.Nationality")}
                 value={
@@ -139,6 +141,9 @@ export default function ProfilePage() {
                 value={getRegisterFormByUserId?.home_tel}
               />
             </Grid>
+          </>
+            }
+         
             <Grid item xs={12}>
               <LabelValueRow label={t("profile.Email")} value={me?.email} />
             </Grid>
@@ -148,16 +153,19 @@ export default function ProfilePage() {
                 value={me?.mobile}
               />
             </Grid>
+
+         {me?.role !== "admin" &&
             <Grid item xs={12}>
               <LabelValueRow
                 label={t("profile.IDNo")}
                 value={getRegisterFormByUserId?.national_id}
               />
-            </Grid>
+            </Grid>}
           </Grid>
 
           {/* </Paper> */}
-
+{me?.role == "student" &&
+<>
           {/* ACADEMIC INFORMATION */}
           <Typography
             variant="h6"
@@ -254,14 +262,15 @@ export default function ProfilePage() {
               />
             </Grid>
           </Grid>
+</>}
 
           {/* </Paper> */}
         </Grid>
 
         {/* Right Side - Registration Steps */}
-        <Grid item xs={12} md={3}>
+        {me?.role == "student" && <Grid item xs={12} md={3}>
           <RegistrationSteps paid={false} semester="first" />
-        </Grid>
+        </Grid>}
       </Grid>
     </Box>
   );

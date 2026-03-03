@@ -20,10 +20,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 
 import { getUserCookie } from "./hooks/authCookies";
 
-import {
-  getAllNotifications,
-  getAllSetting,
-} from "./redux/slices/setting/thunk";
+
 import { useDispatch } from "react-redux";
 import ProtectedRoute from "./Auth/ProtectedRoute";
 import SecondHeader from "./components/SecondHeader/SecondHeader";

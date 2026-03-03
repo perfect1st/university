@@ -93,6 +93,8 @@ export default function ScheduleTable({ rows, canDelete = false }) {
                                     // position: "sticky",
                                     background: "#f8f9fc",
                                     zIndex: 2,
+                                    align: "center",
+                                    textAlign: "center",
                                     // right: 0
                                 }}
                             >
