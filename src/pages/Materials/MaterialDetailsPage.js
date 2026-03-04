@@ -276,7 +276,7 @@ export default function MaterialDetailsPage() {
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper", maxWidth: "100%" }}>
             <Header
-                title={me?.role=="admin" ? t("studentDashboard.subjects") : t("Dashboard.library")}
+                title={t("studentDashboard.subjects")}
                 subtitle={t("detailsItem", { item: translateText })}
                 i18n={i18n}
                 haveBtn={false}

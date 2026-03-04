@@ -107,6 +107,9 @@ import AddSupportTicketPage from "./pages/SupportTickets/AddSupportTicketPage";
 import EditSupportTicketPage from "./pages/SupportTickets/EditSupportTicketPage";
 import PermissionsGroupsPage from "./pages/PermissionsGroupsPage/PermissionsGroupsPage";
 import GroupFormPage from "./pages/PermissionsGroupsPage/GroupFormPage";
+import ELibraryPage from "./pages/E-Library/ELibraryPage";
+import AddBookPage from "./pages/E-Library/AddBookPage";
+import BookDetailsPage from "./pages/E-Library/BookDetailsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -787,6 +790,27 @@ function App() {
                     <Route path="details/:id" element={
                       <MainLayout isLoggedIn={true}>
                         <MaterialDetailsPage />
+                      </MainLayout>
+                    } />
+
+                  </Route>
+                  {/* المواد  (ELibraryPage)*/}
+                  <Route path="/ELibrary">
+                    <Route index element={
+                      <MainLayout isLoggedIn={true}>
+                        <ELibraryPage />
+                      </MainLayout>
+                    } />
+
+                    <Route path="add" element={
+                      <MainLayout isLoggedIn={true}>
+                        <AddBookPage />
+                      </MainLayout>
+                    } />
+
+                    <Route path="details/:id" element={
+                      <MainLayout isLoggedIn={true}>
+                        <BookDetailsPage />
                       </MainLayout>
                     } />
 

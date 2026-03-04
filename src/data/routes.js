@@ -3,7 +3,7 @@ import { ReactComponent as DashboardIcon } from "../assets/HomeIcon.svg";
 import { ReactComponent as ProfileIcon } from "../assets/Profile.svg";
 import { ReactComponent as FeePaymentIcon } from "../assets/feePayment.svg";
 
-const storedStudentForm = JSON.parse(localStorage.getItem('studentForm'));
+const storedStudentForm = JSON.parse(localStorage.getItem('registerForm'));
 
 const routesData = {
   student: [
@@ -38,9 +38,14 @@ const routesData = {
       icon: FeePaymentIcon,
     },
     {
-      key: "userStudyMaterials", // Matches userStudyMaterials.view
-      label: { en: "Electronic Library", ar: "المكتبة الالكترونية" },
+      key: "materials", // Matches userStudyMaterials.view
+      label: { en: "materials", ar: "المواد الدراسية" },
       path: `/materials?faculty_department_id=${storedStudentForm?.faculty_department_id?.id}`,
+    },
+    {
+      key: "userStudyMaterials", // Matches userStudyMaterials.view
+      label: { en: "E-Library", ar: "المكتبة الالكترونية" },
+      path: `/ELibrary?faculty_department_id=${storedStudentForm?.faculty_department_id?.id}`,
     },
     {
       key: "supportTickets", // Matches supportTickets.view
@@ -101,6 +106,11 @@ const routesData = {
       key: "materials", // Matches materials.view
       label: { en: "Subjects", ar: "المواد الدراسية" },
       path: "/materials",
+    },
+    {
+      key: "materials", // Matches materials.view
+      label: { en: "ELibrary", ar: "المكتبة الالكترونية" },
+      path: "/ELibrary",
     },
     {
       key: "academyTerms",

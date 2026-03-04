@@ -181,7 +181,8 @@
     "minAcademyHours": "اقل عدد ساعات",
     "maxAcademyHours": "اقصي عدد ساعات",
     "hoursError": " يجب ان يكون عدد الساعات اكبر من الحد الادني واقل من الحد الاقصي للترم",
-    "section": "السكشن"
+    "section": "السكشن",
+    "eLibrary":"المكتبة الالكترونية"
   },
   "registrationSteps": {
     "title": "خطوات التسجيل",
@@ -264,7 +265,8 @@
     "name_en": "اسم {{item}} بالانجليزية",
     "flag": "علم الدولة",
     "save": "حفظ",
-    "close": "اغلاق"
+    "close": "اغلاق",
+    "author_name":"اسم المؤلف"
   },
   "Users": "المستخدمون",
   "Users Details": "تفاصيل المستخدمين",
@@ -448,5 +450,11 @@
     "back_home": "العودة للوحة التحكم",
     "support": "تواصل مع الدعم"
   },
-  "perPage":"لكل صفحة"
+  "perPage":"لكل صفحة",
+  "Download Book":"تحميل الكتاب",
+  "Update File":"تحديث الملف",
+  "Attachments":"المرفقات",
+  "fileUploaded":"تم تحميل الملف بنجاح",
+  "noFile":"لا يوجد ملف محدد",
+  "Manage Educational Content":"إدارة المحتوى التعليمي"
 }

@@ -279,8 +279,8 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("mate
           }}
         >
           <Header
-            title={ me?.role=="admin" ? t("studentDashboard.subjects") : t("Dashboard.library") }
-            subtitle={me?.role=="admin" ? t("studentDashboard.subjects") : t("Dashboard.library")}
+            title={ t("studentDashboard.subjects") }
+            subtitle={ t("studentDashboard.subjects")}
             i18n={i18n}
             haveBtn={ me?.role=="admin" ? true : false}
             btn={t("addItem", { item: translateText })}

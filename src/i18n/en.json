@@ -144,7 +144,8 @@
     "minAcademyHours": "Minimum Hours",
     "maxAcademyHours": "Maximum Hours",
     "hoursError": "The number of hours must be greater than the minimum limit and less than the maximum limit For Term",
-    "section": "Section"
+    "section": "Section",
+    "eLibrary":"E-Library"
   },
   "registrationSteps": {
     "title": "Registration Steps",
@@ -227,7 +228,8 @@
     "name_en": "{{item}} Name in English",
     "flag": "Flag",
     "save": "Save",
-    "close": "Close"
+    "close": "Close",
+    "author_name":"Author Name" 
   },
   "Users": "Users",
   "Users Details": "Users Details",
@@ -410,5 +412,11 @@
     "back_home": "Back to Dashboard",
     "support": "Contact Support"
   },
-  "perPage":"per page"
+  "perPage":"per page",
+  "Download Book":"Download Book",
+  "Update File":"Update File",
+  "Attachments":"Attachments",
+  "fileUploaded":"File Uploaded Successfully",
+  "noFile":"No File Selected",
+  "Manage Educational Content":"Manage Educational Content"
 }

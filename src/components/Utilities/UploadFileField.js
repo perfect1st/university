@@ -22,7 +22,7 @@ export default function UploadFileField({
   const theme = useTheme();
 
   return (
-    <Grid item xs={12} sx={{ my: 5 }}>
+    <Grid item xs={12} sx={{ my: 5 , width:"100%"}}>
       <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 , display:"flex", gap:5 , alignItems:"center" }}>
         {title}
         {
