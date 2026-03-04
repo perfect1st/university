@@ -64,14 +64,14 @@ export default function BookDetailsPage() {
       title_ar: location?.state?.title_ar || "",
       title_en: location?.state?.title_en || "",
       author_name: location?.state?.author_name || "",
-      status: typeof location?.state?.status === 'boolean' ? String(location?.state?.status) : "true",
+      status: location?.state?.status !== undefined ? Boolean(location.state.status && location.state.status !== "false") : true,
       file: location?.state?.file || ""
     },
     validationSchema: Yup.object({
       title_ar: Yup.string().required(t("admissions.errors.required")),
       title_en: Yup.string().required(t("admissions.errors.required")),
       author_name: Yup.string().required(t("admissions.errors.required")),
-      status: Yup.string().required(t("admissions.errors.required")),
+      status: Yup.boolean().required(t("admissions.errors.required")),
     }),
     onSubmit: async (values) => {
       const payload = {
@@ -174,8 +174,8 @@ export default function BookDetailsPage() {
                 isDisabled={!isAdmin}
                 onChange={(e) => formik.setFieldValue("status", e.target.value)}
               >
-                <MenuItem value="true">{isArabic ? "نشط" : "Active"}</MenuItem>
-                <MenuItem value="false">{isArabic ? "غير نشط" : "Inactive"}</MenuItem>
+                <MenuItem value={true}>{isArabic ? "نشط" : "Active"}</MenuItem>
+                <MenuItem value={false}>{isArabic ? "غير نشط" : "Inactive"}</MenuItem>
               </HorizentalTextFieldSelect>
             </Stack>
           </Grid>

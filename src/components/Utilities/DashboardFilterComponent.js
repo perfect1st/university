@@ -29,6 +29,7 @@ export default function DashboardFilterComponent({
   selectKey2,
   selectOptions2,
   select2Label2,
+  isAdmin=false
 }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -144,7 +145,7 @@ const handleSearch = () => {
             flexWrap: isMobile ? "wrap" : "nowrap",
           }}
         >
-          {statusKey &&
+          {statusKey && isAdmin &&
             (isMobile ? (
               <Box sx={{ width: "80%", mx: "auto" }}>
                 <CustomSelect
@@ -177,7 +178,7 @@ const handleSearch = () => {
               </CustomSelect>
             ))}
 
-          {selectOptions &&
+          {selectOptions && isAdmin &&
             (isMobile ? (
               <Box sx={{ width: "80%", mx: "auto" }}>
                 <CustomSelect
@@ -210,7 +211,7 @@ const handleSearch = () => {
               </CustomSelect>
             ))}
 
-          {selectOptions2 &&
+          {selectOptions2 && isAdmin &&
             (isMobile ? (
               <Box sx={{ width: "80%", mx: "auto" }}>
                 <CustomSelect

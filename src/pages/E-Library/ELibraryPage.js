@@ -24,6 +24,8 @@ import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import NoPermissionPage from "../../components/NoPermissionPage";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 import { TrueOrFalseArr } from "../../constants";
+import BookCard from "./components/BookCard";
+import { baseURL } from "../../Api/apolloClient";
 
 // GraphQL
 import { GET_ALL_DEPARTMENTS, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
@@ -150,12 +152,12 @@ export default function ELibraryPage() {
       <Paper elevation={0} sx={{ p: 3, borderRadius: 2, border: "1px solid #e0e0e0" }}>
         <Header
           title={t("studentDashboard.eLibrary")}
-          subtitle={isAdmin ? t("Manage Educational Content") : t("Browse Study Materials")}
+          subtitle={isAdmin ? t("Manage Educational Content") : t("Browse Study E-Library")}
           haveBtn={isAdmin}
           btn={t("addItem", { item: isArabic ? "كتاب" : "Book" })}
           btnIcon={<LibraryBooksIcon />}
           onSubmit={() => navigate("add")}
-          isExcel isPdf isPrinter
+          isExcel={isAdmin} isPdf={isAdmin} isPrinter={isAdmin}
           onExcel={() => handleExport("excel")}
           onPdf={() => handleExport("pdf")}
           onPrinter={() => handleExport("print")}
@@ -179,6 +181,7 @@ export default function ELibraryPage() {
             select2Label2={t("admissions.facultyDepartment")}
             arKey="title_ar"
             enKey="title_en"
+            isAdmin={isAdmin}
             onFilterChange={(obj) => {
               if (obj.search !== undefined) searchParams.set("search", obj.search);
               if (obj.status && obj.status !== "0") searchParams.set("status", obj.status);
@@ -190,25 +193,49 @@ export default function ELibraryPage() {
           />
         </Box>
 
-        {/* Table Section */}
-        <Box sx={{ width: "100%", overflowX: "auto" }}>
-          <TableComponent
-            columns={columns}
-            data={processedData}
-            loading={librariesLoading}
-            statusKey="status"
-            arPopulateKey="title_ar"
-            enPopulateKey="title_en"
-            nestedArPopulateKey="title_ar"
-            nestedEnPopulateKey="title_en"
-            nestedPopulateKey="title_en"
-            handleDetailsClick={(row) => {
-              if (!update && isAdmin) return notify(t("no_permission.title"), "error");
-              navigate(`details/${row.id}`, { state: row });
-            }}
-            onStatusChange={handleStatusChange}
-            showStatusChange={isAdmin}
-          />
+        {/* Content Section */}
+        <Box sx={{ width: "100%" }}>
+          {isAdmin ? (
+            <Box sx={{ width: "100%", overflowX: "auto" }}>
+              <TableComponent
+                columns={columns}
+                data={processedData}
+                loading={librariesLoading}
+                statusKey="status"
+                arPopulateKey="title_ar"
+                enPopulateKey="title_en"
+                nestedArPopulateKey="title_ar"
+                nestedEnPopulateKey="title_en"
+                nestedPopulateKey="title_en"
+                handleDetailsClick={(row) => {
+                  if (!update) return notify(t("no_permission.title"), "error");
+                  navigate(`details/${row.id}`, { state: row });
+                }}
+                onStatusChange={handleStatusChange}
+                showStatusChange={true}
+              />
+            </Box>
+          ) : (
+            <Grid container spacing={3} sx={{ mt: 1 }}>
+              {librariesLoading ? (
+                <Grid item xs={12}>
+                  <LoadingPage />
+                </Grid>
+              ) : processedData.length === 0 ? (
+                <Grid item xs={12}>
+                  <Box sx={{ p: 4, textAlign: 'center' }}>
+                    <Typography color="text.secondary">{t("noData") || (isArabic ? "لا توجد بيانات" : "No data available")}</Typography>
+                  </Box>
+                </Grid>
+              ) : (
+                processedData.map((book) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={book.id}>
+                    <BookCard book={book} baseURL={baseURL} t={t} />
+                  </Grid>
+                ))
+              )}
+            </Grid>
+          )}
         </Box>
 
         {/* Pagination */}
