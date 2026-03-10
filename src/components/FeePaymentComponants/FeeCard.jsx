@@ -495,7 +495,6 @@ try{
   return;
 }
 
-                console.log("result", result);
 
                 await GetUsersRequiredFeesByStudent({
                   variables: { student_id: data?.student_id?.id },

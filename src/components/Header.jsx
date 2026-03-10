@@ -59,6 +59,8 @@ import { useQuery } from "@apollo/client/react";
 import { GET_LOGGED_USER_BY_TOKEN } from "../graphql/usersQueries";
 import { storeLoggedUser } from "../redux/slices/user/userSlice";
 import useAccessibleRoutes from "../hooks/getAccessibleRoutes";
+import { MY_NOTIFICATIONS } from "../graphql/userQueriesForAdmin";
+import NotificationButton from "./Notificationpanel";
 
 const typeColors = {
   new_driver: "#81C784",
@@ -88,8 +90,20 @@ const Header = ({ onAction }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [settingMenuAnchor, setSettingMenuAnchor] = useState(null);
   const loading = false;
+  const {
+    data: myNotificationsData,
+    loading: myNotificationsLoading,
+    error: myNotificationsError,
+    refetch
+  } = useQuery(MY_NOTIFICATIONS, {
+
+    fetchPolicy: "network-only",
+    pollInterval: 60000,
+
+  });
+  console.log("myNotificationsData", myNotificationsData);
   const Notifications = [];
-  
+
 
   const handleSettingMenuOpen = (event) => {
     setSettingMenuAnchor(event.currentTarget);
@@ -167,14 +181,14 @@ const Header = ({ onAction }) => {
   };
   // Mobile drawer content
   // Mobile drawer content
-const menuItems = useAccessibleRoutes();
+  const menuItems = useAccessibleRoutes();
   const [openKeys, setOpenKeys] = useState({});
 
   useEffect(() => {
-    if(me?.id){
-      dispatch(storeLoggedUser(me)); 
+    if (me?.id) {
+      dispatch(storeLoggedUser(me));
     }
-  },[me]);
+  }, [me]);
   useEffect(() => {
     const newOpenKeys = {};
     menuItems.forEach((item) => {
@@ -340,247 +354,8 @@ const menuItems = useAccessibleRoutes();
 
       <List>
         {/* Notifications */}
-        <ListItemButton
-          onClick={async (e) => {
-            const target = e.currentTarget; // ✅ خد نسخة قبل await
-            console.log("notificationAnchor", target, e);
+       <NotificationButton />
 
-            // await dispatch(getAllNotifications());
-            setNotificationAnchor(target);
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              width: "100%",
-              flex: 0,
-            }}
-          >
-            {/* <Badge badgeContent={Notifications?.filter((n) => !n.is_read).length} color="primary" sx={{ mr: 2 }}>
-        <NotificationIcon
-          style={{
-            width: 24,
-            height: 24,
-            filter: theme.palette.mode === "dark" ? "invert(1)" : "none",
-          }}
-        />
-      </Badge> */}
-            <ListItemText
-              primary={
-                <Typography fontWeight="bold">{t("notification")}</Typography>
-              }
-            />
-            {notificationAnchor ? <ExpandLess /> : <ExpandMore />}
-          </Box>
-        </ListItemButton>
-
-        <Menu
-          anchorEl={notificationAnchor}
-          open={Boolean(notificationAnchor)}
-          onClose={() => setNotificationAnchor(null)}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
-          PaperProps={{
-            sx: {
-              width: 400,
-              maxHeight: 450,
-              p: 1,
-              borderRadius: 3,
-              boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-              display: "flex",
-              flexDirection: "column", // مهم جداً عشان نثبت الزرار تحت
-            },
-          }}
-        >
-          <Typography sx={{ px: 3, py: 1, fontWeight: "bold", fontSize: 16 }}>
-            {t("notifications")}
-          </Typography>
-          <Divider sx={{ mb: 1 }} />
-
-          {/* Notifications list with scroll */}
-          <Box sx={{ flex: 1, overflowY: "auto", pr: 1 }}>
-            {loading ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: 350,
-                }}
-              >
-                <CircularProgress />
-              </Box>
-            ) : (Notifications || []).length === 0 ? (
-              <Box sx={{ py: 4, textAlign: "center" }}>
-                <Typography variant="body2" color="text.secondary">
-                  {t("noNotifications")}
-                </Typography>
-              </Box>
-            ) : (
-              (Notifications || []).map((notif) => {
-                const isRead = !!notif.is_read;
-
-                const timeAgo = (iso) => {
-                  if (!iso) return "";
-                  const then = new Date(iso).getTime();
-                  const now = Date.now();
-                  const diffSec = Math.floor((now - then) / 1000);
-
-                  if (diffSec < 60) return `${diffSec}s`;
-                  const diffMin = Math.floor(diffSec / 60);
-                  if (diffMin < 60) return `${diffMin}m`;
-                  const diffH = Math.floor(diffMin / 60);
-                  if (diffH < 24) return `${diffH}h`;
-                  const diffDays = Math.floor(diffH / 24);
-                  if (diffDays === 1) return "yesterday";
-                  if (diffDays < 7) return `${diffDays}d`;
-
-                  return new Intl.DateTimeFormat(undefined, {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  }).format(new Date(iso));
-                };
-
-                const handleClick = () => {
-                  setNotificationAnchor(null);
-                  // if (!isRead) dispatch(MarkRead({ id: notif?._id }));
-
-                  switch (notif?.type) {
-                    case "new_driver":
-                    case "driver_profile_update":
-                      navigate(`/DriverDetails/${notif?.related_id}`);
-                      break;
-                    case "contact_us":
-                      navigate("/ContactUs", {
-                        state: {
-                          openModal: true,
-                          related_id: notif?.related_id,
-                        },
-                      });
-                      break;
-                    case "withdraw_request":
-                      navigate(`/walletDetails/${notif?.related_id}`);
-                      break;
-                    default:
-                      break;
-                  }
-                };
-
-                return (
-                  <MenuItem
-                    key={notif?._id || notif?.id}
-                    onClick={handleClick}
-                    sx={{
-                      px: 2,
-                      py: 1,
-                      mb: 1,
-                      borderRadius: 2,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 2,
-                      bgcolor: isRead ? "background.paper" : "action.hover",
-                      "&:hover": {
-                        background: `linear-gradient(90deg, ${theme.palette.primary.light}20, ${theme.palette.primary.light}10)`,
-                        boxShadow: "0px 2px 10px rgba(0,0,0,0.05)",
-                      },
-                    }}
-                  >
-                    {/* Avatar */}
-                    <Avatar
-                      sx={{
-                        bgcolor:
-                          typeColors[notif.type] || theme.palette.primary.main,
-                        width: 40,
-                        height: 40,
-                        fontSize: 16,
-                      }}
-                    >
-                      {(notif.type || "·").charAt(0).toUpperCase()}
-                    </Avatar>
-
-                    {/* Text */}
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Typography
-                        sx={{
-                          fontWeight: isRead ? "normal" : "bold",
-                          fontSize: 14,
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {isArabic ? notif.title?.ar : notif.title?.en}
-                      </Typography>
-
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontSize: 13,
-                          color: "text.secondary",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {isArabic ? notif.message?.ar : notif.message?.en}
-                      </Typography>
-
-                      <Typography
-                        sx={{ fontSize: 11, color: "text.disabled", mt: 0.5 }}
-                      >
-                        {timeAgo(notif.createdAt)}
-                      </Typography>
-                    </Box>
-
-                    {/* Unread Dot */}
-                    {!isRead && (
-                      <Box
-                        sx={{
-                          width: 10,
-                          height: 10,
-                          borderRadius: "50%",
-                          bgcolor: "error.main",
-                        }}
-                      />
-                    )}
-                  </MenuItem>
-                );
-              })
-            )}
-          </Box>
-
-          {/* Fixed button at bottom */}
-          <Divider sx={{ my: 1 }} />
-          <Box sx={{ p: 1 }}>
-            <MenuItem
-              sx={{
-                justifyContent: "center",
-                color: theme.palette.primary.main,
-                fontWeight: "bold",
-              }}
-              onClick={async () => {
-                setIsLoading(true);
-                try {
-                  // await dispatch(MarkAllasRead()).unwrap();
-                  setNotificationAnchor(null);
-                } catch (error) {
-                  console.error("Error marking all as read:", error);
-                } finally {
-                  setIsLoading(false);
-                }
-              }}
-            >
-              {isLoading ? (
-                <CircularProgress size={20} />
-              ) : (
-                t("mark_all_as_read")
-              )}
-            </MenuItem>
-          </Box>
-        </Menu>
 
         {/* Language Selector */}
         <ListItemButton onClick={(e) => setLangMenuAnchor(e.currentTarget)}>
@@ -890,7 +665,7 @@ const menuItems = useAccessibleRoutes();
               </IconButton>
             </Hidden>
 
-            
+
 
             {/* Logo */}
             <Box
@@ -940,29 +715,8 @@ const menuItems = useAccessibleRoutes();
         <Hidden mdDown>
           {/* Notifications with Menu */}
           {/* Notifications */}
-          <Box sx={{ position: "relative", mr: { xs: 1, md: 3 } }}>
-            <Button
-              onClick={async (e) => {
-                setNotificationAnchor(e.currentTarget);
-                // await dispatch(getAllNotifications());
-              }}
-              sx={{ color: theme.palette.primary.main }}
-            >
-              <Badge
-                badgeContent={Notifications?.filter((n) => !n.is_read)?.length}
-                color="primary"
-              >
-                <NotificationIcon
-                  style={{
-                    width: 28,
-                    height: 28,
-                  }}
-                />
-              </Badge>
-              <Typography sx={{ mx: 1 }}>{t("notification")}</Typography>
-
-              {notificationAnchor ? <ArrowDropUp /> : <ArrowDropDown />}
-            </Button>
+          <Box sx={{ mr: { xs: 1, md: 3 } }}>
+            <NotificationButton />
           </Box>
           <Divider
             orientation="vertical"

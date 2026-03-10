@@ -95,3 +95,42 @@ export const FILTERED_USERS = gql`
     }
   }
 `;
+export const MY_NOTIFICATIONS = gql`
+query GetMyNotifications {
+    getMyNotifications {
+        id
+        title_ar
+        title_en
+        body_ar
+        body_en
+        is_read
+        createdAt
+        updatedAt
+    }
+}
+`;
+export const MY_UNREAD_NOTIFICATIONS = gql`
+query GetMyUnreadNotificationsCount {
+    getMyUnreadNotificationsCount
+}
+`;
+
+export const MARK_NOTIFICATION_AS_READ = gql`
+ mutation MarkNotificationAsRead($id: ID!) {
+    markNotificationAsRead(id: $id) {
+        id
+        title_ar
+        title_en
+        body_ar
+        body_en
+        is_read
+        createdAt
+        updatedAt
+    }
+}
+`;
+export const MARK_ALL_NOTIFICATIONS_AS_READ = gql`
+ mutation MarkAllNotificationsAsRead {
+    markAllNotificationsAsRead
+}
+`;
