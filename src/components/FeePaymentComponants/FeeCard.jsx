@@ -348,7 +348,7 @@ export default function FeeCard({
                   <TableCell
                     sx={{ textAlign: `${isArabic ? "end" : "start"}` }}
                   >
-                    {it.is_inside_yemen
+                    {is_inside_yemen
                       ? it.inside_yemen_value
                       : it.outside_yemen_value}
                   </TableCell>

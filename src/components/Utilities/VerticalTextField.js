@@ -141,17 +141,19 @@ export const SearchByTypingSelect = ({
       
       {/* TABLE LAYOUT — ضامن إن الـ autocomplete مينزلش تحت الـ label */}
       <Box sx={{
-        display: "table",
+        display: "flex",
         tableLayout: "fixed",
         width: "100%",
         borderCollapse: "separate",
         borderSpacing: "8px 0",
+        flexDirection: "column",
+        gap: 1,
       }}>
 
         {/* Label Cell */}
         {title && (
           <Box sx={{
-            display: "table-cell",
+            // display: "table-cell",
             width: "130px",
             minWidth: "130px",
             maxWidth: "130px",
@@ -167,9 +169,9 @@ export const SearchByTypingSelect = ({
 
         {/* Autocomplete Cell */}
         <Box sx={{
-          display: "table-cell",
+          // display: "table-cell",
           width: "100%",
-          maxWidth: 0,          // ← مع tableLayout:fixed بيجبر الـ cell تتقلص
+          // maxWidth: 0,          // ← مع tableLayout:fixed بيجبر الـ cell تتقلص
           verticalAlign: "middle",
           overflow: "hidden",
         }}>
