@@ -161,7 +161,8 @@
     "Pay": "دفع",
     "paymentMethods": "طرق الدفع",
     "paymentSuccess": "تم دفع الطلب بنجاح",
-    "departmentTerm": "الفصول الدراسية"
+    "departmentTerm": "الفصول الدراسية",
+    "uploadComplete": "تم رفع الملف بنجاح"
   },
   "studentDashboard": {
     "majorInformation": "المعلومات الأساسية",
@@ -182,7 +183,7 @@
     "maxAcademyHours": "اقصي عدد ساعات",
     "hoursError": " يجب ان يكون عدد الساعات اكبر من الحد الادني واقل من الحد الاقصي للترم",
     "section": "السكشن",
-    "eLibrary":"المكتبة الالكترونية"
+    "eLibrary": "المكتبة الالكترونية"
   },
   "registrationSteps": {
     "title": "خطوات التسجيل",
@@ -266,7 +267,7 @@
     "flag": "علم الدولة",
     "save": "حفظ",
     "close": "اغلاق",
-    "author_name":"اسم المؤلف"
+    "author_name": "اسم المؤلف"
   },
   "Users": "المستخدمون",
   "Users Details": "تفاصيل المستخدمين",
@@ -372,10 +373,10 @@
     "lectureAttendance": "حضور المحاضرات",
     "examAttendance": "حضور الامتحان",
     "studentTotalDegree": "درجات الطالب",
-    "support":"الدعم الفني",
-    "message":"الرسالة",
-    "adminReply":"رد الادمن",
-    "library":"المكتبة الالكترونية"
+    "support": "الدعم الفني",
+    "message": "الرسالة",
+    "adminReply": "رد الادمن",
+    "library": "المكتبة الالكترونية"
   },
   "lectures": {
     "pending": "لم تبدأ بعد",
@@ -415,7 +416,7 @@
   "no": "لا",
   "admin": "ادمن",
   "doctor": "معلم",
-  "title":"العنوان",
+  "title": "العنوان",
   "Permissions Groups": "مجموعات الصلاحيات",
   "Manage system access groups": "إدارة مجموعات الوصول للنظام",
   "Group": "مجموعة",
@@ -429,7 +430,7 @@
   "Edit Group": "تعديل مجموعة الصلاحيات",
   "Add Group": "إضافة مجموعة جديدة",
   "Save": "حفظ",
-  "Saving...": "جاري الحفظ..." ,
+  "Saving...": "جاري الحفظ...",
   "Select Permissions": "تحديد صلاحيات الأقسام",
   "Save Changes": "تحديث المجموعة",
   "Create Group": "إنشاء المجموعة",
@@ -450,14 +451,14 @@
     "back_home": "العودة للوحة التحكم",
     "support": "تواصل مع الدعم"
   },
-  "perPage":"لكل صفحة",
-  "Download Book":"تحميل الكتاب",
-  "Update File":"تحديث الملف",
-  "Attachments":"المرفقات",
-  "fileUploaded":"تم تحميل الملف بنجاح",
-  "noFile":"لا يوجد ملف محدد",
-  "Manage Educational Content":"إدارة المحتوى التعليمي",
-  "Browse Study E-Library":"تصفح المكتبة الالكترونية",
+  "perPage": "لكل صفحة",
+  "Download Book": "تحميل الكتاب",
+  "Update File": "تحديث الملف",
+  "Attachments": "المرفقات",
+  "fileUploaded": "تم تحميل الملف بنجاح",
+  "noFile": "لا يوجد ملف محدد",
+  "Manage Educational Content": "إدارة المحتوى التعليمي",
+  "Browse Study E-Library": "تصفح المكتبة الالكترونية",
   "isLocalNationality": "جنسية محلية",
-  "login":"تسجيل الدخول"
+  "login": "تسجيل الدخول"
 }

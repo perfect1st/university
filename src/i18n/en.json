@@ -124,7 +124,8 @@
     "Pay": "Pay",
     "paymentMethods": "Payment Methods",
     "paymentSuccess": "Payment successful",
-    "departmentTerm": "Academy Term"
+    "departmentTerm": "Academy Term",
+    "uploadComplete": "Upload complete"
   },
   "studentDashboard": {
     "majorInformation": "Major Information",
@@ -145,7 +146,7 @@
     "maxAcademyHours": "Maximum Hours",
     "hoursError": "The number of hours must be greater than the minimum limit and less than the maximum limit For Term",
     "section": "Section",
-    "eLibrary":"E-Library"
+    "eLibrary": "E-Library"
   },
   "registrationSteps": {
     "title": "Registration Steps",
@@ -229,7 +230,7 @@
     "flag": "Flag",
     "save": "Save",
     "close": "Close",
-    "author_name":"Author Name" 
+    "author_name": "Author Name"
   },
   "Users": "Users",
   "Users Details": "Users Details",
@@ -412,14 +413,14 @@
     "back_home": "Back to Dashboard",
     "support": "Contact Support"
   },
-  "perPage":"per page",
-  "Download Book":"Download Book",
-  "Update File":"Update File",
-  "Attachments":"Attachments",
-  "fileUploaded":"File Uploaded Successfully",
-  "noFile":"No File Selected",
-  "Manage Educational Content":"Manage Educational Content",
-  "Browse Study E-Library":"Browse Study E-Library",
+  "perPage": "per page",
+  "Download Book": "Download Book",
+  "Update File": "Update File",
+  "Attachments": "Attachments",
+  "fileUploaded": "File Uploaded Successfully",
+  "noFile": "No File Selected",
+  "Manage Educational Content": "Manage Educational Content",
+  "Browse Study E-Library": "Browse Study E-Library",
   "isLocalNationality": "Local Nationality",
-  "login":"Login"
+  "login": "Login"
 }
