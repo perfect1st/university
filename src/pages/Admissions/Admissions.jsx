@@ -51,6 +51,7 @@ import { baseURL } from "../../Api/apolloClient.js";
 import formatDateToString from "../../components/Utilities/FormatDateToString.js";
 import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms.js";
 import { useNavigate } from "react-router-dom";
+import LoadingPage from "../../components/LoadingComponent.jsx";
 
 // CustomTextField wrapper (keeps placeholder support + helperText)
 function CustomTextField(props) {
@@ -605,6 +606,15 @@ export default function Admissions() {
 
   console.log('countriesLoading', countriesLoading);
 
+  // Check if initial data is still loading
+  const initialLoading = ArticalesLoading || nationalitiesLoading || countriesLoading || faculitiesLoading;
+
+  if (initialLoading) {
+    return (
+   <LoadingPage />
+    );
+  }
+
   return (
     <Box>
       {showPaymentModal && (
@@ -669,10 +679,15 @@ export default function Admissions() {
             {/* <Button onClick={() => setShowPaymentModal(false)}>إلغاء</Button> */}
             <Button
               variant="contained"
+              disabled={transactionLoading}
               sx={{ width: "100%", mt: 1 }}
               onClick={() => handleSubmitPayment()}
             >
-              {t("submit")}
+              {transactionLoading ? (
+                <CircularProgress size={24} sx={{ color: "white" }} />
+              ) : (
+                t("submit")
+              )}
             </Button>
           </DialogActions>
         </Dialog>

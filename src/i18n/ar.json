@@ -162,7 +162,8 @@
     "paymentMethods": "طرق الدفع",
     "paymentSuccess": "تم دفع الطلب بنجاح",
     "departmentTerm": "الفصول الدراسية",
-    "uploadComplete": "تم رفع الملف بنجاح"
+    "uploadComplete": "تم رفع الملف بنجاح",
+    "loadingData": "جاري تحميل البيانات..."
   },
   "studentDashboard": {
     "majorInformation": "المعلومات الأساسية",

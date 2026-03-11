@@ -125,7 +125,8 @@
     "paymentMethods": "Payment Methods",
     "paymentSuccess": "Payment successful",
     "departmentTerm": "Academy Term",
-    "uploadComplete": "Upload complete"
+    "uploadComplete": "Upload complete",
+    "loadingData": "Loading data..."
   },
   "studentDashboard": {
     "majorInformation": "Major Information",
