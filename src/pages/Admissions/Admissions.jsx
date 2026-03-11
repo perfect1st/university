@@ -188,10 +188,6 @@ export default function Admissions() {
     },
   ] = useMutation(CREATE_REGISTERATION_FORM_TRANSACTION);
 
-  console.log("ArticalesData", ArticalesData);
-  console.log("countriesData", countriesData);
-  console.log("faculitiesData", faculitiesData);
-  console.log("termsData",termsData);
 
   // step1 state
   const [personal, setPersonal] = useState({
@@ -231,10 +227,6 @@ export default function Admissions() {
   const [isLoading, setIsLoading] = useState(false);
 
   const fileInputRef = useRef(null);
-
-  console.log("academic", academic);
-  console.log("personal", personal);
-
   const genders = [
     { value: "male", label: t("admissions.male") },
     { value: "female", label: t("admissions.female") },
@@ -246,13 +238,7 @@ export default function Admissions() {
     { value: "ONLINE", label: t("admissions.onlinePayment") },
   ];
   const nationalities = nationalitiesData?.nationalities?.filter(el=>el.status);
-
-  console.log("nationalities", nationalities);
-
   const countries = countriesData?.countries ? countriesData?.countries?.filter(el=>el?.status) : null;
-
-  console.log("citiesInCountry", citiesInCountry?.getCitiesByCountry);
-
   const cities = citiesInCountry?.getCitiesByCountry
     ? citiesInCountry?.getCitiesByCountry
     : null;
@@ -261,8 +247,6 @@ export default function Admissions() {
   const faculties = faculitiesData?.faculties
     ? faculitiesData?.faculties?.filter(el=>el.status)
     : null;
-
-  console.log("departmentsInFaculty", departmentsInFaculty);
 
   //  // show only active departments
   const departments = departmentsInFaculty?.getFacultyDepartmentsByFaculty
@@ -473,24 +457,15 @@ export default function Admissions() {
       });
 
       console.log("formData", formData);
-
-      // ✅ مثال توضيحي: ارسال البيانات
-      // axios.post("/api/admissions", formData)
-      //   .then(res => console.log("Submitted successfully"))
-      //   .catch(err => console.error(err));
-
       let objToSend = {
         address: "aaaaaaaaaaaaaa",
       };
-      // Debug
       for (let [key, value] of formData.entries()) {
         console.log(key, value);
         objToSend[key] = value;
       }
 
       console.log("objToSend", objToSend);
-
-      // try {
       setIsLoading(true);
       const result = await createRegisterForm({
         variables: {
@@ -499,37 +474,13 @@ export default function Admissions() {
       });
       setIsLoading(false);
       console.log("result", result?.data?.createRegisterForm);
-      // registration_Fees_Value
       if (result?.data?.createRegisterForm?.success) {
         setRegisterationFeesResults(result?.data?.createRegisterForm);
-
-        // setRegisterationFees(result?.data?.createRegisterForm?.registration_Fees_Value);
         setShowPaymentModal(true);
       } else {
         notify(result?.data?.createRegisterForm?.message, "error");
       }
 
-      // notify(t("admissions.success"),"success");
-      // } catch (error) {
-      //   console.log('error',error);
-      // }
-      // finally{
-      //   setIsLoading(false);
-      // }
-
-      // alert("Application submitted (demo)");
-      //   }
-      //   } catch (error) {
-      //       console.log('error',error);
-      // //        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-      // //        console.error("🧩 GraphQL Errors:", error.graphQLErrors);
-      // // }
-      //      // console.log('error.networkError.result.errors',error.networkError.result.errors);
-      //        notify(t("admissions.error"),"error");
-      //   }
-      // finally{
-      //   setIsLoading(false);
-      // }
     }
   };
 

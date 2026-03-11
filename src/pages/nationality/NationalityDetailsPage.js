@@ -28,6 +28,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import CreateIcon from '@mui/icons-material/Create';
 import HorizentalTextField from "../../components/Utilities/HorizentalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
+import { FormControlLabel, Checkbox } from "@mui/material";
 
 export default function NationalityDetailsPage() {
   const theme = useTheme();
@@ -75,17 +76,20 @@ export default function NationalityDetailsPage() {
       name_ar: location?.state?.name_ar,
       name_en: location?.state?.name_en,
       flag: location?.state?.flag,
+      is_local: location?.state?.is_local || false,
     },
 
     validationSchema: Yup.object({
       name_ar: Yup.string().required(t("admissions.errors.required")),
       name_en: Yup.string().required(t("admissions.errors.required")),
+      is_local: Yup.boolean(),
     }),
     onSubmit: async (values) => {
       const data = {
         name_ar: values?.name_ar,
         name_en: values.name_en,
-        flag: values?.flag
+        flag: values?.flag,
+        is_local: values.is_local
       };
       try {
         console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
@@ -207,6 +211,34 @@ export default function NationalityDetailsPage() {
           error={formik.touched.name_en && Boolean(formik.errors.name_en)}
           helperText={formik.touched.name_en && formik.errors.name_en}
         />
+
+        <Box sx={{ 
+  display: 'flex', 
+  alignItems: 'center', 
+  mb: 2,
+  // Match the indentation/alignment of your horizontal fields if necessary
+  px: isMobile ? 0 : 1 
+}}>
+  <FormControlLabel
+    control={
+      <Checkbox
+        id="is_local"
+        name="is_local"
+        checked={formik.values.is_local}
+        onChange={formik.handleChange}
+        color="primary"
+      />
+    }
+    label={t("isLocalNationality")}
+    sx={{ 
+      flexDirection: "row",
+      "& .MuiFormControlLabel-label": {
+        fontWeight: 500,
+        color: theme.palette.text.secondary
+      }
+    }}
+  />
+</Box>
 
         <HorizentalTextField
           title={t("form.flag")}

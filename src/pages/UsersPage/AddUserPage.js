@@ -66,7 +66,7 @@ export default function AddUserPage() {
         email: values?.email,
         mobile: values?.mobile,
         password: values?.password,
-        group_id: values.groupIds
+        groups: values.groupIds
     };
     data.role = selectedRule;
 
@@ -189,7 +189,7 @@ export default function AddUserPage() {
     title={t("Groups")}
     options={groupsOptions}
     multiple={true} // Enable multi-select
-    findKey="id"    // The key in the object to store (group_id)
+    findKey="id"    // The key in the object to store (groups)
     labelToShow={(option) => (isArabic ? option.name_ar : option.name_en)}
     value={formik.values.groupIds}
     setValue={(newIds) => formik.setFieldValue("groupIds", newIds)}

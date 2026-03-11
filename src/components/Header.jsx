@@ -78,7 +78,7 @@ const Header = ({ onAction }) => {
   const dispatch = useDispatch();
   const baseImageUrl = useBaseImageUrl();
   const navigate = useNavigate();
-
+  const localUser = getUserCookie();
 
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -613,6 +613,21 @@ const Header = ({ onAction }) => {
                 aria-label="سجل الآن"
               >
                 {t("apply_now")}
+              </Button>
+
+              <Button
+                variant="outlined"
+                onClick={() => navigate("/login")}
+                sx={{
+                  borderRadius: 1,
+                  px: 3,
+                  py: 1,
+                  textTransform: "none",
+                  fontWeight: "bold",
+                }}
+                aria-label="login"
+              >
+                {t("login")}
               </Button>
             </Box>
           </Box>

@@ -6,6 +6,7 @@ export const GET_ALL_NATIONALITIES=gql`
         id
         name_ar
         name_en
+        is_local
         flag
         status
         createdAt
@@ -27,6 +28,7 @@ query FilteredPagedNationalities(
             id
             name_ar
             name_en
+            is_local
             flag
             status
             createdAt
@@ -42,6 +44,7 @@ mutation CreateNationality($input:CreateNationalityInput!) {
         id
         name_ar
         name_en
+        is_local
         flag
         status
         createdAt
@@ -56,6 +59,7 @@ mutation UpdateNationality($id:ID!,$input:UpdateNationalityInput!) {
         id
         name_ar
         name_en
+        is_local
         flag
         status
         createdAt

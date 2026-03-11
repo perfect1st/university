@@ -1,13 +1,16 @@
-import { useTheme } from "@emotion/react";
 import {
   Box,
   Button,
+  Checkbox,
   CircularProgress,
+  FormControlLabel,
   Grid,
   LinearProgress,
+  Switch,
   TextField,
   Typography,
   useMediaQuery,
+  useTheme
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -105,17 +108,20 @@ export default function AddNationalityPage() {
     initialValues: {
       name_ar: "",
       name_en: "",
+      is_local: false,
       // flag: "",
     },
 
     validationSchema: Yup.object({
       name_ar: Yup.string().required(t("admissions.errors.required")),
       name_en: Yup.string().required(t("admissions.errors.required")),
+      is_local: Yup.boolean(),
     }),
     onSubmit: async (values) => {
       const data = {
         name_ar: values?.name_ar,
         name_en: values.name_en,
+        is_local: values.is_local,
         flag: selectedFile
       };
       try {
@@ -190,7 +196,26 @@ export default function AddNationalityPage() {
           helperText={formik.touched.name_en && formik.errors.name_en}
         />
 
-
+<Box sx={{ mb: 2 }}>
+  <FormControlLabel
+    control={
+      <Checkbox
+        id="is_local"
+        name="is_local"
+        checked={formik.values.is_local}
+        onChange={formik.handleChange}
+        color="primary"
+      />
+    }
+    label={t("isLocalNationality")} 
+    sx={{ 
+      display: 'flex', 
+      flexDirection: "row",
+      justifyContent: "flex-start",
+      width: 'fit-content'
+    }}
+  />
+</Box>
 
       
 

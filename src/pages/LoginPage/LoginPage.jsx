@@ -72,7 +72,8 @@ const LoginPage = () => {
       //  if(response?.data?.login?.status == true){
 
          setTimeout(()=>{
-           setUserCookie(response?.data?.login?.token);
+           setUserCookie(response?.data?.login);
+           setToken(response?.data?.login?.token);
            // navigate("/profile");
            window.location.href="/profile";
            

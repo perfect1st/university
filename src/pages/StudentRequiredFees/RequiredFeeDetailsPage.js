@@ -288,7 +288,7 @@ export default function RequiredFeeDetailsPage() {
 
         <RequiredFeesTable rows={rows} setRows={setRows} isInSideYemen={isInSideYemen} />
         
-        <SubmitButton loading={updating} t={t} />
+        {/* <SubmitButton loading={updating} t={t} /> */}
       </Box>
     </Box>
   )

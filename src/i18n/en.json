@@ -419,5 +419,7 @@
   "fileUploaded":"File Uploaded Successfully",
   "noFile":"No File Selected",
   "Manage Educational Content":"Manage Educational Content",
-  "Browse Study E-Library":"Browse Study E-Library"
+  "Browse Study E-Library":"Browse Study E-Library",
+  "isLocalNationality": "Local Nationality",
+  "login":"Login"
 }

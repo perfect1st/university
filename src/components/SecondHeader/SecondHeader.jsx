@@ -30,11 +30,11 @@ export default function SecondHeader() {
   const isAuthenticated = Boolean(user); 
 
   // isAuthenticated ? "/StudentDashboard" :"/admissions"
-  const navItems = [
-    { key: "home", path: "/home" },
-    { key: "admissions.title", path: "/admissions" },
-    { key: "support", path: "/support" },
-  ];
+const navItems = [
+  { key: "home", path: "/home" },
+  ...(isAuthenticated ? [] : [{ key: "admissions.title", path: "/admissions" }] ),
+  { key: "support", path: "/support" },
+];
 
   const getActive = (path) => {
     if (path === "/") return currentPath == "/home";

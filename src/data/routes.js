@@ -7,13 +7,14 @@ const storedStudentForm = JSON.parse(localStorage.getItem('registerForm'));
 
 const routesData = {
   student: [
-    {
-      key: "dashboard",
-      isPublic: true, // Hint: Not in backend permissions, always show
-      label: { en: "Student Dashboard", ar: "لوحة التحكم" },
-      path: "/StudentDashboard",
-      icon: DashboardIcon,
-    },
+    // {
+    //   key: "dashboard",
+    //   isPublic: true, // Hint: Not in backend permissions, always show
+    //   isDisabled: true,
+    //   label: { en: "Student Dashboard", ar: "لوحة التحكم" },
+    //   path: "/StudentDashboard",
+    //   icon: DashboardIcon,
+    // },
     {
       key: "profile",
       isPublic: true, // Hint: Internal route
@@ -55,13 +56,14 @@ const routesData = {
   ],
 
   admin: [
-    {
-      key: "dashboard",
-      isPublic: true,
-      label: { en: "Dashboard", ar: "لوحة التحكم" },
-      path: "/dashboard",
-      icon: DashboardIcon,
-    },
+    // {
+    //   key: "dashboard",
+    //   isPublic: true,
+    //   isDisabled: true,
+    //   label: { en: "Dashboard", ar: "لوحة التحكم" },
+    //   path: "/dashboard",
+    //   icon: DashboardIcon,
+    // },
     {
       key: "websiteDepartments",
       label: { en: "Website Departments", ar: "اقسام الموقع" },
