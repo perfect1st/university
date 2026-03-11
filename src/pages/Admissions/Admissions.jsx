@@ -103,7 +103,7 @@ export default function Admissions() {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
   const theme = useTheme();
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [step, setStep] = useState(1);
@@ -220,11 +220,14 @@ export default function Admissions() {
     high_school_certificate_file: null,
     faculty_id: "",
     faculty_department_id: "",
-    academyTerm_id:""
+    academyTerm_id: ""
   });
   const [acadErrors, setAcadErrors] = useState({});
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState("");
 
   const fileInputRef = useRef(null);
   const genders = [
@@ -237,26 +240,26 @@ export default function Admissions() {
     { value: "BANK_TRANSFER", label: t("admissions.bankTransfer") },
     { value: "ONLINE", label: t("admissions.onlinePayment") },
   ];
-  const nationalities = nationalitiesData?.nationalities?.filter(el=>el.status);
-  const countries = countriesData?.countries ? countriesData?.countries?.filter(el=>el?.status) : null;
+  const nationalities = nationalitiesData?.nationalities?.filter(el => el.status);
+  const countries = countriesData?.countries ? countriesData?.countries?.filter(el => el?.status) : null;
   const cities = citiesInCountry?.getCitiesByCountry
     ? citiesInCountry?.getCitiesByCountry
     : null;
 
-    // show only active faculties
+  // show only active faculties
   const faculties = faculitiesData?.faculties
-    ? faculitiesData?.faculties?.filter(el=>el.status)
+    ? faculitiesData?.faculties?.filter(el => el.status)
     : null;
 
   //  // show only active departments
   const departments = departmentsInFaculty?.getFacultyDepartmentsByFaculty
-    ? departmentsInFaculty?.getFacultyDepartmentsByFaculty?.filter(el=>el.status)
+    ? departmentsInFaculty?.getFacultyDepartmentsByFaculty?.filter(el => el.status)
     : null;
 
-    // FIRST term data and active terms
-    let firstTermData=termsData?.filter(el=>(el.term_number==1 && el.status));
+  // FIRST term data and active terms
+  let firstTermData = termsData?.filter(el => (el.term_number == 1 && el.status));
 
-    console.log('firstTermData',firstTermData);
+  console.log('firstTermData', firstTermData);
 
   // --- validation helpers (returns message or empty string) ---
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -289,9 +292,9 @@ export default function Admissions() {
         case "mobile":
           // return value ? "" : t("admissions.errors.invalidPhone") || "Required";
           if (!value) return t("admissions.errors.required") || "Required";
-          // if (!phoneRegex.test(value))
-          //   return t("admissions.errors.invalidPhone") || "Invalid phone";
-          // return "";
+        // if (!phoneRegex.test(value))
+        //   return t("admissions.errors.invalidPhone") || "Invalid phone";
+        // return "";
 
         case "home_tel":
           return value ? "" : t("admissions.errors.required") || "Required";
@@ -339,7 +342,7 @@ export default function Admissions() {
           return value
             ? ""
             : t("admissions.errors.requiredFile") ||
-                "Please attach certificate file";
+            "Please attach certificate file";
         default:
           return "";
       }
@@ -494,7 +497,7 @@ export default function Admissions() {
         user_id: registerationFeesResults?.user?.id,
         fees_type_ids: registerationFeesResults?.registration_Fees_Id,
         transaction_date: formatDateToString(new Date()),
-        amount:registerationFeesResults?.registration_Fees_Value
+        amount: registerationFeesResults?.registration_Fees_Value
       };
 
       console.log("transactionObj", transactionObj);
@@ -509,8 +512,8 @@ export default function Admissions() {
       notify(t("admissions.paymentSuccess"), "success");
       setShowPaymentModal(false);
 
-      setTimeout(()=> navigate('/login'),2000);
-      
+      setTimeout(() => navigate('/login'), 2000);
+
     } catch (error) {
       console.log("error", error);
       notify(t("admissions.error"), "error");
@@ -521,53 +524,75 @@ export default function Admissions() {
   const handlePickFile = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
-  const handleFileChange = async (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files?.[0] ?? null;
     setAcademic((a) => ({ ...a, high_school_certificate_file: file }));
     // validate file right away
     const msg = validateField("high_school_certificate_file", file, true);
     setAcadErrors((prev) => ({ ...prev, high_school_certificate_file: msg }));
 
-    console.log("ppppppppppppppppppppppp", file);
-
-    // fileInputRef.current=file?.name;
+    if (!file) return;
 
     setSelectedFile(file?.name);
+    setUploadError("");
+    setUploadProgress(0);
+    setIsUploading(true);
+
     const formData = new FormData();
     formData.append("file", file);
 
-    // const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //     },
-    //   });
+    const xhr = new XMLHttpRequest();
 
-    //   console.log(res.data);
-    try {
-      const response = await fetch(`${baseURL}/api/forms/single`, {
-        method: "POST",
-        body: formData, // مهم جدًا ما تضيفش headers هنا
-      });
-
-      if (!response.ok) {
-        throw new Error("Upload failed");
+    // Track upload progress
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        const percent = Math.round((event.loaded / event.total) * 100);
+        setUploadProgress(percent);
       }
+    });
 
-      const data = await response.json();
-      console.log("Upload successful:", data);
-      // data?.url
+    // Handle successful completion
+    xhr.addEventListener("load", () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          console.log("Upload successful:", data);
+          setAcademic((a) => ({
+            ...a,
+            high_school_certificate_file: `${baseURL}${data?.url}`,
+          }));
+          setUploadProgress(100);
+          setUploadError("");
+        } catch (parseError) {
+          setUploadError(t("admissions.errorUplaod") || "Upload failed");
+          notify(t("admissions.errorUplaod") || "Upload failed", "error");
+          setUploadProgress(0);
+        }
+      } else {
+        setUploadError(t("admissions.errorUplaod") || "Upload failed");
+        notify(t("admissions.errorUplaod") || "Upload failed", "error");
+        setUploadProgress(0);
+      }
+      setIsUploading(false);
+    });
 
-      console.log("ooooooooooooo", `${baseURL}${data?.url}`);
+    // Handle network errors
+    xhr.addEventListener("error", () => {
+      setUploadError(t("admissions.errorUplaod") || "Upload failed");
+      notify(t("admissions.errorUplaod") || "Upload failed", "error");
+      setIsUploading(false);
+      setUploadProgress(0);
+    });
 
-      setAcademic((a) => ({
-        ...a,
-        high_school_certificate_file: `${baseURL}${data?.url}`,
-      }));
-    } catch (error) {
-      notify("admissions.errorUplaod", "error");
-      console.log("error", error.message);
-    }
-    // console.log('formData',formData);
+    // Handle abort
+    xhr.addEventListener("abort", () => {
+      setUploadError(t("admissions.errorUplaod") || "Upload cancelled");
+      setIsUploading(false);
+      setUploadProgress(0);
+    });
+
+    xhr.open("POST", `${baseURL}/api/forms/single`);
+    xhr.send(formData);
   };
 
   console.log("i18n ", i18n.language);
@@ -578,7 +603,7 @@ export default function Admissions() {
 
   console.log("fileInputRef", fileInputRef);
 
-  console.log('countriesLoading',countriesLoading);
+  console.log('countriesLoading', countriesLoading);
 
   return (
     <Box>
@@ -828,10 +853,10 @@ export default function Admissions() {
                             <>
                               {i18n.language === "ar"
                                 ? nationalities?.find(
-                                    (city) => city?.id === selected
-                                  )?.name_ar
+                                  (city) => city?.id === selected
+                                )?.name_ar
                                 : cities?.find((city) => city?.id === selected)
-                                    ?.name_en}
+                                  ?.name_en}
                             </>
                           );
                         },
@@ -925,9 +950,9 @@ export default function Admissions() {
                     {/* phone as text but validated by regex */}
                     <PhoneNumberInput
                       personal={personal ?? { mobile: "", countryCode: "" }}
-                      setPersonal={setPersonal ?? (() => {})}
+                      setPersonal={setPersonal ?? (() => { })}
                       errors={errors ?? {}}
-                      handlePersonalBlur={handlePersonalBlur ?? (() => {})}
+                      handlePersonalBlur={handlePersonalBlur ?? (() => { })}
                     />
                   </Grid>
 
@@ -1135,10 +1160,10 @@ export default function Admissions() {
                             <>
                               {i18n.language === "ar"
                                 ? countries?.find(
-                                    (city) => city?.id === selected
-                                  )?.name_ar
+                                  (city) => city?.id === selected
+                                )?.name_ar
                                 : cities?.find((city) => city?.id === selected)
-                                    ?.name_en}
+                                  ?.name_en}
                             </>
                           );
                         },
@@ -1191,11 +1216,11 @@ export default function Admissions() {
                               <>
                                 {i18n.language === "ar"
                                   ? cities?.find(
-                                      (city) => city?.id === selected
-                                    )?.name_ar
+                                    (city) => city?.id === selected
+                                  )?.name_ar
                                   : cities?.find(
-                                      (city) => city?.id === selected
-                                    )?.name_en}
+                                    (city) => city?.id === selected
+                                  )?.name_en}
                               </>
                             );
                           },
@@ -1316,7 +1341,7 @@ export default function Admissions() {
                           type="file"
                           hidden
                           onChange={handleFileChange}
-                          // value={selectedFile}
+                        // value={selectedFile}
                         />
                         <Button
                           variant="contained"
@@ -1346,7 +1371,47 @@ export default function Admissions() {
                         >
                           {selectedFile ? selectedFile : ""}
                         </Typography>
-                        
+
+                        {/* Upload progress bar */}
+                        {isUploading && (
+                          <Box sx={{ width: "100%", mt: 1 }}>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              <Box sx={{ flex: 1 }}>
+                                <LinearProgress
+                                  variant="determinate"
+                                  value={uploadProgress}
+                                  sx={{
+                                    height: 8,
+                                    borderRadius: 4,
+                                    backgroundColor: "#e0e0e0",
+                                    "& .MuiLinearProgress-bar": {
+                                      borderRadius: 4,
+                                      backgroundColor: theme.palette.primary.main,
+                                    },
+                                  }}
+                                />
+                              </Box>
+                              <Typography variant="body2" sx={{ minWidth: 40, fontWeight: 600 }}>
+                                {uploadProgress}%
+                              </Typography>
+                            </Box>
+                          </Box>
+                        )}
+
+                        {/* Upload complete indicator */}
+                        {!isUploading && uploadProgress === 100 && !uploadError && (
+                          <Typography variant="body2" sx={{ color: "green", mt: 1, fontWeight: 600 }}>
+                            {t("admissions.uploadComplete") || "✔ Upload complete"}
+                          </Typography>
+                        )}
+
+                        {/* Upload error message */}
+                        {uploadError && (
+                          <Typography variant="body2" sx={{ color: "error.main", mt: 1, fontWeight: 600 }}>
+                            {uploadError}
+                          </Typography>
+                        )}
+
                       </Box>
                       {acadErrors.high_school_certificate_file && (
                         <Typography
@@ -1443,10 +1508,10 @@ export default function Admissions() {
                             <>
                               {i18n.language === "ar"
                                 ? faculties?.find(
-                                    (city) => city?.id === selected
-                                  )?.title_ar
+                                  (city) => city?.id === selected
+                                )?.title_ar
                                 : cities?.find((city) => city?.id === selected)
-                                    ?.title_en}
+                                  ?.title_en}
                             </>
                           );
                         },
@@ -1479,20 +1544,20 @@ export default function Admissions() {
                       value={academic.faculty_department_id}
                       onChange={(e) => {
                         // 44444444444444444444444444444
-                        if(e.target.value != "") {
-                          console.log("nnnnnnnnnnnnn",e.target.value);
-                            getAcademyTermsByFacultyDepartment({
-                              variables:{
-                                faculty_department_id:e.target.value
-                              }
-                            });
-                          
-                           setAcademic((a) => ({
-                          ...a,
-                          faculty_department_id: e.target.value,
-                        }));
+                        if (e.target.value != "") {
+                          console.log("nnnnnnnnnnnnn", e.target.value);
+                          getAcademyTermsByFacultyDepartment({
+                            variables: {
+                              faculty_department_id: e.target.value
+                            }
+                          });
+
+                          setAcademic((a) => ({
+                            ...a,
+                            faculty_department_id: e.target.value,
+                          }));
                         }
-                       
+
                       }}
                       onBlur={() => handleAcademicBlur("faculty_department_id")}
                       error={!!acadErrors.faculty_department_id}
@@ -1507,10 +1572,10 @@ export default function Admissions() {
                             <>
                               {i18n.language === "ar"
                                 ? departments?.find(
-                                    (city) => city?.id === selected
-                                  )?.title_ar
+                                  (city) => city?.id === selected
+                                )?.title_ar
                                 : cities?.find((city) => city?.id === selected)
-                                    ?.title_en}
+                                  ?.title_en}
                             </>
                           );
                         },
@@ -1537,8 +1602,8 @@ export default function Admissions() {
                   </Grid>
 
 
-                      {/* الترم */}
-                    <Grid item xs={12}>
+                  {/* الترم */}
+                  <Grid item xs={12}>
                     <Typography
                       variant="body2"
                       sx={{ display: "block", mb: 0.5 }}
@@ -1551,15 +1616,14 @@ export default function Admissions() {
                       value={academic.academyTerm_id}
                       onChange={(e) => {
                         // 44444444444444444444444444444
-                        if(e.target.value != "") 
-                          {
-                       
-                           setAcademic((a) => ({
-                          ...a,
-                          academyTerm_id: e.target.value,
-                        }));
+                        if (e.target.value != "") {
+
+                          setAcademic((a) => ({
+                            ...a,
+                            academyTerm_id: e.target.value,
+                          }));
                         }
-                       
+
                       }}
                       onBlur={() => handleAcademicBlur("academyTerm_id")}
                       error={!!acadErrors.academyTerm_id}
@@ -1574,10 +1638,10 @@ export default function Admissions() {
                             <>
                               {i18n.language === "ar"
                                 ? termsData?.find(
-                                    (city) => city?.id === selected
-                                  )?.title_ar
+                                  (city) => city?.id === selected
+                                )?.title_ar
                                 : termsData?.find((city) => city?.id === selected)
-                                    ?.title_en}
+                                  ?.title_en}
                             </>
                           );
                         },
@@ -1629,7 +1693,7 @@ export default function Admissions() {
                 </Button>
 
                 <Button
-                  disabled={isLoading}
+                  disabled={isLoading || isUploading}
                   variant="contained"
                   size="large"
                   endIcon={
@@ -1652,13 +1716,13 @@ export default function Admissions() {
                 </Button>
               </Grid>
 
-           {
-            (countriesLoading||citiesLoading||faculitiesLoading||departmentsLoading||termsLoading)
-            && <CircularProgress  size={26}
-                    thickness={8}
-                    sx={{ color: "black" }} />
-           } 
-           
+              {
+                (countriesLoading || citiesLoading || faculitiesLoading || departmentsLoading || termsLoading)
+                && <CircularProgress size={26}
+                  thickness={8}
+                  sx={{ color: "black" }} />
+              }
+
             </Grid>
           )}
         </Box>
