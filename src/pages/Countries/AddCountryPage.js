@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { CREATE_NEW_COUNTRY } from "../../graphql/countriesQueries"
 import { useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
-import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { Box, useMediaQuery, useTheme, FormControlLabel, Checkbox } from "@mui/material";
 import Header from "../../components/PageHeader/header";
 import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
@@ -43,17 +43,20 @@ export default function AddCountryPage() {
         initialValues: {
             name_ar: "",
             name_en: "",
+            is_local: false,
             // flag: "",
         },
 
         validationSchema: Yup.object({
             name_ar: Yup.string().required(t("admissions.errors.required")),
             name_en: Yup.string().required(t("admissions.errors.required")),
+            is_local: Yup.boolean(),
         }),
         onSubmit: async (values) => {
             const data = {
                 name_ar: values?.name_ar,
                 name_en: values.name_en,
+                is_local: values.is_local,
             };
             try {
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
@@ -123,6 +126,27 @@ export default function AddCountryPage() {
                     error={formik.touched.name_en && Boolean(formik.errors.name_en)}
                     helperText={formik.touched.name_en && formik.errors.name_en}
                 />
+
+                <Box sx={{ mb: 2 }}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                id="is_local"
+                                name="is_local"
+                                checked={formik.values.is_local}
+                                onChange={formik.handleChange}
+                                color="primary"
+                            />
+                        }
+                        label={t("isLocalCountry")}
+                        sx={{
+                            display: 'flex',
+                            flexDirection: "row",
+                            justifyContent: "flex-start",
+                            width: 'fit-content'
+                        }}
+                    />
+                </Box>
 
                 <SubmitButton loading={creatingCountryLoading} t={t} />
 

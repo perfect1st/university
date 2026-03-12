@@ -6,6 +6,7 @@ query Countries {
         id
         name_ar
         name_en
+        is_local
         status
         createdAt
         updatedAt
@@ -26,6 +27,7 @@ query FilteredPagedCountries(
             id
             name_ar
             name_en
+            is_local
             status
             createdAt
             updatedAt
@@ -40,6 +42,7 @@ query Country($id:ID!) {
         id
         name_ar
         name_en
+        is_local
         status
         createdAt
         updatedAt
@@ -55,6 +58,7 @@ mutation CreateCountry($input:CreateCountryInput!) {
         id
         name_ar
         name_en
+        is_local
         status
         createdAt
         updatedAt
@@ -68,6 +72,7 @@ mutation UpdateCountry($id:ID!, $input:UpdateCountryInput!) {
         id
         name_ar
         name_en
+        is_local
         status
         createdAt
         updatedAt

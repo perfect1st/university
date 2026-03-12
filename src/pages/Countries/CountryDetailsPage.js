@@ -1,5 +1,5 @@
 import { useTheme } from '@emotion/react';
-import { Box, useMediaQuery } from '@mui/material';
+import { Box, useMediaQuery, FormControlLabel, Checkbox } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import i18n from "../../i18n/i18n";
@@ -39,17 +39,20 @@ export default function CountryDetailsPage() {
          const formik = useFormik({
             initialValues: {
               name_ar: location?.state?.name_ar,
-              name_en: location?.state?.name_en
+              name_en: location?.state?.name_en,
+              is_local: location?.state?.is_local || false,
             },
         
             validationSchema: Yup.object({
               name_ar: Yup.string().required(t("admissions.errors.required")),
               name_en: Yup.string().required(t("admissions.errors.required")),
+              is_local: Yup.boolean(),
             }),
             onSubmit: async (values) => {
               const data = {
                 name_ar: values?.name_ar,
-                name_en: values.name_en
+                name_en: values.name_en,
+                is_local: values.is_local
               };
               try {
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
@@ -123,6 +126,33 @@ export default function CountryDetailsPage() {
           error={formik.touched.name_en && Boolean(formik.errors.name_en)}
           helperText={formik.touched.name_en && formik.errors.name_en}
         />
+
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          mb: 2,
+          px: isMobile ? 0 : 1
+        }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                id="is_local"
+                name="is_local"
+                checked={formik.values.is_local}
+                onChange={formik.handleChange}
+                color="primary"
+              />
+            }
+            label={t("isLocalCountry")}
+            sx={{
+              flexDirection: "row",
+              "& .MuiFormControlLabel-label": {
+                fontWeight: 500,
+                color: theme.palette.text.secondary
+              }
+            }}
+          />
+        </Box>
 
         
 

@@ -460,6 +460,6 @@
   "noFile": "لا يوجد ملف محدد",
   "Manage Educational Content": "إدارة المحتوى التعليمي",
   "Browse Study E-Library": "تصفح المكتبة الالكترونية",
-  "isLocalNationality": "جنسية محلية",
-  "login": "تسجيل الدخول"
+  "isLocalCountry": "دولة محلية",
+  "login":"تسجيل الدخول"
 }
