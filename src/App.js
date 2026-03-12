@@ -85,6 +85,7 @@ import UserDetailsPage from "./pages/UsersPage/UserDetailsPage";
 import AllRequiredFeesPage from "./pages/StudentRequiredFees/AllRequiredFeesPage";
 import AddRequiredFeesPage from "./pages/StudentRequiredFees/AddRequiredFeesPage";
 import RequiredFeeDetailsPage from "./pages/StudentRequiredFees/RequiredFeeDetailsPage";
+import AllRegisterFormsPage from "./pages/RegisterForms/AllRegisterFormsPage";
 import SubTitleDetailsPage from "./pages/websiteDepartments/SubTitleDetailsPage";
 import AllLecturesPage from "./pages/LecturesSchedule/AllLecturesPage";
 import AddLecturePage from "./pages/LecturesSchedule/AddLecturePage";
@@ -947,6 +948,15 @@ function App() {
                       </MainLayout>
                     } />
 
+                  </Route>
+
+                  {/* استمارات التسجيل */}
+                  <Route path="/registerForms">
+                    <Route index element={
+                      <MainLayout isLoggedIn={true}>
+                        <AllRegisterFormsPage />
+                      </MainLayout>
+                    } />
                   </Route>
 
                   {/* Doctor Dashboard Pages */}

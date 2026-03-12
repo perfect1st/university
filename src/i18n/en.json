@@ -426,5 +426,14 @@
   "Manage Educational Content": "Manage Educational Content",
   "Browse Study E-Library": "Browse Study E-Library",
   "isLocalCountry": "Local Country",
-  "login": "Login"
+  "login": "Login",
+  "registerForms": {
+    "title": "Register Forms",
+    "searchPlaceholder": "Search by Name, Email or Mobile",
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    }
+  }
 }

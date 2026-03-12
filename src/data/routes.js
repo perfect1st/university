@@ -145,6 +145,11 @@ const routesData = {
       path: "/requiredFees",
     },
     {
+      key: "registerForms",
+      label: { en: "Register Forms", ar: "استمارات التسجيل" },
+      path: "/registerForms",
+    },
+    {
       key: "groups", // Matches groups.view
       label: { en: "Permissions Groups", ar: "مجموعات الصلاحيات" },
       path: "/PermissionsGroups",

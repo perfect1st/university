@@ -140,3 +140,68 @@ query GetRegisterFormByUserId($user_id:ID!) {
     }
 }
 `;
+
+export const GET_ALL_FILTERED_REGISTER_FORMS = gql`
+query FilteredPagedRegisterForms($search: String, $status: String, $page: Int, $limit: Int) {
+    filteredPagedRegisterForms(search: $search, status: $status, page: $page, limit: $limit) {
+        total
+        registerForms {
+            id
+            first_name
+            second_name
+            third_name
+            fourth_name
+            birthdate
+            gender
+            is_paid
+            paid_document_file
+            high_school_certificate_file
+            address
+            status
+            mobile
+            home_tel
+            email
+            is_inside_yemen
+            transactions_id
+            national_id_type
+            national_id
+            education_year
+            study_place
+            high_school_student_number
+            general_grade
+            gpa
+            createdAt
+            updatedAt
+            academyTerm_id {
+                id
+                title_ar
+                title_en
+                status
+                study_year
+                current_year
+                term_number
+                min_study_hours
+                max_study_hours
+            }
+            faculty_department_id {
+                id
+                title_ar
+                title_en
+                status
+                createdAt
+                updatedAt
+            }
+            faculty_id {
+                id
+                title_ar
+                title_en
+                status
+                required_dep
+                study_years_count
+                createdAt
+                updatedAt
+            }
+        }
+    }
+}
+`;

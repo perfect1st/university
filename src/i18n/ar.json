@@ -464,5 +464,14 @@
   "Manage Educational Content": "إدارة المحتوى التعليمي",
   "Browse Study E-Library": "تصفح المكتبة الالكترونية",
   "isLocalCountry": "دولة محلية",
-  "login":"تسجيل الدخول"
+  "login":"تسجيل الدخول",
+  "registerForms": {
+    "title": "استمارات التسجيل",
+    "searchPlaceholder": "ابحث بالاسم أو البريد الإلكتروني أو رقم الجوال",
+    "status": {
+      "pending": "قيد الانتظار",
+      "accepted": "مقبول",
+      "rejected": "مرفوض"
+    }
+  }
 }
