@@ -159,7 +159,13 @@ const routesData = {
       isPublic: true,
       label: { en: "Profile", ar: "الصفحة الشخصية" },
       path: "/profile",
-      icon: ProfileIcon,
+      // icon: ProfileIcon,
+    },
+    {
+      key: "site-settings",
+      isPublic: true,
+      label: { en: "site settings", ar: "اعدادات الموقع" },
+      path: "/site-settings",
     },
     {
       key: "supportTickets",

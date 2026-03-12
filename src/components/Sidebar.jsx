@@ -42,7 +42,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const storedStudentForm = JSON.parse(localStorage.getItem("registerForm"));
 
   const lang = i18n.language;
-const accessibleRoutes = useAccessibleRoutes();
+  const accessibleRoutes = useAccessibleRoutes();
   console.log("accessibleRoutes", accessibleRoutes);
 
   // const menuItems = useMemo(() => getAccessibleRoutes("admin"), []);  .role

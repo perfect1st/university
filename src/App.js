@@ -111,6 +111,13 @@ import GroupFormPage from "./pages/PermissionsGroupsPage/GroupFormPage";
 import ELibraryPage from "./pages/E-Library/ELibraryPage";
 import AddBookPage from "./pages/E-Library/AddBookPage";
 import BookDetailsPage from "./pages/E-Library/BookDetailsPage";
+import SiteSettings from "./pages/SiteSettings/SiteSettings";
+
+// Public Site Config Pages
+import PrivacyPolicy from "./pages/Home/PrivacyPolicy";
+import TermsOfService from "./pages/Home/TermsOfService";
+import Accessibility from "./pages/Home/Accessibility";
+import ContactUs from "./pages/Home/ContactUs";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -433,6 +440,12 @@ function App() {
                     }
                   />
 
+                  {/* Public Details Pages */}
+                  <Route path="/privacy-policy" element={<MainLayout><PrivacyPolicy /></MainLayout>} />
+                  <Route path="/terms-of-service" element={<MainLayout><TermsOfService /></MainLayout>} />
+                  <Route path="/accessibility" element={<MainLayout><Accessibility /></MainLayout>} />
+                  <Route path="/contact-us" element={<MainLayout><ContactUs /></MainLayout>} />
+
                   {/* student dashboard */}
                   <Route
                     path="/StudentDashboard"
@@ -582,6 +595,13 @@ function App() {
                       }
                     />
                     </Route>
+
+                  {/* Site Settings */}
+                  <Route path="/site-settings" element={
+                    <MainLayout isLoggedIn={true}>
+                      <SiteSettings />
+                    </MainLayout>
+                  } />
 
                   {/* المستخدمين */}
                   <Route path="/users">
