@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const GET_USERS_REQUIRED_FEES=gql`
+export const GET_USERS_REQUIRED_FEES = gql`
 query GetUsersRequiredFees {
     getUsersRequiredFees {
         id
@@ -68,7 +68,78 @@ query GetUsersRequiredFees {
 }
 `;
 
-export const CREATE_USER_REQUIRED_FEES=gql`
+export const GET_USERS_REQUIRED_FEES_BY_ID = gql`
+query GetUsersRequiredFeesById($id: ID!) {
+    getUsersRequiredFeesById(id: $id) {
+       id
+        is_paid
+        createdAt
+        updatedAt
+        student_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
+        fees_types_ids {
+            id
+            title_ar
+            title_en
+            inside_yemen_value
+            outside_yemen_value
+            createdAt
+            updatedAt
+            status
+        }
+        transactions_id {
+            id
+            payment_method_type
+            amount
+            payment_document_file
+            transaction_date
+            transaction_serial
+        }  academy_term_id {
+            id
+            title_ar
+            title_en
+            status
+            study_year
+            current_year
+            term_number
+            min_study_hours
+            max_study_hours
+            faculty_department_id {
+                id
+                title_ar
+                title_en
+                status
+                createdAt
+                updatedAt
+                faculty_id {
+                    id
+                    title_ar
+                    title_en
+                    status
+                    required_dep
+                    study_years_count
+                    createdAt
+                    updatedAt
+                }
+            }
+        }
+    }
+}
+`;
+
+export const CREATE_USER_REQUIRED_FEES = gql`
 mutation CreateUsersRequiredFees($input:UsersRequiredFeesInput!) {
     createUsersRequiredFees(input: $input) {
         id
@@ -79,7 +150,7 @@ mutation CreateUsersRequiredFees($input:UsersRequiredFeesInput!) {
 }
 `;
 
-export const UPDATE_USER_REQUIRED_FEES=gql`
+export const UPDATE_USER_REQUIRED_FEES = gql`
 mutation UpdateUsersRequiredFees($id:ID!,$input:UsersRequiredFeesInput!) {
     updateUsersRequiredFees(id: $id, input: $input) {
         id
@@ -90,7 +161,7 @@ mutation UpdateUsersRequiredFees($id:ID!,$input:UsersRequiredFeesInput!) {
 }
 `;
 
-export const GET_FILTERED_USER_REQUIRED_FEES=gql`
+export const GET_FILTERED_USER_REQUIRED_FEES = gql`
 query FilteredPagedUsersRequiredFees(
     $limit: Int!
     $page: Int!

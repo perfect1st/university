@@ -10,9 +10,9 @@ import * as Yup from "yup";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import { useState } from "react";
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
-import { GET_ALL_USERES_FOR_ADMIN } from "../../graphql/userQueriesForAdmin";
+import { GET_ALL_USERES_FOR_ADMIN, GET_STUDENTS_BY_FACULTY_DEPARTMENT } from "../../graphql/userQueriesForAdmin";
 import { GET_ALL_FEES_TYPES } from "../../graphql/feeTypesQueries";
-import { UPDATE_USER_REQUIRED_FEES } from "../../graphql/requiredFeesQueries";
+import { UPDATE_USER_REQUIRED_FEES, GET_USERS_REQUIRED_FEES_BY_ID } from "../../graphql/requiredFeesQueries";
 import { GET_ALL_FACULITIES, GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID } from "../../graphql/facultyQuiries";
 import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms";
 import { useSelector } from "react-redux";
@@ -32,7 +32,7 @@ export default function RequiredFeeDetailsPage() {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const location = useLocation();
 
-  console.log("location", location?.state);
+
 
   const [
     UpdateUsersRequiredFees,
@@ -40,11 +40,19 @@ export default function RequiredFeeDetailsPage() {
       loading: updating
     }
   ] = useMutation(UPDATE_USER_REQUIRED_FEES, { fetchPolicy: "network-only" });
-  // get all users
-  const {
-    data: { users } = {},
-    loading: usersLoading
-  } = useQuery(GET_ALL_USERES_FOR_ADMIN, { fetchPolicy: "network-only" });
+  // get students by department
+  const [
+    GetStudentsByDept,
+    {
+      data: { studentsByFacultyDepartment: rawStudents } = {},
+      loading: studentsLoading
+    }
+  ] = useLazyQuery(GET_STUDENTS_BY_FACULTY_DEPARTMENT, { fetchPolicy: "network-only" });
+
+  const students = rawStudents?.map(student => ({
+    ...student,
+    userId: student?.user_id?.id
+  })) || [];
 
   // get fees ids
   const {
@@ -76,38 +84,56 @@ export default function RequiredFeeDetailsPage() {
     }
   ] = useLazyQuery(GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID, { fetchPolicy: "network-only" });
 
+  // get required fee details
+  const {
+      data: { getUsersRequiredFeesById: feeDetails } = {},
+      loading: detailsLoading
+  } = useQuery(GET_USERS_REQUIRED_FEES_BY_ID, {
+      variables: { id: location?.state?.id },
+      skip: !location?.state?.id,
+      fetchPolicy: "network-only"
+  });
+
   const me = useSelector(state => state.user.loggedUser);
 
-  // let materialsIDS = getAcademyTermById?.materials_array?.map(el => el?.id);
-  //  setSelectedMaterials(materialsIDS);
-
-  const [selectedFeeType, setSelectedFeeType] = useState(() => location?.state?.fees_types_ids?.map(el => el?.id) ?? []);
-  const [selectedUser, setSelectedUser] = useState(() => location?.state?.student_id?.id);
-  const [selectedAcademyTerm, setSelectedAcademyTerm] = useState(() => location?.state?.academy_term_id?.id);
-  const [selectedFaculty, setSelectedFaculty] = useState(() => location?.state?.academy_term_id?.faculty_department_id?.faculty_id?.id);
-  const [selectedDepartment, setSelectedDepartment] = useState(() => location?.state?.academy_term_id?.faculty_department_id?.id);
-  const [rows, setRows] = useState(()=>location?.state?.fees_types_ids ?? []);
+  const [selectedFeeType, setSelectedFeeType] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedAcademyTerm, setSelectedAcademyTerm] = useState(null);
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    if (selectedFaculty) {
-      GetDepartmentsByFaculty({ variables: { faculty_id: selectedFaculty } });
+    if (feeDetails) {
+        setSelectedFeeType(feeDetails?.fees_types_ids?.map(el => el?.id) ?? []);
+        setSelectedUser(feeDetails?.student_id?.id);
+        setSelectedAcademyTerm(feeDetails?.academy_term_id?.id);
+        setSelectedFaculty(feeDetails?.academy_term_id?.faculty_department_id?.faculty_id?.id);
+        setSelectedDepartment(feeDetails?.academy_term_id?.faculty_department_id?.id);
+        setRows(feeDetails?.fees_types_ids ?? []);
+
+        if (feeDetails?.academy_term_id?.faculty_department_id?.faculty_id?.id) {
+            GetDepartmentsByFaculty({ variables: { faculty_id: feeDetails?.academy_term_id?.faculty_department_id?.faculty_id?.id } });
+        }
+        if (feeDetails?.academy_term_id?.faculty_department_id?.id) {
+            GetAcademyTermsByDept({ variables: { faculty_department_id: feeDetails?.academy_term_id?.faculty_department_id?.id } });
+            GetStudentsByDept({ variables: { faculty_department_id: feeDetails?.academy_term_id?.faculty_department_id?.id } });
+        }
     }
-    if (selectedDepartment) {
-      GetAcademyTermsByDept({ variables: { faculty_department_id: selectedDepartment } });
-    }
-  }, []);
+  }, [feeDetails]);
 
   const timestamp = Number(location?.state?.createdAt); // نتأكد إنه رقم
   const date = new Date(timestamp);
 
-  let isInSideYemen=location?.state?.student_id?.is_inside_yemen;
+  let isInSideYemen = feeDetails?.student_id?.is_inside_yemen;
 
   const formik = useFormik({
    
     initialValues: {
-      transaction_serial:location?.state?.transactions_id?.transaction_serial ?? t("dataNotFound"),
-      createDate: formatDateToString(date)
+      transaction_serial: feeDetails?.transactions_id?.transaction_serial ?? t("dataNotFound"),
+      createDate: feeDetails?.createdAt ? formatDateToString(new Date(Number(feeDetails?.createdAt))) : ""
     },
+    enableReinitialize: true,
 
     validationSchema: Yup.object({
       selectedFeeType: selectedFeeType == 0 && Yup.string()
@@ -163,13 +189,11 @@ export default function RequiredFeeDetailsPage() {
   });
 
 
-  let students = users?.filter(el => el?.role == "student");
 
-  console.log("students", students);
   let translateText = isArabic ? "رسوم الطلاب" : "Student Required Fees";
   let translateText2 = isArabic ? "رسوم الطلاب" : "Student Required Fees";
 
-  if (usersLoading || gettingFees || facultiesLoading) return <LoadingPage />;
+  if (gettingFees || facultiesLoading || detailsLoading) return <LoadingPage />;
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
 
@@ -223,7 +247,10 @@ export default function RequiredFeeDetailsPage() {
           setValue={(val) => {
             setSelectedDepartment(val);
             setSelectedAcademyTerm(null);
-            if (val) GetAcademyTermsByDept({ variables: { faculty_department_id: val } });
+            if (val) {
+                GetAcademyTermsByDept({ variables: { faculty_department_id: val } });
+                GetStudentsByDept({ variables: { faculty_department_id: val } });
+            }
           }}
           isDisabled={!selectedFaculty}
         />
@@ -269,9 +296,9 @@ export default function RequiredFeeDetailsPage() {
         <SearchByTypingSelect
           title={t("Dashboard.user")}
           labelToShow={(option) => {
-            return `${option?.fullname} - ${option?.email}`
+            return `${option?.first_name} ${option?.second_name} ${option?.third_name} ${option?.fourth_name} - ${option?.email}`
           }}
-          findKey={"id"}
+          findKey={"userId"}
           isArabic={isArabic}
           options={students}
           value={selectedUser}
@@ -281,6 +308,7 @@ export default function RequiredFeeDetailsPage() {
             if (selectedUser != null) formik.setFieldError("selectedUser", undefined);
 
           }}
+          isDisabled={!selectedDepartment}
         />
 
 

@@ -144,12 +144,12 @@ export default function FeeCard({
             }}
           >
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              {isArabic ? data?.academy_term_id?.title_ar : data?.academy_term_id?.title_en}
+              {/* {isArabic ? data?.academy_term_id?.title_ar : data?.academy_term_id?.title_en} */}
             </Typography>
 
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
               {isPaid &&
-              data?.transactions_id.payment_method_type == "BANK_TRANSFER" ? (
+              data?.transactions_id?.payment_method_type == "BANK_TRANSFER" ? (
                 <>
                   <Button
                     variant="outlined"

@@ -12,6 +12,26 @@ query Users {
         status
         profile_image
         qid_number
+        is_inside_yemen
+        birthdate
+        gender
+        national_id_type
+        national_id
+        address
+        home_tel
+        register_form_id {
+            id
+            first_name
+            second_name
+            third_name
+            fourth_name
+            faculty_department_id {
+                id
+            }
+            faculty_id {
+                id
+            }
+        }
         createdAt
         updatedAt
     }
@@ -132,5 +152,39 @@ export const MARK_NOTIFICATION_AS_READ = gql`
 export const MARK_ALL_NOTIFICATIONS_AS_READ = gql`
  mutation MarkAllNotificationsAsRead {
     markAllNotificationsAsRead
+}
+`;
+
+export const GET_STUDENTS_BY_FACULTY_DEPARTMENT = gql`
+query StudentsByFacultyDepartment($faculty_department_id: ID!) {
+    studentsByFacultyDepartment(faculty_department_id: $faculty_department_id) {
+        id
+        first_name
+        second_name
+        third_name
+        fourth_name
+        birthdate
+        gender
+        address
+        status
+        mobile
+        createdAt
+        updatedAt
+        email
+           user_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
+    }
 }
 `;

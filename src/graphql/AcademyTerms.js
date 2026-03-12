@@ -179,5 +179,4 @@ query GetAcademyTermsByFacultyDepartment($faculty_department_id:ID!) {
         max_study_hours
     }
 }
-
-`;
+`;

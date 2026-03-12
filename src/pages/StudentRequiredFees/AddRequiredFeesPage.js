@@ -12,7 +12,7 @@ import SubmitButton from "../../components/Utilities/SubmitButton";
 import LoadingPage from "../../components/LoadingComponent";
 import { useState } from "react";
 import { CREATE_USER_REQUIRED_FEES } from "../../graphql/requiredFeesQueries";
-import { GET_ALL_USERES_FOR_ADMIN } from "../../graphql/userQueriesForAdmin";
+import { GET_STUDENTS_BY_FACULTY_DEPARTMENT } from "../../graphql/userQueriesForAdmin";
 import { GET_ALL_FEES_TYPES } from "../../graphql/feeTypesQueries";
 import { GET_ALL_FACULITIES, GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID } from "../../graphql/facultyQuiries";
 import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms";
@@ -34,11 +34,19 @@ export default function AddRequiredFeesPage() {
     }
   ] = useMutation(CREATE_USER_REQUIRED_FEES, { fetchPolicy: "network-only" });
 
-  // get all users
-  const {
-    data: { users } = {},
-    loading: usersLoading
-  } = useQuery(GET_ALL_USERES_FOR_ADMIN, { fetchPolicy: "network-only" });
+  // get students by department
+  const [
+    GetStudentsByDept,
+    {
+      data: { studentsByFacultyDepartment: rawStudents } = {},
+      loading: studentsLoading
+    }
+  ] = useLazyQuery(GET_STUDENTS_BY_FACULTY_DEPARTMENT, { fetchPolicy: "network-only" });
+
+  const students = rawStudents?.map(student => ({
+    ...student,
+    userId: student?.user_id?.id
+  })) || [];
 
   // get fees ids
   const {
@@ -75,6 +83,7 @@ export default function AddRequiredFeesPage() {
       loading: academyTermsLoading
     }
   ] = useLazyQuery(GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID, { fetchPolicy: "network-only" });
+  console.log("academyTerms",academyTerms)
 
   const me = useSelector(state => state.user.loggedUser);
 
@@ -86,7 +95,7 @@ export default function AddRequiredFeesPage() {
 
   // console.log("users",users);
 
-  let students = users?.filter(el => el?.role == "student");
+
 
   const formik = useFormik({
     initialValues: {},
@@ -148,7 +157,7 @@ export default function AddRequiredFeesPage() {
 
   let translateText = isArabic ? "رسوم الطلاب" : "Student Required Fees";
   let translateText2 = isArabic ? "رسوم الطلاب" : "Student Required Fees";
-  if (usersLoading || gettingFees || facultiesLoading) return <LoadingPage />;
+  if (gettingFees || facultiesLoading) return <LoadingPage />;
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Header
@@ -202,7 +211,10 @@ export default function AddRequiredFeesPage() {
           setValue={(val) => {
             setSelectedDepartment(val);
             setSelectedAcademyTerm(null);
-            if (val) GetAcademyTermsByDept({ variables: { faculty_department_id: val } });
+            if (val) {
+                GetAcademyTermsByDept({ variables: { faculty_department_id: val } });
+                GetStudentsByDept({ variables: { faculty_department_id: val } });
+            }
           }}
           isDisabled={!selectedFaculty}
         />
@@ -230,9 +242,9 @@ export default function AddRequiredFeesPage() {
         <SearchByTypingSelect
           title={t("Dashboard.user")}
           labelToShow={(option) => {
-            return `${option?.fullname} - ${option?.email}`
+            return `${option?.first_name} ${option?.second_name} ${option?.third_name} ${option?.fourth_name} - ${option?.email}`
           }}
-          findKey={"id"}
+          findKey={"userId"}
           isArabic={isArabic}
           options={students}
           value={selectedUser}
@@ -242,6 +254,7 @@ export default function AddRequiredFeesPage() {
             if (selectedUser != null) formik.setFieldError("selectedUser", undefined);
 
           }}
+          isDisabled={!selectedDepartment}
         />
 
         {/*   getTransactionTypes
