@@ -5,10 +5,6 @@ query GetUsersRequiredFees {
     getUsersRequiredFees {
         id
         is_paid
-        title_en
-        title_ar
-        description_en
-        description_ar
         createdAt
         updatedAt
         student_id {
@@ -57,6 +53,17 @@ query GetUsersRequiredFees {
             transaction_date
             transaction_serial
         }
+        academy_term_id {
+            id
+            title_ar
+            title_en
+            status
+            study_year
+            current_year
+            term_number
+            min_study_hours
+            max_study_hours
+        }
     }
 }
 `;
@@ -66,10 +73,6 @@ mutation CreateUsersRequiredFees($input:UsersRequiredFeesInput!) {
     createUsersRequiredFees(input: $input) {
         id
         is_paid
-        title_en
-        title_ar
-        description_en
-        description_ar
         createdAt
         updatedAt
     }
@@ -81,10 +84,6 @@ mutation UpdateUsersRequiredFees($id:ID!,$input:UsersRequiredFeesInput!) {
     updateUsersRequiredFees(id: $id, input: $input) {
         id
         is_paid
-        title_en
-        title_ar
-        description_en
-        description_ar
         createdAt
         updatedAt
     }
@@ -109,10 +108,6 @@ query FilteredPagedUsersRequiredFees(
         usersRequiredFees {
             id
             is_paid
-            title_en
-            title_ar
-            description_en
-            description_ar
             createdAt
             updatedAt
             student_id {
@@ -160,6 +155,17 @@ query FilteredPagedUsersRequiredFees(
                 payment_document_file
                 transaction_date
                 transaction_serial
+            }
+            academy_term_id {
+                id
+                title_ar
+                title_en
+                status
+                study_year
+                current_year
+                term_number
+                min_study_hours
+                max_study_hours
             }
         }
     }

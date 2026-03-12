@@ -194,9 +194,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
             let data = {
                 is_paid: newStatus == "inActive" ? false : true,
                 student_id: selectedRow?.student_id?.id,
-                fees_types_ids: selectedRow?.fees_types_ids?.map(el => el?.id),
-                title_ar: selectedRow?.title_ar,
-                title_en: selectedRow?.title_en
+                fees_types_ids: selectedRow?.fees_types_ids?.map(el => el?.id)
                 //   operation_type:row?.operation_type
             }
             const result = await UpdateUsersRequiredFees({

@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { useMutation, useQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import { Box, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import Header from "../../components/PageHeader/header";
@@ -14,7 +14,10 @@ import { useState } from "react";
 import { CREATE_USER_REQUIRED_FEES } from "../../graphql/requiredFeesQueries";
 import { GET_ALL_USERES_FOR_ADMIN } from "../../graphql/userQueriesForAdmin";
 import { GET_ALL_FEES_TYPES } from "../../graphql/feeTypesQueries";
+import { GET_ALL_FACULITIES, GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID } from "../../graphql/facultyQuiries";
+import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms";
 import { useSelector } from "react-redux";
+
 
 export default function AddRequiredFeesPage() {
   const theme = useTheme();
@@ -43,44 +46,69 @@ export default function AddRequiredFeesPage() {
     loading: gettingFees
   } = useQuery(GET_ALL_FEES_TYPES, { fetchPolicy: "network-only" });
 
+  // get academy terms
+  // const {
+  //   data: { getAcademyTerms } = {},
+  //   loading: termsLoading
+  // } = useQuery(GET_ALL_ACADEMY_TERMS, { fetchPolicy: "network-only" });
+
+  // get all faculties
+  const {
+    data: { faculties } = {},
+    loading: facultiesLoading
+  } = useQuery(GET_ALL_FACULITIES, { fetchPolicy: "network-only" });
+
+  // get departments in faculty
+  const [
+    GetDepartmentsByFaculty,
+    {
+      data: { getFacultyDepartmentsByFaculty: departments } = {},
+      loading: departmentsLoading
+    }
+  ] = useLazyQuery(GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, { fetchPolicy: "network-only" });
+
+  // get academy terms by department
+  const [
+    GetAcademyTermsByDept,
+    {
+      data: { getAcademyTermsByFacultyDepartment: academyTerms } = {},
+      loading: academyTermsLoading
+    }
+  ] = useLazyQuery(GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID, { fetchPolicy: "network-only" });
+
   const me = useSelector(state => state.user.loggedUser);
 
   const [selectedFeeType, setSelectedFeeType] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedAcademyTerm, setSelectedAcademyTerm] = useState(null);
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
 
   // console.log("users",users);
 
   let students = users?.filter(el => el?.role == "student");
 
   const formik = useFormik({
-    initialValues: {
-      title_ar: "",
-      title_en: "",
-      description_ar: "",
-      description_en: "",
-    },
+    initialValues: {},
 
     validationSchema: Yup.object({
-      title_ar: Yup.string().required(t("admissions.errors.required")),
-      title_en: Yup.string().required(t("admissions.errors.required")),
       selectedFeeType: selectedFeeType == 0 && Yup.string()
         .required(t("admissions.errors.required"))
         .notOneOf(["0"], t("admissions.errors.required")),
       selectedUser: selectedUser == null && Yup.string()
         .required(t("admissions.errors.required"))
         .notOneOf(["0"], t("admissions.errors.required")),
-
-
+      selectedAcademyTerm: selectedAcademyTerm == null && Yup.string()
+        .required(t("admissions.errors.required"))
+        .notOneOf(["0"], t("admissions.errors.required")),
     }),
     onSubmit: async (values) => {
 
 
       console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+      console.log('xxxxxxxxxxxxxxxxxxxxxxx');
       let data = {
-        title_ar: values?.title_ar,
-        title_en: values?.title_en,
-        description_ar: values?.description_ar,
-        description_en: values?.description_en,
+        academy_term_id: selectedAcademyTerm,
         fees_types_ids: selectedFeeType,
         student_id: selectedUser,
         website_user_id: me?.id
@@ -120,7 +148,7 @@ export default function AddRequiredFeesPage() {
 
   let translateText = isArabic ? "رسوم الطلاب" : "Student Required Fees";
   let translateText2 = isArabic ? "رسوم الطلاب" : "Student Required Fees";
-  if (usersLoading || gettingFees) return <LoadingPage />;
+  if (usersLoading || gettingFees || facultiesLoading) return <LoadingPage />;
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Header
@@ -143,50 +171,59 @@ export default function AddRequiredFeesPage() {
 
       >
 
-        <VerticalTextField
-          title={t("form.name_ar", { item: translateText2 })}
-          fieldID={"title_ar"}
-          fieldName={"title_ar"}
-          placeholder={t("form.name_ar", { item: translateText2 })}
-          value={formik.values.title_ar}
-          onChange={formik.handleChange}
-          error={formik.touched.title_ar && Boolean(formik.errors.title_ar)}
-          helperText={formik.touched.title_ar && formik.errors.title_ar}
+        {/* Faculty selection */}
+        <SearchByTypingSelect
+          title={t("Dashboard.faculty")}
+          labelToShow={(option) => {
+            return isArabic ? option?.title_ar : option?.title_en;
+          }}
+          findKey={"id"}
+          isArabic={isArabic}
+          options={faculties ? faculties : []}
+          value={selectedFaculty}
+          setValue={(val) => {
+            setSelectedFaculty(val);
+            setSelectedDepartment(null);
+            setSelectedAcademyTerm(null);
+            if (val) GetDepartmentsByFaculty({ variables: { faculty_id: val } });
+          }}
         />
 
-        <VerticalTextField
-          title={t("form.name_en", { item: translateText2 })}
-          fieldID={"title_en"}
-          fieldName={"title_en"}
-          placeholder={t("form.name_en", { item: translateText2 })}
-          value={formik.values.title_en}
-          onChange={formik.handleChange}
-          error={formik.touched.title_en && Boolean(formik.errors.title_en)}
-          helperText={formik.touched.title_en && formik.errors.title_en}
+        {/* Department selection */}
+        <SearchByTypingSelect
+          title={t("Dashboard.facultyDepartment")}
+          labelToShow={(option) => {
+            return isArabic ? option?.title_ar : option?.title_en;
+          }}
+          findKey={"id"}
+          isArabic={isArabic}
+          options={departments ? departments : []}
+          value={selectedDepartment}
+          setValue={(val) => {
+            setSelectedDepartment(val);
+            setSelectedAcademyTerm(null);
+            if (val) GetAcademyTermsByDept({ variables: { faculty_department_id: val } });
+          }}
+          isDisabled={!selectedFaculty}
         />
 
-        <VerticalTextField
-          isMultiline={true}
-          title={t("Dashboard.arDescription", { item: translateText2 })}
-          fieldID={"description_ar"}
-          fieldName={"description_ar"}
-          placeholder={t("Dashboard.arDescription", { item: translateText2 })}
-          value={formik.values.description_ar}
-          onChange={formik.handleChange}
-          error={formik.touched.description_ar && Boolean(formik.errors.description_ar)}
-          helperText={formik.touched.description_ar && formik.errors.description_ar}
-        />
+        {/* Academy Term */}
+        <SearchByTypingSelect
+          title={t("Dashboard.academyTerm")}
+          labelToShow={(option) => {
+            return isArabic ? option?.title_ar : option?.title_en;
+          }}
+          findKey={"id"}
+          isArabic={isArabic}
+          options={academyTerms ? academyTerms : []}
+          value={selectedAcademyTerm}
+          setValue={setSelectedAcademyTerm}
+          error={formik.errors.selectedAcademyTerm && t("admissions.errors.required")}
+          onBlur={(e) => {
+            if (selectedAcademyTerm != null) formik.setFieldError("selectedAcademyTerm", undefined);
 
-        <VerticalTextField
-          isMultiline={true}
-          title={t("Dashboard.enDescription", { item: translateText2 })}
-          fieldID={"description_en"}
-          fieldName={"description_en"}
-          placeholder={t("Dashboard.enDescription", { item: translateText2 })}
-          value={formik.values.description_en}
-          onChange={formik.handleChange}
-          error={formik.touched.description_en && Boolean(formik.errors.description_en)}
-          helperText={formik.touched.description_en && formik.errors.description_en}
+          }}
+          isDisabled={!selectedDepartment}
         />
 
         {/* المستخدم */}

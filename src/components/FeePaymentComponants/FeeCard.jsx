@@ -144,7 +144,7 @@ export default function FeeCard({
             }}
           >
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              {isArabic ? data?.title_ar : data?.title_en}
+              {isArabic ? data?.academy_term_id?.title_ar : data?.academy_term_id?.title_en}
             </Typography>
 
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
@@ -236,8 +236,8 @@ export default function FeeCard({
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
               {t("fee.feeTitle", {
                 semester: isArabic
-                  ? data?.description_ar
-                  : data?.description_en,
+                  ? data?.academy_term_id?.title_ar
+                  : data?.academy_term_id?.title_en,
               })}
             </Typography>
 
