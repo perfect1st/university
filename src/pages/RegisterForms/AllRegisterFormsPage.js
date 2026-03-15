@@ -306,10 +306,10 @@ export default function AllRegisterFormsPage() {
                         }}
                         handleDetailsClick={handleDetailsClick}
                         onStatusChange={onStatusChange}
-                        statusOptions={registerFormStatusArr}
+                        statusOptions={registerFormStatusArr.filter(opt => opt.id !== "pending")}
                         showStatusChange={true}
-                        hasEditBtn={true}
-                        handleEditClick={handleEditClick}
+                        hasEditBtn={false}
+                        isInDetails={true}
                     />
 
                     <FilterComponent totalPages={totalPages} />
