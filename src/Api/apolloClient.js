@@ -3,7 +3,7 @@ import { ApolloLink } from "@apollo/client";
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { getToken, getUserCookie } from "../hooks/authCookies";
 
-export const baseURL="https://university.dd.net.sa";
+export const baseURL="https://uas.edu.ye";
 // http://server.perfect1st.com:4000/graphql
 
 const httpLink = new HttpLink({ uri: `${baseURL}/graphql` });

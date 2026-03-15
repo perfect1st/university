@@ -39,6 +39,7 @@ const Home = () => {
   const vision = visionArticalesData?.getArticlesByDepartment.filter((el)=>el.status == "published") || [];
   const Activities = getDepartmentByFatherIdData?.getDepartmentsByFather.filter((el)=>el.status == true) || [];
   console.log("News Articles:", news);
+  console.log("Home Slider Data:", HomeSliderData);
   console.log("Vision Articles:", vision);
   console.log("Activities Articles:", getDepartmentByFatherIdData);
   

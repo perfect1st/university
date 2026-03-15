@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL=axios.create({baseURL:"http://178.128.38.212:3000/api"});
+const baseURL=axios.create({baseURL:"https://uas.edu.ye/api"});
 
 export const config={
     headers:{
