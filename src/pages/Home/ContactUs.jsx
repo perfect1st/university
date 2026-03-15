@@ -5,11 +5,12 @@ import {
   InputAdornment, MenuItem, Alert, Snackbar
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@apollo/client/react";
+import { useQuery, useMutation } from "@apollo/client/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import i18n from "../../i18n/i18n";
 import { GET_SITE_CONFIG } from "../../graphql/siteConfigQueries";
+import { CREATE_CONTACT_US } from "../../graphql/contactQueries";
 
 // Icons
 import EmailIcon from '@mui/icons-material/Email';
@@ -31,35 +32,59 @@ export default function UniversityContact() {
 
   // 1. تعريف مخطط التحقق (Yup Schema)
   const contactSchema = Yup.object().shape({
-    fullName: Yup.string()
+    name: Yup.string()
       .min(3, isArabic ? "الاسم قصير جداً" : "Name is too short")
       .required(isArabic ? "الاسم الكامل مطلوب" : "Full name is required"),
     email: Yup.string()
       .email(isArabic ? "بريد إلكتروني غير صالح" : "Invalid email address")
       .required(isArabic ? "البريد الإلكتروني مطلوب" : "Email is required"),
-    department: Yup.string().required(),
+    phone: Yup.string()
+      .required(isArabic ? "رقم الهاتف مطلوب" : "Phone number is required"),
+    subject: Yup.string()
+      .required(isArabic ? "الموضوع مطلوب" : "Subject is required"),
     message: Yup.string()
       .min(10, isArabic ? "الرسالة يجب أن تكون 10 أحرف على الأقل" : "Message must be at least 10 characters")
       .required(isArabic ? "محتوى الرسالة مطلوب" : "Message is required"),
   });
 
   // 2. إعداد Formik
+  const [CreateContactUs] = useMutation(CREATE_CONTACT_US, {
+    onCompleted: (data) => {
+        setShowSuccess(true);
+    },
+    onError: (error) => {
+        console.error("Contact Us submission error:", error);
+    }
+  });
+
   const formik = useFormik({
     initialValues: {
-      fullName: "",
+      name: "",
       email: "",
-      department: "general",
+      phone: "",
+      subject: "general",
       message: "",
     },
     validationSchema: contactSchema,
-    onSubmit: (values, { resetForm, setSubmitting }) => {
-      // هنا يتم استدعاء Mutation أو API لإرسال البيانات
-      console.log("Form Data:", values);
-      setTimeout(() => {
-        setShowSuccess(true);
-        setSubmitting(false);
+    onSubmit: async (values, { resetForm, setSubmitting }) => {
+      try {
+        await CreateContactUs({
+            variables: {
+                input: {
+                    name: values.name,
+                    email: values.email,
+                    phone: values.phone,
+                    subject: values.subject,
+                    message: values.message
+                }
+            }
+        });
         resetForm();
-      }, 2000);
+      } catch (err) {
+        console.error("Contact form error:", err);
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 
@@ -157,15 +182,15 @@ export default function UniversityContact() {
                      <Grid item xs={12} md={6}>
                        <TextField 
                          fullWidth
-                         id="fullName"
-                         name="fullName"
+                         id="name"
+                         name="name"
                          label={isArabic ? "الاسم الكامل" : "Full Name"} 
                          variant="filled"
-                         value={formik.values.fullName}
+                         value={formik.values.name}
                          onChange={formik.handleChange}
                          onBlur={formik.handleBlur}
-                         error={formik.touched.fullName && Boolean(formik.errors.fullName)}
-                         helperText={formik.touched.fullName && formik.errors.fullName}
+                         error={formik.touched.name && Boolean(formik.errors.name)}
+                         helperText={formik.touched.name && formik.errors.name}
                          InputProps={{ startAdornment: <InputAdornment position="start"><PersonIcon /></InputAdornment> }}
                        />
                      </Grid>
@@ -184,19 +209,34 @@ export default function UniversityContact() {
                          InputProps={{ startAdornment: <InputAdornment position="start"><EmailIcon /></InputAdornment> }}
                        />
                      </Grid>
-                     <Grid item xs={12}>
-                       <TextField
-                         select fullWidth id="department" name="department"
-                         label={isArabic ? "القسم الموجه إليه" : "Department"}
-                         variant="filled" 
-                         value={formik.values.department}
-                         onChange={formik.handleChange}
-                       >
-                         <MenuItem value="general">{isArabic ? "استفسارات عامة" : "General"}</MenuItem>
-                         <MenuItem value="admission">{isArabic ? "شؤون الطلاب" : "Student Affairs"}</MenuItem>
-                         <MenuItem value="tech">{isArabic ? "الدعم الفني" : "Technical Support"}</MenuItem>
-                       </TextField>
-                     </Grid>
+                     <Grid item xs={12} md={6}>
+                        <TextField 
+                          fullWidth
+                          id="phone"
+                          name="phone"
+                          label={isArabic ? "رقم الهاتف" : "Phone Number"} 
+                          variant="filled"
+                          value={formik.values.phone}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          error={formik.touched.phone && Boolean(formik.errors.phone)}
+                          helperText={formik.touched.phone && formik.errors.phone}
+                          InputProps={{ startAdornment: <InputAdornment position="start"><PhoneIcon /></InputAdornment> }}
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          select fullWidth id="subject" name="subject"
+                          label={isArabic ? "الموضوع" : "Subject"}
+                          variant="filled" 
+                          value={formik.values.subject}
+                          onChange={formik.handleChange}
+                        >
+                          <MenuItem value="general">{isArabic ? "استفسارات عامة" : "General"}</MenuItem>
+                          <MenuItem value="admission">{isArabic ? "شؤون الطلاب" : "Student Affairs"}</MenuItem>
+                          <MenuItem value="tech">{isArabic ? "الدعم الفني" : "Technical Support"}</MenuItem>
+                        </TextField>
+                      </Grid>
                      <Grid item xs={12}>
                        <TextField 
                          fullWidth multiline rows={4} 

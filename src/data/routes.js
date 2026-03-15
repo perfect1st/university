@@ -150,6 +150,12 @@ const routesData = {
       path: "/registerForms",
     },
     {
+      key: "contactMessages",
+      isPublic: true,
+      label: { en: "Contact Messages", ar: "رسائل اتصل بنا" },
+      path: "/contact-messages",
+    },
+    {
       key: "groups", // Matches groups.view
       label: { en: "Permissions Groups", ar: "مجموعات الصلاحيات" },
       path: "/PermissionsGroups",

@@ -111,6 +111,7 @@ import GroupFormPage from "./pages/PermissionsGroupsPage/GroupFormPage";
 import ELibraryPage from "./pages/E-Library/ELibraryPage";
 import AddBookPage from "./pages/E-Library/AddBookPage";
 import BookDetailsPage from "./pages/E-Library/BookDetailsPage";
+import AllContactMessagesPage from "./pages/ContactUs/AllContactMessagesPage";
 import SiteSettings from "./pages/SiteSettings/SiteSettings";
 
 // Public Site Config Pages
@@ -975,6 +976,15 @@ function App() {
                     <Route index element={
                       <MainLayout isLoggedIn={true}>
                         <AllRegisterFormsPage />
+                      </MainLayout>
+                    } />
+                  </Route>
+
+                  {/* رسائل اتصل بنا */}
+                  <Route path="/contact-messages">
+                    <Route index element={
+                      <MainLayout isLoggedIn={true}>
+                        <AllContactMessagesPage />
                       </MainLayout>
                     } />
                   </Route>
