@@ -59,6 +59,7 @@ const TableComponent = ({
   hasDetailsBtn = false,
   onClickDetails,
   DetailsNavigate = "Details",
+  statusOptions = [], // New prop for custom status options
 }) => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
@@ -518,47 +519,75 @@ const TableComponent = ({
         {/* Status options - only show if enabled */}
         {showStatusChange && selectedRow && (
           <>
-            <MenuItem
-              onClick={() => handleStatusSelect("active")}
-              sx={{
-                color: statusStyles.active.textColor,
-                borderLeft: isArabic
-                  ? ""
-                  : `4px solid ${statusStyles.active.borderColor}`,
-                borderRight: isArabic
-                  ? `4px solid ${statusStyles.active.borderColor}`
-                  : "",
-                pl: 2,
-                py: 1,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Box component="span" sx={{ ml: 1 }}>
-                {activeStatusLabel ? t(activeStatusLabel) : t("active")}
-              </Box>
-            </MenuItem>
+            {statusOptions && statusOptions.length > 0 ? (
+              statusOptions.map((option) => (
+                <MenuItem
+                  key={option.id}
+                  onClick={() => handleStatusSelect(option.id)}
+                  sx={{
+                    color: option.color || theme.palette.text.primary,
+                    borderLeft: isArabic
+                      ? ""
+                      : `4px solid ${option.borderColor || theme.palette.divider}`,
+                    borderRight: isArabic
+                      ? `4px solid ${option.borderColor || theme.palette.divider}`
+                      : "",
+                    pl: 2,
+                    py: 1,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box component="span" sx={{ ml: 1 }}>
+                    {isArabic ? option.arKey || option.label : option.enKey || option.label}
+                  </Box>
+                </MenuItem>
+              ))
+            ) : (
+              <>
+                <MenuItem
+                  onClick={() => handleStatusSelect("active")}
+                  sx={{
+                    color: statusStyles.active.textColor,
+                    borderLeft: isArabic
+                      ? ""
+                      : `4px solid ${statusStyles.active.borderColor}`,
+                    borderRight: isArabic
+                      ? `4px solid ${statusStyles.active.borderColor}`
+                      : "",
+                    pl: 2,
+                    py: 1,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box component="span" sx={{ ml: 1 }}>
+                    {activeStatusLabel ? t(activeStatusLabel) : t("active")}
+                  </Box>
+                </MenuItem>
 
-            <MenuItem
-              onClick={() => handleStatusSelect("inActive")}
-              sx={{
-                color: statusStyles.inActive.textColor,
-                borderLeft: isArabic
-                  ? ""
-                  : `4px solid ${statusStyles.inActive.borderColor}`,
-                borderRight: isArabic
-                  ? `4px solid ${statusStyles.inActive.borderColor}`
-                  : "",
-                pl: 2,
-                py: 1,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Box component="span" sx={{ ml: 1 }}>
-                {inActiveStatusLabel ? t(inActiveStatusLabel) : t("inActive")}
-              </Box>
-            </MenuItem>
+                <MenuItem
+                  onClick={() => handleStatusSelect("inActive")}
+                  sx={{
+                    color: statusStyles.inActive.textColor,
+                    borderLeft: isArabic
+                      ? ""
+                      : `4px solid ${statusStyles.inActive.borderColor}`,
+                    borderRight: isArabic
+                      ? `4px solid ${statusStyles.inActive.borderColor}`
+                      : "",
+                    pl: 2,
+                    py: 1,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box component="span" sx={{ ml: 1 }}>
+                    {inActiveStatusLabel ? t(inActiveStatusLabel) : t("inActive")}
+                  </Box>
+                </MenuItem>
+              </>
+            )}
           </>
         )}
       </Menu>

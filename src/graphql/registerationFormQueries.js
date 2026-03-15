@@ -205,3 +205,24 @@ query FilteredPagedRegisterForms($search: String, $status: String, $page: Int, $
     }
 }
 `;
+export const APPROVE_REGISTER_FORM = gql`
+mutation ApproveRegisterForm($id: ID!) {
+    approveRegisterForm(id: $id) {
+        success
+        message
+        registration_Fees_Value
+        registration_Fees_Id
+    }
+}
+`;
+
+export const REJECT_REGISTER_FORM = gql`
+mutation RejectRegisterForm($id: ID!) {
+    rejectRegisterForm(id: $id) {
+        success
+        message
+        registration_Fees_Value
+        registration_Fees_Id
+    }
+}
+`;

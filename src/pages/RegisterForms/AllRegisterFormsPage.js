@@ -3,15 +3,16 @@ import { useTheme } from "@emotion/react";
 import { Box, Chip, CircularProgress, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useLazyQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
-import { GET_ALL_FILTERED_REGISTER_FORMS } from "../../graphql/registerationFormQueries";
+import { GET_ALL_FILTERED_REGISTER_FORMS, APPROVE_REGISTER_FORM, REJECT_REGISTER_FORM } from "../../graphql/registerationFormQueries";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import notify from "../../components/notify";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
@@ -29,9 +30,9 @@ export default function AllRegisterFormsPage() {
     const isArabic = i18n.language === "ar";
 
     const registerFormStatusArr = [
-        { id: "pending", arKey: "قيد الانتظار", enKey: "Pending" },
-        { id: "accepted", arKey: "مقبول", enKey: "Accepted" },
-        { id: "rejected", arKey: "مرفوض", enKey: "Rejected" },
+        { id: "pending", arKey: "قيد الانتظار", enKey: "Pending", color: theme.palette.warning.main, borderColor: theme.palette.warning.light },
+        { id: "accepted", arKey: "مقبول", enKey: "Accepted", color: theme.palette.success.main, borderColor: theme.palette.success.light },
+        { id: "rejected", arKey: "مرفوض", enKey: "Rejected", color: theme.palette.error.main, borderColor: theme.palette.error.light },
     ];
 
     // filtered register forms
@@ -51,6 +52,48 @@ export default function AllRegisterFormsPage() {
         },
     ] = useLazyQuery(GET_ALL_FILTERED_REGISTER_FORMS, {
         fetchPolicy: "network-only",
+    });
+
+    const [ApproveRegisterForm] = useMutation(APPROVE_REGISTER_FORM, {
+        onCompleted: (data) => {
+            if (data?.approveRegisterForm?.success) {
+                notify(t("success"), "success");
+                FilteredPagedRegisterForms({
+                    variables: {
+                        page: Number(searchParams.get("page")) || 1,
+                        limit: Number(searchParams.get("limit")) || 10,
+                        search: searchParams.get("search") || "",
+                        status: (searchParams.get("status") && searchParams.get("status") !== "0") ? searchParams.get("status") : undefined
+                    }
+                });
+            } else {
+                notify(data?.approveRegisterForm?.message || t("error"), "error");
+            }
+        },
+        onError: (error) => {
+            notify(error?.message || t("error"), "error");
+        }
+    });
+
+    const [RejectRegisterForm] = useMutation(REJECT_REGISTER_FORM, {
+        onCompleted: (data) => {
+            if (data?.rejectRegisterForm?.success) {
+                notify(t("success"), "success");
+                FilteredPagedRegisterForms({
+                    variables: {
+                        page: Number(searchParams.get("page")) || 1,
+                        limit: Number(searchParams.get("limit")) || 10,
+                        search: searchParams.get("search") || "",
+                        status: (searchParams.get("status") && searchParams.get("status") !== "0") ? searchParams.get("status") : undefined
+                    }
+                });
+            } else {
+                notify(data?.rejectRegisterForm?.message || t("error"), "error");
+            }
+        },
+        onError: (error) => {
+            notify(error?.message || t("error"), "error");
+        }
     });
 
     useEffect(() => {
@@ -157,9 +200,36 @@ export default function AllRegisterFormsPage() {
         }
     };
 
+    const handleEditClick = (selectedRow) => {
+        // Since the requirement is "edit status", we can use this for status change 
+        // Or if there's a specific edit page, we can navigate to it.
+        // For now, we enable the status change via TableComponent's built-in status menu.
+        console.log("Edit clicked for row:", selectedRow);
+    };
+
     const handleDetailsClick = (selectedRow) => {
         // Navigate to details if needed in the future
         // navigate(`details/${selectedRow?.id}`, { state: selectedRow });
+    };
+
+    const onStatusChange = async (selectedRow, newStatus) => {
+        try {
+            if (newStatus === "accepted") {
+                await ApproveRegisterForm({
+                    variables: {
+                        id: selectedRow.id
+                    }
+                });
+            } else if (newStatus === "rejected") {
+                await RejectRegisterForm({
+                    variables: {
+                        id: selectedRow.id
+                    }
+                });
+            }
+        } catch (error) {
+            console.error("Status change error:", error);
+        }
     };
 
     const onFilterChange = async (filterOBJ) => {
@@ -226,7 +296,7 @@ export default function AllRegisterFormsPage() {
                         hasNavigateBtn={false}
                         data={registerFormsToShow}
                         loading={pageLoading}
-                        dontShowActions={true}
+                        dontShowActions={false}
                         sx={{
                             flex: 1,
                             overflow: "auto",
@@ -235,6 +305,11 @@ export default function AllRegisterFormsPage() {
                             width: "100%",
                         }}
                         handleDetailsClick={handleDetailsClick}
+                        onStatusChange={onStatusChange}
+                        statusOptions={registerFormStatusArr}
+                        showStatusChange={true}
+                        hasEditBtn={true}
+                        handleEditClick={handleEditClick}
                     />
 
                     <FilterComponent totalPages={totalPages} />
