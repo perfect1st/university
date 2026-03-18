@@ -467,11 +467,37 @@
   "login":"تسجيل الدخول",
   "registerForms": {
     "title": "استمارات التسجيل",
+    "detailsTitle": "تفاصيل استمارة التسجيل",
+    "editTitle": "تعديل استمارة التسجيل",
     "searchPlaceholder": "ابحث بالاسم أو البريد الإلكتروني أو رقم الجوال",
     "status": {
       "pending": "قيد الانتظار",
       "accepted": "مقبول",
       "rejected": "مرفوض"
-    }
+    },
+    "personalInfo": "المعلومات الشخصية",
+    "academicInfo": "المعلومات الأكاديمية",
+    "identificationStatus": "الهوية والحالة",
+    "documents": "المرفقات",
+    "homeTel": "هاتف المنزل",
+    "birthDate": "تاريخ الميلاد",
+    "address": "العنوان",
+    "academyTerm": "الترم الأكاديمي",
+    "educationYear": "سنة التعليم",
+    "studyPlace": "مكان الدراسة",
+    "highSchoolNumber": "رقم الجلوس (الثانوية)",
+    "generalGrade": "التقدير العام",
+    "gpa": "المعدل التراكمي",
+    "idType": "نوع الهوية",
+    "idNumber": "رقم الهوية",
+    "idTypeOpts": {
+      "id_card": "بطاقة شخصية",
+      "passport": "جواز سفر",
+      "residence_permit": "إقامة"
+    },
+    "insideYemen": "من داخل اليمن",
+    "highSchoolCertificate": "شهادة الثانوية العامة",
+    "paidDocument": "سند الدفع",
+    "noFile": "لا يوجد ملف مرفوع"
   }
 }

@@ -226,3 +226,42 @@ mutation RejectRegisterForm($id: ID!) {
     }
 }
 `;
+
+export const UPDATE_REGISTER_FORM = gql`
+mutation UpdateRegisterForm($id: ID!, $input: RegisterFormInput!) {
+    updateRegisterForm(id: $id, input: $input) {
+        id
+        first_name
+        second_name
+        third_name
+        fourth_name
+        birthdate
+        gender
+        is_paid
+        paid_document_file
+        high_school_certificate_file
+        address
+        status
+        mobile
+        home_tel
+        email
+        is_inside_yemen
+        transactions_id
+        national_id_type
+        national_id
+        education_year
+        study_place
+        high_school_student_number
+        general_grade
+        gpa
+        createdAt
+        updatedAt
+    }
+}
+`;
+
+export const DELETE_REGISTER_FORM = gql`
+mutation DeleteRegisterForm($id: ID!) {
+    deleteRegisterForm(id: $id)
+}
+`;

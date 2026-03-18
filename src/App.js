@@ -86,6 +86,7 @@ import AllRequiredFeesPage from "./pages/StudentRequiredFees/AllRequiredFeesPage
 import AddRequiredFeesPage from "./pages/StudentRequiredFees/AddRequiredFeesPage";
 import RequiredFeeDetailsPage from "./pages/StudentRequiredFees/RequiredFeeDetailsPage";
 import AllRegisterFormsPage from "./pages/RegisterForms/AllRegisterFormsPage";
+import RegisterFormDetailsPage from "./pages/RegisterForms/RegisterFormDetailsPage";
 import SubTitleDetailsPage from "./pages/websiteDepartments/SubTitleDetailsPage";
 import AllLecturesPage from "./pages/LecturesSchedule/AllLecturesPage";
 import AddLecturePage from "./pages/LecturesSchedule/AddLecturePage";
@@ -976,6 +977,11 @@ function App() {
                     <Route index element={
                       <MainLayout isLoggedIn={true}>
                         <AllRegisterFormsPage />
+                      </MainLayout>
+                    } />
+                    <Route path="details/:id" element={
+                      <MainLayout isLoggedIn={true}>
+                        <RegisterFormDetailsPage />
                       </MainLayout>
                     } />
                   </Route>

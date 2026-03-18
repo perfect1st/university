@@ -56,6 +56,8 @@ const TableComponent = ({
   inActiveStatusLabel = "false",
   hasEditBtn = false,
   handleEditClick,
+  hasDeleteBtn = false,
+  handleDeleteClick,
   hasDetailsBtn = false,
   onClickDetails,
   DetailsNavigate = "Details",
@@ -589,6 +591,28 @@ const TableComponent = ({
               </>
             )}
           </>
+        )}
+
+        {/* delete */}
+        {hasDeleteBtn && (
+          <MenuItem
+            onClick={() => {
+              handleDeleteClick(selectedRow);
+              handleClose();
+            }}
+            sx={{
+              color: theme.palette.error.main,
+              borderLeft: isArabic
+                ? ""
+                : `4px solid ${alpha(theme.palette.error.main, 0.5)}`,
+              borderRight: isArabic
+                ? `4px solid ${alpha(theme.palette.error.main, 0.5)}`
+                : "",
+              py: 1,
+            }}
+          >
+            {t("delete")}
+          </MenuItem>
         )}
       </Menu>
     </TableContainer>

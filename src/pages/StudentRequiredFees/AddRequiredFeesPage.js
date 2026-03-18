@@ -88,7 +88,7 @@ export default function AddRequiredFeesPage() {
   const me = useSelector(state => state.user.loggedUser);
 
   const [selectedFeeType, setSelectedFeeType] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState([]);
   const [selectedAcademyTerm, setSelectedAcademyTerm] = useState(null);
   const [selectedFaculty, setSelectedFaculty] = useState(null);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
@@ -104,7 +104,7 @@ export default function AddRequiredFeesPage() {
       selectedFeeType: selectedFeeType == 0 && Yup.string()
         .required(t("admissions.errors.required"))
         .notOneOf(["0"], t("admissions.errors.required")),
-      selectedUser: selectedUser == null && Yup.string()
+      selectedUser: selectedUser.length == 0 && Yup.string()
         .required(t("admissions.errors.required"))
         .notOneOf(["0"], t("admissions.errors.required")),
       selectedAcademyTerm: selectedAcademyTerm == null && Yup.string()
@@ -128,8 +128,7 @@ export default function AddRequiredFeesPage() {
 
       try {
         console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-        console.log(data);
-
+        
         // return;
         const result = await CreateUsersRequiredFees({
           variables: {
@@ -240,6 +239,7 @@ export default function AddRequiredFeesPage() {
 
         {/* المستخدم */}
         <SearchByTypingSelect
+          multiple={true}
           title={t("Dashboard.user")}
           labelToShow={(option) => {
             return `${option?.first_name} ${option?.second_name} ${option?.third_name} ${option?.fourth_name} - ${option?.email}`
@@ -251,7 +251,7 @@ export default function AddRequiredFeesPage() {
           setValue={setSelectedUser}
           error={formik.errors.selectedUser && t("admissions.errors.required")}
           onBlur={(e) => {
-            if (selectedUser != null) formik.setFieldError("selectedUser", undefined);
+            if (selectedUser.length > 0) formik.setFieldError("selectedUser", undefined);
 
           }}
           isDisabled={!selectedDepartment}

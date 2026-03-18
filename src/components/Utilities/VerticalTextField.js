@@ -1,4 +1,4 @@
-import { Autocomplete, Box, MenuItem, TextField, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Autocomplete, Box, Checkbox, MenuItem, TextField, Typography, useMediaQuery, useTheme } from '@mui/material'
 import React from 'react'
 import { CustomSelect } from './CustomTextField';
 import { isNullableType } from 'graphql';
@@ -177,8 +177,20 @@ export const SearchByTypingSelect = ({
         }}>
           <Autocomplete
             multiple={multiple}
+            disableCloseOnSelect={multiple}
             options={options}
             getOptionLabel={(option) => labelToShow(option)}
+            renderOption={(props, option, { selected }) => (
+              <li {...props}>
+                {multiple && (
+                  <Checkbox
+                    style={{ marginRight: 8 }}
+                    checked={selected}
+                  />
+                )}
+                {labelToShow(option)}
+              </li>
+            )}
             value={
               multiple
                 ? options?.filter(opt => value.includes(opt[findKey]))
@@ -305,8 +317,20 @@ export const SearchByTypingSelect2 = ({
       }}>
         <Autocomplete
           multiple={multiple}
+          disableCloseOnSelect={multiple}
           options={options || []}
           getOptionLabel={(option) => labelToShow(option)}
+          renderOption={(props, option, { selected }) => (
+            <li {...props}>
+              {multiple && (
+                <Checkbox
+                  style={{ marginRight: 8 }}
+                  checked={selected}
+                />
+              )}
+              {labelToShow(option)}
+            </li>
+          )}
           value={multiple 
             ? (options?.filter(opt => value?.includes(opt[findKey])) || []) 
             : (options?.find(opt => opt[findKey] === value) || null)

@@ -9,7 +9,7 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
-import { GET_ALL_FILTERED_REGISTER_FORMS, APPROVE_REGISTER_FORM, REJECT_REGISTER_FORM } from "../../graphql/registerationFormQueries";
+import { GET_ALL_FILTERED_REGISTER_FORMS, APPROVE_REGISTER_FORM, REJECT_REGISTER_FORM, DELETE_REGISTER_FORM } from "../../graphql/registerationFormQueries";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
 import { useEffect, useState } from "react";
 import notify from "../../components/notify";
@@ -52,6 +52,16 @@ export default function AllRegisterFormsPage() {
         },
     ] = useLazyQuery(GET_ALL_FILTERED_REGISTER_FORMS, {
         fetchPolicy: "network-only",
+    });
+
+    const [DeleteRegisterForm] = useMutation(DELETE_REGISTER_FORM, {
+        refetchQueries: [{ query: GET_ALL_FILTERED_REGISTER_FORMS }],
+        onCompleted: () => {
+            notify(t("success"), "success");
+        },
+        onError: (err) => {
+            notify(err.message || t("error"), "error");
+        }
     });
 
     const [ApproveRegisterForm] = useMutation(APPROVE_REGISTER_FORM, {
@@ -201,15 +211,30 @@ export default function AllRegisterFormsPage() {
     };
 
     const handleEditClick = (selectedRow) => {
-        // Since the requirement is "edit status", we can use this for status change 
-        // Or if there's a specific edit page, we can navigate to it.
-        // For now, we enable the status change via TableComponent's built-in status menu.
-        console.log("Edit clicked for row:", selectedRow);
+        if (!update) return notify(t("no_permission.title"), "error");
+        // Remove statusDisplay which is a JSX element to avoid DataCloneError
+        const { statusDisplay, ...cleanRow } = selectedRow;
+        navigate(`details/${selectedRow?.id}`, { state: cleanRow });
+    };
+
+    const handleDeleteClick = async (selectedRow) => {
+        if (!canDelete) return notify(t("no_permission.title"), "error");
+        
+        if (window.confirm(t("Dashboard.confirm") || "Are you sure?")) {
+            try {
+                await DeleteRegisterForm({
+                    variables: { id: selectedRow.id }
+                });
+            } catch (error) {
+                console.error("Delete error:", error);
+            }
+        }
     };
 
     const handleDetailsClick = (selectedRow) => {
-        // Navigate to details if needed in the future
-        // navigate(`details/${selectedRow?.id}`, { state: selectedRow });
+        // Remove statusDisplay which is a JSX element to avoid DataCloneError
+        const { statusDisplay, ...cleanRow } = selectedRow;
+        navigate(`details/${selectedRow?.id}`, { state: cleanRow });
     };
 
     const onStatusChange = async (selectedRow, newStatus) => {
@@ -293,7 +318,6 @@ export default function AllRegisterFormsPage() {
 
                     <TableComponent
                         columns={columns}
-                        hasNavigateBtn={false}
                         data={registerFormsToShow}
                         loading={pageLoading}
                         dontShowActions={false}
@@ -309,7 +333,10 @@ export default function AllRegisterFormsPage() {
                         statusOptions={registerFormStatusArr.filter(opt => opt.id !== "pending")}
                         showStatusChange={true}
                         hasEditBtn={false}
-                        isInDetails={true}
+                        handleEditClick={handleEditClick}
+                        hasDeleteBtn={canDelete}
+                        handleDeleteClick={handleDeleteClick}
+                        isInDetails={false}
                     />
 
                     <FilterComponent totalPages={totalPages} />

@@ -97,7 +97,7 @@ export default function RequiredFeeDetailsPage() {
   const me = useSelector(state => state.user.loggedUser);
 
   const [selectedFeeType, setSelectedFeeType] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState([]);
   const [selectedAcademyTerm, setSelectedAcademyTerm] = useState(null);
   const [selectedFaculty, setSelectedFaculty] = useState(null);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
@@ -106,7 +106,7 @@ export default function RequiredFeeDetailsPage() {
   useEffect(() => {
     if (feeDetails) {
         setSelectedFeeType(feeDetails?.fees_types_ids?.map(el => el?.id) ?? []);
-        setSelectedUser(feeDetails?.student_id?.id);
+        setSelectedUser(feeDetails?.student_id?.id ? [feeDetails?.student_id?.id] : []);
         setSelectedAcademyTerm(feeDetails?.academy_term_id?.id);
         setSelectedFaculty(feeDetails?.academy_term_id?.faculty_department_id?.faculty_id?.id);
         setSelectedDepartment(feeDetails?.academy_term_id?.faculty_department_id?.id);
@@ -136,10 +136,10 @@ export default function RequiredFeeDetailsPage() {
     enableReinitialize: true,
 
     validationSchema: Yup.object({
-      selectedFeeType: selectedFeeType == 0 && Yup.string()
+      selectedFeeType: selectedFeeType.length == 0 && Yup.string()
         .required(t("admissions.errors.required"))
         .notOneOf(["0"], t("admissions.errors.required")),
-      selectedUser: selectedUser == null && Yup.string()
+      selectedUser: selectedUser.length == 0 && Yup.string()
         .required(t("admissions.errors.required"))
         .notOneOf(["0"], t("admissions.errors.required")),
       selectedAcademyTerm: selectedAcademyTerm == null && Yup.string()
@@ -294,6 +294,7 @@ export default function RequiredFeeDetailsPage() {
 
         {/* المستخدم */}
         <SearchByTypingSelect
+          multiple={true}
           title={t("Dashboard.user")}
           labelToShow={(option) => {
             return `${option?.first_name} ${option?.second_name} ${option?.third_name} ${option?.fourth_name} - ${option?.email}`
@@ -305,7 +306,7 @@ export default function RequiredFeeDetailsPage() {
           setValue={setSelectedUser}
           error={formik.errors.selectedUser && t("admissions.errors.required")}
           onBlur={(e) => {
-            if (selectedUser != null) formik.setFieldError("selectedUser", undefined);
+            if (selectedUser.length > 0) formik.setFieldError("selectedUser", undefined);
 
           }}
           isDisabled={!selectedDepartment}

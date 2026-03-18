@@ -2,7 +2,8 @@ import React, { useMemo, useState } from "react";
 import { 
     Box, Grid, Dialog, DialogTitle, DialogContent, 
     DialogActions, TextField, Button, Typography, IconButton, 
-    Stack, Divider, Chip
+    Stack, Divider, Chip,
+    MenuItem
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useQuery, useMutation } from "@apollo/client/react";
@@ -14,6 +15,7 @@ import {
     MARK_CONTACT_US_AS_READ, 
     REPLY_CONTACT_US 
 } from "../../graphql/contactQueries";
+import CustomTextFieldAdmin, { CustomSelect } from "../../components/Utilities/CustomTextField";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
 import LoadingComponent from "../../components/LoadingComponent";
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -26,6 +28,9 @@ export default function AllContactMessagesPage() {
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedMessage, setSelectedMessage] = useState(null);
     const [replyText, setReplyText] = useState("");
+    const [searchTerms, setSearchTerms] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
+    const [appliedFilters, setAppliedFilters] = useState({ search: "", status: "all" });
 
     const { data, loading: pageLoading, refetch } = useQuery(GET_CONTACT_US_MESSAGES, {
         fetchPolicy: "network-only",
@@ -34,7 +39,7 @@ export default function AllContactMessagesPage() {
     const [markContactUsAsRead] = useMutation(MARK_CONTACT_US_AS_READ);
     const [replyContactUs, { loading: replyLoading }] = useMutation(REPLY_CONTACT_US, {
         onCompleted: () => {
-            notify(isArabic ? "تم إرسال الرد بنجاح" : "Reply sent successfully", "success");
+            notify(isArabic ? "تم حفظ الإجراء بنجاح" : "Action saved successfully", "success");
             setOpenDialog(false);
             refetch();
         },
@@ -72,6 +77,16 @@ export default function AllContactMessagesPage() {
         });
     };
 
+    const handleApplyFilter = () => {
+        setAppliedFilters({ search: searchTerms, status: statusFilter });
+    };
+
+    const handleResetFilter = () => {
+        setSearchTerms("");
+        setStatusFilter("all");
+        setAppliedFilters({ search: "", status: "all" });
+    };
+
     const contactMessages = data?.getContactUsMessages || [];
 
     const columns = [
@@ -86,7 +101,25 @@ export default function AllContactMessagesPage() {
     ];
 
     const contactMessagesToShow = useMemo(() => {
-        return contactMessages.map((el, i) => {
+        let filtered = contactMessages;
+
+        if (appliedFilters.search) {
+            const query = appliedFilters.search.toLowerCase();
+            filtered = filtered.filter(el => 
+                el.name?.toLowerCase().includes(query) ||
+                el.email?.toLowerCase().includes(query) ||
+                el.subject?.toLowerCase().includes(query) ||
+                el.message?.toLowerCase().includes(query)
+            );
+        }
+
+        if (appliedFilters.status !== "all") {
+            filtered = filtered.filter(el => 
+                appliedFilters.status === "new" ? (el.status === "new" || el.status === "unread") : (el.status !== "new" && el.status !== "unread")
+            );
+        }
+
+        return filtered.map((el, i) => {
             const date = new Date(Number(el.createdAt));
             return {
                 ...el,
@@ -107,7 +140,7 @@ export default function AllContactMessagesPage() {
                 )
             };
         });
-    }, [contactMessages, isArabic]);
+    }, [contactMessages, isArabic, appliedFilters]);
 
     if (pageLoading) return <LoadingComponent />;
 
@@ -121,6 +154,50 @@ export default function AllContactMessagesPage() {
                         i18n={i18n}
                         haveBtn={false}
                     />
+
+                    <Grid container spacing={2} sx={{ mb: 3, mt: 1, alignItems: "center" }}>
+                        <Grid item xs={12} md={5}>
+                            <CustomTextFieldAdmin
+                                placeholder={isArabic ? "بحث بالاسم، البريد، أو الرسالة..." : "Search by name, email, or message..."}
+                                value={searchTerms}
+                                setValue={setSearchTerms}
+                                height="45px"
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={3}>
+                            <CustomSelect
+                                value={statusFilter}
+                                setValue={setStatusFilter}
+                                height="45px"
+                            >
+                                <MenuItem value="all">{isArabic ? "الكل" : "All Status"}</MenuItem>
+                                <MenuItem value="new">{isArabic ? "جديد" : "New"}</MenuItem>
+                                <MenuItem value="read">{isArabic ? "تمت القراءة" : "Read"}</MenuItem>
+                            </CustomSelect>
+                        </Grid>
+                        <Grid item xs={12} md={2}>
+                             <Button 
+                                variant="contained" 
+                                color="primary" 
+                                fullWidth 
+                                onClick={handleApplyFilter}
+                                sx={{ height: "45px", borderRadius: "8px" }}
+                             >
+                                {isArabic ? "بحث" : "search"}
+                             </Button>
+                        </Grid>
+                        <Grid item xs={12} md={2}>
+                             <Button 
+                                variant="outlined" 
+                                color="error" 
+                                fullWidth 
+                                onClick={handleResetFilter}
+                                sx={{ height: "45px", borderRadius: "8px" }}
+                             >
+                                {isArabic ? "إلغاء" : "Cancel"}
+                             </Button>
+                        </Grid>
+                    </Grid>
 
                     <TableComponent
                         columns={columns}
@@ -187,7 +264,7 @@ export default function AllContactMessagesPage() {
                         color="primary" 
                         disabled={replyLoading}
                     >
-                        {replyLoading ? (isArabic ? "جاري الإرسال..." : "Sending...") : (isArabic ? "إرسال الرد" : "Send Reply")}
+                        {replyLoading ? (isArabic ? "جاري الإرسال..." : "Sending...") : (isArabic ? "حفظ الإجراء" : "Save Action")}
                     </Button>
                 </DialogActions>
             </Dialog>

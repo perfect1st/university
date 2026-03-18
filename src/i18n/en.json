@@ -429,11 +429,37 @@
   "login": "Login",
   "registerForms": {
     "title": "Register Forms",
+    "detailsTitle": "Register Form Details",
+    "editTitle": "Edit Registration Form",
     "searchPlaceholder": "Search by Name, Email or Mobile",
     "status": {
       "pending": "Pending",
       "accepted": "Accepted",
       "rejected": "Rejected"
-    }
+    },
+    "personalInfo": "Personal Information",
+    "academicInfo": "Academic Information",
+    "identificationStatus": "Identification & Status",
+    "documents": "Documents",
+    "idTypeOpts": {
+      "id_card": "ID Card",
+      "passport": "Passport",
+      "residence_permit": "Residence Permit"
+    },
+    "homeTel": "Home Tel",
+    "birthDate": "Birth Date",
+    "address": "Address",
+    "academyTerm": "Academy Term",
+    "educationYear": "Education Year",
+    "studyPlace": "Study Place",
+    "highSchoolNumber": "High School Number",
+    "generalGrade": "General Grade",
+    "gpa": "GPA",
+    "idType": "ID Type",
+    "idNumber": "ID Number",
+    "insideYemen": "Inside Yemen",
+    "highSchoolCertificate": "High School Certificate",
+    "paidDocument": "Paid Document",
+    "noFile": "No file uploaded"
   }
 }

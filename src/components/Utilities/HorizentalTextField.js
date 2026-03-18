@@ -62,8 +62,7 @@ export default function HorizentalTextField({
         type == "file" ?
       (
         <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", flexGrow: "1" }}>
-           {
-            !handleDownloadFile &&<Box
+            <Box
               sx={{
                 display: "flex",
                 gap: 1,
@@ -75,41 +74,45 @@ export default function HorizentalTextField({
                 <Box
   key={index}
   component="img"
-  src={`${baseURL}${img}`}
+  src={img?.startsWith("http") ? img : `${baseURL}${img}`}
   alt={`صورة-${index}`}
   loading="lazy"
   sx={{
-    width: 40,
-    height: 28,
+    width: 60,
+    height: 40,
     objectFit: "cover",
     objectPosition: "center",
     borderRadius: "4px",
     boxShadow: "0px 1px 2px rgba(0,0,0,0.15)",
     border: "1px solid #e0e0e0",
     display: "inline-block",
+    cursor: "pointer"
   }}
+  onClick={() => window.open(img?.startsWith("http") ? img : `${baseURL}${img}`, "_blank")}
 />
                 ))
                 :
+                value && (
          <Box
   component="img"
-  src={`${baseURL}${value}`}
-  alt="Flag"
+  src={value?.startsWith("http") ? value : `${baseURL}${value}`}
+  alt="Document"
   loading="lazy"
   sx={{
-    width: 40,
-    height: 28,
+    width: 60,
+    height: 40,
     objectFit: "cover",
     objectPosition: "center",
     borderRadius: "4px",
     boxShadow: "0px 1px 2px rgba(0,0,0,0.1)",
     border: "1px solid #eee",
+    cursor: "pointer"
   }}
+  onClick={() => window.open(value?.startsWith("http") ? value : `${baseURL}${value}`, "_blank")}
 />
-
-              }
+                )
+          }
             </Box>
-           }
             
 
 
@@ -186,6 +189,7 @@ export default function HorizentalTextField({
               disabled={isDisabled}
               id={fieldID}
               name={fieldName}
+              type={type}
               placeholder={placeholder}
               value={value}
               onChange={onChange}
@@ -226,7 +230,7 @@ export default function HorizentalTextField({
 }
 
 
-export const HorizentalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange, isDisabled=false }) => {
+export const HorizentalTextFieldSelect = ({ t, backgroundColor, title, defaultOptionLabel, children, value, setValue, error, setError, onChange, isDisabled=false, fieldName, fieldID }) => {
   const theme = useTheme();
   return (
     <Box sx={{ display: "flex", flexWrap: "nowrap !important", mb: 4, backgroundColor: theme.palette.primary?.gray, gap: 3, p: 1, height: "60px" }}>
@@ -236,7 +240,7 @@ export const HorizentalTextFieldSelect = ({ t, backgroundColor, title, defaultOp
       </Typography>
 
       <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
-        <CustomSelect t={t} label={defaultOptionLabel} backgroundColor={theme.palette.primary?.gray} value={value} setValue={setValue} error={error} setError={setError} onChange={onChange} isDisabled={isDisabled}  >
+        <CustomSelect t={t} label={defaultOptionLabel} backgroundColor={theme.palette.primary?.gray} value={value} setValue={setValue} error={error} setError={setError} onChange={onChange} isDisabled={isDisabled} fieldName={fieldName} fieldID={fieldID} >
           {children}
         </CustomSelect>
 

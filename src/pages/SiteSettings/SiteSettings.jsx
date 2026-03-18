@@ -66,7 +66,7 @@ export default function SiteSettings() {
   const { t } = useTranslation();
   const theme = useTheme();
   const isArabic = i18n.language === "ar";
-  
+
   const [formData, setFormData] = useState({
     privacy_policy_ar: "",
     privacy_policy_en: "",
@@ -153,16 +153,16 @@ export default function SiteSettings() {
         accessibility_ar: formData.accessibility_ar,
         accessibility_en: formData.accessibility_en,
         social_media: {
-            facebook: formData.social_media.facebook,
-            twitter: formData.social_media.twitter,
-            tiktok: formData.social_media.tiktok
+          facebook: formData.social_media.facebook,
+          twitter: formData.social_media.twitter,
+          tiktok: formData.social_media.tiktok
         },
         contact_info: {
-            email: formData.contact_info.email,
-            whatsapp_saudi: formData.contact_info.whatsapp_saudi,
-            whatsapp_yemeni: formData.contact_info.whatsapp_yemeni,
-            phone_yemeni_1: formData.contact_info.phone_yemeni_1,
-            phone_yemeni_2: formData.contact_info.phone_yemeni_2,
+          email: formData.contact_info.email,
+          whatsapp_saudi: formData.contact_info.whatsapp_saudi,
+          whatsapp_yemeni: formData.contact_info.whatsapp_yemeni,
+          phone_yemeni_1: formData.contact_info.phone_yemeni_1,
+          phone_yemeni_2: formData.contact_info.phone_yemeni_2,
         },
       };
 
@@ -185,14 +185,14 @@ export default function SiteSettings() {
 
       <form onSubmit={handleSubmit}>
         <Stack spacing={4} sx={{ mt: 3 }}>
-          
+
           {/* Main Content Area (Split layout for large screens) */}
           <Grid container spacing={4}>
-            
+
             {/* Left Column (or Top on Mobile): The large Legal Documents editor */}
-            <Grid item xs={12} lg={8}>
+            <Grid item xs={12} lg={12}>
               <Card elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2, height: "100%", display: "flex", flexDirection: "column" }}>
-                <CardHeader 
+                <CardHeader
                   title={
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <GavelIcon color="primary" />
@@ -210,14 +210,14 @@ export default function SiteSettings() {
                     <Tab icon={<AccessibilityNewIcon sx={{ mr: isArabic ? 0 : 1, ml: isArabic ? 1 : 0 }} fontSize="small" />} iconPosition="start" label={isArabic ? "إمكانية الوصول" : "Accessibility"} sx={{ fontWeight: 'bold' }} />
                   </Tabs>
                 </Box>
-                
+
                 <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
                   {/* TAB 0: Privacy Policy */}
                   <TabPanel value={tabIndex} index={0}>
                     <Grid container spacing={3} sx={{ height: "100%" }}>
                       <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
                         <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
-                           🌐 {isArabic ? "النسخة العربية" : "Arabic Version"}
+                          🌐 {isArabic ? "النسخة العربية" : "Arabic Version"}
                         </Typography>
                         <TextField
                           fullWidth multiline rows={18}
@@ -229,7 +229,7 @@ export default function SiteSettings() {
                       </Grid>
                       <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
                         <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
-                           🌐 {isArabic ? "النسخة الإنجليزية" : "English Version"}
+                          🌐 {isArabic ? "النسخة الإنجليزية" : "English Version"}
                         </Typography>
                         <TextField
                           fullWidth multiline rows={18}
@@ -248,7 +248,7 @@ export default function SiteSettings() {
                     <Grid container spacing={3} sx={{ height: "100%" }}>
                       <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
                         <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
-                           🌐 {isArabic ? "النسخة العربية" : "Arabic Version"}
+                          🌐 {isArabic ? "النسخة العربية" : "Arabic Version"}
                         </Typography>
                         <TextField
                           fullWidth multiline rows={18}
@@ -260,7 +260,7 @@ export default function SiteSettings() {
                       </Grid>
                       <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
                         <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
-                           🌐 {isArabic ? "النسخة الإنجليزية" : "English Version"}
+                          🌐 {isArabic ? "النسخة الإنجليزية" : "English Version"}
                         </Typography>
                         <TextField
                           fullWidth multiline rows={18}
@@ -279,7 +279,7 @@ export default function SiteSettings() {
                     <Grid container spacing={3} sx={{ height: "100%" }}>
                       <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
                         <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
-                           🌐 {isArabic ? "النسخة العربية" : "Arabic Version"}
+                          🌐 {isArabic ? "النسخة العربية" : "Arabic Version"}
                         </Typography>
                         <TextField
                           fullWidth multiline rows={18}
@@ -291,7 +291,7 @@ export default function SiteSettings() {
                       </Grid>
                       <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
                         <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
-                           🌐 {isArabic ? "النسخة الإنجليزية" : "English Version"}
+                          🌐 {isArabic ? "النسخة الإنجليزية" : "English Version"}
                         </Typography>
                         <TextField
                           fullWidth multiline rows={18}
@@ -307,130 +307,148 @@ export default function SiteSettings() {
                 </CardContent>
               </Card>
             </Grid>
-            
+
             {/* Right Column (or Bottom on Mobile): Social and Contact */}
-            <Grid item xs={12} lg={4}>
-              <Stack spacing={4}>
-                {/* Social Media Section */}
-                <Card elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2 }}>
-                  <CardHeader 
-                    title={
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <ShareIcon color="secondary" />
-                        <Typography variant="h6" fontWeight="600">
-                          {isArabic ? "التواصل الاجتماعي" : "Social Media"}
-                        </Typography>
-                      </Box>
-                    }
-                    sx={{ bgcolor: 'action.hover', borderBottom: "1px solid", borderColor: "divider", pb: 1.5, pt: 2 }}
-                  />
-                  <CardContent sx={{ pt: 3 }}>
-                    <Stack spacing={3}>
-                      <TextField
-                        fullWidth label="Facebook"
-                        value={formData.social_media.facebook}
-                        onChange={(e) => handleChange("facebook", e.target.value, "social_media")} variant="outlined"
-                        InputProps={{ sx: { direction: "ltr" }, startAdornment: (
-                            <InputAdornment position="start">
-                              <FacebookIcon color="action" />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                      <TextField
-                        fullWidth label="Twitter"
-                        value={formData.social_media.twitter}
-                        onChange={(e) => handleChange("twitter", e.target.value, "social_media")} variant="outlined"
-                        InputProps={{ sx: { direction: "ltr" }, startAdornment: (
-                            <InputAdornment position="start">
-                              <TwitterIcon color="action" />
-                            </InputAdornment>
-                          ), }}
-                      />
-                      <TextField
-                        fullWidth label="TikTok"
-                        value={formData.social_media.tiktok}
-                        onChange={(e) => handleChange("tiktok", e.target.value, "social_media")} variant="outlined"
-                        InputProps={{ sx: { direction: "ltr" }, startAdornment: (
-                            <InputAdornment position="start">
-                              <AiFillTikTok size={24} color="gray" />
-                            </InputAdornment>
-                          ), }}
-                      />
-                    </Stack>
-                  </CardContent>
-                </Card>
+            <Grid item xs={12} lg={6}>
+              {/* <Stack spacing={4}> */}
+              {/* Social Media Section */}
+              <Card elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2 }}>
+                <CardHeader
+                  title={
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <ShareIcon color="secondary" />
+                      <Typography variant="h6" fontWeight="600">
+                        {isArabic ? "التواصل الاجتماعي" : "Social Media"}
+                      </Typography>
+                    </Box>
+                  }
+                  sx={{ bgcolor: 'action.hover', borderBottom: "1px solid", borderColor: "divider", pb: 1.5, pt: 2 }}
+                />
+                <CardContent sx={{ pt: 3 }}>
+                  <Stack spacing={3}>
+                    <TextField
+                      fullWidth label="Facebook"
+                      value={formData.social_media.facebook}
+                      onChange={(e) => handleChange("facebook", e.target.value, "social_media")} variant="outlined"
+                      InputProps={{
+                        sx: { direction: "ltr" }, startAdornment: (
+                          <InputAdornment position="start">
+                            <FacebookIcon color="action" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                    <TextField
+                      fullWidth label="Twitter"
+                      value={formData.social_media.twitter}
+                      onChange={(e) => handleChange("twitter", e.target.value, "social_media")} variant="outlined"
+                      InputProps={{
+                        sx: { direction: "ltr" }, startAdornment: (
+                          <InputAdornment position="start">
+                            <TwitterIcon color="action" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                    <TextField
+                      fullWidth label="TikTok"
+                      value={formData.social_media.tiktok}
+                      onChange={(e) => handleChange("tiktok", e.target.value, "social_media")} variant="outlined"
+                      InputProps={{
+                        sx: { direction: "ltr" }, startAdornment: (
+                          <InputAdornment position="start">
+                            <AiFillTikTok size={24} color="gray" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid>
 
-                {/* Contact & Support Info Section */}
-                <Card elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2 }}>
-                  <CardHeader 
-                    title={
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <ContactPhoneIcon color="info.main" />
-                        <Typography variant="h6" fontWeight="600">
-                          {isArabic ? "معلومات الاتصال" : "Contact Info"}
-                        </Typography>
-                      </Box>
-                    }
-                    sx={{ bgcolor: 'action.hover', borderBottom: "1px solid", borderColor: "divider", pb: 1.5, pt: 2 }}
-                  />
-                  <CardContent sx={{ pt: 3 }}>
-                    <Stack spacing={3}>
-                      <TextField
-                        fullWidth label={isArabic ? "البريد الإلكتروني" : "Email"}
-                        value={formData.contact_info.email}
-                        onChange={(e) => handleChange("email", e.target.value, "contact_info")} type="email" variant="outlined"
-                        InputProps={{ sx: { direction: "ltr" }, startAdornment: (
-                            <InputAdornment position="start">
-                              <EmailIcon color="action" />
-                            </InputAdornment>
-                          ), }}
-                      />
-                      <TextField
-                        fullWidth label={isArabic ? "واتساب (السعودية)" : "WhatsApp (Saudi)"}
-                        value={formData.contact_info.whatsapp_saudi}
-                        onChange={(e) => handleChange("whatsapp_saudi", e.target.value, "contact_info")} variant="outlined"
-                        InputProps={{ sx: { direction: "ltr" }, startAdornment: (
-                            <InputAdornment position="start">
-                              <WhatsAppIcon color="action" />
-                            </InputAdornment>
-                          ), }}
-                      />
-                      <TextField
-                        fullWidth label={isArabic ? "واتساب (اليمن)" : "WhatsApp (Yemen)"}
-                        value={formData.contact_info.whatsapp_yemeni}
-                        onChange={(e) => handleChange("whatsapp_yemeni", e.target.value, "contact_info")} variant="outlined"
-                        InputProps={{ sx: { direction: "ltr" }, startAdornment: (
-                            <InputAdornment position="start">
-                              <WhatsAppIcon color="action" />
-                            </InputAdornment>
-                          ), }}
-                      />
-                      <TextField
-                        fullWidth label={isArabic ? "هاتف (اليمن) 1" : "Phone (Yemen) 1"}
-                        value={formData.contact_info.phone_yemeni_1}
-                        onChange={(e) => handleChange("phone_yemeni_1", e.target.value, "contact_info")} variant="outlined"
-                        InputProps={{ sx: { direction: "ltr" }, startAdornment: (
-                            <InputAdornment position="start">
-                              <PhoneIcon color="action" />
-                            </InputAdornment>
-                          ), }}
-                      />
-                      <TextField
-                        fullWidth label={isArabic ? "هاتف (اليمن) 2" : "Phone (Yemen) 2"}
-                        value={formData.contact_info.phone_yemeni_2}
-                        onChange={(e) => handleChange("phone_yemeni_2", e.target.value, "contact_info")} variant="outlined"
-                        InputProps={{ sx: { direction: "ltr" }, startAdornment: (
-                            <InputAdornment position="start">
-                              <PhoneIcon color="action" />
-                            </InputAdornment>
-                          ), }}
-                      />
-                    </Stack>
-                  </CardContent>
-                </Card>
+            <Grid item xs={12} lg={6}>
 
-              </Stack>
+              {/* Contact & Support Info Section */}
+              <Card elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2 }}>
+                <CardHeader
+                  title={
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <ContactPhoneIcon color="info.main" />
+                      <Typography variant="h6" fontWeight="600">
+                        {isArabic ? "معلومات الاتصال" : "Contact Info"}
+                      </Typography>
+                    </Box>
+                  }
+                  sx={{ bgcolor: 'action.hover', borderBottom: "1px solid", borderColor: "divider", pb: 1.5, pt: 2 }}
+                />
+                <CardContent sx={{ pt: 3 }}>
+                  <Stack spacing={3}>
+                    <TextField
+                      fullWidth label={isArabic ? "البريد الإلكتروني" : "Email"}
+                      value={formData.contact_info.email}
+                      onChange={(e) => handleChange("email", e.target.value, "contact_info")} type="email" variant="outlined"
+                      InputProps={{
+                        sx: { direction: "ltr" }, startAdornment: (
+                          <InputAdornment position="start">
+                            <EmailIcon color="action" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                    <TextField
+                      fullWidth label={isArabic ? "واتساب (السعودية)" : "WhatsApp (Saudi)"}
+                      value={formData.contact_info.whatsapp_saudi}
+                      onChange={(e) => handleChange("whatsapp_saudi", e.target.value, "contact_info")} variant="outlined"
+                      InputProps={{
+                        sx: { direction: "ltr" }, startAdornment: (
+                          <InputAdornment position="start">
+                            <WhatsAppIcon color="action" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                    <TextField
+                      fullWidth label={isArabic ? "واتساب (اليمن)" : "WhatsApp (Yemen)"}
+                      value={formData.contact_info.whatsapp_yemeni}
+                      onChange={(e) => handleChange("whatsapp_yemeni", e.target.value, "contact_info")} variant="outlined"
+                      InputProps={{
+                        sx: { direction: "ltr" }, startAdornment: (
+                          <InputAdornment position="start">
+                            <WhatsAppIcon color="action" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                    <TextField
+                      fullWidth label={isArabic ? "هاتف (اليمن) 1" : "Phone (Yemen) 1"}
+                      value={formData.contact_info.phone_yemeni_1}
+                      onChange={(e) => handleChange("phone_yemeni_1", e.target.value, "contact_info")} variant="outlined"
+                      InputProps={{
+                        sx: { direction: "ltr" }, startAdornment: (
+                          <InputAdornment position="start">
+                            <PhoneIcon color="action" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                    <TextField
+                      fullWidth label={isArabic ? "هاتف (اليمن) 2" : "Phone (Yemen) 2"}
+                      value={formData.contact_info.phone_yemeni_2}
+                      onChange={(e) => handleChange("phone_yemeni_2", e.target.value, "contact_info")} variant="outlined"
+                      InputProps={{
+                        sx: { direction: "ltr" }, startAdornment: (
+                          <InputAdornment position="start">
+                            <PhoneIcon color="action" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Stack>
+                </CardContent>
+              </Card>
+
+              {/* </Stack> */}
             </Grid>
           </Grid>
 
