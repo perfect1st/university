@@ -43,7 +43,6 @@ query GetRegisterFormByUserId($user_id:ID!) {
         home_tel
         email
         is_inside_yemen
-        transactions_id
         national_id_type
         national_id
         education_year
@@ -162,7 +161,6 @@ query FilteredPagedRegisterForms($search: String, $status: String, $page: Int, $
             home_tel
             email
             is_inside_yemen
-            transactions_id
             national_id_type
             national_id
             education_year
@@ -246,7 +244,6 @@ mutation UpdateRegisterForm($id: ID!, $input: RegisterFormInput!) {
         home_tel
         email
         is_inside_yemen
-        transactions_id
         national_id_type
         national_id
         education_year
@@ -256,6 +253,65 @@ mutation UpdateRegisterForm($id: ID!, $input: RegisterFormInput!) {
         gpa
         createdAt
         updatedAt
+        user_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
+        nationality_id {
+            id
+            name_ar
+            name_en
+            flag
+            status
+            createdAt
+            updatedAt
+        }
+        faculty_id {
+            id
+            title_ar
+            title_en
+            status
+            required_dep
+            study_years_count
+            createdAt
+            updatedAt
+        }
+        faculty_department_id {
+            id
+            title_ar
+            title_en
+            status
+            createdAt
+            updatedAt
+        }
+        country_id {
+            id
+            name_ar
+            name_en
+            status
+            is_local
+            createdAt
+            updatedAt
+        }
+        city_id {
+            id
+            name_ar
+            name_en
+            country_id
+            status
+            createdAt
+            updatedAt
+        }
     }
 }
 `;

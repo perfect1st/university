@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Box, Grid, Typography, useTheme, MenuItem } from '@mui/material';
+import { Box, Grid, Typography, useTheme, MenuItem, LinearProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client/react';
 import { useFormik } from 'formik';
@@ -12,6 +12,7 @@ import i18n from "../../i18n/i18n";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
 import notify from "../../components/notify";
 import { UPDATE_REGISTER_FORM } from "../../graphql/registerationFormQueries";
+import { baseURL } from '../../Api/apolloClient';
 
 export default function RegisterFormDetailsPage() {
     const { t } = useTranslation();
@@ -22,8 +23,67 @@ export default function RegisterFormDetailsPage() {
     const isArabic = i18n.language === "ar";
 
     const formData = location.state;
-
+    console.log("formData", formData);
     const [updateRegisterForm, { loading: updating }] = useMutation(UPDATE_REGISTER_FORM);
+
+    const [uploadStates, setUploadStates] = useState({
+        high_school_certificate_file: { isUploading: false, progress: 0 },
+        paid_document_file: { isUploading: false, progress: 0 }
+    });
+
+    const handleFileUpload = (e, fieldName) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploadStates(prev => ({
+            ...prev,
+            [fieldName]: { isUploading: true, progress: 0 }
+        }));
+
+        const uploadData = new FormData();
+        uploadData.append("file", file);
+
+        const xhr = new XMLHttpRequest();
+
+        xhr.upload.addEventListener("progress", (event) => {
+            if (event.lengthComputable) {
+                const percent = Math.round((event.loaded / event.total) * 100);
+                setUploadStates(prev => ({
+                    ...prev,
+                    [fieldName]: { ...prev[fieldName], progress: percent }
+                }));
+            }
+        });
+
+        xhr.addEventListener("load", () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                    const data = JSON.parse(xhr.responseText);
+                    formik.setFieldValue(fieldName, `${baseURL}${data?.url}`);
+                    notify(t("admissions.uploadSuccess") || "Uploaded successfully", "success");
+                } catch (error) {
+                    notify(t("admissions.errorUplaod") || "Upload failed", "error");
+                }
+            } else {
+                notify(t("admissions.errorUplaod") || "Upload failed", "error");
+            }
+            setUploadStates(prev => ({
+                ...prev,
+                [fieldName]: { isUploading: false, progress: 0 }
+            }));
+        });
+
+        xhr.addEventListener("error", () => {
+            notify(t("admissions.errorUplaod") || "Upload failed", "error");
+            setUploadStates(prev => ({
+                ...prev,
+                [fieldName]: { isUploading: false, progress: 0 }
+            }));
+        });
+
+        xhr.open("POST", `${baseURL}/api/forms/single`);
+        xhr.send(uploadData);
+    };
 
     const formik = useFormik({
         initialValues: {
@@ -41,11 +101,20 @@ export default function RegisterFormDetailsPage() {
             study_place: formData?.study_place || "",
             high_school_student_number: formData?.high_school_student_number || "",
             general_grade: formData?.general_grade || "",
-            gpa: formData?.gpa || "",
+            gpa: String(formData?.gpa || ""),
             national_id_type: formData?.national_id_type || "id_card",
             national_id: formData?.national_id || "",
             is_inside_yemen: formData?.is_inside_yemen ?? true,
             status: formData?.status || "pending",
+            user_id: formData?.user_id?.id || "",
+            nationality_id: formData?.nationality_id?.id || "",
+            faculty_id: formData?.faculty_id?.id || "",
+            faculty_department_id: formData?.faculty_department_id?.id || "",
+            country_id: formData?.country_id?.id || "",
+            city_id: formData?.city_id?.id || "",
+            academyTerm_id: formData?.academyTerm_id?.id || "",
+            paid_document_file: formData?.paid_document_file || "null",
+            high_school_certificate_file: formData?.high_school_certificate_file || "null",
         },
         enableReinitialize: true,
         validationSchema: Yup.object({
@@ -60,9 +129,10 @@ export default function RegisterFormDetailsPage() {
                     is_inside_yemen: values.is_inside_yemen === "true" || values.is_inside_yemen === true,
                 };
                 
-                delete input.id;
-                delete input.__typename;
-
+                // Remove helper/noise fields if any, though formik values are mostly clean here
+                // We must ensure that we don't send objects, only strings/booleans as expected by the type
+                // The current input object constructed from values should be correct now
+                
                 await updateRegisterForm({
                     variables: {
                         id: id,
@@ -244,21 +314,33 @@ export default function RegisterFormDetailsPage() {
                     <Grid item xs={12} md={6}>
                         <HorizentalTextField 
                             title={t("registerForms.highSchoolCertificate")} 
-                            value={formData?.high_school_certificate_file} 
+                            value={formik.values.high_school_certificate_file} 
                             fieldName="high_school_certificate_file"
                             type="file" 
-                            isDisabled={true} 
+                            isDisabled={false} 
+                            handleChange={(e) => handleFileUpload(e, "high_school_certificate_file")}
                         />
+                        {uploadStates.high_school_certificate_file.isUploading && (
+                            <Box sx={{ width: '100%', mt: -2, mb: 2 }}>
+                                <LinearProgress variant="determinate" value={uploadStates.high_school_certificate_file.progress} />
+                            </Box>
+                        )}
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <HorizentalTextField 
                             title={t("registerForms.paidDocument")} 
-                            value={formData?.paid_document_file} 
+                            value={formik.values.paid_document_file} 
                             fieldName="paid_document_file"
                             type="file" 
-                            isDisabled={true} 
+                            isDisabled={false} 
+                            handleChange={(e) => handleFileUpload(e, "paid_document_file")}
                             placeholder={t("registerForms.noFile")}
                         />
+                        {uploadStates.paid_document_file.isUploading && (
+                            <Box sx={{ width: '100%', mt: -2, mb: 2 }}>
+                                <LinearProgress variant="determinate" value={uploadStates.paid_document_file.progress} />
+                            </Box>
+                        )}
                     </Grid>
 
                     <Grid item xs={12} sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
