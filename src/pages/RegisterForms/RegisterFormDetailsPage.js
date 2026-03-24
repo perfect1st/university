@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Box, Grid, Typography, useTheme, MenuItem, LinearProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -32,17 +32,10 @@ export default function RegisterFormDetailsPage() {
 
     const { data: registerFormData, loading: loadingForm } = useQuery(GET_REGISTER_FORM_BY_ID, {
         variables: { id },
-        onCompleted: (data) => {
-            const form = data?.getRegisterFormById;
-            console.log("formform", form);
-            if (form?.country_id?.id) getCities({ variables: { country_id: form.country_id.id } });
-            if (form?.faculty_id?.id) getDepartments({ variables: { faculty_id: form.faculty_id.id } });
-            if (form?.faculty_department_id?.id) getTerms({ variables: { faculty_department_id: form.faculty_department_id.id } });
-        }
     });
 
     const formData = registerFormData?.getRegisterFormById;
- console.log("formData", formData);
+
     const { data: transactionsData, loading: loadingTransactions } = useQuery(GET_TRANSACTIONS_BY_USER, {
         variables: { user_id: formData?.user_id?.id },
         skip: !formData?.user_id?.id
@@ -55,6 +48,14 @@ export default function RegisterFormDetailsPage() {
     const [getCities, { data: citiesInCountry }] = useLazyQuery(GET_CITIES_BY_COUNTRY_ID);
     const [getDepartments, { data: departmentsInFaculty }] = useLazyQuery(GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID);
     const [getTerms, { data: termsInDepartment }] = useLazyQuery(GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID);
+
+    useEffect(() => {
+        if (formData) {
+            if (formData.country_id?.id) getCities({ variables: { country_id: formData.country_id.id } });
+            if (formData.faculty_id?.id) getDepartments({ variables: { faculty_id: formData.faculty_id.id } });
+            if (formData.faculty_department_id?.id) getTerms({ variables: { faculty_department_id: formData.faculty_department_id.id } });
+        }
+    }, [formData, getCities, getDepartments, getTerms]);
 
     const transactions = transactionsData?.getTransactionsByUser || [];
     const nationalities = nationalitiesData?.nationalities?.filter(el => el.status) || [];
@@ -165,7 +166,7 @@ export default function RegisterFormDetailsPage() {
                 const input = {
                     ...values,
                     is_inside_yemen: values.is_inside_yemen === true || values.is_inside_yemen === "true",
-                    gpa: parseFloat(values.gpa) || 0,
+                    gpa: values.gpa || "0",
                 };
 
                 // Remove user_id as it shouldn't be updated here
