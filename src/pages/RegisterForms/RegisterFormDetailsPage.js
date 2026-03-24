@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Box, Grid, Typography, useTheme, MenuItem, LinearProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useMutation } from '@apollo/client/react';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Header from "../../components/PageHeader/header";
@@ -12,7 +12,9 @@ import i18n from "../../i18n/i18n";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
 import notify from "../../components/notify";
 import { UPDATE_REGISTER_FORM } from "../../graphql/registerationFormQueries";
+import { GET_TRANSACTIONS_BY_USER } from "../../graphql/transactionQueries";
 import { baseURL } from '../../Api/apolloClient';
+import { Button } from '@mui/material';
 
 export default function RegisterFormDetailsPage() {
     const { t } = useTranslation();
@@ -25,6 +27,13 @@ export default function RegisterFormDetailsPage() {
     const formData = location.state;
     console.log("formData", formData);
     const [updateRegisterForm, { loading: updating }] = useMutation(UPDATE_REGISTER_FORM);
+
+    const { data: transactionsData, loading: loadingTransactions } = useQuery(GET_TRANSACTIONS_BY_USER, {
+        variables: { user_id: formData?.user_id?.id },
+        skip: !formData?.user_id?.id
+    });
+
+    const transactions = transactionsData?.getTransactionsByUser || [];
 
     const [uploadStates, setUploadStates] = useState({
         high_school_certificate_file: { isUploading: false, progress: 0 },
@@ -342,6 +351,118 @@ export default function RegisterFormDetailsPage() {
                             </Box>
                         )}
                     </Grid>
+
+                    <Grid item xs={12} sx={{ mt: 3 }}>
+                        <Typography variant="h6" sx={{ mb: 2, color: theme.palette.primary.main, fontWeight: "bold" }}>
+                            {t("transactions.title")}
+                        </Typography>
+                    </Grid>
+
+                    {loadingTransactions ? (
+                        <Grid item xs={12}>
+                            <LinearProgress />
+                        </Grid>
+                    ) : transactions.length > 0 ? (
+                        transactions.map((transaction, index) => (
+                            <Grid item xs={12} key={transaction.id} sx={{ mb: 3 }}>
+                                <Box sx={{ 
+                                    p: 3, 
+                                    border: '1px solid', 
+                                    borderColor: 'divider', 
+                                    borderRadius: 2,
+                                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
+                                    boxShadow: '0 2px 12px rgba(0,0,0,0.08)'
+                                }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, pb: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
+                                        <Typography variant="h6" fontWeight="bold" color="primary">
+                                            {t("transactions.transaction")} #{transaction.transaction_serial}
+                                        </Typography>
+                                        <Box sx={{ 
+                                            px: 1.5, 
+                                            py: 0.5, 
+                                            borderRadius: 1, 
+                                            backgroundColor: transaction.approval_status === 'APPROVED' ? 'success.light' : transaction.approval_status === 'REJECTED' ? 'error.light' : 'warning.light',
+                                            color: '#fff',
+                                            fontSize: '0.875rem',
+                                            fontWeight: 'bold'
+                                        }}>
+                                            {transaction.approval_status}
+                                        </Box>
+                                    </Box>
+
+                                    <Grid container spacing={3}>
+                                        <Grid item xs={12} md={4}>
+                                            <Typography variant="caption" color="textSecondary" sx={{ textTransform: 'uppercase', fontWeight: 'bold' }}>{t("transactions.amount")}</Typography>
+                                            <Typography variant="body1" sx={{ fontWeight: 'medium', fontSize: '1.1rem' }}>{transaction.amount} {t("transactions.currency")}</Typography>
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <Typography variant="caption" color="textSecondary" sx={{ textTransform: 'uppercase', fontWeight: 'bold' }}>{t("transactions.date")}</Typography>
+                                            <Typography variant="body1">{transaction.transaction_date}</Typography>
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <Typography variant="caption" color="textSecondary" sx={{ textTransform: 'uppercase', fontWeight: 'bold' }}>{t("transactions.paymentMethod")}</Typography>
+                                            <Typography variant="body1">{transaction.payment_method_type}</Typography>
+                                        </Grid>
+
+                                        <Grid item xs={12} md={6}>
+                                            <Typography variant="caption" color="textSecondary" sx={{ textTransform: 'uppercase', fontWeight: 'bold' }}>{t("transactions.type")}</Typography>
+                                            <Typography variant="body1">
+                                                {isArabic ? transaction.transaction_type_snapshot?.title_ar : transaction.transaction_type_snapshot?.title_en}
+                                            </Typography>
+                                        </Grid>
+
+                                        <Grid item xs={12} md={6}>
+                                            <Typography variant="caption" color="textSecondary" sx={{ textTransform: 'uppercase', fontWeight: 'bold' }}>{t("transactions.fees")}</Typography>
+                                            <Box sx={{ mt: 0.5 }}>
+                                                {transaction.fees_type_snapshot?.map((fee, fIdx) => (
+                                                    <Typography key={fee.id} variant="body2" sx={{ backgroundColor: 'action.hover', px: 1, py: 0.5, borderRadius: 1, display: 'inline-block', mr: 1, mb: 1 }}>
+                                                        {isArabic ? fee.title_ar : fee.title_en}
+                                                    </Typography>
+                                                ))}
+                                            </Box>
+                                        </Grid>
+
+                                        {transaction.rejection_reason && (
+                                            <Grid item xs={12}>
+                                                <Typography variant="caption" color="error" sx={{ textTransform: 'uppercase', fontWeight: 'bold' }}>{t("transactions.rejectionReason")}</Typography>
+                                                <Typography variant="body2" color="error">{transaction.rejection_reason}</Typography>
+                                            </Grid>
+                                        )}
+
+                                        {transaction.payment_document_file && (
+                                            <Grid item xs={12}>
+                                                <Button 
+                                                    variant="outlined" 
+                                                    size="small"
+                                                    href={transaction.payment_document_file} 
+                                                    target="_blank" 
+                                                    rel="noreferrer"
+                                                    sx={{ mt: 1 }}
+                                                >
+                                                    {t("transactions.viewDocument")}
+                                                </Button>
+                                            </Grid>
+                                        )}
+                                    </Grid>
+                                </Box>
+                            </Grid>
+                        ))
+                    ) : (
+                        <Grid item xs={12}>
+                            <Box sx={{ p: 2, textAlign: "center", border: '1px dashed', borderColor: 'error.main', borderRadius: 1 }}>
+                                <Typography color="error" sx={{ mb: 2, fontWeight: "bold" }}>
+                                    {t("transactions.notPaidMessage")}
+                                </Typography>
+                                <Button 
+                                    variant="contained" 
+                                    color="primary" 
+                                    onClick={() => navigate("/transactions/add", { state: { user_id: formData.user_id, register_form_id: formData.id } })}
+                                >
+                                    {t("transactions.goToAdd")}
+                                </Button>
+                            </Box>
+                        </Grid>
+                    )}
 
                     <Grid item xs={12} sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
                         <SubmitButton loading={updating} t={t} />

@@ -199,6 +199,21 @@ query FilteredPagedRegisterForms($search: String, $status: String, $page: Int, $
                 createdAt
                 updatedAt
             }
+            user_id {
+                id
+                serial
+                username
+                fullname
+                email
+                mobile
+                role
+                status
+                profile_image
+                qid_number
+                is_inside_yemen
+                createdAt
+                updatedAt
+            }
         }
     }
 }

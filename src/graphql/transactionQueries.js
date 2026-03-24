@@ -145,3 +145,88 @@ mutation UpdateTransaction($id:ID!,$input:TransactionInput!) {
     }
 }
 `;
+
+export const GET_TRANSACTIONS_BY_USER = gql`
+query GetTransactionsByUser($user_id: ID!) {
+    getTransactionsByUser(user_id: $user_id) {
+        id
+        serial
+        payment_method_type
+        amount
+        payment_document_file
+        approval_status
+        rejection_reason
+        transaction_date
+        transaction_serial
+        transaction_type_snapshot {
+            id
+            title_ar
+            title_en
+            operation_type
+            notes
+            status
+        }
+        fees_type_snapshot {
+            id
+            title_ar
+            title_en
+            inside_yemen_value
+            outside_yemen_value
+            status
+        }
+        user_id {
+            id
+            serial
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+            groups {
+                id
+                serial
+                name_ar
+                name_en
+                permissions
+                createdAt
+                updatedAt
+            }
+            register_form_id {
+                id
+                serial
+                first_name
+                second_name
+                third_name
+                fourth_name
+                birthdate
+                gender
+                is_paid
+                paid_document_file
+                high_school_certificate_file
+                address
+                status
+                reviewed_at
+                mobile
+                home_tel
+                email
+                is_inside_yemen
+                national_id_type
+                national_id
+                education_year
+                study_place
+                high_school_student_number
+                general_grade
+                gpa
+                createdAt
+                updatedAt
+            }
+        }
+    }
+}
+`;
