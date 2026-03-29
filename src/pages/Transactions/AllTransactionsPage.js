@@ -82,6 +82,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("tran
         if (searchText) variablesObj.search = searchText;
         if (searchParams.get("payment_method_type")) variablesObj.payment_method_type = searchParams.get("payment_method_type");
         if (searchParams.get("operation_type")) variablesObj.operation_type = searchParams.get("operation_type");
+        if (searchParams.get("transaction_type_id")) variablesObj.transaction_type_id = searchParams.get("transaction_type_id");
 
         GetTransactions({
             variables: variablesObj
@@ -161,6 +162,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("tran
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         if (filterOBJ.hasOwnProperty("payment_method_type") && filterOBJ.payment_method_type !== "0") searchParams.set("payment_method_type", filterOBJ.payment_method_type);
         if (filterOBJ.hasOwnProperty("operation_type") && filterOBJ.operation_type !== "0") searchParams.set("operation_type", filterOBJ.operation_type);
+        if (filterOBJ.hasOwnProperty("transaction_type_id") && filterOBJ.transaction_type_id !== "0") searchParams.set("transaction_type_id", filterOBJ.transaction_type_id);
 
 
         setSearchParams(searchParams);

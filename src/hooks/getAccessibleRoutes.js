@@ -1,6 +1,8 @@
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import routesData from "../data/routes";
+import { useQuery } from "@apollo/client/react";
+import { GET_ALL_TRANSACTION_TYPES } from "../graphql/transactionTypeQueries";
 
 const useAccessibleRoutes = () => {
   const user = useSelector((state) => state.user.loggedUser);
@@ -50,7 +52,52 @@ const filteredRoutes = useMemo(() => {
 
   }, [user]);
 
-  return filteredRoutes;
+  const { data: transTypesData } = useQuery(GET_ALL_TRANSACTION_TYPES, {
+    skip: user?.role?.toLowerCase() !== "admin",
+  });
+
+  const finalRoutes = useMemo(() => {
+    if (user?.role?.toLowerCase() !== "admin" || !transTypesData?.getTransactionTypes) {
+      return filteredRoutes;
+    }
+
+    const filteredTypes = transTypesData.getTransactionTypes.filter(
+      (type) => type.status === true,
+    );
+
+    if (filteredTypes.length === 0) return filteredRoutes;
+
+    const dynamicMenu = {
+      key: "transactionstypes",
+      label: {
+        ar: "أنواع المعاملات",
+        en: "Transaction Types",
+      },
+      // No icon as requested
+      children: filteredTypes.map((type) => ({
+        key: `type-${type.id}`,
+        label: {
+          ar: type.title_ar,
+          en: type.title_en,
+        },
+        path: `/transactions?transaction_type_id=${type.id}`,
+      })),
+    };
+
+    const transactionsIndex = filteredRoutes.findIndex(
+      (route) => route.key?.toLowerCase() === "transactions",
+    );
+
+    if (transactionsIndex !== -1) {
+      const result = [...filteredRoutes];
+      result.splice(transactionsIndex, 0, dynamicMenu);
+      return result;
+    }
+
+    return [...filteredRoutes, dynamicMenu];
+  }, [filteredRoutes, transTypesData, user]);
+
+  return finalRoutes;
 };
 
 export default useAccessibleRoutes;

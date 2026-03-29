@@ -42,14 +42,16 @@ query GetTransactionsFiltered(
     $page: Int!
     $operation_type: String
     $search: String
-    $payment_method_type: String
+    $payment_method_type: String,
+    $transaction_type_id: ID
 ) {
     getTransactionsFiltered(
         operation_type: $operation_type
         page: $page
         limit: $limit
         search: $search
-        payment_method_type: $payment_method_type
+        payment_method_type: $payment_method_type,
+        transaction_type_id: $transaction_type_id
     ) {
         total
         transactions {

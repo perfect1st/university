@@ -13,12 +13,6 @@ query Users {
         profile_image
         qid_number
         is_inside_yemen
-        birthdate
-        gender
-        national_id_type
-        national_id
-        address
-        home_tel
         register_form_id {
             id
             first_name
