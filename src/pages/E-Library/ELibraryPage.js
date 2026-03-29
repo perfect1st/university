@@ -84,6 +84,7 @@ export default function ELibraryPage() {
 
   // Table Setup
   const columns = [
+    { key: "serial", label: t("Serial") },
     { key: "title_ar", label: t("Dashboard.NameInArabic") },
     { key: "title_en", label: t("Dashboard.NameInEnglish") },
     { key: "author_name", label: t("form.author_name") },

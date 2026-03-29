@@ -4,6 +4,7 @@ export const GET_ALL_MATERIALS = gql`
 query Materials {
     materials {
         id
+        serial
         title_ar
         title_en
         status
@@ -53,6 +54,7 @@ export const CREATE_NEW_MATERIAL = gql`
 mutation CreateMaterial($input:MaterialInput!) {
     createMaterial(input: $input) {
         id
+        serial
         title_ar
         title_en
         status
@@ -71,6 +73,7 @@ export const UPDATE_MATERIAL_BY_ID = gql`
 mutation UpdateMaterial($id:ID!,$input:MaterialInput!) {
     updateMaterial(id: $id, input: $input) {
         id
+        serial
         title_ar
         title_en
         status
@@ -89,6 +92,7 @@ export const GET_MATERIALS_BY_DEPARTMENT_ID = gql`
 query MaterialsByDepartment($faculty_department_id:ID!) {
     materialsByDepartment(faculty_department_id: $faculty_department_id) {
         id
+        serial
         title_ar
         title_en
         status
@@ -133,6 +137,7 @@ query FilteredPagedMaterials(
         total
         materials {
             id
+            serial
             title_ar
             title_en
             status
@@ -184,6 +189,7 @@ export const GET_MATERIALS_BY_DOCTOR = gql`
 query MaterialsByDoctor($doctor_id:ID!) {
     materialsByDoctor(doctor_id: $doctor_id) {
         id
+        serial
         title_ar
         title_en
         status

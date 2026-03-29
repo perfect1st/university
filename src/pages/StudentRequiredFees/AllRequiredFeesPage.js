@@ -105,14 +105,13 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
 
 
     let columns = [
-        // { key: "ID", label: "ID" },
+        { key: "serial", label: t("Serial") },
         { key: "student_id", label: t("Dashboard.studentName") },
         { key: "createDate", label: t("Dashboard.createdAt") },
         { key: "amount", label: t("fee.table.amount") },
         { key: "transaction_serial", label: t("fee.transactionSerial") },
         { key: "website_user_id", label: t("Dashboard.createdBy") },
         { key: "is_paid", label: t("Status") }
-
     ];
 
     let getUsersRequiredFeesToShow = getUsersRequiredFees?.map(el => {

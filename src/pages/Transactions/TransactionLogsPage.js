@@ -32,6 +32,7 @@ export default function TransactionLogsPage() {
     const { paymentLogs = [], total = 0 } = data?.getPaymentLogsByTransaction || {};
 
     const columns = [
+        { key: "serial", label: t("Serial") },
         { key: "action", label: t("Action") },
         { key: "amount", label: t("Amount") },
         { key: "createdAt", label: t("Date") },

@@ -4,6 +4,7 @@ export const GET_ALL_USERES_FOR_ADMIN = gql`
 query Users {
     users {
         id
+        serial
         username
         fullname
         email
@@ -36,6 +37,7 @@ export const CREATE_USER_BY_ADMIN = gql`
 mutation CreateUser($input: AdminCreateUserInput!) {
     createUser(input: $input) {
         id
+        serial
         username
         fullname
         email
@@ -89,6 +91,7 @@ export const FILTERED_USERS = gql`
       total
       users {
       id
+            serial
             username
             fullname
             email

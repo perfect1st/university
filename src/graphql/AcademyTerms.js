@@ -4,6 +4,7 @@ export const GET_ALL_ACADEMY_TERMS=gql`
 query GetAcademyTerms {
     getAcademyTerms {
         id
+        serial
         title_ar
         title_en
         status
@@ -53,6 +54,7 @@ query FilteredPagedAcademyTerms(
         total
         academyTerms {
             id
+            serial
             title_ar
             title_en
             status
@@ -88,6 +90,7 @@ export const GET_ONE_ACADEMY_TERM_BY_ID=gql`
 query GetAcademyTermById($id:ID!) {
     getAcademyTermById(id: $id) {
         id
+        serial
         title_ar
         title_en
         status
@@ -133,6 +136,7 @@ export const CREATE_ACADEMY_TERM=gql`
 mutation CreateAcademyTerm($input:AcademyTermInput!) {
     createAcademyTerm(input: $input) {
         id
+        serial
         title_ar
         title_en
         status
@@ -150,6 +154,7 @@ export const UPDATE_ACADEMY_TERM_BY_ID=gql`
 mutation UpdateAcademyTerm($id:ID!,$input:AcademyTermInput!) {
     updateAcademyTerm(id: $id, input: $input) {
         id
+        serial
         title_ar
         title_en
         status
@@ -169,6 +174,7 @@ export const GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID= gql`
 query GetAcademyTermsByFacultyDepartment($faculty_department_id:ID!) {
     getAcademyTermsByFacultyDepartment(faculty_department_id: $faculty_department_id) {
         id
+        serial
         title_ar
         title_en
         status

@@ -90,7 +90,7 @@ export default function AllContactMessagesPage() {
     const contactMessages = data?.getContactUsMessages || [];
 
     const columns = [
-        { key: "index", label: "#" },
+        { key: "serial", label: t("Serial") },
         { key: "name", label: isArabic ? "الاسم" : "Name" },
         { key: "email", label: isArabic ? "البريد الإلكتروني" : "Email" },
         { key: "phone", label: isArabic ? "الهاتف" : "Phone" },
@@ -123,7 +123,6 @@ export default function AllContactMessagesPage() {
             const date = new Date(Number(el.createdAt));
             return {
                 ...el,
-                index: i + 1,
                 createDate: formatDateToString(date),
                 statusDisplay: (
                     <Chip 

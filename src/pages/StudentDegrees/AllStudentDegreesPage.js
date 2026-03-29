@@ -58,6 +58,7 @@ export default function AllStudentDegreesPage() {
           },[me]);
 
     const columns = [
+    { key: "serial", label: t("Serial") },
     { key: "student_name", label: t("profile.Name") },
     { key: "type", label: t("profile.Gender") },
     { key: "full_mark_degree", label: t("studentDashboard.fullmarkDegree") },
@@ -100,6 +101,7 @@ export default function AllStudentDegreesPage() {
     const result = studentDegreesAll?.flatMap(student =>
   student?.subjects?.flatMap(subject =>
     subject?.exams?.map(exam => ({
+      serial: student?.student?.serial,
       exam_name: exam?.exam_id?.exam_name,
       type: isArabic
         ? examTypes?.find(el => el?.id == exam?.exam_id?.exam_type)?.labelAr

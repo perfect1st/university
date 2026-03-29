@@ -33,6 +33,7 @@ query GetTransactionTypesFiltered(
         total
         transactionTypes {
             id
+            serial
             title_ar
             title_en
             operation_type

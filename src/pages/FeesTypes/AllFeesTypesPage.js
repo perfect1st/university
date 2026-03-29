@@ -86,14 +86,12 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("fees
 
 
     let columns = [
-        // { key: "ID", label: "ID" },
+        { key: "serial", label: t("Serial") },
         { key: "title_ar", label: t("Dashboard.NameInArabic") },
         { key: "title_en", label: t("Dashboard.NameInEnglish") },
         { key: "inside_yemen_value", label: t("Dashboard.inside_yemen") },
         { key: "outside_yemen_value", label: t("Dashboard.outside_yemen") },
         { key: "status", label: t("Status") }
-        //  { key: "userType", label: t("User Type") }
-
     ];
 
     const fetchAndExport = async (type) => {

@@ -136,6 +136,7 @@ export default function AllRegisterFormsPage() {
     }, [searchParams]);
 
     let columns = [
+        { key: "serial", label: t("Serial") },
         { key: "fullName", label: t("Full Name") },
         { key: "email", label: t("Email") },
         { key: "mobile", label: t("Mobile") },
@@ -162,8 +163,8 @@ export default function AllRegisterFormsPage() {
                     label={t(`registerForms.status.${el?.status || "pending"}`)}
                     color={
                         el?.status === "accepted" ? "success"
-                        : el?.status === "rejected" ? "error"
-                        : "warning"
+                            : el?.status === "rejected" ? "error"
+                                : "warning"
                     }
                     variant="filled"
                     sx={{
@@ -219,7 +220,7 @@ export default function AllRegisterFormsPage() {
 
     const handleDeleteClick = async (selectedRow) => {
         if (!canDelete) return notify(t("no_permission.title"), "error");
-        
+
         if (window.confirm(t("Dashboard.confirm") || "Are you sure?")) {
             try {
                 await DeleteRegisterForm({

@@ -4,6 +4,7 @@ export const GET_ALL_FACULITIES=gql`
 query Faculties {
     faculties {
         id
+        serial
         title_ar
         title_en
         status
@@ -19,6 +20,7 @@ export const GET_FACULITY_BY_ID=gql`
 query Faculty($id:ID!) {
     faculty(id: $id) {
         id
+        serial
         title_ar
         title_en
         status
@@ -35,6 +37,7 @@ export const CREATE_NEW_FACULITY=gql`
 mutation CreateFaculty($input:CreateFacultyInput!) {
     createFaculty(input: $input) {
         id
+        serial
         title_ar
         title_en
         status
@@ -50,6 +53,7 @@ export const UPDATE_FACULITY_BY_ID=gql`
 mutation UpdateFaculty($id:ID!,$input:UpdateFacultyInput!) {
     updateFaculty(id: $id, input: $input) {
         id
+        serial
         title_ar
         title_en
         status
@@ -105,6 +109,7 @@ query FilteredPagedFacultyDepartments(
         total
         facultyDepartments {
             id
+            serial
             title_ar
             title_en
             status
@@ -128,6 +133,7 @@ export const GET_ALL_DEPARTMENTS=gql`
 query FacultyDepartments {
     facultyDepartments {
         id
+        serial
         title_ar
         title_en
         status
@@ -151,6 +157,7 @@ export const GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID=gql`
 query GetFacultyDepartmentsByFaculty($faculty_id:ID!) {
     getFacultyDepartmentsByFaculty(faculty_id: $faculty_id) {
         id
+        serial
         title_ar
         title_en
         status
@@ -164,6 +171,7 @@ export const CREATE_FACULITY_DEPARTMENT=gql`
 mutation CreateFacultyDepartment($input : CreateFacultyDepartmentInput!) {
     createFacultyDepartment(input: $input) {
         id
+        serial
         title_ar
         title_en
         status
@@ -179,6 +187,7 @@ export const UPDATE_FACULITY_DEPARTMENT_BY_ID=gql`
 mutation UpdateFacultyDepartment($id:ID!,$input:UpdateFacultyDepartmentInput!) {
     updateFacultyDepartment(id: $id, input: $input) {
         id
+        serial
         title_ar
         title_en
         status

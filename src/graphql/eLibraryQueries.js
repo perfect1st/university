@@ -4,6 +4,7 @@ export const GET_ALL_LIBRARIES = gql`
 query Libraries {
     libraries {
      id
+     serial
         title_ar
         title_en
         status
@@ -19,6 +20,7 @@ export const CREATE_NEW_BOOK = gql`
 mutation CreateLibrary($input:LibraryInput!) {
     createLibrary(input: $input) {
      id
+     serial
         title_ar
         title_en
         status
@@ -35,6 +37,7 @@ export const UPDATE_Library_BY_ID = gql`
 mutation UpdateLibrary($id:ID!,$input:LibraryInput!) {
     updateLibrary(id: $id, input: $input) {
             id
+            serial
         title_ar
         title_en
         status
@@ -83,6 +86,7 @@ query FilteredPagedLibraries(
         total
         libraries {
             id
+            serial
             title_ar
             title_en
             status

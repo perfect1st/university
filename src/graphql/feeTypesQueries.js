@@ -4,6 +4,7 @@ export const GET_ALL_FEES_TYPES=gql`
 query GetFeesTypes {
     getFeesTypes {
         id
+        serial
         title_ar
         title_en
         inside_yemen_value
@@ -26,6 +27,7 @@ query GetFeesTypesFiltered(
         total
         feesTypes {
             id
+            serial
             title_ar
             title_en
             inside_yemen_value
@@ -43,6 +45,7 @@ export const CREATE_NEW_FEES_TYPE=gql`
 mutation CreateFeesType($input:FeesTypeInput!) {
     createFeesType(input: $input) {
         id
+        serial
         title_ar
         title_en
         inside_yemen_value
@@ -58,6 +61,7 @@ export const UPDATE_ONE_FEE_BY_ID=gql`
 mutation UpdateFeesType($id:ID!,$input:FeesTypeInput!) {
     updateFeesType(id: $id, input: $input) {
         id
+        serial
         title_ar
         title_en
         inside_yemen_value

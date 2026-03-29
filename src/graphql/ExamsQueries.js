@@ -12,6 +12,7 @@ query FilteredPagedExams(
         total
         exams {
             id
+            serial
             exam_name
             exam_type
             full_mark_degree
@@ -42,6 +43,7 @@ export const ADD_NEW_EXAM=gql`
 mutation CreateExam($input: CreateExamInput!) {
     createExam(input: $input) {
         id
+        serial
         exam_name
         exam_type
         full_mark_degree
@@ -59,6 +61,7 @@ export const UPDATE_EXAM_BY_ID=gql`
 mutation UpdateExam($id:ID!,$input: UpdateExamInput!) {
     updateExam(id: $id, input: $input) {
         id
+        serial
         exam_name
         exam_type
         full_mark_degree

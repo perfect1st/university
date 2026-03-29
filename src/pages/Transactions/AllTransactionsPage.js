@@ -103,13 +103,12 @@ export default function AllTransactionsPage() {
     console.log('transactions', transactions);
 
     let columns = [
-        // { key: "ID", label: "ID" },
+        { key: "serial", label: t("Serial") },
         { key: "transaction_serial", label: t("fee.transactionSerial") },
         { key: "payment_method_type", label: t("fee.paymentMethodsTitle") },
         { key: "amount", label: t("fee.table.amount") },
         { key: "transaction_date", label: t("fee.paymentDate") },
         { key: "user_id", label: t("Users") }
-
     ];
 
     const fetchAndExport = async (type) => {

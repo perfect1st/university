@@ -4,6 +4,7 @@ export const GET_USERS_REQUIRED_FEES = gql`
 query GetUsersRequiredFees {
     getUsersRequiredFees {
         id
+        serial
         is_paid
         createdAt
         updatedAt
@@ -72,6 +73,7 @@ export const GET_USERS_REQUIRED_FEES_BY_ID = gql`
 query GetUsersRequiredFeesById($id: ID!) {
     getUsersRequiredFeesById(id: $id) {
        id
+       serial
         is_paid
         createdAt
         updatedAt
@@ -143,6 +145,7 @@ export const CREATE_USER_REQUIRED_FEES = gql`
 mutation CreateUsersRequiredFees($input:UsersRequiredFeesInput!) {
     createUsersRequiredFees(input: $input) {
         id
+        serial
         is_paid
         createdAt
         updatedAt
@@ -154,6 +157,7 @@ export const UPDATE_USER_REQUIRED_FEES = gql`
 mutation UpdateUsersRequiredFees($id:ID!,$input:UsersRequiredFeesInput!) {
     updateUsersRequiredFees(id: $id, input: $input) {
         id
+        serial
         is_paid
         createdAt
         updatedAt
@@ -178,6 +182,7 @@ query FilteredPagedUsersRequiredFees(
         total
         usersRequiredFees {
             id
+            serial
             is_paid
             createdAt
             updatedAt

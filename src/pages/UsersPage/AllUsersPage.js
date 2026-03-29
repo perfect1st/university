@@ -95,7 +95,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
   );
 
   let columns = [
-    // { key: "ID", label: "ID" },
+    { key: "serial", label: t("Serial") },
     { key: "fullname", label: t("admissions.fullName") },
     { key: "email", label: t("admissions.email") },
     { key: "mobile", label: t("Mobile") },

@@ -14,6 +14,7 @@ export const GET_ALL_TRANSACTIONS=gql`
 query GetTransactions {
     getTransactions {
         id
+        serial
         payment_method_type
         amount
         payment_document_file
@@ -132,6 +133,7 @@ export const GET_TRANSACTION_BY_ID=gql`
 query GetTransactionById($id:ID!) {
     getTransactionById(id: $id) {
         id
+        serial
         payment_method_type
         amount
         payment_document_file
@@ -174,6 +176,7 @@ export const CREATE_NEW_TRANSACTION_BY_ADMIN=gql`
 mutation CreateTransaction($input:TransactionInput!) {
     createTransaction(input: $input) {
         id
+        serial
         payment_method_type
         amount
         payment_document_file
@@ -187,6 +190,7 @@ export const UPDATE_TRANSACTION_BY_ID=gql`
 mutation UpdateTransaction($id:ID!,$input:TransactionInput!) {
     updateTransaction(id: $id, input: $input) {
         id
+        serial
         payment_method_type
         amount
         payment_document_file

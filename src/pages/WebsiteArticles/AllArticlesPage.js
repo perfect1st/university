@@ -38,12 +38,11 @@ export default function AllArticlesPage() {
   }] = useMutation(UPDATE_WEBSITE_ARTICLE_BY_ID, { fetchPolicy: "network-only" });
 
   let columns = [
-    // { key: "ID", label: "ID" },
+    { key: "serial", label: t("Serial") },
     { key: "title_ar", label: t("Dashboard.NameInArabic") },
     { key: "title_en", label: t("Dashboard.NameInEnglish") },
     { key: "users_id", label: t("Users") },
     { key: "status", label: t("Status") }
-
   ];
 
   const fetchAndExport = async (type) => {

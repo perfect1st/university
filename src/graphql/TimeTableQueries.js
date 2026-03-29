@@ -22,6 +22,7 @@ query GetMainTimeTablesFiltered(
         total
         mainTimeTables {
             id
+            serial
             number
             title_ar
             title_en
@@ -81,6 +82,7 @@ export const CREATE_MAIN_TIME_TABLE=gql`
 mutation CreateMainTimeTable($input:MainTimeTableInput!) {
     createMainTimeTable(input: $input) {
         id
+        serial
         number
         title_ar
         title_en
@@ -124,6 +126,7 @@ export const UPDATE_MAIN_TIME_TABLE_BY_ID=gql`
 mutation UpdateMainTimeTable($id:ID!,$input:MainTimeTableInput!) {
     updateMainTimeTable(id: $id, input: $input) {
         id
+        serial
         number
         title_ar
         title_en
@@ -139,6 +142,7 @@ export const CREATE_TIME_TABLE=gql`
 mutation CreateTimeTable($input:CreateTimeTableInput!) {
     createTimeTable(input: $input) {
         id
+        serial
         day
         start_time
         end_time
@@ -189,6 +193,7 @@ export const GET_TIME_TABLES_BY_MAIN_TABLE_ID=gql`
 query TimeTablesByMainTimeTable($main_time_table_id:ID!) {
     timeTablesByMainTimeTable(main_time_table_id: $main_time_table_id) {
         id
+        serial
         day
         start_time
         end_time
@@ -245,6 +250,7 @@ export const GET_TIME_TABLE_BY_DOCTOR_ID=gql`
 query TimeTablesByDoctor($doctor_id:ID!) {
     timeTablesByDoctor(doctor_id: $doctor_id) {
         id
+        serial
         day
         start_time
         end_time
@@ -295,6 +301,7 @@ export const GET_TIME_TABLE_BY_ACADEMY_TERM_ID=gql`
 query TimeTablesByTerm($academy_term_id:ID!) {
     timeTablesByTerm(academy_term_id: $academy_term_id) {
         id
+        serial
         day
         start_time
         end_time
@@ -360,6 +367,7 @@ query TodayTimeTable($doctor_id:ID,$academy_term_id:ID,$day:String!) {
     day: $day
     ) {
         id
+        serial
         day
         start_time
         end_time

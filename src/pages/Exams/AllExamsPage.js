@@ -85,13 +85,12 @@ export default function AllExamsPage() {
     console.log("exams", exams);
 
     const columns = [
+        { key: "serial", label: t("Serial") },
         { key: "exam_name", label: t("profile.Name") },
         { key: "type", label: t("profile.Gender") },
         { key: "full_mark_degree", label: t("studentDashboard.fullmarkDegree") },
         { key: "lecture_attendance_mark", label: t("Dashboard.lectureAttendence") },
         { key: "date_of_exam", label: t("Date") },
-        // { key: "action", label: t("Action") },
-        // { key: "is_paid", label: t("Status") }
     ];
 
     const examsToShow = exams.map((exam, i) => {

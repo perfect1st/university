@@ -4,6 +4,7 @@ export const GET_ALL_FACULITY_PRICES=gql`
 query FacultyPrices {
     facultyPrices {
         id
+        serial
         level_year
         price_inside_yemen
         price_outside_yemen
@@ -35,6 +36,7 @@ export const CREATE_NEW_FACULTY_PRICE=gql`
 mutation CreateFacultyPrice($input:FacultyPriceInput!) {
     createFacultyPrice(input: $input) {
         id
+        serial
         level_year
         price_inside_yemen
         price_outside_yemen
@@ -66,6 +68,7 @@ query FilteredPagedFacultyPrices(
         total
         facultyPrices {
             id
+            serial
             level_year
             price_inside_yemen
             price_outside_yemen
@@ -99,6 +102,7 @@ export const UPDATE_FACULITY_PRICE_BY_ID=gql`
 mutation UpdateFacultyPrice($id:ID!,$input:FacultyPriceInput!) {
     updateFacultyPrice(id: $id, input: $input) {
         id
+        serial
         level_year
         price_inside_yemen
         price_outside_yemen
