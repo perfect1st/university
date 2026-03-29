@@ -13,19 +13,22 @@ mutation CreateContactUs($input: CreateContactUsInput!) {
 `;
 
 export const GET_CONTACT_US_MESSAGES = gql`
-query GetContactUsMessages {
-    getContactUsMessages {
-        id
-        serial
-        name
-        email
-        phone
-        subject
-        message
-        status
-        admin_reply
-        createdAt
-        updatedAt
+query GetContactUsMessages($search: String, $status: String, $page: Int, $limit: Int) {
+    getContactUsMessages(search: $search, status: $status, page: $page, limit: $limit) {
+        contactUsMessages {
+            id
+            serial
+            name
+            email
+            phone
+            subject
+            message
+            status
+            admin_reply
+            createdAt
+            updatedAt
+        }
+        total
     }
 }
 `;
