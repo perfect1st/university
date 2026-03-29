@@ -4,17 +4,19 @@ import { gql } from "@apollo/client";
 export const GET_USERS = gql`
   query Users {
   users {
-    id
-    username
-    fullname
-    email
-    mobile
-    role
-    status
-    profile_image
-    qid_number
-    createdAt
-    updatedAt
+          id
+        serial
+        username
+        fullname
+        email
+        mobile
+        role
+        status
+        profile_image
+        qid_number
+        is_inside_yemen
+        createdAt
+        updatedAt
   }
 }
 `;

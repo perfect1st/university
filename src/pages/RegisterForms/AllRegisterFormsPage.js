@@ -141,7 +141,7 @@ export default function AllRegisterFormsPage() {
         { key: "mobile", label: t("Mobile") },
         { key: "faculty", label: t("Dashboard.faculty") },
         { key: "department", label: t("Dashboard.facultyDepartment") },
-        { key: "gender", label: t("admissions.gender") },
+        // { key: "gender", label: t("admissions.gender") },
         { key: "createDate", label: t("Dashboard.createdAt") },
         { key: "statusDisplay", label: t("Status") },
     ];
@@ -155,7 +155,7 @@ export default function AllRegisterFormsPage() {
             fullName: `${el?.first_name || ""} ${el?.second_name || ""} ${el?.third_name || ""} ${el?.fourth_name || ""}`.trim(),
             faculty: isArabic ? el?.faculty_id?.title_ar : el?.faculty_id?.title_en,
             department: isArabic ? el?.faculty_department_id?.title_ar : el?.faculty_department_id?.title_en,
-            gender: el?.gender ? t(`admissions.${el?.gender}`) : "",
+            gender: el?.gender,
             createDate: formatDateToString(date),
             statusDisplay: (
                 <Chip

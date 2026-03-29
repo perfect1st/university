@@ -127,6 +127,7 @@
     "male": "ذكر",
     "female": "أنثى",
     "saudi": "المملكة العربية السعودية",
+    "Saudia": "المملكة العربية السعودية",
     "egypt": "مصر",
     "jordan": "الأردن",
     "other": "أخرى",
@@ -482,6 +483,9 @@
     "homeTel": "هاتف المنزل",
     "birthDate": "تاريخ الميلاد",
     "address": "العنوان",
+    "nationality": "الجنسية",
+    "country": "الدولة",
+    "city": "المدينة",
     "academyTerm": "الترم الأكاديمي",
     "educationYear": "سنة التعليم",
     "studyPlace": "مكان الدراسة",
@@ -499,5 +503,19 @@
     "highSchoolCertificate": "شهادة الثانوية العامة",
     "paidDocument": "سند الدفع",
     "noFile": "لا يوجد ملف مرفوع"
+  },
+  "transactions": {
+    "title": "المعاملات المالية",
+    "transaction": "معاملة",
+    "amount": "المبلغ",
+    "date": "التاريخ",
+    "paymentMethod": "طريقة الدفع",
+    "type": "نوع المعاملة",
+    "fees": "الرسوم",
+    "rejectionReason": "سبب الرفض",
+    "viewDocument": "عرض مستند الدفع",
+    "notPaidMessage": "هذا الطالب لم يقم بدفع رسوم استمارة التسجيل",
+    "goToAdd": "الذهاب لإضافة معاملة",
+    "currency": "ريال يمني"
   }
 }

@@ -449,6 +449,9 @@
     "homeTel": "Home Tel",
     "birthDate": "Birth Date",
     "address": "Address",
+    "nationality": "Nationality",
+    "country": "Country",
+    "city": "City",
     "academyTerm": "Academy Term",
     "educationYear": "Education Year",
     "studyPlace": "Study Place",
@@ -461,5 +464,19 @@
     "highSchoolCertificate": "High School Certificate",
     "paidDocument": "Paid Document",
     "noFile": "No file uploaded"
+  },
+  "transactions": {
+    "title": "Transactions",
+    "transaction": "Transaction",
+    "amount": "Amount",
+    "date": "Date",
+    "paymentMethod": "Payment Method",
+    "type": "Transaction Type",
+    "fees": "Fees",
+    "rejectionReason": "Rejection Reason",
+    "viewDocument": "View Payment Document",
+    "notPaidMessage": "This student has not paid the registration form expenses",
+    "goToAdd": "Go to Add Transaction",
+    "currency": "YER"
   }
 }

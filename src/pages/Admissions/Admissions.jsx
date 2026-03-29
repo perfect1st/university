@@ -498,7 +498,9 @@ export default function Admissions() {
         user_id: registerationFeesResults?.user?.id,
         fees_type_ids: registerationFeesResults?.registration_Fees_Id,
         transaction_date: formatDateToString(new Date()),
-        amount: registerationFeesResults?.registration_Fees_Value
+        amount: registerationFeesResults?.registration_Fees_Value,
+        register_form_id: registerationFeesResults?.id,
+        source_type: "RegisterForm"
       };
 
       console.log("transactionObj", transactionObj);
