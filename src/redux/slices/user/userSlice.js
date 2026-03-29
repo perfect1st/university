@@ -1,14 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAllUsers, getAllUsersWithoutPaginations, getOneUser,login } from "./thunk";
+import { getAllUsers, getAllUsersWithoutPaginations, getOneUser, login } from "./thunk";
+import { getUserCookie } from "../../../hooks/authCookies";
 
 const initialState = {
   users: [],
   allUsers: [],
-  loginResponse:null,
+  loginResponse: null,
   loading: false,
   error: null,
   oneUser: null,
-  loggedUser: null,
+  loggedUser: getUserCookie(),
   isNavOpen: false
 };
 

@@ -2,7 +2,7 @@ import { CREATE_NEW_TRANSACTION_BY_ADMIN } from "../../graphql/transactionQuerie
 import { GET_ALL_FEES_TYPES } from "../../graphql/feeTypesQueries";
 import { useEffect, useRef } from "react";
 import { GET_ALL_TRANSACTION_TYPES } from "../../graphql/transactionTypeQueries";
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import {  Box, MenuItem, useMediaQuery, useTheme } from "@mui/material";
@@ -30,6 +30,7 @@ export default function AddTransactionPage() {
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const location = useLocation();
+    const [searchParams] = useSearchParams();
 
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(0);
     const [selectedTransactionType, setSelectedTransactionType] = useState(0);
@@ -118,6 +119,11 @@ export default function AddTransactionPage() {
         GetFeesTypes();
         GetTransactionTypes();
         Users();
+
+        const typeId = searchParams.get("transaction_type_id");
+        if (typeId) {
+            setSelectedTransactionType(typeId);
+        }
     }, []);
 
     const formik = useFormik({
@@ -158,6 +164,7 @@ export default function AddTransactionPage() {
                 fees_type_ids: selectedFeeType,
                 user_id: selectedUser,
                 amount: values?.amount,
+                source_type: "USER"
             };
 
             if(selectedFile!=null) data.payment_document_file=selectedFile;

@@ -80,7 +80,7 @@ const filteredRoutes = useMemo(() => {
           ar: type.title_ar,
           en: type.title_en,
         },
-        path: `/transactions?transaction_type_id=${type.id}`,
+        path: `/transactions?transaction_type_id=${type.id}&operation_type=${type.operation_type}`,
       })),
     };
 

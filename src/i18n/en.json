@@ -477,6 +477,14 @@
     "viewDocument": "View Payment Document",
     "notPaidMessage": "This student has not paid the registration form expenses",
     "goToAdd": "Go to Add Transaction",
-    "currency": "YER"
+    "currency": "YER",
+    "Transaction Logs": "Transaction Logs",
+    "Action": "Action",
+    "Amount": "Amount",
+    "Date": "Date",
+    "Entered By": "Entered By",
+    "Notes": "Notes",
+    "No logs found": "No logs found",
+    "Logs": "Logs"
   }
 }

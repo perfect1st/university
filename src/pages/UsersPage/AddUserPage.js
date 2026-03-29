@@ -92,7 +92,8 @@ export default function AddUserPage() {
     let translateText = isArabic ? "مستخدم" : "User";
     let translateText2 = isArabic ? "المستخدم" : "User";
 
-    let userRulesWithOutStudent=userRules.filter(item=>item!="student");
+    let userRulesWithOutStudent=userRules;
+    // let userRulesWithOutStudent=userRules.filter(item=>item!="student");
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
             <Header

@@ -176,8 +176,19 @@ const Header = ({ onAction }) => {
   };
   const location = useLocation();
 
-  const isActiveRoute = (path) => {
-    return location.pathname === path;
+  const isActiveRoute = (targetPath) => {
+    if (!targetPath) return false;
+    const [targetPathname, targetSearch] = targetPath.split('?');
+    if (targetPathname !== location.pathname) return false;
+    if (!targetSearch) return !location.search || location.search === "";
+    
+    const targetParams = new URLSearchParams(targetSearch);
+    const currentParams = new URLSearchParams(location.search);
+    
+    for (const [key, value] of targetParams) {
+      if (currentParams.get(key) !== value) return false;
+    }
+    return true;
   };
   // Mobile drawer content
   // Mobile drawer content

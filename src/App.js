@@ -66,6 +66,7 @@ import FeeDetailsPage from "./pages/FeesTypes/FeeDetailsPage";
 import AllTransactionsPage from "./pages/Transactions/AllTransactionsPage";
 import AddTransactionPage from "./pages/Transactions/AddTransactionPage";
 import TransactionDetailsPage from "./pages/Transactions/TransactionDetailsPage";
+import TransactionLogsPage from "./pages/Transactions/TransactionLogsPage";
 import AcademyTermDetailsPage from "./pages/AcademyTerms/AcademyTermDetailsPage";
 import AllTransactionTypesPage from "./pages/TransactionTypes/AllTransactionTypesPage";
 import AddTransactionTypePage from "./pages/TransactionTypes/AddTransactionTypePage";
@@ -924,6 +925,11 @@ function App() {
                     <Route path="details/:id" element={
                       <MainLayout isLoggedIn={true}>
                         <TransactionDetailsPage />
+                      </MainLayout>
+                    } />
+                    <Route path="logs/:id" element={
+                      <MainLayout isLoggedIn={true}>
+                        <TransactionLogsPage />
                       </MainLayout>
                     } />
                   </Route>

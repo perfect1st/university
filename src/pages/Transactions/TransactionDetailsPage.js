@@ -9,6 +9,7 @@ import LoadingPage from "../../components/LoadingComponent";
 import { useEffect } from "react";
 import HorizentalTextField from "../../components/Utilities/HorizentalTextField";
 import { GET_TRANSACTION_BY_ID } from "../../graphql/transactionQueries";
+import HistoryIcon from "@mui/icons-material/History";
 
 export default function TransactionDetailsPage() {
   const theme = useTheme();
@@ -46,7 +47,10 @@ export default function TransactionDetailsPage() {
         title={t("Dashboard.transactions")}
         subtitle={t("detailsItem", { item: translateText })}
         i18n={i18n}
-        haveBtn={false}
+        haveBtn={true}
+        btn={t("Logs")}
+        btnIcon={<HistoryIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
+        onSubmit={() => navigate("/transactions/logs/" + getTransactionById?.id)}
         hasAddOrEditBtn={true}
         sub2={t("detailsItem", { item: translateText })}
         hasNavigate={true}

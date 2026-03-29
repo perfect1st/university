@@ -500,7 +500,7 @@ export default function Admissions() {
         transaction_date: formatDateToString(new Date()),
         amount: registerationFeesResults?.registration_Fees_Value,
         register_form_id: registerationFeesResults?.id,
-        source_type: "RegisterForm"
+        source_type: "REGISTER_FORM"
       };
 
       console.log("transactionObj", transactionObj);
