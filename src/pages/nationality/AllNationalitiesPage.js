@@ -121,6 +121,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("nati
 
 
   let columns = [
+    { key: "serial", label: t("Serial") },
     { key: "name_ar", label: t("Dashboard.NameInArabic") },
     { key: "name_en", label: t("Dashboard.NameInEnglish") },
     { key: "flag", label: t("Dashboard.flag") },

@@ -13,7 +13,7 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import notify from "../../components/notify";
 import { GET_ALL_TRANSACTIONS, UPDATE_TRANSACTION_BY_ID, GET_FILTERED_TRANSACTIONS } from "../../graphql/transactionQueries";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
@@ -28,8 +28,8 @@ export default function AllTransactionsPage() {
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const [searchParams, setSearchParams] = useSearchParams();
-const { view, create, update, delete: canDelete } = usePermissionsByModule("transactions");
-
+    const { view, create, update, delete: canDelete } = usePermissionsByModule("transactions");
+    
     const isArabic = i18n.language === "ar";
 
     const [
@@ -82,6 +82,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("tran
         if (searchText) variablesObj.search = searchText;
         if (searchParams.get("payment_method_type")) variablesObj.payment_method_type = searchParams.get("payment_method_type");
         if (searchParams.get("operation_type")) variablesObj.operation_type = searchParams.get("operation_type");
+        if (searchParams.get("approval_status")) variablesObj.approval_status = searchParams.get("approval_status");
 
         GetTransactions({
             variables: variablesObj
@@ -102,13 +103,12 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("tran
     console.log('transactions', transactions);
 
     let columns = [
-        // { key: "ID", label: "ID" },
+        { key: "serial", label: t("Serial") },
         { key: "transaction_serial", label: t("fee.transactionSerial") },
         { key: "payment_method_type", label: t("fee.paymentMethodsTitle") },
         { key: "amount", label: t("fee.table.amount") },
         { key: "transaction_date", label: t("fee.paymentDate") },
         { key: "user_id", label: t("Users") }
-
     ];
 
     const fetchAndExport = async (type) => {
@@ -134,7 +134,14 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("tran
         }
     };
 
-    const addNavigate = () => navigate('add');
+    const addNavigate = () => {
+        const typeId = searchParams.get("transaction_type_id");
+        if (typeId) {
+            navigate(`add?transaction_type_id=${typeId}`);
+        } else {
+            navigate('add');
+        }
+    };
 
     const handleDetailsClick = (selectedRow) => {
       if(!update) return notify(t("no_permission.title"),"error");
@@ -161,6 +168,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("tran
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         if (filterOBJ.hasOwnProperty("payment_method_type") && filterOBJ.payment_method_type !== "0") searchParams.set("payment_method_type", filterOBJ.payment_method_type);
         if (filterOBJ.hasOwnProperty("operation_type") && filterOBJ.operation_type !== "0") searchParams.set("operation_type", filterOBJ.operation_type);
+        if (filterOBJ.hasOwnProperty("approval_status") && filterOBJ.approval_status !== "0") searchParams.set("approval_status", filterOBJ.approval_status);
 
 
         setSearchParams(searchParams);
@@ -235,6 +243,10 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("tran
                         }}
                         handleDetailsClick={handleDetailsClick}
                         showStatusChange={false}
+                        hasLogsBtn={true}
+                        handleLogsClick={(row) => {
+                            navigate(`logs/${row.id}`);
+                        }}
                     />
 
                     <FilterComponent totalPages={totalPages} />

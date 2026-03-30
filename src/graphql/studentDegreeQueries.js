@@ -5,6 +5,7 @@ query StudentDegreesAll($doctor_id: ID)
    {
     studentDegreesAll(doctor_id: $doctor_id) {
         student {
+            serial
             fullname
             email
         }
@@ -47,6 +48,7 @@ $search: String
         total
         studentDegrees {
             id
+            serial
             lecture_attendance
             exam_attendance
             student_degree
@@ -87,6 +89,7 @@ export const CREATE_STUDENT_DEGREE=gql`
 mutation CreateStudentDegree($input: CreateStudentDegreeInput!) {
     createStudentDegree(input: $input) {
         id
+        serial
         lecture_attendance
         exam_attendance
         student_degree
@@ -100,6 +103,7 @@ export const UPDATE_STUDENT_DEGREE=gql`
 mutation UpdateStudentDegree($id:ID!,$input: UpdateStudentDegreeInput!) {
     updateStudentDegree(id: $id, input: $input) {
         id
+        serial
         lecture_attendance
         exam_attendance
         student_degree

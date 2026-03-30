@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const GET_ALL_USERES_FOR_ADMIN = gql`
 query Users {
-      users {
+    users {
         id
         serial
         username
@@ -14,46 +14,21 @@ query Users {
         profile_image
         qid_number
         is_inside_yemen
-        createdAt
-        updatedAt
-        groups {
-            id
-            serial
-            name_ar
-            name_en
-            permissions
-            createdAt
-            updatedAt
-        }
         register_form_id {
             id
-            serial
             first_name
             second_name
             third_name
             fourth_name
-            birthdate
-            gender
-            is_paid
-            paid_document_file
-            high_school_certificate_file
-            address
-            status
-            reviewed_at
-            mobile
-            home_tel
-            email
-            is_inside_yemen
-            national_id_type
-            national_id
-            education_year
-            study_place
-            high_school_student_number
-            general_grade
-            gpa
-            createdAt
-            updatedAt
+            faculty_department_id {
+                id
+            }
+            faculty_id {
+                id
+            }
         }
+        createdAt
+        updatedAt
     }
 }
 `;
@@ -62,6 +37,7 @@ export const CREATE_USER_BY_ADMIN = gql`
 mutation CreateUser($input: AdminCreateUserInput!) {
     createUser(input: $input) {
         id
+        serial
         username
         fullname
         email
@@ -115,6 +91,7 @@ export const FILTERED_USERS = gql`
       total
       users {
       id
+            serial
             username
             fullname
             email

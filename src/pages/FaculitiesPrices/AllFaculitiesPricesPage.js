@@ -121,7 +121,7 @@ export default function AllFaculitiesPricesPage() {
   console.log("facultyPrices", facultyPrices);
 
   let columns = [
-    // { key: "ID", label: "ID" },
+    { key: "serial", label: t("Serial") },
     { key: "faculty_id", label: t("admissions.faculty") },
     { key: "faculty_department_id", label: t("admissions.facultyDepartment") },
     { key: "level_year", label: t("Dashboard.studyYear") },

@@ -40,11 +40,10 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("webs
   console.log("websiteDepartments",websiteDepartments);
 
   let columns = [
-    // { key: "ID", label: "ID" },
+    { key: "serial", label: t("Serial") },
     { key: "title_ar", label: t("Dashboard.NameInArabic") },
     { key: "title_en", label: t("Dashboard.NameInEnglish") },
     { key: "status", label: t("Status") }
-
   ];
   const fetchAndExport = async (type) => {
       try {

@@ -5,6 +5,7 @@ export const GetWebsiteArticles = gql`
   query GetWebsiteArticles {
     getWebsiteArticles {
       id
+      serial
       title_ar
       title_en
       desc_ar
@@ -37,6 +38,7 @@ export const UPDATE_WEBSITE_ARTICLE_BY_ID=gql`
 mutation UpdateWebsiteArticle($id:ID!,$input:WebsiteArticleInput!) {
     updateWebsiteArticle(id: $id, input: $input) {
         id
+        serial
         title_ar
         title_en
         desc_ar
@@ -55,6 +57,7 @@ export const ArticalesById = gql`
   query ArticalesById($departmentId: ID!) {
     getArticlesByDepartment(departmentId: $departmentId) {
       id
+      serial
       title_ar
       title_en
       desc_ar
@@ -77,6 +80,7 @@ export const ArticaleById = gql`
   query ArticaleById($id: ID!) {
     getWebsiteArticleById(id: $id) {
       id
+      serial
         title_ar
         title_en
         desc_ar
@@ -100,6 +104,7 @@ export const CREATE_WEBSITE_ARTICLE=gql`
 mutation CreateWebsiteArticle($input:WebsiteArticleInput!) {
     createWebsiteArticle(input: $input) {
         id
+        serial
         title_ar
         title_en
         desc_ar

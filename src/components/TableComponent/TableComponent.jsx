@@ -61,6 +61,8 @@ const TableComponent = ({
   hasDetailsBtn = false,
   onClickDetails,
   DetailsNavigate = "Details",
+  hasLogsBtn = false, // New prop for logs
+  handleLogsClick, // New prop for logs
   statusOptions = [], // New prop for custom status options
 }) => {
   const { t, i18n } = useTranslation();
@@ -495,6 +497,27 @@ const TableComponent = ({
             }}
           >
             {t("Details")}
+          </MenuItem>
+        )}
+
+        {/* Logs */}
+        {hasLogsBtn && (
+          <MenuItem
+            onClick={() => {
+              handleLogsClick(selectedRow);
+              handleClose();
+            }}
+            sx={{
+              borderLeft: isArabic
+                ? ""
+                : `4px solid ${alpha(theme.palette.info.main, 0.5)}`,
+              borderRight: isArabic
+                ? `4px solid ${alpha(theme.palette.info.main, 0.5)}`
+                : "",
+              py: 1,
+            }}
+          >
+            {t("Logs")}
           </MenuItem>
         )}
 

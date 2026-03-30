@@ -14,6 +14,7 @@ export const GET_ALL_TRANSACTIONS=gql`
 query GetTransactions {
     getTransactions {
         id
+        serial
         payment_method_type
         amount
         payment_document_file
@@ -38,11 +39,12 @@ query GetTransactions {
 
 export const GET_FILTERED_TRANSACTIONS=gql`
 query GetTransactionsFiltered(
-    $limit: Int!
-    $page: Int!
+    $limit: Int
+    $page: Int
     $operation_type: String
     $search: String
     $payment_method_type: String
+    $approval_status: String
 ) {
     getTransactionsFiltered(
         operation_type: $operation_type
@@ -50,17 +52,37 @@ query GetTransactionsFiltered(
         limit: $limit
         search: $search
         payment_method_type: $payment_method_type
+        approval_status: $approval_status
     ) {
         total
         transactions {
             id
+            serial
             payment_method_type
             amount
             payment_document_file
+            rejection_reason
             transaction_date
             transaction_serial
+            transaction_type_snapshot {
+                id
+                title_ar
+                title_en
+                operation_type
+                notes
+                status
+            }
+            fees_type_snapshot {
+                id
+                title_ar
+                title_en
+                inside_yemen_value
+                outside_yemen_value
+                status
+            }
             user_id {
                 id
+                serial
                 username
                 fullname
                 email
@@ -73,6 +95,35 @@ query GetTransactionsFiltered(
                 createdAt
                 updatedAt
             }
+            register_form_id {
+                id
+                serial
+                first_name
+                second_name
+                third_name
+                fourth_name
+                birthdate
+                gender
+                is_paid
+                paid_document_file
+                high_school_certificate_file
+                address
+                status
+                reviewed_at
+                mobile
+                home_tel
+                email
+                is_inside_yemen
+                national_id_type
+                national_id
+                education_year
+                study_place
+                high_school_student_number
+                general_grade
+                gpa
+                createdAt
+                updatedAt
+            }
         }
     }
 }
@@ -82,6 +133,7 @@ export const GET_TRANSACTION_BY_ID=gql`
 query GetTransactionById($id:ID!) {
     getTransactionById(id: $id) {
         id
+        serial
         payment_method_type
         amount
         payment_document_file
@@ -124,6 +176,7 @@ export const CREATE_NEW_TRANSACTION_BY_ADMIN=gql`
 mutation CreateTransaction($input:TransactionInput!) {
     createTransaction(input: $input) {
         id
+        serial
         payment_method_type
         amount
         payment_document_file
@@ -137,6 +190,7 @@ export const UPDATE_TRANSACTION_BY_ID=gql`
 mutation UpdateTransaction($id:ID!,$input:TransactionInput!) {
     updateTransaction(id: $id, input: $input) {
         id
+        serial
         payment_method_type
         amount
         payment_document_file
@@ -223,6 +277,47 @@ query GetTransactionsByUser($user_id: ID!) {
                 high_school_student_number
                 general_grade
                 gpa
+                createdAt
+                updatedAt
+            }
+        }
+    }
+}
+`;
+
+export const GET_PAYMENT_LOGS_BY_TRANSACTION = gql`
+query GetPaymentLogsByTransaction(
+    $transaction_id: ID!
+    $page: Int
+    $limit: Int
+) {
+    getPaymentLogsByTransaction(
+        transaction_id: $transaction_id
+        page: $page
+        limit: $limit
+    ) {
+        total
+        paymentLogs {
+            id
+            serial
+            action
+            payment_date
+            payment_method
+            amount
+            note
+            createdAt
+            entered_by {
+                id
+                serial
+                username
+                fullname
+                email
+                mobile
+                role
+                status
+                profile_image
+                qid_number
+                is_inside_yemen
                 createdAt
                 updatedAt
             }

@@ -151,7 +151,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("mate
   console.log("getSubjectsToShow",getSubjectsToShow);
   
   let columns = [
-    // { key: "ID", label: "ID" },
+    { key: "serial", label: t("Serial") },
     { key: "title_ar", label: t("Dashboard.NameInArabic") },
     { key: "title_en", label: t("Dashboard.NameInEnglish") },
     { key: "faculty_id", label: t("admissions.faculty") },
@@ -159,8 +159,6 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("mate
     { key: "fullmark_degree", label: t("studentDashboard.fullmarkDegree") },
     { key: "success_degree", label: t("studentDashboard.successDegree") },
     { key: "status", label: t("Status") }
-    //  { key: "userType", label: t("User Type") }
-
   ];
   const fetchAndExport = async (type) => {
     try {

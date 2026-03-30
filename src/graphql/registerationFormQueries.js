@@ -170,30 +170,7 @@ query GetRegisterFormById($id: ID!) {
         gpa
         createdAt
         updatedAt
-        reviewed_by {
-            id
-            serial
-            username
-            fullname
-            email
-            mobile
-            role
-            status
-            profile_image
-            qid_number
-            is_inside_yemen
-            createdAt
-            updatedAt
-            groups {
-                id
-                serial
-                name_ar
-                name_en
-                permissions
-                createdAt
-                updatedAt
-            }
-        }
+
         user_id {
             id
             serial
@@ -306,56 +283,6 @@ query FilteredPagedRegisterForms($search: String, $status: String, $page: Int, $
             general_grade
             gpa
             createdAt
-            updatedAt
-            reviewed_by {
-                id
-                serial
-                username
-                fullname
-                email
-                mobile
-                role
-                status
-                profile_image
-                qid_number
-                is_inside_yemen
-                createdAt
-                updatedAt
-                groups {
-                    id
-                    serial
-                    name_ar
-                    name_en
-                    permissions
-                    createdAt
-                    updatedAt
-                }
-            }
-            user_id {
-                id
-                serial
-                username
-                fullname
-                email
-                mobile
-                role
-                status
-                profile_image
-                qid_number
-                is_inside_yemen
-                createdAt
-                updatedAt
-            }
-            nationality_id {
-                id
-                serial
-                name_ar
-                name_en
-                flag
-                status
-                createdAt
-                updatedAt
-            }
             faculty_id {
                 id
                 serial
@@ -375,38 +302,6 @@ query FilteredPagedRegisterForms($search: String, $status: String, $page: Int, $
                 status
                 createdAt
                 updatedAt
-            }
-            country_id {
-                id
-                serial
-                name_ar
-                name_en
-                status
-                is_local
-                createdAt
-                updatedAt
-            }
-            city_id {
-                id
-                serial
-                name_ar
-                name_en
-                country_id
-                status
-                createdAt
-                updatedAt
-            }
-            academyTerm_id {
-                id
-                serial
-                title_ar
-                title_en
-                status
-                study_year
-                current_year
-                term_number
-                min_study_hours
-                max_study_hours
             }
         }
     }

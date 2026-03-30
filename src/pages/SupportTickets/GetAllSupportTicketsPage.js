@@ -87,6 +87,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("supp
 
     if (me?.role == "admin") {
           columns = [
+            { key: "serial", label: t("Serial") },
             { key: "subject", label: t("title") },
             { key: "type", label: t("profile.Gender") },
             {key:"user_name",label:t("Dashboard.userName")},
@@ -95,6 +96,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("supp
     }
     else {
         columns = [
+            { key: "serial", label: t("Serial") },
             { key: "subject", label: t("title") },
             { key: "type", label: t("profile.Gender") },
             { key: "status", label: t("Status") },

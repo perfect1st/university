@@ -118,7 +118,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("main
     console.log("mainTimeTables", mainTimeTables);
 
     let columns = [
-        // { key: "ID", label: "ID" },
+        { key: "serial", label: t("Serial") },
         { key: "title_ar", label: t("Dashboard.NameInArabic") },
         { key: "title_en", label: t("Dashboard.NameInEnglish") },
         { key: "study_year", label: t("Dashboard.studyYear") },
@@ -126,8 +126,6 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("main
         { key: "faculty_department_id", label: t("admissions.facultyDepartment") },
         { key: "academy_term_id", label: t("Dashboard.semester") },
         { key: "status", label: t("Status") }
-        //  { key: "userType", label: t("User Type") }
-
     ];
 
     const fetchAndExport = async (type) => {

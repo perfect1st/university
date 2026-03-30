@@ -111,7 +111,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("coun
 
 
   let columns = [
-    // { key: "ID", label: "ID" },
+    { key: "serial", label: t("Serial") },
     { key: "name_ar", label: t("Dashboard.NameInArabic") },
     { key: "name_en", label: t("Dashboard.NameInEnglish") },
     { key: "navigate", label: t("cities") },

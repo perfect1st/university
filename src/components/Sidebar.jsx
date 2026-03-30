@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useQuery } from "@apollo/client/react";
 import {
   Box,
   Drawer,
@@ -386,17 +387,27 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
         {menuItems.map((item, index) => {
           const hasChildren = !!item.children;
 
+          const pathsMatch = (targetPath) => {
+            if (!targetPath) return false;
+            const [targetPathname, targetSearch] = targetPath.split('?');
+            if (targetPathname !== location.pathname) return false;
+            if (!targetSearch) return !location.search || location.search === "";
+            
+            const targetParams = new URLSearchParams(targetSearch);
+            const currentParams = new URLSearchParams(location.search);
+            
+            for (const [key, value] of targetParams) {
+              if (currentParams.get(key) !== value) return false;
+            }
+            return true;
+          };
+
           const isActiveParent = !!(
             hasChildren &&
-            item.children.some((child) =>
-              matchPath(child.path, location.pathname),
-            )
+            item.children.some((child) => pathsMatch(child.path))
           );
 
-          const cleanPath = item?.path?.split("?")[0];
-          let isDirectlyActive = location.pathname?.includes(cleanPath);
-
-          console.log("isDirectlyActive", isDirectlyActive);
+          const isDirectlyActive = pathsMatch(item.path);
 
           const IconComponent = item.icon;
 
@@ -497,10 +508,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                   >
                     <List component="div" disablePadding>
                       {item.children.map((child) => {
-                        const isChildActive = !!matchPath(
-                          child.path,
-                          location.pathname,
-                        );
+                        const isChildActive = pathsMatch(child.path);
 
                         return (
                           <ListItemButton

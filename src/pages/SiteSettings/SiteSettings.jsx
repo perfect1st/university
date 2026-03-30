@@ -54,7 +54,7 @@ function TabPanel(props) {
       style={{ height: "100%" }}
     >
       {value === index && (
-        <Box sx={{ pt: 3, height: "100%" }}>
+        <Box sx={{ pt: { xs: 2, md: 3 }, height: "100%" }}>
           {children}
         </Box>
       )}
@@ -186,271 +186,216 @@ export default function SiteSettings() {
       <form onSubmit={handleSubmit}>
         <Stack spacing={4} sx={{ mt: 3 }}>
 
-          {/* Main Content Area (Split layout for large screens) */}
-          <Grid container spacing={4}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={tabIndex} onChange={handleTabChange} variant="scrollable" scrollButtons="auto">
+              <Tab icon={<PolicyIcon sx={{ mr: isArabic ? 0 : 1, ml: isArabic ? 1 : 0 }} fontSize="small" />} iconPosition="start" label={isArabic ? "سياسة الخصوصية" : "Privacy Policy"} sx={{ fontWeight: 'bold' }} />
+              <Tab icon={<DescriptionIcon sx={{ mr: isArabic ? 0 : 1, ml: isArabic ? 1 : 0 }} fontSize="small" />} iconPosition="start" label={isArabic ? "شروط الخدمة" : "Terms of Service"} sx={{ fontWeight: 'bold' }} />
+              <Tab icon={<AccessibilityNewIcon sx={{ mr: isArabic ? 0 : 1, ml: isArabic ? 1 : 0 }} fontSize="small" />} iconPosition="start" label={isArabic ? "إمكانية الوصول" : "Accessibility"} sx={{ fontWeight: 'bold' }} />
+              <Tab icon={<ShareIcon sx={{ mr: isArabic ? 0 : 1, ml: isArabic ? 1 : 0 }} fontSize="small" />} iconPosition="start" label={isArabic ? "التواصل الاجتماعي" : "Social Media"} sx={{ fontWeight: 'bold' }} />
+              <Tab icon={<ContactPhoneIcon sx={{ mr: isArabic ? 0 : 1, ml: isArabic ? 1 : 0 }} fontSize="small" />} iconPosition="start" label={isArabic ? "معلومات الاتصال" : "Contact Info"} sx={{ fontWeight: 'bold' }} />
+            </Tabs>
+          </Box>
 
-            {/* Left Column (or Top on Mobile): The large Legal Documents editor */}
-            <Grid item xs={12} lg={12}>
-              <Card elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2, height: "100%", display: "flex", flexDirection: "column" }}>
-                <CardHeader
-                  title={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <GavelIcon color="primary" />
-                      <Typography variant="h6" fontWeight="600">
-                        {isArabic ? "المستندات القانونية" : "Legal Documents"}
-                      </Typography>
-                    </Box>
-                  }
-                  sx={{ bgcolor: 'action.hover', borderBottom: "1px solid", borderColor: "divider", pb: 1, pt: 2 }}
+          <Box sx={{ flex: 1 }}>
+            {/* TAB 0: Privacy Policy */}
+            <TabPanel value={tabIndex} index={0}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
+                  <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
+                    🌐 {isArabic ? "النسخة العربية" : "Arabic Version"}
+                  </Typography>
+                  <TextField
+                    fullWidth multiline rows={isArabic ? 18 : 12} // Slightly more rows for Arabic if needed, but adjusted
+                    value={formData.privacy_policy_ar}
+                    onChange={(e) => handleChange("privacy_policy_ar", e.target.value)} variant="outlined"
+                    placeholder={isArabic ? "اكتب محتوى سياسة الخصوصية هنا..." : "Enter privacy policy here..."}
+                    sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
+                  <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
+                    🌐 {isArabic ? "النسخة الإنجليزية" : "English Version"}
+                  </Typography>
+                  <TextField
+                    fullWidth multiline rows={isArabic ? 18 : 12}
+                    value={formData.privacy_policy_en}
+                    onChange={(e) => handleChange("privacy_policy_en", e.target.value)} variant="outlined"
+                    placeholder={isArabic ? "Enter privacy policy here..." : "Enter privacy policy here..."}
+                    InputProps={{ sx: { direction: "ltr" } }}
+                    sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
+                  />
+                </Grid>
+              </Grid>
+            </TabPanel>
+
+            {/* TAB 1: Terms of Service */}
+            <TabPanel value={tabIndex} index={1}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
+                  <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
+                    🌐 {isArabic ? "النسخة العربية" : "Arabic Version"}
+                  </Typography>
+                  <TextField
+                    fullWidth multiline rows={18}
+                    value={formData.terms_of_service_ar}
+                    onChange={(e) => handleChange("terms_of_service_ar", e.target.value)} variant="outlined"
+                    placeholder={isArabic ? "اكتب محتوى شروط الخدمة هنا..." : "Enter terms of service here..."}
+                    sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
+                  <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
+                    🌐 {isArabic ? "النسخة الإنجليزية" : "English Version"}
+                  </Typography>
+                  <TextField
+                    fullWidth multiline rows={18}
+                    value={formData.terms_of_service_en}
+                    onChange={(e) => handleChange("terms_of_service_en", e.target.value)} variant="outlined"
+                    placeholder={isArabic ? "Enter terms of service here..." : "Enter terms of service here..."}
+                    InputProps={{ sx: { direction: "ltr" } }}
+                    sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
+                  />
+                </Grid>
+              </Grid>
+            </TabPanel>
+
+            {/* TAB 2: Accessibility */}
+            <TabPanel value={tabIndex} index={2}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
+                  <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
+                    🌐 {isArabic ? "النسخة العربية" : "Arabic Version"}
+                  </Typography>
+                  <TextField
+                    fullWidth multiline rows={18}
+                    value={formData.accessibility_ar}
+                    onChange={(e) => handleChange("accessibility_ar", e.target.value)} variant="outlined"
+                    placeholder={isArabic ? "اكتب محتوى إمكانية الوصول هنا..." : "Enter accessibility content here..."}
+                    sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
+                  <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
+                    🌐 {isArabic ? "النسخة الإنجليزية" : "English Version"}
+                  </Typography>
+                  <TextField
+                    fullWidth multiline rows={18}
+                    value={formData.accessibility_en}
+                    onChange={(e) => handleChange("accessibility_en", e.target.value)} variant="outlined"
+                    placeholder={isArabic ? "Enter accessibility content here..." : "Enter accessibility content here..."}
+                    InputProps={{ sx: { direction: "ltr" } }}
+                    sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
+                  />
+                </Grid>
+              </Grid>
+            </TabPanel>
+
+            <TabPanel value={tabIndex} index={3}>
+              <Stack spacing={3} sx={{ maxWidth: { xs: '100%', sm: '600px' }, mx: 'auto' }}>
+                <TextField
+                  fullWidth label="Facebook"
+                  value={formData.social_media.facebook}
+                  onChange={(e) => handleChange("facebook", e.target.value, "social_media")} variant="outlined"
+                  InputProps={{
+                    sx: { direction: "ltr" }, startAdornment: (
+                      <InputAdornment position="start">
+                        <FacebookIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
-                <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 2, pt: 1 }}>
-                  <Tabs value={tabIndex} onChange={handleTabChange} variant="scrollable" scrollButtons="auto">
-                    <Tab icon={<PolicyIcon sx={{ mr: isArabic ? 0 : 1, ml: isArabic ? 1 : 0 }} fontSize="small" />} iconPosition="start" label={isArabic ? "سياسة الخصوصية" : "Privacy Policy"} sx={{ fontWeight: 'bold' }} />
-                    <Tab icon={<DescriptionIcon sx={{ mr: isArabic ? 0 : 1, ml: isArabic ? 1 : 0 }} fontSize="small" />} iconPosition="start" label={isArabic ? "شروط الخدمة" : "Terms of Service"} sx={{ fontWeight: 'bold' }} />
-                    <Tab icon={<AccessibilityNewIcon sx={{ mr: isArabic ? 0 : 1, ml: isArabic ? 1 : 0 }} fontSize="small" />} iconPosition="start" label={isArabic ? "إمكانية الوصول" : "Accessibility"} sx={{ fontWeight: 'bold' }} />
-                  </Tabs>
-                </Box>
-
-                <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                  {/* TAB 0: Privacy Policy */}
-                  <TabPanel value={tabIndex} index={0}>
-                    <Grid container spacing={3} sx={{ height: "100%" }}>
-                      <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
-                        <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
-                          🌐 {isArabic ? "النسخة العربية" : "Arabic Version"}
-                        </Typography>
-                        <TextField
-                          fullWidth multiline rows={18}
-                          value={formData.privacy_policy_ar}
-                          onChange={(e) => handleChange("privacy_policy_ar", e.target.value)} variant="outlined"
-                          placeholder={isArabic ? "اكتب محتوى سياسة الخصوصية هنا..." : "Enter privacy policy here..."}
-                          sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper', flex: 1, alignItems: 'flex-start' } }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
-                        <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
-                          🌐 {isArabic ? "النسخة الإنجليزية" : "English Version"}
-                        </Typography>
-                        <TextField
-                          fullWidth multiline rows={18}
-                          value={formData.privacy_policy_en}
-                          onChange={(e) => handleChange("privacy_policy_en", e.target.value)} variant="outlined"
-                          placeholder={isArabic ? "Enter privacy policy here..." : "Enter privacy policy here..."}
-                          InputProps={{ sx: { direction: "ltr", flex: 1, alignItems: 'flex-start' } }}
-                          sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper', flex: 1, alignItems: 'flex-start' } }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </TabPanel>
-
-                  {/* TAB 1: Terms of Service */}
-                  <TabPanel value={tabIndex} index={1}>
-                    <Grid container spacing={3} sx={{ height: "100%" }}>
-                      <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
-                        <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
-                          🌐 {isArabic ? "النسخة العربية" : "Arabic Version"}
-                        </Typography>
-                        <TextField
-                          fullWidth multiline rows={18}
-                          value={formData.terms_of_service_ar}
-                          onChange={(e) => handleChange("terms_of_service_ar", e.target.value)} variant="outlined"
-                          placeholder={isArabic ? "اكتب محتوى شروط الخدمة هنا..." : "Enter terms of service here..."}
-                          sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper', flex: 1, alignItems: 'flex-start' } }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
-                        <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
-                          🌐 {isArabic ? "النسخة الإنجليزية" : "English Version"}
-                        </Typography>
-                        <TextField
-                          fullWidth multiline rows={18}
-                          value={formData.terms_of_service_en}
-                          onChange={(e) => handleChange("terms_of_service_en", e.target.value)} variant="outlined"
-                          placeholder={isArabic ? "Enter terms of service here..." : "Enter terms of service here..."}
-                          InputProps={{ sx: { direction: "ltr", flex: 1, alignItems: 'flex-start' } }}
-                          sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper', flex: 1, alignItems: 'flex-start' } }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </TabPanel>
-
-                  {/* TAB 2: Accessibility */}
-                  <TabPanel value={tabIndex} index={2}>
-                    <Grid container spacing={3} sx={{ height: "100%" }}>
-                      <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
-                        <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
-                          🌐 {isArabic ? "النسخة العربية" : "Arabic Version"}
-                        </Typography>
-                        <TextField
-                          fullWidth multiline rows={18}
-                          value={formData.accessibility_ar}
-                          onChange={(e) => handleChange("accessibility_ar", e.target.value)} variant="outlined"
-                          placeholder={isArabic ? "اكتب محتوى إمكانية الوصول هنا..." : "Enter accessibility content here..."}
-                          sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper', flex: 1, alignItems: 'flex-start' } }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
-                        <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
-                          🌐 {isArabic ? "النسخة الإنجليزية" : "English Version"}
-                        </Typography>
-                        <TextField
-                          fullWidth multiline rows={18}
-                          value={formData.accessibility_en}
-                          onChange={(e) => handleChange("accessibility_en", e.target.value)} variant="outlined"
-                          placeholder={isArabic ? "Enter accessibility content here..." : "Enter accessibility content here..."}
-                          InputProps={{ sx: { direction: "ltr", flex: 1, alignItems: 'flex-start' } }}
-                          sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper', flex: 1, alignItems: 'flex-start' } }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </TabPanel>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            {/* Right Column (or Bottom on Mobile): Social and Contact */}
-            <Grid item xs={12} lg={6}>
-              {/* <Stack spacing={4}> */}
-              {/* Social Media Section */}
-              <Card elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2 }}>
-                <CardHeader
-                  title={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <ShareIcon color="secondary" />
-                      <Typography variant="h6" fontWeight="600">
-                        {isArabic ? "التواصل الاجتماعي" : "Social Media"}
-                      </Typography>
-                    </Box>
-                  }
-                  sx={{ bgcolor: 'action.hover', borderBottom: "1px solid", borderColor: "divider", pb: 1.5, pt: 2 }}
+                <TextField
+                  fullWidth label="Twitter"
+                  value={formData.social_media.twitter}
+                  onChange={(e) => handleChange("twitter", e.target.value, "social_media")} variant="outlined"
+                  InputProps={{
+                    sx: { direction: "ltr" }, startAdornment: (
+                      <InputAdornment position="start">
+                        <TwitterIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
-                <CardContent sx={{ pt: 3 }}>
-                  <Stack spacing={3}>
-                    <TextField
-                      fullWidth label="Facebook"
-                      value={formData.social_media.facebook}
-                      onChange={(e) => handleChange("facebook", e.target.value, "social_media")} variant="outlined"
-                      InputProps={{
-                        sx: { direction: "ltr" }, startAdornment: (
-                          <InputAdornment position="start">
-                            <FacebookIcon color="action" />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                    <TextField
-                      fullWidth label="Twitter"
-                      value={formData.social_media.twitter}
-                      onChange={(e) => handleChange("twitter", e.target.value, "social_media")} variant="outlined"
-                      InputProps={{
-                        sx: { direction: "ltr" }, startAdornment: (
-                          <InputAdornment position="start">
-                            <TwitterIcon color="action" />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                    <TextField
-                      fullWidth label="TikTok"
-                      value={formData.social_media.tiktok}
-                      onChange={(e) => handleChange("tiktok", e.target.value, "social_media")} variant="outlined"
-                      InputProps={{
-                        sx: { direction: "ltr" }, startAdornment: (
-                          <InputAdornment position="start">
-                            <AiFillTikTok size={24} color="gray" />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} lg={6}>
-
-              {/* Contact & Support Info Section */}
-              <Card elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2 }}>
-                <CardHeader
-                  title={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <ContactPhoneIcon color="info.main" />
-                      <Typography variant="h6" fontWeight="600">
-                        {isArabic ? "معلومات الاتصال" : "Contact Info"}
-                      </Typography>
-                    </Box>
-                  }
-                  sx={{ bgcolor: 'action.hover', borderBottom: "1px solid", borderColor: "divider", pb: 1.5, pt: 2 }}
+                <TextField
+                  fullWidth label="TikTok"
+                  value={formData.social_media.tiktok}
+                  onChange={(e) => handleChange("tiktok", e.target.value, "social_media")} variant="outlined"
+                  InputProps={{
+                    sx: { direction: "ltr" }, startAdornment: (
+                      <InputAdornment position="start">
+                        <AiFillTikTok size={24} color="gray" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
-                <CardContent sx={{ pt: 3 }}>
-                  <Stack spacing={3}>
-                    <TextField
-                      fullWidth label={isArabic ? "البريد الإلكتروني" : "Email"}
-                      value={formData.contact_info.email}
-                      onChange={(e) => handleChange("email", e.target.value, "contact_info")} type="email" variant="outlined"
-                      InputProps={{
-                        sx: { direction: "ltr" }, startAdornment: (
-                          <InputAdornment position="start">
-                            <EmailIcon color="action" />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                    <TextField
-                      fullWidth label={isArabic ? "واتساب (السعودية)" : "WhatsApp (Saudi)"}
-                      value={formData.contact_info.whatsapp_saudi}
-                      onChange={(e) => handleChange("whatsapp_saudi", e.target.value, "contact_info")} variant="outlined"
-                      InputProps={{
-                        sx: { direction: "ltr" }, startAdornment: (
-                          <InputAdornment position="start">
-                            <WhatsAppIcon color="action" />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                    <TextField
-                      fullWidth label={isArabic ? "واتساب (اليمن)" : "WhatsApp (Yemen)"}
-                      value={formData.contact_info.whatsapp_yemeni}
-                      onChange={(e) => handleChange("whatsapp_yemeni", e.target.value, "contact_info")} variant="outlined"
-                      InputProps={{
-                        sx: { direction: "ltr" }, startAdornment: (
-                          <InputAdornment position="start">
-                            <WhatsAppIcon color="action" />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                    <TextField
-                      fullWidth label={isArabic ? "هاتف (اليمن) 1" : "Phone (Yemen) 1"}
-                      value={formData.contact_info.phone_yemeni_1}
-                      onChange={(e) => handleChange("phone_yemeni_1", e.target.value, "contact_info")} variant="outlined"
-                      InputProps={{
-                        sx: { direction: "ltr" }, startAdornment: (
-                          <InputAdornment position="start">
-                            <PhoneIcon color="action" />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                    <TextField
-                      fullWidth label={isArabic ? "هاتف (اليمن) 2" : "Phone (Yemen) 2"}
-                      value={formData.contact_info.phone_yemeni_2}
-                      onChange={(e) => handleChange("phone_yemeni_2", e.target.value, "contact_info")} variant="outlined"
-                      InputProps={{
-                        sx: { direction: "ltr" }, startAdornment: (
-                          <InputAdornment position="start">
-                            <PhoneIcon color="action" />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Stack>
-                </CardContent>
-              </Card>
+              </Stack>
+            </TabPanel>
 
-              {/* </Stack> */}
-            </Grid>
-          </Grid>
+            <TabPanel value={tabIndex} index={4}>
+              <Stack spacing={3} sx={{ maxWidth: { xs: '100%', sm: '600px' }, mx: 'auto' }}>
+                <TextField
+                  fullWidth label={isArabic ? "البريد الإلكتروني" : "Email"}
+                  value={formData.contact_info.email}
+                  onChange={(e) => handleChange("email", e.target.value, "contact_info")} type="email" variant="outlined"
+                  InputProps={{
+                    sx: { direction: "ltr" }, startAdornment: (
+                      <InputAdornment position="start">
+                        <EmailIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  fullWidth label={isArabic ? "واتساب (السعودية)" : "WhatsApp (Saudi)"}
+                  value={formData.contact_info.whatsapp_saudi}
+                  onChange={(e) => handleChange("whatsapp_saudi", e.target.value, "contact_info")} variant="outlined"
+                  InputProps={{
+                    sx: { direction: "ltr" }, startAdornment: (
+                      <InputAdornment position="start">
+                        <WhatsAppIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  fullWidth label={isArabic ? "واتساب (اليمن)" : "WhatsApp (Yemen)"}
+                  value={formData.contact_info.whatsapp_yemeni}
+                  onChange={(e) => handleChange("whatsapp_yemeni", e.target.value, "contact_info")} variant="outlined"
+                  InputProps={{
+                    sx: { direction: "ltr" }, startAdornment: (
+                      <InputAdornment position="start">
+                        <WhatsAppIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  fullWidth label={isArabic ? "هاتف (اليمن) 1" : "Phone (Yemen) 1"}
+                  value={formData.contact_info.phone_yemeni_1}
+                  onChange={(e) => handleChange("phone_yemeni_1", e.target.value, "contact_info")} variant="outlined"
+                  InputProps={{
+                    sx: { direction: "ltr" }, startAdornment: (
+                      <InputAdornment position="start">
+                        <PhoneIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  fullWidth label={isArabic ? "هاتف (اليمن) 2" : "Phone (Yemen) 2"}
+                  value={formData.contact_info.phone_yemeni_2}
+                  onChange={(e) => handleChange("phone_yemeni_2", e.target.value, "contact_info")} variant="outlined"
+                  InputProps={{
+                    sx: { direction: "ltr" }, startAdornment: (
+                      <InputAdornment position="start">
+                        <PhoneIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Stack>
+            </TabPanel>
+          </Box>
 
           <Paper elevation={0} sx={{ p: 2, border: "1px solid", borderColor: "divider", borderRadius: 2, bgcolor: "background.paper" }}>
             <Stack direction="row" spacing={2} justifyContent="flex-end">

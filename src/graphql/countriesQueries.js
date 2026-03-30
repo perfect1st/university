@@ -4,6 +4,7 @@ export const GET_ALL_COUNTRIES=gql`
 query Countries {
     countries {
         id
+        serial
         name_ar
         name_en
         is_local
@@ -25,6 +26,7 @@ query FilteredPagedCountries(
         total
         countries {
             id
+            serial
             name_ar
             name_en
             is_local
@@ -40,6 +42,7 @@ export const GET_COUNTRY_BY_ID=gql`
 query Country($id:ID!) {
     country(id: $id) {
         id
+        serial
         name_ar
         name_en
         is_local
@@ -56,6 +59,7 @@ export const CREATE_NEW_COUNTRY=gql`
 mutation CreateCountry($input:CreateCountryInput!) {
     createCountry(input: $input) {
         id
+        serial
         name_ar
         name_en
         is_local
@@ -70,6 +74,7 @@ export const UPDATE_COUNTRY_BY_ID=gql`
 mutation UpdateCountry($id:ID!, $input:UpdateCountryInput!) {
     updateCountry(id: $id, input: $input) {
         id
+        serial
         name_ar
         name_en
         is_local
@@ -88,6 +93,7 @@ export const GET_CITIES_BY_COUNTRY_ID=gql`
 query GetCitiesByCountry($country_id:ID!) {
     getCitiesByCountry(country_id: $country_id) {
         id
+        serial
         name_ar
         name_en
         country_id
@@ -110,6 +116,7 @@ query FilteredPagedCities(
         total
         cities {
             id
+            serial
             name_ar
             name_en
             status
@@ -124,6 +131,7 @@ export const CREATE_NEW_CITY=gql`
 mutation CreateCity($input:CreateCityInput!) {
     createCity(input: $input) {
         id
+        serial
         name_ar
         name_en
         country_id
@@ -139,6 +147,7 @@ export const UPDATE_CITY_BY_ID=gql`
 mutation UpdateCity($id:ID!,$input:UpdateCityInput!) {
     updateCity(id: $id , input: $input) {
         id
+        serial
         name_ar
         name_en
         country_id

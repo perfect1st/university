@@ -4,6 +4,7 @@ export const GET_ALL_NATIONALITIES=gql`
     query Nationalities {
     nationalities {
         id
+        serial
         name_ar
         name_en
         flag
@@ -25,6 +26,7 @@ query FilteredPagedNationalities(
         total
         nationalities {
             id
+            serial
             name_ar
             name_en
             flag
@@ -40,6 +42,7 @@ export const CREATE_NEW_NATIONALITY=gql`
 mutation CreateNationality($input:CreateNationalityInput!) {
     createNationality(input: $input) {
         id
+        serial
         name_ar
         name_en
         flag
@@ -54,6 +57,7 @@ export const UPDATE_NATIONALITY_BY_ID=gql`
 mutation UpdateNationality($id:ID!,$input:UpdateNationalityInput!) {
     updateNationality(id: $id, input: $input) {
         id
+        serial
         name_ar
         name_en
         flag
