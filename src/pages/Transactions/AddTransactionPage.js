@@ -30,13 +30,13 @@ export default function AddTransactionPage() {
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const location = useLocation();
-
+console.log('location', location);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(0);
-    const [selectedTransactionType, setSelectedTransactionType] = useState(0);
+    const [selectedTransactionType, setSelectedTransactionType] = useState(location.state?.transaction_type_id || 0);
     const [selectedFeeType, setSelectedFeeType] = useState([]);
 
-    const [isInSideYemen, setIsInSideYemen] = useState(true);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [isInSideYemen, setIsInSideYemen] = useState(location.state?.is_inside_yemen !== undefined ? location.state.is_inside_yemen : true);
+    const [selectedUser, setSelectedUser] = useState(location.state?.user_id?.id || null);
 
     const fileInputRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
@@ -118,7 +118,7 @@ export default function AddTransactionPage() {
         GetFeesTypes();
         GetTransactionTypes();
         Users();
-    }, []);
+    }, [GetFeesTypes, GetTransactionTypes, Users]);
 
     const formik = useFormik({
         initialValues: {

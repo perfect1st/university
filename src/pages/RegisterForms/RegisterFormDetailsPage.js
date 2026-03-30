@@ -35,7 +35,7 @@ export default function RegisterFormDetailsPage() {
     });
 
     const formData = registerFormData?.getRegisterFormById;
-
+console.log('formData', formData);
     const { data: transactionsData, loading: loadingTransactions } = useQuery(GET_TRANSACTIONS_BY_USER, {
         variables: { user_id: formData?.user_id?.id },
         skip: !formData?.user_id?.id
@@ -593,7 +593,14 @@ export default function RegisterFormDetailsPage() {
                                 <Button 
                                     variant="contained" 
                                     color="primary" 
-                                    onClick={() => navigate("/transactions/add", { state: { user_id: formData.user_id, register_form_id: formData.id } })}
+                                    onClick={() => navigate("/transactions/add", { 
+                                        state: { 
+                                            user_id: formData.user_id, 
+                                            register_form_id: formData.id,
+                                            is_inside_yemen: formData.is_inside_yemen,
+                                            transaction_type_id: "68fdce917bb1890cd9720a60"
+                                        } 
+                                    })}
                                 >
                                     {t("transactions.goToAdd")}
                                 </Button>
