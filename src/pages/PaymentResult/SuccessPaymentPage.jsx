@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function SuccessPaymentPage() {
     const [searchParams] = useSearchParams();
-    const paymentId = searchParams.get('transactionId');
+    const paymentId = searchParams.get('paymentId');
     const navigate = useNavigate();
     const theme = useTheme();
     const { t } = useTranslation();
