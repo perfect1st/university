@@ -119,10 +119,10 @@ export default function Admissions() {
     loading: ArticalesLoading,
     error: ArticalesError,
   } = useQuery(ArticalesById, {
-    variables: { departmentId: "68f0e59da78374194a5ef3d0" },
+    variables: { departmentId: "69d4e86acbc5ef33bbd3eada" },
     fetchPolicy: "network-only",
   });
-
+  console.log("ArticalesData", ArticalesData);
   // get all nationalities
   const {
     data: nationalitiesData,

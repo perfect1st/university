@@ -121,7 +121,7 @@ export default function AdmissionsHero({ data }) {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                textAlign: isArabic ? "right" : "center",
+                textAlign: "center",
                 pb: { xs: 6, md: 10 },
                 px: { xs: 2, md: 6 },
               }}
@@ -151,6 +151,7 @@ export default function AdmissionsHero({ data }) {
                   color: theme.palette.primary.contrastText,
                   lineHeight: 1.7,
                   maxWidth: "900px",
+                  textAlign:"center"
                 }}
               >
                 {isArabic ? data?.desc_ar : data?.desc_en}
@@ -207,7 +208,7 @@ export default function AdmissionsHero({ data }) {
             }}
             aria-label="previous"
           >
-            <ArrowBackIosNewIcon fontSize="small" />
+             {isArabic ? <ArrowForwardIosIcon fontSize="small" /> : <ArrowBackIosNewIcon fontSize="small" />}
           </IconButton>
 
           <IconButton
@@ -224,7 +225,7 @@ export default function AdmissionsHero({ data }) {
             }}
             aria-label="next"
           >
-            <ArrowForwardIosIcon fontSize="small" />
+            {isArabic ? <ArrowBackIosNewIcon fontSize="small" /> : <ArrowForwardIosIcon fontSize="small" />}
           </IconButton>
         </>
       )}

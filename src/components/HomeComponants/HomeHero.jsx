@@ -211,7 +211,7 @@ export default function HomeHero({ HomeSliderData = [] }) {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  textAlign: isArabic ? "right" : "center",
+                  textAlign:"center",
                   pb: { xs: 8, md: 12 },
                   px: { xs: 2, md: 6 },
                   backgroundColor: `${theme.palette.primary.main}DD`, // subtle tint to keep text readable
@@ -297,7 +297,7 @@ export default function HomeHero({ HomeSliderData = [] }) {
               }}
               aria-label="previous"
             >
-              <ArrowBackIosNewIcon fontSize="small" />
+             {isArabic ? <ArrowForwardIosIcon fontSize="small" /> : <ArrowBackIosNewIcon fontSize="small" />}
             </IconButton>
 
             <IconButton
@@ -314,7 +314,7 @@ export default function HomeHero({ HomeSliderData = [] }) {
               }}
               aria-label="next"
             >
-              <ArrowForwardIosIcon fontSize="small" />
+             {isArabic ? <ArrowBackIosNewIcon fontSize="small" /> : <ArrowForwardIosIcon fontSize="small" />}
             </IconButton>
           </>
         )}

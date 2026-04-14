@@ -39,7 +39,7 @@ export default function NewsPage() {
   const [selected, setSelected] = useState(null);
 
   const { data: newsArticalesData, loading: newsArticalesLoading, error: newsArticalesError } = useQuery(ArticalesById, {
-    variables: { departmentId: "68ef93c7023da961743a05cc" },
+    variables: { departmentId: "69d4db61655d6500ed48a9f9" },
     fetchPolicy: "network-only",
   });
 

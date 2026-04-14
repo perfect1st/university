@@ -19,19 +19,19 @@ const Home = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   
   const { data: HomeSliderData, loading: HomeSliderLoading, error: HomeSliderError } = useQuery(ArticalesById, {
-    variables: { departmentId: "68ef9373023da961743a05ca" },
+    variables: { departmentId: "69d4c8e5d94595c71773dae4" },
     fetchPolicy: "network-only",
   });
   const { data: newsArticalesData, loading: newsArticalesLoading, error: newsArticalesError } = useQuery(ArticalesById, {
-    variables: { departmentId: "68ef93c7023da961743a05cc" },
+    variables: { departmentId: "69d4db61655d6500ed48a9f9" },
     fetchPolicy: "network-only",
   });
   const { data: visionArticalesData, loading: visionArticalesLoading, error: visionArticalesError } = useQuery(ArticalesById, {
-    variables: { departmentId: "68f09521023da961743a06a8" },
+    variables: { departmentId: "69d4dc15655d6500ed48aa3b" },
     fetchPolicy: "network-only",
   });
   const { data: getDepartmentByFatherIdData, loading: getDepartmentByFatherIdLoading, error: getDepartmentByFatherIdError } = useQuery(getDepartmentByFatherId, {
-    variables: { father_id: "68efa348023da961743a0610" },
+    variables: { father_id: "69d4defa655d6500ed48aaf4" },
     fetchPolicy: "network-only",
   });
 

@@ -129,7 +129,7 @@ mutation CreateWebsiteArticle($input:WebsiteArticleInput!) {
 //   "status": "published",
 // "images_array": ["http://178.128.38.212:3000/static/media/DomiDriverImage.a676f0b4ae9f0e6bb5f0.png", "http://178.128.38.212:3000/uploads/users/user_1760532623754.jpg"],
 // "main_image": "http://178.128.38.212:3000/uploads/users/user_1760532623754.jpg",
-//   "website_department_id": "68ef93c7023da961743a05cc",
+//   "website_department_id": "69d4db61655d6500ed48a9f9",
 //   "users_id": "68e4e04a59e04cc5200c0080"
 // },}
 
