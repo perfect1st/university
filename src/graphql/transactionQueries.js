@@ -325,3 +325,186 @@ query GetPaymentLogsByTransaction(
     }
 }
 `;
+
+export const INITIATE_ONLINE_PAYMENT = gql`
+mutation InitiateOnlinePayment($input: OnlinePaymentInput!) {
+    initiateOnlinePayment(input: $input) {
+        paymentUrl
+        invoiceId
+        transaction {
+            id
+            serial
+            payment_method_type
+            source_type
+            amount
+            payment_document_file
+            approval_status
+            rejection_reason
+            transaction_date
+            transaction_serial
+            myfatoorah_invoice_id
+            myfatoorah_payment_id
+            myfatoorah_payment_url
+            myfatoorah_transaction_status
+            myfatoorah_payment_method
+            transaction_type_snapshot {
+                id
+                title_ar
+                title_en
+                operation_type
+                notes
+                status
+            }
+            fees_type_snapshot {
+                id
+                title_ar
+                title_en
+                inside_yemen_value
+                outside_yemen_value
+                status
+            }
+            user_id {
+                id
+                serial
+                username
+                fullname
+                email
+                mobile
+                role
+                status
+                profile_image
+                qid_number
+                is_inside_yemen
+                createdAt
+                updatedAt
+            }
+            register_form_id {
+                id
+                serial
+                first_name
+                second_name
+                third_name
+                fourth_name
+                birthdate
+                gender
+                is_paid
+                paid_document_file
+                high_school_certificate_file
+                address
+                status
+                reviewed_at
+                mobile
+                home_tel
+                email
+                is_inside_yemen
+                national_id_type
+                national_id
+                education_year
+                study_place
+                high_school_student_number
+                general_grade
+                gpa
+                createdAt
+                updatedAt
+            }
+            admin_reviewed_by {
+                id
+                serial
+                username
+                fullname
+                email
+                mobile
+                role
+                status
+                profile_image
+                qid_number
+                is_inside_yemen
+                createdAt
+                updatedAt
+            }
+        }
+    }
+}
+`;
+
+export const VERIFY_ONLINE_PAYMENT = gql`
+mutation VerifyOnlinePayment($paymentId: String!) {
+    verifyOnlinePayment(paymentId: $paymentId) {
+        id
+        serial
+        payment_method_type
+        source_type
+        amount
+        payment_document_file
+        approval_status
+        rejection_reason
+        transaction_date
+        transaction_serial
+        myfatoorah_invoice_id
+        myfatoorah_payment_id
+        myfatoorah_payment_url
+        myfatoorah_transaction_status
+        myfatoorah_payment_method
+        transaction_type_snapshot {
+            id
+            title_ar
+            title_en
+            operation_type
+            notes
+            status
+        }
+        fees_type_snapshot {
+            id
+            title_ar
+            title_en
+            inside_yemen_value
+            outside_yemen_value
+            status
+        }
+        user_id {
+            id
+            serial
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
+        register_form_id {
+            id
+            serial
+            first_name
+            second_name
+            third_name
+            fourth_name
+            birthdate
+            gender
+            is_paid
+            paid_document_file
+            high_school_certificate_file
+            address
+            status
+            reviewed_at
+            mobile
+            home_tel
+            email
+            is_inside_yemen
+            national_id_type
+            national_id
+            education_year
+            study_place
+            high_school_student_number
+            general_grade
+            gpa
+            createdAt
+            updatedAt
+        }
+    }
+}
+`;

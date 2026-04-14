@@ -13,6 +13,7 @@ mutation CreateRegisterForm($input: RegisterFormInput!) {
       fullname
     }
     form {
+      id
       user_id{
         id
       }

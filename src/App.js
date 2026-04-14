@@ -121,6 +121,8 @@ import PrivacyPolicy from "./pages/Home/PrivacyPolicy";
 import TermsOfService from "./pages/Home/TermsOfService";
 import Accessibility from "./pages/Home/Accessibility";
 import ContactUs from "./pages/Home/ContactUs";
+import SuccessPaymentPage from "./pages/PaymentResult/SuccessPaymentPage";
+import FailedPaymentPage from "./pages/PaymentResult/FailedPaymentPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -448,6 +450,10 @@ function App() {
                   <Route path="/terms-of-service" element={<MainLayout><TermsOfService /></MainLayout>} />
                   <Route path="/accessibility" element={<MainLayout><Accessibility /></MainLayout>} />
                   <Route path="/contact-us" element={<MainLayout><ContactUs /></MainLayout>} />
+
+                  {/* Payment Result Pages */}
+                  <Route path="/payment-success" element={<MainLayout><SuccessPaymentPage /></MainLayout>} />
+                  <Route path="/payment-failed" element={<MainLayout><FailedPaymentPage /></MainLayout>} />
 
                   {/* student dashboard */}
                   <Route

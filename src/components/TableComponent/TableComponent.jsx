@@ -64,6 +64,9 @@ const TableComponent = ({
   hasLogsBtn = false, // New prop for logs
   handleLogsClick, // New prop for logs
   statusOptions = [], // New prop for custom status options
+  hasNavigateBtn = false,
+  navigateTo = "",
+  navigateBtnTitle = "",
 }) => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
@@ -297,6 +300,24 @@ const TableComponent = ({
                         // )
                       }
                       {
+                        column.key === "navigate" && hasNavigateBtn ? (
+                          <Button
+                            variant="contained"
+                            onClick={() => navigate(`${navigateTo}/${row.id}`)}
+                            sx={{
+                              py: 0.5,
+                              display: "flex",
+                              minWidth: "max-content",
+                              backgroundColor: theme.palette.info.main,
+                              color: "#fff",
+                              "&:hover": {
+                                backgroundColor: theme.palette.info.dark,
+                              }
+                            }}
+                          >
+                            {navigateBtnTitle}
+                          </Button>
+                        ) :
                         // /uploads/
                         typeof row[column.key] === "string" &&
                           row[column.key]?.includes("/uploads/") ? (

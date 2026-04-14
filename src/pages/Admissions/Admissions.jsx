@@ -45,7 +45,7 @@ import {
   GET_ALL_FACULITIES,
 } from "../../graphql/facultyQuiries.js";
 import { CREATE_REGISTERATION_FORM } from "../../graphql/registerationFormQueries.js";
-import { CREATE_REGISTERATION_FORM_TRANSACTION } from "../../graphql/transactionQueries.js";
+import { CREATE_REGISTERATION_FORM_TRANSACTION, INITIATE_ONLINE_PAYMENT } from "../../graphql/transactionQueries.js";
 import notify from "../../components/notify.js";
 import { baseURL } from "../../Api/apolloClient.js";
 import formatDateToString from "../../components/Utilities/FormatDateToString.js";
@@ -188,6 +188,13 @@ export default function Admissions() {
       error: transactionError,
     },
   ] = useMutation(CREATE_REGISTERATION_FORM_TRANSACTION);
+
+  const [
+    initiateOnlinePayment,
+    {
+      loading: onlinePaymentLoading,
+    },
+  ] = useMutation(INITIATE_ONLINE_PAYMENT);
 
 
   // step1 state
@@ -490,8 +497,34 @@ export default function Admissions() {
 
   const handleSubmitPayment = async () => {
     try {
+      if (selectedPaymnetMethod === 'ONLINE') {
+        const result = await initiateOnlinePayment({
+          variables: {
+            input: {
+              transaction_type_id: "69de135ce9799b76cf8806a8",
+              user_id: registerationFeesResults?.user?.id,
+              register_form_id: String(registerationFeesResults?.form?.id),
+              source_type: "REGISTER_FORM",
+              fees_type_ids: registerationFeesResults?.registration_Fees_Id || [],
+              amount: registerationFeesResults?.registration_Fees_Value,
+              customer_name: `${personal.first_name} ${personal.second_name} ${personal.third_name} ${personal.fourth_name}`.trim(),
+              customer_email: personal.email,
+              customer_mobile: personal.mobile,
+              language: i18n.language === "ar" ? "ar" : "en"
+            }
+          }
+        });
+        
+        if (result?.data?.initiateOnlinePayment?.paymentUrl) {
+           window.location.href = result.data.initiateOnlinePayment.paymentUrl;
+        } else {
+           notify(t("admissions.error"), "error");
+        }
+        return;
+      }
+
       // in transaction type id
-      const transaction_type_id = "68fdce917bb1890cd9720a60";
+      const transaction_type_id = "69de135ce9799b76cf8806a8";
       let transactionObj = {
         payment_method_type: selectedPaymnetMethod,
         transaction_type_id,
@@ -499,7 +532,7 @@ export default function Admissions() {
         fees_type_ids: registerationFeesResults?.registration_Fees_Id,
         transaction_date: formatDateToString(new Date()),
         amount: registerationFeesResults?.registration_Fees_Value,
-        register_form_id: registerationFeesResults?.id,
+        register_form_id: registerationFeesResults?.form?.id,
         source_type: "REGISTER_FORM"
       };
 
@@ -681,11 +714,11 @@ export default function Admissions() {
             {/* <Button onClick={() => setShowPaymentModal(false)}>إلغاء</Button> */}
             <Button
               variant="contained"
-              disabled={transactionLoading}
+              disabled={transactionLoading || onlinePaymentLoading}
               sx={{ width: "100%", mt: 1 }}
               onClick={() => handleSubmitPayment()}
             >
-              {transactionLoading ? (
+              {(transactionLoading || onlinePaymentLoading) ? (
                 <CircularProgress size={24} sx={{ color: "white" }} />
               ) : (
                 t("submit")
