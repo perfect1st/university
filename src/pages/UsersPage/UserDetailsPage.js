@@ -133,6 +133,16 @@ if (values.password && values.password.trim() !== "") {
           error={formik.touched.groupIds && formik.errors.groupIds}
         />
 
+        <HorizentalTextField
+          title={t("form.password", "Password")}
+          fieldName="password"
+          type="password"
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
+        />
+
         <HorizentalTextFieldSelect
           t={t}
           title={t("Dashboard.userType")}

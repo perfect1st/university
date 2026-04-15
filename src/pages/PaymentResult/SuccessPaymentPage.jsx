@@ -70,9 +70,9 @@ export default function SuccessPaymentPage() {
                 <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
                     {t('admissions.paymentFailedDesc', 'There was an issue processing your payment. Please try again.')}
                 </Typography>
-                <Button variant="contained" color="primary" onClick={() => navigate('/login')}>
+                {/* <Button variant="contained" color="primary" onClick={() => navigate('/login')}>
                     {t('admissions.goToLogin', 'Go to Login')}
-                </Button>
+                </Button> */}
             </Paper>
         </Box>
     );

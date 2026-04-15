@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -6,14 +6,18 @@ import {
   Grid,
   Paper,
   IconButton,
+  TextField,
+  Button
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DownloadIcon from "@mui/icons-material/Download";
 import LabelValueRow from "../../components/LabelValueRow";
 import RegistrationSteps from "../../components/studentDashboard/RegistrationSteps";
-import { useQuery, useLazyQuery } from "@apollo/client/react";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/client/react";
 import { GET_LOGGED_USER_BY_TOKEN } from "../../graphql/usersQueries";
+import notify from "../../components/notify";
+import { UPDATE_USER_BY_ADMIN } from "../../graphql/userQueriesForAdmin";
 import LoadingPage from "../../components/LoadingComponent";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
 import i18n from "../../i18n/i18n";
@@ -24,6 +28,38 @@ export default function ProfilePage() {
   const { t } = useTranslation();
   const isArabic = i18n.language === "ar";
   const me = useSelector((state) => state.user.loggedUser);
+
+  const [password, setPassword] = useState("");
+  const [UpdateUser, { loading: updating }] = useMutation(UPDATE_USER_BY_ADMIN);
+
+  const handleUpdatePassword = async () => {
+    if (!password || password.trim() === "") return;
+    try {
+      const input = {
+        username: me?.username,
+        fullname: me?.fullname,
+        email: me?.email,
+        mobile: me?.mobile,
+        role: me?.role,
+        groups: me?.groups?.map(g => g.id) || [],
+      };
+      
+      if (password && password.trim() !== "") {
+        input.password = password;
+      }
+      
+      await UpdateUser({
+        variables: {
+          id: me?.id,
+          input: input
+        }
+      });
+      notify(t("updatedSuccessfully", "Updated successfully"), "success");
+      setPassword("");
+    } catch (error) {
+      notify(error.message || t("error"), "error");
+    }
+  };
 
   const [
     GetRegisterFormByUserId,
@@ -161,6 +197,40 @@ export default function ProfilePage() {
                 value={getRegisterFormByUserId?.national_id}
               />
             </Grid>}
+
+            <Grid item xs={12}>
+              <Box sx={{ 
+                backgroundColor: theme.palette.primary?.gray || "#f5f5f5",
+                borderRadius: 1,
+                px: 2,
+                py: 1.2,
+                my: 1,
+                display: "flex", 
+                alignItems: "center", 
+                flexWrap: "wrap",
+                gap: 2 
+              }}>
+                <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500, flexBasis: "23%", flexGrow: 0, flexShrink: 0 }}>
+                  {t("form.password", "Password")}
+                </Typography>
+                <TextField
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  size="small"
+                  sx={{ width: { xs: '100%', sm: 250 } }}
+                  placeholder="********"
+                />
+                <Button 
+                  variant="outlined" 
+                  onClick={handleUpdatePassword} 
+                  disabled={updating || !password.trim()}
+                  sx={{ ml: 'auto' }}
+                >
+                  {t("form.save", "Update")}
+                </Button>
+              </Box>
+            </Grid>
           </Grid>
 
           {/* </Paper> */}
