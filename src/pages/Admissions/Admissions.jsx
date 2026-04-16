@@ -50,7 +50,7 @@ import notify from "../../components/notify.js";
 import { baseURL } from "../../Api/apolloClient.js";
 import formatDateToString from "../../components/Utilities/FormatDateToString.js";
 import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import LoadingPage from "../../components/LoadingComponent.jsx";
 
 // CustomTextField wrapper (keeps placeholder support + helperText)
@@ -105,8 +105,10 @@ export default function Admissions() {
   const isArabic = i18n.language === "ar";
   const theme = useTheme();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const fromAdmin = searchParams.get('fromAdmin') === 'true';
 
-  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(fromAdmin ? true : false);
   const [step, setStep] = useState(1);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   // const[registerationFees,setRegisterationFees] = useState(0);
@@ -728,9 +730,9 @@ export default function Admissions() {
         </Dialog>
       )}
 
-      <AdmissionsHero data={ArticalesData?.getArticlesByDepartment?.[0]} />
+      {!fromAdmin && <AdmissionsHero data={ArticalesData?.getArticlesByDepartment?.[0]} />}
 
-      {!acceptTerms && (
+      {!acceptTerms && !fromAdmin && (
         <TermsConditions
           setAcceptTerms={setAcceptTerms}
           acceptTerms={acceptTerms}
@@ -741,25 +743,27 @@ export default function Admissions() {
       {acceptTerms && (
         <Box sx={{ mt: 3, maxWidth: 900, margin: "auto" }}>
           {/* Step header */}
-          <Box sx={{ my: 2 }}>
-            <Typography variant="subtitle2">
-              {t("admissions.step", { step })}
-            </Typography>
-            <Box sx={{ mt: 1 }}>
-              <LinearProgress
-                variant="determinate"
-                value={step === 1 ? 50 : 100}
-                sx={{
-                  height: 10,
-                  borderRadius: 2,
-                  backgroundColor: "#CFDBE8",
-                  "& .MuiLinearProgress-bar": {
-                    backgroundColor: theme.palette.primary.main,
-                  },
-                }}
-              />
+          { (
+            <Box sx={{ my: 2 }}>
+              <Typography variant="subtitle2">
+                {t("admissions.step", { step })}
+              </Typography>
+              <Box sx={{ mt: 1 }}>
+                <LinearProgress
+                  variant="determinate"
+                  value={step === 1 ? 50 : 100}
+                  sx={{
+                    height: 10,
+                    borderRadius: 2,
+                    backgroundColor: "#CFDBE8",
+                    "& .MuiLinearProgress-bar": {
+                      backgroundColor: theme.palette.primary.main,
+                    },
+                  }}
+                />
+              </Box>
             </Box>
-          </Box>
+          )}
 
           {/* Paper with big border */}
           <Paper
@@ -1724,23 +1728,25 @@ export default function Admissions() {
                 xs={12}
                 sx={{ display: "flex", justifyContent: "space-between", my: 2 }}
               >
-                <Button
-                  variant="contained"
-                  size="large"
-                  endIcon={
-                    <KeyboardDoubleArrowRightIcon
-                      sx={{
-                        transform:
-                          i18n.language === "ar" ? "rotate(180deg)" : "none",
-                        transition: "transform 0.3s ease",
-                      }}
-                    />
-                  }
-                  sx={{ background: theme.palette.info?.main, gap: 1 }}
-                  onClick={() => setStep(1)}
-                >
-                  {t("Back")}
-                </Button>
+                { (
+                  <Button
+                    variant="contained"
+                    size="large"
+                    endIcon={
+                      <KeyboardDoubleArrowRightIcon
+                        sx={{
+                          transform:
+                            i18n.language === "ar" ? "rotate(180deg)" : "none",
+                          transition: "transform 0.3s ease",
+                        }}
+                      />
+                    }
+                    sx={{ background: theme.palette.info?.main, gap: 1 }}
+                    onClick={() => setStep(1)}
+                  >
+                    {t("Back")}
+                  </Button>
+                )}
 
                 <Button
                   disabled={isLoading || isUploading}

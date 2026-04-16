@@ -67,6 +67,7 @@ const TableComponent = ({
   hasNavigateBtn = false,
   navigateTo = "",
   navigateBtnTitle = "",
+  renderCustomMenuItems,
 }) => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
@@ -658,6 +659,9 @@ const TableComponent = ({
             {t("delete")}
           </MenuItem>
         )}
+
+        {/* Custom Menu Items passed from parent */}
+        {renderCustomMenuItems && selectedRow && renderCustomMenuItems(selectedRow, handleClose)}
       </Menu>
     </TableContainer>
   );

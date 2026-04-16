@@ -198,7 +198,7 @@ export default function ProfilePage() {
               />
             </Grid>}
 
-            <Grid item xs={12}>
+            {false &&<Grid item xs={12}>
               <Box sx={{ 
                 backgroundColor: theme.palette.primary?.gray || "#f5f5f5",
                 borderRadius: 1,
@@ -230,7 +230,7 @@ export default function ProfilePage() {
                   {t("form.save", "Update")}
                 </Button>
               </Box>
-            </Grid>
+            </Grid>}
           </Grid>
 
           {/* </Paper> */}

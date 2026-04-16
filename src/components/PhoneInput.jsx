@@ -103,7 +103,7 @@ const PhoneNumberInput = (props) => {
 
         const initial =
           prioritized.find((o) => o.value === (personal?.countryCode || "")) ||
-          prioritized.find((o) => o.cca2 === "SA") ||
+          prioritized.find((o) => o.cca2 === "YE") ||
           null;
 
         if (initial) {
@@ -135,10 +135,12 @@ const PhoneNumberInput = (props) => {
     const { data } = props;
     return (
       <RSComponents.Option {...props}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Flag code={data.cca2 || "US"} style={{ width: 20, height: 14 }} />
-          {/* <span style={{ whiteSpace: "nowrap" }}>{data.name}</span> */}
-          <span style={{ marginLeft: 6, opacity: 0.8 }}>{data.dial}</span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, width: "70%", overflow: "hidden" }}>
+            <Flag code={data.cca2 || "US"} style={{ minWidth: 20, height: 14 }} />
+            <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontSize: 13 }}>{data.name}</span>
+          </div>
+          <span style={{ fontWeight: 500, fontSize: 13, direction: "ltr" }}>{data.dial}</span>
         </div>
       </RSComponents.Option>
     );
@@ -148,9 +150,9 @@ const PhoneNumberInput = (props) => {
     const { data } = props;
     return (
       <RSComponents.SingleValue {...props}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Flag code={data.cca2 || "US"} style={{ width: 18, height: 12 }} />
-          {/* <span style={{ fontSize: 13 }}>{data.dial}</span> */}
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Flag code={data.cca2 || "US"} style={{ minWidth: 20, height: 14 }} />
+          <span style={{ fontSize: 14, fontWeight: "bold", direction: "ltr" }}>{data.dial}</span>
         </div>
       </RSComponents.SingleValue>
     );
@@ -169,8 +171,8 @@ const PhoneNumberInput = (props) => {
     indicatorsContainer: (base) => ({ ...base, padding: 0 }),
     option: (base) => ({ ...base, padding: "6px 8px", fontSize: 13 }),
     singleValue: (base) => ({ ...base, display: "flex", alignItems: "center" }),
-    menu: (base) => ({ ...base, zIndex: 1500 }),
-    container: (base) => ({ ...base, width: 140 }),
+    menu: (base) => ({ ...base, zIndex: 1500, width: 250 }),
+    container: (base) => ({ ...base, width: 110 }),
   };
 
   const handleChange = (opt) => {
@@ -182,7 +184,7 @@ const PhoneNumberInput = (props) => {
 
   const startAdornment = (
     <InputAdornment position="start" sx={{ mr: 1, pl: 0, pr: 0 }}>
-      <div style={{ width: 140 }}>
+      <div style={{ width: 110, borderInlineEnd: "1px solid rgba(0,0,0,0.1)", paddingInlineEnd: "4px" }}>
         <Select
           options={options}
           isLoading={loading}
@@ -194,7 +196,6 @@ const PhoneNumberInput = (props) => {
           isClearable={false}
           menuPlacement="auto"
           isSearchable
-          menuPortalTarget={typeof document !== "undefined" ? document.body : null}
         />
       </div>
     </InputAdornment>

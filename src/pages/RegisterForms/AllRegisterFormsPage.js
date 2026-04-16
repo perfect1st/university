@@ -1,6 +1,6 @@
 import LoadingPage from "../../components/LoadingComponent";
 import { useTheme } from "@emotion/react";
-import { Box, Chip, CircularProgress, Grid, useMediaQuery } from "@mui/material";
+import { Box, Chip, CircularProgress, Grid, useMediaQuery, MenuItem, alpha } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
@@ -273,6 +273,7 @@ export default function AllRegisterFormsPage() {
     }
 
     const totalPages = Math.ceil(total / pageLimit) || 1;
+    const addRegisterFormNavigate = () => navigate('/admissions?fromAdmin=true');
 
     if (!view) return <NoPermissionPage />;
 
@@ -295,7 +296,11 @@ export default function AllRegisterFormsPage() {
                         title={t("registerForms.title")}
                         subtitle={t("registerForms.title")}
                         i18n={i18n}
-                        haveBtn={false}
+                        haveBtn={create}
+                        btn={t("addItem", { item: translateText })}
+                        btnIcon={<ControlPointIcon sx={{ [isArabic ? "mr" : "ml"]: 1 }} />}
+                        onSubmit={addRegisterFormNavigate}
+
                         isExcel
                         isPdf
                         isPrinter
@@ -338,6 +343,27 @@ export default function AllRegisterFormsPage() {
                         hasDeleteBtn={canDelete}
                         handleDeleteClick={handleDeleteClick}
                         isInDetails={false}
+                        renderCustomMenuItems={(selectedRow, handleClose) => {
+                            if (selectedRow?.status === "accepted" && selectedRow?.user_id?.id) {
+                                return (
+                                    <MenuItem
+                                        onClick={() => {
+                                            navigate(`/users/details/${selectedRow?.user_id?.id}`, { state: selectedRow?.user_id });
+                                            handleClose();
+                                        }}
+                                        sx={{
+                                            borderLeft: isArabic ? "" : `4px solid ${alpha(theme.palette.info.main, 0.5)}`,
+                                            borderRight: isArabic ? `4px solid ${alpha(theme.palette.info.main, 0.5)}` : "",
+                                            py: 1,
+                                            fontWeight: 500
+                                        }}
+                                    >
+                                        {isArabic ? "الانتقال لصفحة المستخدم" : "Go to User Page"}
+                                    </MenuItem>
+                                );
+                            }
+                            return null;
+                        }}
                     />
 
                     <FilterComponent totalPages={totalPages} />

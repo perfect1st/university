@@ -15,7 +15,7 @@ import {
   useMediaQuery,
   CircularProgress,
 } from "@mui/material";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { ExpandLess, ExpandMore, FolderOpenOutlined, Circle } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, matchPath } from "react-router-dom";
 
@@ -354,7 +354,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const drawerContent = (
     <Box
       sx={{
-        width: 230,
+        width: 300,
         //       minHeight: "100vh",
         // height: "fit-content",
         height: isMobile
@@ -422,75 +422,46 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                   onClick={() => {
                     if (hasChildren) {
                       toggleOpen(item.key);
+                    } else {
+                      dispatch(closeNav());
                     }
-
-                    dispatch(closeNav());
                   }}
-                  selected={!!(isDirectlyActive || isActiveParent)}
+                  selected={!!isDirectlyActive}
                   sx={{
-                    pl: 3,
+                    px: 3,
                     mb: 0.5,
-                    height: 40,
-                    gap: 1,
+                    minHeight: 46,
+                    gap: 1.5,
+                    borderRadius: "8px",
+                    backgroundColor: isDirectlyActive
+                      ? theme.palette.primary.main
+                      : isActiveParent
+                      ? "rgba(0, 0, 0, 0.04)"
+                      : "transparent",
+                    color: isDirectlyActive
+                      ? theme.palette.background.secDefault
+                      : theme.palette.primary.main,
                     "&.Mui-selected": {
-                      backgroundColor: isDirectlyActive
-                        ? theme.palette.primary.main
-                        : "transparent",
-                      color: isDirectlyActive
-                        ? theme.palette.background.secDefault
-                        : theme.palette.primary.main,
-                      p: 0,
+                      backgroundColor: theme.palette.primary.main,
+                      color: theme.palette.background.secDefault,
                     },
                     "&.Mui-selected:hover": {
-                      backgroundColor: isDirectlyActive
-                        ? theme.palette.primary.main
-                        : "rgba(255, 255, 255, 0.1)",
+                      backgroundColor: theme.palette.primary.dark,
                     },
-                    borderRadius: "8px",
+                    "&:hover": {
+                      backgroundColor: isDirectlyActive 
+                        ? theme.palette.primary.dark 
+                        : "rgba(0, 0, 0, 0.06)",
+                    }
                   }}
                 >
-                  {isDirectlyActive && (
-                    <ListItemIcon sx={{ minWidth: 24 }}>
-                      <Box
-                        sx={{
-                          width: 6,
-                          height: 24,
-                          borderRadius: "3px",
-                          backgroundColor: theme.palette.info.main,
-                        }}
-                      />
-                    </ListItemIcon>
-                  )}
-
-                  {IconComponent && (
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 24,
-                        color: isDirectlyActive
-                          ? theme.palette.background.secDefault
-                          : theme.palette.primary.main,
-                      }}
-                    >
-                      <IconComponent
-                        sx={{
-                          color: isDirectlyActive
-                            ? theme.palette.background.secDefault
-                            : theme.palette.primary.main,
-                          // mx:1
-                        }}
-                      />
-                    </ListItemIcon>
-                  )}
-
                   <ListItemText
                     primary={
                       <Typography
                         sx={{ display: "flex", alignItems: "start" }}
                         variant="body1"
                         fontWeight="bold"
-                        color={
-                          isDirectlyActive ? "background.secDefault" : "inherit"
-                        }
+                        color="inherit"
                       >
                         {item.label[i18n.language]}
                       </Typography>
@@ -519,35 +490,26 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
                               if (child.action && onAction) {
                                 onAction(child.action);
                               }
+                              dispatch(closeNav());
                             }}
                             selected={!!isChildActive}
                             sx={{
                               mb: 0.5,
-                              height: 40,
+                              mt: 0.5,
+                              minHeight: 40,
                               width: "100%",
                               borderRadius: "8px",
+                              paddingInlineStart: "1.5rem",
                               "&.Mui-selected": {
-                                backgroundColor:
-                                  theme.palette.background.default,
+                                backgroundColor: "rgba(0, 0, 0, 0.06)",
                                 color: theme.palette.primary.main,
+                                fontWeight: "bold"
                               },
                               "&.Mui-selected:hover": {
-                                backgroundColor:
-                                  theme.palette.background.default,
+                                backgroundColor: "rgba(0, 0, 0, 0.08)",
                               },
                             }}
                           >
-                            <ListItemIcon sx={{ minWidth: 24 }}>
-                              <Box
-                                sx={{
-                                  width: 6,
-                                  height: 24,
-                                  borderRadius: "3px",
-                                  backgroundColor: theme.palette.primary.main,
-                                }}
-                              />
-                            </ListItemIcon>
-
                             <ListItemText
                               primary={
                                 <Typography
@@ -593,7 +555,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
       <Box
         sx={{
           display: { xs: "none", md: "block" },
-          width: 230,
+          width: 300,
           flexShrink: 0,
           height: "-webkit-fill-available",
           // minHeight:"100vh",
@@ -610,7 +572,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
         sx={{
           display: { xs: "block", md: "none" },
           "& .MuiDrawer-paper": {
-            width: 250,
+            width: 300,
           },
         }}
       >

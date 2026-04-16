@@ -284,6 +284,30 @@ query FilteredPagedRegisterForms($search: String, $status: String, $page: Int, $
             general_grade
             gpa
             createdAt
+          user_id {
+                id
+                serial
+                username
+                fullname
+                email
+                mobile
+                role
+                status
+                profile_image
+                qid_number
+                is_inside_yemen
+                createdAt
+                updatedAt
+                groups {
+                    id
+                    serial
+                    name_ar
+                    name_en
+                    permissions
+                    createdAt
+                    updatedAt
+                }
+            }
             faculty_id {
                 id
                 serial

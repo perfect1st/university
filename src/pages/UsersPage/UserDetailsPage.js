@@ -22,6 +22,7 @@ export default function UserDetailsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const userData = location?.state;
+  console.log("location",location)
 
   // Fetch Groups for the selection list
   const { data: groupsData } = useQuery(GET_GROUPS);
@@ -79,7 +80,8 @@ if (values.password && values.password.trim() !== "") {
     },
   });
 
-  const userRulesWithOutStudent = userRules.filter(item => item !== "student");
+  const userRulesWithOutStudent = userRules
+  // const userRulesWithOutStudent = userRules.filter(item => item !== "student");
 
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
