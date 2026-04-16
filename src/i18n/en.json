@@ -428,8 +428,8 @@
   "isLocalCountry": "Local Country",
   "login": "Login",
   "registerForms": {
-    "title": "Register Forms",
-    "detailsTitle": "Register Form Details",
+    "title": "Students / Register Forms",
+    "detailsTitle": "View and manage all student registration applications, with the ability to review data and status.",
     "editTitle": "Edit Registration Form",
     "searchPlaceholder": "Search by Name, Email or Mobile",
     "status": {

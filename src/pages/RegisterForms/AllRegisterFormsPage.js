@@ -3,7 +3,7 @@ import { useTheme } from "@emotion/react";
 import { Box, Chip, CircularProgress, Grid, useMediaQuery, MenuItem, alpha } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useLazyQuery, useMutation } from "@apollo/client/react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
@@ -11,9 +11,10 @@ import TableComponent from "../../components/TableComponent/TableComponent";
 import Header from "../../components/PageHeader/header";
 import { GET_ALL_FILTERED_REGISTER_FORMS, APPROVE_REGISTER_FORM, REJECT_REGISTER_FORM, DELETE_REGISTER_FORM } from "../../graphql/registerationFormQueries";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import notify from "../../components/notify";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
+import { GET_ALL_FACULITIES, GET_ALL_DEPARTMENTS } from "../../graphql/facultyQuiries";
 
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import NoPermissionPage from "../../components/NoPermissionPage";
@@ -34,6 +35,17 @@ export default function AllRegisterFormsPage() {
         { id: "accepted", arKey: "مقبول", enKey: "Accepted", color: theme.palette.success.main, borderColor: theme.palette.success.light },
         { id: "rejected", arKey: "مرفوض", enKey: "Rejected", color: theme.palette.error.main, borderColor: theme.palette.error.light },
     ];
+
+    const { data: facultiesData, loading: facultiesLoading } = useQuery(GET_ALL_FACULITIES);
+    const { data: departmentsData, loading: departmentsLoading } = useQuery(GET_ALL_DEPARTMENTS);
+
+    const [selectedFacultyId, setSelectedFacultyId] = useState(searchParams.get("faculty_id") || "0");
+
+    const filteredDepartments = useMemo(() => {
+        if (!departmentsData?.facultyDepartments) return [];
+        if (selectedFacultyId === "0") return departmentsData.facultyDepartments;
+        return departmentsData.facultyDepartments.filter(dep => dep.faculty_id?.id === selectedFacultyId);
+    }, [departmentsData, selectedFacultyId]);
 
     // filtered register forms
     const [
@@ -73,7 +85,9 @@ export default function AllRegisterFormsPage() {
                         page: Number(searchParams.get("page")) || 1,
                         limit: Number(searchParams.get("limit")) || 10,
                         search: searchParams.get("search") || "",
-                        status: (searchParams.get("status") && searchParams.get("status") !== "0") ? searchParams.get("status") : undefined
+                        status: (searchParams.get("status") && searchParams.get("status") !== "0") ? searchParams.get("status") : undefined,
+                        faculty_id: (searchParams.get("faculty_id") && searchParams.get("faculty_id") !== "0") ? searchParams.get("faculty_id") : undefined,
+                        faculty_department_id: (searchParams.get("faculty_department_id") && searchParams.get("faculty_department_id") !== "0") ? searchParams.get("faculty_department_id") : undefined
                     }
                 });
             } else {
@@ -94,7 +108,9 @@ export default function AllRegisterFormsPage() {
                         page: Number(searchParams.get("page")) || 1,
                         limit: Number(searchParams.get("limit")) || 10,
                         search: searchParams.get("search") || "",
-                        status: (searchParams.get("status") && searchParams.get("status") !== "0") ? searchParams.get("status") : undefined
+                        status: (searchParams.get("status") && searchParams.get("status") !== "0") ? searchParams.get("status") : undefined,
+                        faculty_id: (searchParams.get("faculty_id") && searchParams.get("faculty_id") !== "0") ? searchParams.get("faculty_id") : undefined,
+                        faculty_department_id: (searchParams.get("faculty_department_id") && searchParams.get("faculty_department_id") !== "0") ? searchParams.get("faculty_department_id") : undefined
                     }
                 });
             } else {
@@ -131,6 +147,10 @@ export default function AllRegisterFormsPage() {
         if (searchText) variablesObj.search = searchText;
         if (searchParams.get("status") && searchParams.get("status") !== "0")
             variablesObj.status = searchParams.get("status");
+        if (searchParams.get("faculty_id") && searchParams.get("faculty_id") !== "0")
+            variablesObj.faculty_id = searchParams.get("faculty_id");
+        if (searchParams.get("faculty_department_id") && searchParams.get("faculty_department_id") !== "0")
+            variablesObj.faculty_department_id = searchParams.get("faculty_department_id");
 
         FilteredPagedRegisterForms({ variables: variablesObj });
     }, [searchParams]);
@@ -259,10 +279,25 @@ export default function AllRegisterFormsPage() {
     };
 
     const onFilterChange = async (filterOBJ) => {
-        if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
-        if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0")
-            searchParams.set("status", filterOBJ.status);
-        setSearchParams(searchParams);
+        const newParams = new URLSearchParams();
+        
+        // Preserve pagination if needed, or reset to page 1 on new filter
+        // Usually, new filter should reset to page 1
+        newParams.set("page", "1");
+        newParams.set("limit", searchParams.get("limit") || "10");
+
+        if (filterOBJ.search) newParams.set("search", filterOBJ.search);
+        
+        if (filterOBJ.status && filterOBJ.status !== "0")
+            newParams.set("status", filterOBJ.status);
+            
+        if (filterOBJ.faculty_id && filterOBJ.faculty_id !== "0")
+            newParams.set("faculty_id", filterOBJ.faculty_id);
+            
+        if (filterOBJ.faculty_department_id && filterOBJ.faculty_department_id !== "0")
+            newParams.set("faculty_department_id", filterOBJ.faculty_department_id);
+            
+        setSearchParams(newParams);
     };
 
     let pageLimit;
@@ -317,9 +352,17 @@ export default function AllRegisterFormsPage() {
                         arKey={"arKey"}
                         enKey={"enKey"}
                         select2Label={"Status"}
+                        selectKey2={"faculty_id"}
+                        selectOptions2={facultiesData?.faculties || []}
+                        select2Label2={"Dashboard.faculty"}
+                        onSelect2Change={(val) => setSelectedFacultyId(val)}
+                        selectKey3={"faculty_department_id"}
+                        selectOptions3={filteredDepartments}
+                        select2Label3={"Dashboard.facultyDepartment"}
                         onFilterChange={onFilterChange}
                         t={t}
                         isAdmin={true}
+                        fromRegisterForm={true}
                     />
 
                     <TableComponent

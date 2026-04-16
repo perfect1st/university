@@ -93,10 +93,12 @@ export default function AllTransactionsPage() {
     // console.log("trans",t("fee.method.CASH"))
 
     let getTransactionsToShow = transactions?.map(el => {
+        const fullName = el?.user_id ? el?.user_id?.fullname : `${el?.register_form_id?.first_name || ""} ${el?.register_form_id?.second_name || ""} ${el?.register_form_id?.third_name || ""} ${el?.register_form_id?.fourth_name || ""}`.trim();
         return {
             ...el,
             payment_method_type: t(`fee.method.${el?.payment_method_type}`),
-            amount: String(el.amount)
+            amount: String(el.amount),
+            fullName: fullName
         }
     })
 
@@ -108,7 +110,7 @@ export default function AllTransactionsPage() {
         { key: "payment_method_type", label: t("fee.paymentMethodsTitle") },
         { key: "amount", label: t("fee.table.amount") },
         { key: "transaction_date", label: t("fee.paymentDate") },
-        { key: "user_id", label: t("Users") }
+        { key: "fullName", label: t("Users") }
     ];
 
     const fetchAndExport = async (type) => {
@@ -120,7 +122,7 @@ export default function AllTransactionsPage() {
                 [t("fee.paymentMethodsTitle")]: t(`fee.method.${user?.payment_method_type}`),
                 [t("fee.table.amount")]: user?.amount,
                 [t("fee.paymentDate")]: user?.transaction_date,
-                [t("Users")]: user?.user_id?.fullname,
+                [t("Users")]: user?.user_id ? user?.user_id?.fullname : `${user?.register_form_id?.first_name} ${user?.register_form_id?.second_name} ${user?.register_form_id?.third_name} ${user?.register_form_id?.fourth_name}`,
             }));
 
             ExportExcelAndPDF({

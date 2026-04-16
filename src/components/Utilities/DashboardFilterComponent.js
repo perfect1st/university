@@ -29,7 +29,12 @@ export default function DashboardFilterComponent({
   selectKey2,
   selectOptions2,
   select2Label2,
-  isAdmin=false
+  selectKey3,
+  selectOptions3,
+  select2Label3,
+  onSelect2Change,
+  fromRegisterForm = false,
+  isAdmin = false
 }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -52,32 +57,36 @@ export default function DashboardFilterComponent({
   const [select3Search, setSelect3Search] = useState(
     () => searchParams.get(selectKey2) || "0",
   );
+  const [select4Search, setSelect4Search] = useState(
+    () => searchParams.get(selectKey3) || "0",
+  );
 
-const handleCancel = () => {
-  // 1. Clear the URL
-  setSearchParams({});
-  
-  // 2. Reset all local input states so the text boxes actually empty out
-  setSearchValue("");
-  setSearchValue2("");
-  setStatusSearch("0");
-  setSelect2Search("0");
-  setSelect3Search("0");
+  const handleCancel = () => {
+    // 1. Clear the URL
+    setSearchParams({});
+    setSearchValue("");
+    setSearchValue2("");
+    setStatusSearch("0");
+    setSelect2Search("0");
+    setSelect3Search("0");
+    setSelect4Search("0");
+    if (onSelect2Change) onSelect2Change("0");
 
-  // 3. CRITICAL: Tell the parent page to show ALL data again
-  onFilterChange({});
-};
+    // 3. CRITICAL: Tell the parent page to show ALL data again
+    onFilterChange({});
+  };
 
-const handleSearch = () => {
-  let filterOBJ = {};
-  if (searchValue) filterOBJ[textSearchField] = searchValue?.trim();
-  if (statusSearch !== "0") filterOBJ[statusKey] = statusSearch;
-  if (selectKey) filterOBJ[selectKey] = select2Search;
-  if (searchValue2) filterOBJ[textSearchField2] = searchValue2?.trim();
-  if (selectKey2) filterOBJ[selectKey2] = select3Search;
-  
-  onFilterChange(filterOBJ);
-};
+  const handleSearch = () => {
+    let filterOBJ = {};
+    if (searchValue) filterOBJ[textSearchField] = searchValue?.trim();
+    if (statusSearch !== "0") filterOBJ[statusKey] = statusSearch;
+    if (selectKey) filterOBJ[selectKey] = select2Search;
+    if (searchValue2) filterOBJ[textSearchField2] = searchValue2?.trim();
+    if (selectKey2) filterOBJ[selectKey2] = select3Search;
+    if (selectKey3) filterOBJ[selectKey3] = select4Search;
+
+    onFilterChange(filterOBJ);
+  };
   return (
     <Grid
       container
@@ -93,7 +102,7 @@ const handleSearch = () => {
       <Grid
         item
         xs={12}
-        md={select3Search ? 6 : 8}
+        md={fromRegisterForm ? 3 : select3Search ? 6 : 8}
         sx={{ display: "flex", gap: 2, flexWrap: isMobile ? "wrap" : "nowrap" }}
       >
         {isMobile ? (
@@ -137,17 +146,33 @@ const handleSearch = () => {
         )}
       </Grid>
 
-      <Grid item xs={12} md={3}>
-        <Box
+      {/* <Grid item xs={12} md={fromRegisterForm ? 8 : select3Search ? 6 : 4}> */}
+        {/* <Grid
+          container
+          spacing={2}
           sx={{
-            display: "flex",
-            gap: 2,
-            flexWrap: isMobile ? "wrap" : "nowrap",
+            alignItems: "center",
           }}
-        >
-          {statusKey && isAdmin &&
-            (isMobile ? (
-              <Box sx={{ width: "80%", mx: "auto" }}>
+        > */}
+          {statusKey && isAdmin && (
+            <Grid item xs={12} md={2}>
+              {isMobile ? (
+                <Box sx={{ width: "80%", mx: "auto" }}>
+                  <CustomSelect
+                    t={t}
+                    value={statusSearch}
+                    setValue={setStatusSearch}
+                    height={"40px"}
+                  >
+                    <MenuItem value="0">{t(select1Label)}</MenuItem>
+                    {TrueOrFalseArr?.map((el, i) => (
+                      <MenuItem key={i} value={el}>
+                        {t(el)}
+                      </MenuItem>
+                    ))}
+                  </CustomSelect>
+                </Box>
+              ) : (
                 <CustomSelect
                   t={t}
                   value={statusSearch}
@@ -161,26 +186,29 @@ const handleSearch = () => {
                     </MenuItem>
                   ))}
                 </CustomSelect>
-              </Box>
-            ) : (
-              <CustomSelect
-                t={t}
-                value={statusSearch}
-                setValue={setStatusSearch}
-                height={"40px"}
-              >
-                <MenuItem value="0">{t(select1Label)}</MenuItem>
-                {TrueOrFalseArr?.map((el, i) => (
-                  <MenuItem key={i} value={el}>
-                    {t(el)}
-                  </MenuItem>
-                ))}
-              </CustomSelect>
-            ))}
+              )}
+            </Grid>
+          )}
 
-          {selectOptions && isAdmin &&
-            (isMobile ? (
-              <Box sx={{ width: "80%", mx: "auto" }}>
+          {selectOptions && isAdmin && (
+            <Grid item xs={12} md={2}>
+              {isMobile ? (
+                <Box sx={{ width: "80%", mx: "auto" }}>
+                  <CustomSelect
+                    t={t}
+                    value={select2Search}
+                    setValue={setSelect2Search}
+                    height={"40px"}
+                  >
+                    <MenuItem value="0">{t(select2Label)}</MenuItem>
+                    {selectOptions?.map((el, i) => (
+                      <MenuItem key={i} value={el?.id ? el?.id : el}>
+                        {el?.id ? (isArabic ? el[arKey] : el[enKey]) : t(el)}
+                      </MenuItem>
+                    ))}
+                  </CustomSelect>
+                </Box>
+              ) : (
                 <CustomSelect
                   t={t}
                   value={select2Search}
@@ -194,30 +222,42 @@ const handleSearch = () => {
                     </MenuItem>
                   ))}
                 </CustomSelect>
-              </Box>
-            ) : (
-              <CustomSelect
-                t={t}
-                value={select2Search}
-                setValue={setSelect2Search}
-                height={"40px"}
-              >
-                <MenuItem value="0">{t(select2Label)}</MenuItem>
-                {selectOptions?.map((el, i) => (
-                  <MenuItem key={i} value={el?.id ? el?.id : el}>
-                    {el?.id ? (isArabic ? el[arKey] : el[enKey]) : t(el)}
-                  </MenuItem>
-                ))}
-              </CustomSelect>
-            ))}
+              )}
+            </Grid>
+          )}
 
-          {selectOptions2 && isAdmin &&
-            (isMobile ? (
-              <Box sx={{ width: "80%", mx: "auto" }}>
+          {selectOptions2 && isAdmin && (
+            <Grid item xs={12} md={2}>
+              {isMobile ? (
+                <Box sx={{ width: "80%", mx: "auto" }}>
+                  <CustomSelect
+                    t={t}
+                    value={select3Search}
+                    setValue={(val) => {
+                      setSelect3Search(val);
+                      if (onSelect2Change) onSelect2Change(val);
+                    }}
+                    height={"40px"}
+                  >
+                    <MenuItem value="0">{t(select2Label2)}</MenuItem>
+                    {selectOptions2?.map((el, i) => (
+                      <MenuItem
+                        key={i}
+                        value={el.hasOwnProperty("id") ? el?.id : el}
+                      >
+                        {isArabic ? el[arKey] : el[enKey]}
+                      </MenuItem>
+                    ))}
+                  </CustomSelect>
+                </Box>
+              ) : (
                 <CustomSelect
                   t={t}
                   value={select3Search}
-                  setValue={setSelect3Search}
+                  setValue={(val) => {
+                    setSelect3Search(val);
+                    if (onSelect2Change) onSelect2Change(val);
+                  }}
                   height={"40px"}
                 >
                   <MenuItem value="0">{t(select2Label2)}</MenuItem>
@@ -230,74 +270,80 @@ const handleSearch = () => {
                     </MenuItem>
                   ))}
                 </CustomSelect>
-              </Box>
-            ) : (
-              <CustomSelect
-                t={t}
-                value={select3Search}
-                setValue={setSelect3Search}
-                height={"40px"}
-              >
-                <MenuItem value="0">{t(select2Label2)}</MenuItem>
-                {selectOptions2?.map((el, i) => (
-                  <MenuItem
-                    key={i}
-                    value={el.hasOwnProperty("id") ? el?.id : el}
-                  >
-                    {isArabic ? el[arKey] : el[enKey]}
-                  </MenuItem>
-                ))}
-              </CustomSelect>
-            ))}
-
-          {isMobile ? (
-            <Box sx={{ width: "80%", mx: "auto", display: "flex", gap: 1 }}>
-              <Button
-                onClick={handleSearch}
-                variant="contained"
-                sx={{ background: theme.palette.info?.main, flex: 1 }}
-              >
-                {t("Search")}
-              </Button>
-              <Button
-                onClick={handleCancel}
-                variant="outlined"
-                color="error"
-                sx={{ flex: 1 }}
-              >
-                {t("Cancel")}{" "}
-              </Button>
-            </Box>
-          ) : (
-            <>
-              <Button
-                onClick={() => {
-                  let filterOBJ = {};
-                  if (searchValue)
-                    filterOBJ[textSearchField] = searchValue?.trim();
-                  if (statusSearch !== "0") filterOBJ[statusKey] = statusSearch;
-                  if (selectKey) filterOBJ[selectKey] = select2Search;
-                  if (searchValue2)
-                    filterOBJ[textSearchField2] = searchValue2?.trim();
-                  if (selectKey2) filterOBJ[selectKey2] = select3Search;
-                  onFilterChange(filterOBJ);
-                }}
-                variant="contained"
-                sx={{ background: theme.palette.info?.main, gap: 1 }}
-              >
-                {t("Search")}
-              </Button>
-              <Button
-                onClick={() => setSearchParams({})}
-                variant="outlined"
-                color="error"
-              >
-                {t("Cancel")}{" "}
-              </Button>
-            </>
+              )}
+            </Grid>
           )}
-        </Box>
-      </Grid>
-    </Grid>
+            
+          {selectOptions3 && isAdmin && (
+            <Grid item xs={12} md={2}>
+              {isMobile ? (
+                <Box sx={{ width: "80%", mx: "auto" }}>
+                  <CustomSelect
+                    t={t}
+                    value={select4Search}
+                    setValue={setSelect4Search}
+                    height={"40px"}
+                  >
+                    <MenuItem value="0">{t(select2Label3)}</MenuItem>
+                    {selectOptions3?.map((el, i) => (
+                      <MenuItem
+                        key={i}
+                        value={el.hasOwnProperty("id") ? el?.id : el}
+                      >
+                        {isArabic ? el[arKey] : el[enKey]}
+                      </MenuItem>
+                    ))}
+                  </CustomSelect>
+                </Box>
+              ) : (
+                <CustomSelect
+                  t={t}
+                  value={select4Search}
+                  setValue={setSelect4Search}
+                  height={"40px"}
+                >
+                  <MenuItem value="0">{t(select2Label3)}</MenuItem>
+                  {selectOptions3?.map((el, i) => (
+                    <MenuItem
+                      key={i}
+                      value={el.hasOwnProperty("id") ? el?.id : el}
+                    >
+                      {isArabic ? el[arKey] : el[enKey]}
+                    </MenuItem>
+                  ))}
+                </CustomSelect>
+              )}
+            </Grid>
+          )}
+
+     
+                          <Grid item xs={12} md={1} >
+                              <Button
+                              fullWidth
+                  onClick={handleSearch}
+                  variant="contained"
+                  sx={{ background: theme.palette.info?.main, }}
+                >
+                  {t("Search")}
+                </Button>
+                          </Grid>
+                          <Grid item xs={12} md={1}>
+
+                <Button
+                fullWidth
+                  onClick={handleCancel}
+                  variant="outlined"
+                  color="error"
+                  // sx={{ flex: 1 }}
+                >
+                  {t("Cancel")}
+                </Button>
+                          </Grid>
+
+              
+           
+        {/* </Grid> */}
+      {/* </Grid> */}
+    </Grid >
   );
 }

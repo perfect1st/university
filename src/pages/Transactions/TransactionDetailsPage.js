@@ -94,7 +94,11 @@ export default function TransactionDetailsPage() {
           title={t("Dashboard.user")}
           fieldID={"user_id"}
           fieldName={"user_id"}
-          value={`${getTransactionById?.user_id?.fullname} - ${getTransactionById?.user_id?.email}`}
+          value={
+            getTransactionById?.user_id
+              ? `${getTransactionById?.user_id?.fullname} - ${getTransactionById?.user_id?.email}`
+              : `${getTransactionById?.register_form_id?.first_name || ""} ${getTransactionById?.register_form_id?.second_name || ""} ${getTransactionById?.register_form_id?.third_name || ""} ${getTransactionById?.register_form_id?.fourth_name || ""} - ${getTransactionById?.register_form_id?.email || ""}`
+          }
         />
 
          {/* Collapsible table */}

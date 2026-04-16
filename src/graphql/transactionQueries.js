@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const CREATE_REGISTERATION_FORM_TRANSACTION=gql`
+export const CREATE_REGISTERATION_FORM_TRANSACTION = gql`
 mutation CreateTransaction($input:TransactionInput!) {
     createTransaction(input: $input) {
         id
@@ -10,7 +10,7 @@ mutation CreateTransaction($input:TransactionInput!) {
 
 `;
 
-export const GET_ALL_TRANSACTIONS=gql`
+export const GET_ALL_TRANSACTIONS = gql`
 query GetTransactions {
     getTransactions {
         id
@@ -33,11 +33,40 @@ query GetTransactions {
             createdAt
             updatedAt
         }
+              register_form_id {
+                id
+                serial
+                first_name
+                second_name
+                third_name
+                fourth_name
+                birthdate
+                gender
+                is_paid
+                paid_document_file
+                high_school_certificate_file
+                address
+                status
+                reviewed_at
+                mobile
+                home_tel
+                email
+                is_inside_yemen
+                national_id_type
+                national_id
+                education_year
+                study_place
+                high_school_student_number
+                general_grade
+                gpa
+                createdAt
+                updatedAt
+            }
     }
 }
 `;
 
-export const GET_FILTERED_TRANSACTIONS=gql`
+export const GET_FILTERED_TRANSACTIONS = gql`
 query GetTransactionsFiltered(
     $limit: Int
     $page: Int
@@ -129,7 +158,7 @@ query GetTransactionsFiltered(
 }
 `;
 
-export const GET_TRANSACTION_BY_ID=gql`
+export const GET_TRANSACTION_BY_ID = gql`
 query GetTransactionById($id:ID!) {
     getTransactionById(id: $id) {
         id
@@ -168,11 +197,40 @@ query GetTransactionById($id:ID!) {
             createdAt
             updatedAt
         }
+             register_form_id {
+            id
+            serial
+            first_name
+            second_name
+            third_name
+            fourth_name
+            birthdate
+            gender
+            is_paid
+            paid_document_file
+            high_school_certificate_file
+            address
+            status
+            reviewed_at
+            mobile
+            home_tel
+            email
+            is_inside_yemen
+            national_id_type
+            national_id
+            education_year
+            study_place
+            high_school_student_number
+            general_grade
+            gpa
+            createdAt
+            updatedAt
+        }
     }
 }
 `;
 
-export const CREATE_NEW_TRANSACTION_BY_ADMIN=gql`
+export const CREATE_NEW_TRANSACTION_BY_ADMIN = gql`
 mutation CreateTransaction($input:TransactionInput!) {
     createTransaction(input: $input) {
         id
@@ -186,7 +244,7 @@ mutation CreateTransaction($input:TransactionInput!) {
 }
 `;
 
-export const UPDATE_TRANSACTION_BY_ID=gql`
+export const UPDATE_TRANSACTION_BY_ID = gql`
 mutation UpdateTransaction($id:ID!,$input:TransactionInput!) {
     updateTransaction(id: $id, input: $input) {
         id

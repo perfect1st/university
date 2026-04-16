@@ -254,8 +254,8 @@ query GetRegisterFormById($id: ID!) {
 `;
 
 export const GET_ALL_FILTERED_REGISTER_FORMS = gql`
-query FilteredPagedRegisterForms($search: String, $status: String, $page: Int, $limit: Int) {
-    filteredPagedRegisterForms(search: $search, status: $status, page: $page, limit: $limit) {
+query FilteredPagedRegisterForms($search: String, $status: String, $faculty_id: ID, $faculty_department_id: ID, $page: Int, $limit: Int) {
+    filteredPagedRegisterForms(search: $search, status: $status, faculty_id: $faculty_id, faculty_department_id: $faculty_department_id, page: $page, limit: $limit) {
         total
         registerForms {
             id
@@ -300,7 +300,6 @@ query FilteredPagedRegisterForms($search: String, $status: String, $page: Int, $
                 updatedAt
                 groups {
                     id
-                    serial
                     name_ar
                     name_en
                     permissions
