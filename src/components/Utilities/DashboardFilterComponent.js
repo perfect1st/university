@@ -245,7 +245,7 @@ export default function DashboardFilterComponent({
                         key={i}
                         value={el.hasOwnProperty("id") ? el?.id : el}
                       >
-                        {isArabic ? el[arKey] : el[enKey]}
+                        {isArabic ? el?.title_ar : el?.title_en}
                       </MenuItem>
                     ))}
                   </CustomSelect>
@@ -266,7 +266,7 @@ export default function DashboardFilterComponent({
                       key={i}
                       value={el.hasOwnProperty("id") ? el?.id : el}
                     >
-                      {isArabic ? el[arKey] : el[enKey]}
+                    {isArabic ? el?.title_ar : el?.title_en}
                     </MenuItem>
                   ))}
                 </CustomSelect>
@@ -290,7 +290,7 @@ export default function DashboardFilterComponent({
                         key={i}
                         value={el.hasOwnProperty("id") ? el?.id : el}
                       >
-                        {isArabic ? el[arKey] : el[enKey]}
+                        {isArabic ? el?.title_ar : el?.title_en}
                       </MenuItem>
                     ))}
                   </CustomSelect>
@@ -308,7 +308,7 @@ export default function DashboardFilterComponent({
                       key={i}
                       value={el.hasOwnProperty("id") ? el?.id : el}
                     >
-                      {isArabic ? el[arKey] : el[enKey]}
+                      {isArabic ? el?.title_ar : el?.title_en}
                     </MenuItem>
                   ))}
                 </CustomSelect>

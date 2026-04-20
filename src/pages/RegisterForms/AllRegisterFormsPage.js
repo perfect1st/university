@@ -39,6 +39,8 @@ export default function AllRegisterFormsPage() {
     const { data: facultiesData, loading: facultiesLoading } = useQuery(GET_ALL_FACULITIES);
     const { data: departmentsData, loading: departmentsLoading } = useQuery(GET_ALL_DEPARTMENTS);
 
+    console.log("facultiesData", facultiesData);
+    console.log("departmentsData", departmentsData);
     const [selectedFacultyId, setSelectedFacultyId] = useState(searchParams.get("faculty_id") || "0");
 
     const filteredDepartments = useMemo(() => {
