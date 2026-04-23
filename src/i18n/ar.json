@@ -384,7 +384,12 @@
     "support": "الدعم الفني",
     "message": "الرسالة",
     "adminReply": "رد الادمن",
-    "library": "المكتبة الالكترونية"
+    "library": "المكتبة الالكترونية",
+    "subjectName": "اسم المادة",
+    "totalDegree": "إجمالي الدرجات",
+    "examName": "اسم الامتحان",
+    "examType": "نوع الامتحان",
+    "totalExamDegree": "إجمالي درجة الامتحان"
   },
   "lectures": {
     "pending": "لم تبدأ بعد",

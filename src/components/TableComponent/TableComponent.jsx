@@ -60,6 +60,7 @@ const TableComponent = ({
   hasDeleteBtn = false,
   handleDeleteClick,
   hasDetailsBtn = false,
+  DetailsBtnLabel = null,
   onClickDetails,
   DetailsNavigate = "Details",
   hasLogsBtn = false, // New prop for logs
@@ -181,29 +182,22 @@ const TableComponent = ({
                     textAlign: isArabic ? "right" : "left",
                   }}
                 >
-                  <Box
-                    sx={
-                      {
-                        // display: "flex",
-                        // alignItems: "center",
-                        // justifyContent: "space-between",
-                        // width: "100%",
-                      }
-                    }
-                  >
-                    {column.label}
-                    {/* {false && column.label !== t("Account status") &&
-                      column.label !== t("Trip status") && (
-                        <IconButton
-                          size="small"
-                          onClick={() => onSortClick?.(column)}
-                        >
-                          <SortIcon width={20} height={20} />
-                        </IconButton>
-                      )} */}
-                  </Box>
+                  <Box>{column.label}</Box>
                 </TableCell>
               ))}
+              {hasDetailsBtn && (
+                <TableCell
+                  sx={{
+                    backgroundColor: theme.palette.background.secDefault,
+                    border: "1px solid #F5F0F2",
+                    fontWeight: "bold",
+                    py: { xs: 1, sm: 1.5 },
+                    textAlign: "center",
+                  }}
+                >
+                  {t(DetailsBtnLabel || DetailsNavigate)}
+                </TableCell>
+              )}
               {!dontShowActions && (
                 <TableCell
                   // align={i18n.dir() === "rtl" ? "right" : "left"}
@@ -406,7 +400,7 @@ const TableComponent = ({
                             backgroundColor: theme.palette.info.main,
                           }}
                         >
-                          {t(DetailsNavigate)}
+                          {t(DetailsBtnLabel || DetailsNavigate)}
                         </Button>
                       </TableCell>
                     </>

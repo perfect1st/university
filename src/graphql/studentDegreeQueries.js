@@ -16,6 +16,7 @@ query StudentDegreesAll($doctor_id: ID)
             }
             exams {
                 exam_id {
+                    serial
                     exam_type
                     exam_name
                 }

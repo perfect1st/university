@@ -345,7 +345,12 @@
     "support": "Support",
     "message": "Message",
     "adminReply": "Admin Reply",
-    "library": "Library"
+    "library": "Library",
+    "subjectName": "Subject Name",
+    "totalDegree": "Total Degree",
+    "examName": "Exam Name",
+    "examType": "Exam Type",
+    "totalExamDegree": "Total Exam Degree"
   },
   "lectures": {
     "pending": "not started yet",

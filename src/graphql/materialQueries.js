@@ -226,8 +226,10 @@ query MaterialsByDoctor($doctor_id:ID!) {
 
 export const GET_STUDENT_BY_MATERIAL_ID = gql`
 query StudentsByMaterial($material_id:ID!) {
-    studentsByMaterial(material_id: $material_id) {
+    studentsByMaterial(material_id: $material_id)
+     {
         id
+        serial
         first_name
         second_name
         third_name
@@ -239,11 +241,11 @@ query StudentsByMaterial($material_id:ID!) {
         high_school_certificate_file
         address
         status
+        reviewed_at
         mobile
         home_tel
         email
         is_inside_yemen
-        transactions_id
         national_id_type
         national_id
         education_year
@@ -251,8 +253,11 @@ query StudentsByMaterial($material_id:ID!) {
         high_school_student_number
         general_grade
         gpa
-          user_id {
+        createdAt
+        updatedAt
+        user_id {
             id
+            serial
             username
             fullname
             email
@@ -265,8 +270,68 @@ query StudentsByMaterial($material_id:ID!) {
             createdAt
             updatedAt
         }
-        createdAt
-        updatedAt
+        nationality_id {
+            id
+            serial
+            name_ar
+            name_en
+            flag
+            status
+            createdAt
+            updatedAt
+        }
+        faculty_id {
+            id
+            serial
+            title_ar
+            title_en
+            status
+            required_dep
+            study_years_count
+            createdAt
+            updatedAt
+        }
+        faculty_department_id {
+            id
+            serial
+            title_ar
+            title_en
+            status
+            createdAt
+            updatedAt
+        }
+        country_id {
+            id
+            serial
+            name_ar
+            name_en
+            status
+            is_local
+            createdAt
+            updatedAt
+        }
+        city_id {
+            id
+            serial
+            name_ar
+            name_en
+            country_id
+            status
+            createdAt
+            updatedAt
+        }
+        academyTerm_id {
+            id
+            serial
+            title_ar
+            title_en
+            status
+            study_year
+            current_year
+            term_number
+            min_study_hours
+            max_study_hours
+        }
     }
 }
 `;
