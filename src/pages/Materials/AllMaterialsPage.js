@@ -23,6 +23,7 @@ import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import { useSelector } from "react-redux";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 import NoPermissionPage from "../../components/NoPermissionPage";
+import logger from "../../utils/logger";
 
 
 export default function AllMaterialsPage() {
@@ -36,7 +37,7 @@ export default function AllMaterialsPage() {
   const isArabic = i18n.language === "ar";
 const { view, create, update, delete: canDelete } = usePermissionsByModule("materials");
 
-  console.log("location",location.pathname);
+  logger.log("location",location.pathname);
   
   const me=useSelector(state=>state.user.loggedUser);
   const storedStudentForm = JSON.parse(localStorage.getItem("registerForm"));
@@ -139,7 +140,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("mate
 
   }, [searchParams]);
 
-  // console.log("departments",facultyDepartments);
+  // logger.log("departments",facultyDepartments);
 
   let getSubjectsToShow = materials?.map(el => {
     return {
@@ -148,7 +149,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("mate
     }
   });
 
-  console.log("getSubjectsToShow",getSubjectsToShow);
+  logger.log("getSubjectsToShow",getSubjectsToShow);
   
   let columns = [
     { key: "serial", label: t("Serial") },
@@ -180,7 +181,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("mate
         type
       });
     } catch (err) {
-      console.error("Export error:", err);
+      logger.error("Export error:", err);
     }
   };
 
@@ -195,11 +196,11 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("mate
 
   const onStatusChange = async (selectedRow, newStatus) => {
     try {
-      //  console.log("selectedRow", selectedRow, newStatus);
+      //  logger.log("selectedRow", selectedRow, newStatus);
       // return;
       // let row={...selectedRow}:{faculty_department_id,faculty_id}
       //    let { faculty_department_id, faculty_id,__typename,id ,...row } = selectedRow;
-      //     console.log('row',row);
+      //     logger.log('row',row);
 
       let data = {
         // ...row,
@@ -218,7 +219,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("mate
         }
       });
 
-      console.log("reeesult", result);
+      logger.log("reeesult", result);
 
       notify(t("success"), "success");
 
@@ -227,7 +228,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("mate
     }
   }
   const onFilterChange = async (filterOBJ) => {
-    console.log("filterOBJ", filterOBJ);
+    logger.log("filterOBJ", filterOBJ);
     if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
     if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
     if (filterOBJ.hasOwnProperty("faculty_department_id") && filterOBJ.faculty_department_id !== "0") searchParams.set("faculty_department_id", filterOBJ.faculty_department_id);
@@ -244,11 +245,11 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("mate
     pageLimit = Number(searchParams.get("limit"));
   }
 
-  console.log("pageLimit", pageLimit);
+  logger.log("pageLimit", pageLimit);
 
   const totalPages = parseInt(total / pageLimit) + 1;
 
-  console.log("totalPages", totalPages);
+  logger.log("totalPages", totalPages);
 
     if (!view) return <NoPermissionPage />;
 

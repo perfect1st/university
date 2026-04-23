@@ -18,6 +18,7 @@ import { UPDATE_EXAM_BY_ID } from "../../graphql/ExamsQueries";
 import { examTypes } from "../../constants";
 import VerticalTextField from "../../components/Utilities/VerticalTextField";
 import FormatHTMLDate from "../../components/Utilities/FormatHTMLDate";
+import logger from "../../utils/logger";
 
 
 export default function ExamDetailsPage() {
@@ -27,7 +28,7 @@ export default function ExamDetailsPage() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const location = useLocation();
-  console.log("location", location.state);
+  logger.log("location", location.state);
 
   const [selectedExamType, setSelectedExamType] = useState(() => location?.state?.exam_type);
   const [selectedMaterial, setSelectedMaterial] = useState(() => location?.state?.material_id?.id);
@@ -55,7 +56,7 @@ export default function ExamDetailsPage() {
     }
   }, [me]);
 
-  console.log("materialsByDoctor", materialsByDoctor);
+  logger.log("materialsByDoctor", materialsByDoctor);
 
    const formik = useFormik({
         initialValues: {
@@ -87,7 +88,7 @@ export default function ExamDetailsPage() {
         onSubmit: async (values) => {
 
 
-            console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+            logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
             let data = {
                 exam_name: values?.exam_name,
                 full_mark_degree: values?.full_mark_degree,
@@ -106,8 +107,8 @@ export default function ExamDetailsPage() {
             // if(selectedFile!=null) data.payment_document_file=selectedFile;
 
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                logger.log(data);
 
                 // return;
                 const result = await UpdateExam({
@@ -117,14 +118,14 @@ export default function ExamDetailsPage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
                 navigate(location.pathname.split('/details')[0]);
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {
@@ -136,7 +137,7 @@ export default function ExamDetailsPage() {
   let translateText = isArabic ? "امتحان" : "Exam";
   let translateText2 = isArabic ? "الامتحان" : "Exam";
 
-  console.log("formik",formik.values);
+  logger.log("formik",formik.values);
 
   if (loadingMaterialsByDoctor) return <LoadingPage />
   return (
@@ -203,7 +204,7 @@ export default function ExamDetailsPage() {
                     value={selectedExamType}
                     setValue={setSelectedExamType}
                     onBlur={(e) => {
-                        console.log('blur', selectedExamType);
+                        logger.log('blur', selectedExamType);
                         if (selectedExamType != 0) formik.setFieldError("selectedExamType", undefined);
 
                     }}
@@ -229,7 +230,7 @@ export default function ExamDetailsPage() {
                     value={selectedMaterial}
                     setValue={setSelectedMaterial}
                     onBlur={(e) => {
-                        console.log('blur', selectedMaterial);
+                        logger.log('blur', selectedMaterial);
                         if (selectedMaterial != 0) formik.setFieldError("selectedMaterial", undefined);
 
                     }}

@@ -18,6 +18,7 @@ import { GET_GROUPS } from "../../graphql/groupQueries";
 import NoPermissionPage from "../../components/NoPermissionPage";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 import notify from "../../components/notify";
+import logger from "../../utils/logger";
 
 export default function PermissionsGroupsPage() {
   const theme = useTheme();
@@ -100,7 +101,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("grou
         type,
       });
     } catch (err) {
-      console.error("Export error:", err);
+      logger.error("Export error:", err);
     }
   };
     if (!view) return <NoPermissionPage />;

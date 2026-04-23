@@ -22,6 +22,7 @@ import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import { examTypes } from "../../constants";
 import { GET_ALL_STUDENT_DEGREES, GET_STUDENT_DEGRESS_BY_STUDENT_ID } from "../../graphql/studentDegreeQueries";
 import { useSelector } from "react-redux";
+import logger from "../../utils/logger";
 
 export default function AllStudentDegreesPage() {
     const theme = useTheme();
@@ -52,7 +53,7 @@ export default function AllStudentDegreesPage() {
 
     useEffect(()=>{
             if(me?.id){
-              console.log('meeeee');
+              logger.log('meeeee');
               StudentDegreesAll({variables:{doctor_id:me?.id}});
             }
           },[me]);
@@ -76,7 +77,7 @@ export default function AllStudentDegreesPage() {
 
 //    let studentDegreesToShow = studentDegreesAll?.map((degree) => {
 
-//     console.log("degree?.exams", degree);
+//     logger.log("degree?.exams", degree);
 //     let exam = degree?.exams[0];
 
 //     total_full_mark_degree+=degree?.totals?.total_full_mark;
@@ -148,15 +149,15 @@ export default function AllStudentDegreesPage() {
             //     type
             // });
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
 
-    console.log("studentDegreesToShow",result);
+    logger.log("studentDegreesToShow",result);
 
-    console.log("location.state", location.state);
+    logger.log("location.state", location.state);
 
-    console.log("studentDegreesAll",studentDegreesAll);
+    logger.log("studentDegreesAll",studentDegreesAll);
 
 
 

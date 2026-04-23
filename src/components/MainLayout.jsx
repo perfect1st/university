@@ -7,6 +7,7 @@ import { useQuery } from "@apollo/client/react";
 import { GET_LOGGED_USER_BY_TOKEN } from "../graphql/usersQueries";
 import { useDispatch, useSelector } from "react-redux";
 import { storeLoggedUser } from "../redux/slices/user/userSlice";
+import logger from "../utils/logger";
 
 const MainLayout = ({ isLoggedIn=false ,children }) => {
  const location = useLocation();
@@ -41,7 +42,7 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
 
   const loggedUser=useSelector(state=>state.user.loggedUser);
 
-   console.log('me',me);
+   logger.log('me',me);
 
   // if(isLoggedIn && !me && !userLoading  ) return <Navigate to="/home" />
 
@@ -49,17 +50,17 @@ const MainLayout = ({ isLoggedIn=false ,children }) => {
      const user = getUserCookie();
      const isAuthenticated = Boolean(user);
 
-     console.log("loggedUser",loggedUser)
+     logger.log("loggedUser",loggedUser)
 
      if((isLoggedIn && !isAuthenticated && me==null)  ) return <Navigate to="/home" />
        
      
-  console.log('isAuthenticated',isAuthenticated);
+  logger.log('isAuthenticated',isAuthenticated);
 
   const hideSecandHeader = location.pathname == "/home" || location.pathname == "/visionsArticals" || location.pathname == "/news" || location.pathname.includes("/ArticalDetails/");
 
  // const hideSecandHeader=false;
-console.log("hideSecandHeader",!hideSecandHeader)
+logger.log("hideSecandHeader",!hideSecandHeader)
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
      {isAuthenticated && !hideSecandHeader &&<Sidebar  />}

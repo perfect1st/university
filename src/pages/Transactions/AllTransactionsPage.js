@@ -21,6 +21,7 @@ import { paymentMethodsArr, transactionTypesArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import NoPermissionPage from "../../components/NoPermissionPage";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import logger from "../../utils/logger";
 
 export default function AllTransactionsPage() {
     const theme = useTheme();
@@ -90,7 +91,7 @@ export default function AllTransactionsPage() {
 
     }, [searchParams]);
 
-    // console.log("trans",t("fee.method.CASH"))
+    // logger.log("trans",t("fee.method.CASH"))
 
     let getTransactionsToShow = transactions?.map(el => {
         const fullName = el?.user_id ? el?.user_id?.fullname : `${el?.register_form_id?.first_name || ""} ${el?.register_form_id?.second_name || ""} ${el?.register_form_id?.third_name || ""} ${el?.register_form_id?.fourth_name || ""}`.trim();
@@ -102,7 +103,7 @@ export default function AllTransactionsPage() {
         }
     })
 
-    console.log('transactions', transactions);
+    logger.log('transactions', transactions);
 
     let columns = [
         { key: "serial", label: t("Serial") },
@@ -132,7 +133,7 @@ export default function AllTransactionsPage() {
                 type
             });
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
 
@@ -161,12 +162,12 @@ export default function AllTransactionsPage() {
         pageLimit = Number(searchParams.get("limit"));
     }
 
-    console.log("pageLimit", pageLimit);
+    logger.log("pageLimit", pageLimit);
 
     const totalPages = parseInt(total / pageLimit) + 1;
 
     const onFilterChange = async (filterOBJ) => {
-        console.log("filterOBJ", filterOBJ);
+        logger.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         if (filterOBJ.hasOwnProperty("payment_method_type") && filterOBJ.payment_method_type !== "0") searchParams.set("payment_method_type", filterOBJ.payment_method_type);
         if (filterOBJ.hasOwnProperty("operation_type") && filterOBJ.operation_type !== "0") searchParams.set("operation_type", filterOBJ.operation_type);
@@ -180,7 +181,7 @@ export default function AllTransactionsPage() {
 
     let translateText = isArabic ? "معاملة مالية" : "Transaction";
 
-    console.log("transactionTypesArr", transactionTypesArr);
+    logger.log("transactionTypesArr", transactionTypesArr);
 
 
     if (transactionLoading) return <LoadingPage />

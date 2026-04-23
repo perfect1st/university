@@ -17,6 +17,7 @@ import { GET_MATERIALS_BY_DEPARTMENT_ID, GET_MATERIALS_BY_DOCTOR } from "../../g
 import { useSelector } from "react-redux";
 import { ADD_NEW_EXAM } from "../../graphql/ExamsQueries";
 import { examTypes } from "../../constants";
+import logger from "../../utils/logger";
 export default function AddExamPage() {
     const theme = useTheme();
     const { t } = useTranslation();
@@ -82,7 +83,7 @@ export default function AddExamPage() {
         onSubmit: async (values) => {
 
 
-            console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+            logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
             let data = {
                 exam_name: values?.exam_name,
                 full_mark_degree: values?.full_mark_degree,
@@ -101,8 +102,8 @@ export default function AddExamPage() {
             // if(selectedFile!=null) data.payment_document_file=selectedFile;
 
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                logger.log(data);
 
                 // return;
                 const result = await CreateExam({
@@ -111,14 +112,14 @@ export default function AddExamPage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
                 navigate(location.pathname.split('/add')[0]);
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {
@@ -127,11 +128,11 @@ export default function AddExamPage() {
         },
     });
 
-    // console.log("formik", formik.values);
+    // logger.log("formik", formik.values);
 
     // material_id ??  ------ academy_term_id->(api) ?????
 
-    console.log("materialsByDoctor", materialsByDoctor);
+    logger.log("materialsByDoctor", materialsByDoctor);
 
     let translateText = isArabic ? "امتحان" : "Exam";
     let translateText2 = isArabic ? "الامتحان" : "Exam";
@@ -203,7 +204,7 @@ export default function AddExamPage() {
                     value={selectedExamType}
                     setValue={setSelectedExamType}
                     onBlur={(e) => {
-                        console.log('blur', selectedExamType);
+                        logger.log('blur', selectedExamType);
                         if (selectedExamType != 0) formik.setFieldError("selectedExamType", undefined);
 
                     }}
@@ -252,7 +253,7 @@ export default function AddExamPage() {
                     value={selectedMaterial}
                     setValue={setSelectedMaterial}
                     onBlur={(e) => {
-                        console.log('blur', selectedMaterial);
+                        logger.log('blur', selectedMaterial);
                         if (selectedMaterial != 0) formik.setFieldError("selectedMaterial", undefined);
 
                     }}

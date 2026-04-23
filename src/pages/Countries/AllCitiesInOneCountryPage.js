@@ -19,6 +19,7 @@ import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 import notify from "../../components/notify";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
+import logger from "../../utils/logger";
 
 // GET_CITIES_BY_COUNTRY_ID
 export default function AllCitiesInOneCountryPage() {
@@ -32,7 +33,7 @@ export default function AllCitiesInOneCountryPage() {
   const { id } = useParams();
   const isArabic = i18n.language === "ar";
 
-  console.log("location", location.state);
+  logger.log("location", location.state);
 
   // get filtered cities
   const [
@@ -74,7 +75,7 @@ export default function AllCitiesInOneCountryPage() {
     }
   );
 
-  // console.log("citiesInCountry",citiesInCountry);
+  // logger.log("citiesInCountry",citiesInCountry);
  
   // get country
   const [
@@ -155,10 +156,10 @@ export default function AllCitiesInOneCountryPage() {
 
   ];
 
-  // console.log("id",id);
-  console.log("data", getCitiesByCountry);
+  // logger.log("id",id);
+  logger.log("data", getCitiesByCountry);
 
-  console.log("country", country);
+  logger.log("country", country);
 
   const fetchAndExport = async (type) => {
     try {
@@ -180,21 +181,21 @@ export default function AllCitiesInOneCountryPage() {
       });
 
     } catch (err) {
-      console.error("Export error:", err);
+      logger.error("Export error:", err);
     }
   };
 
   const addCityNavigate = () => navigate("add");
 
   const handleDetailsClick = (selectedRow) => {
-    console.log('handleDetailsClick', selectedRow);
+    logger.log('handleDetailsClick', selectedRow);
     navigate(`details/${selectedRow?.id}`, {
       state: selectedRow
     });
   }
 
   const onFilterChange = async (filterOBJ) => {
-    console.log("filterOBJ", filterOBJ);
+    logger.log("filterOBJ", filterOBJ);
     if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
     if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
     // searchParams.get("search", e.target.value);
@@ -203,7 +204,7 @@ export default function AllCitiesInOneCountryPage() {
 
   const onStatusChange = async (selectedRow, newStatus) => {
     try {
-      // console.log("selectedRow", selectedRow, newStatus);
+      // logger.log("selectedRow", selectedRow, newStatus);
       // let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
 
       // // return;
@@ -218,7 +219,7 @@ export default function AllCitiesInOneCountryPage() {
         }
       });
 
-      console.log("reeesult", result);
+      logger.log("reeesult", result);
 
       notify(t("success"), "success");
 
@@ -235,11 +236,11 @@ export default function AllCitiesInOneCountryPage() {
     pageLimit = Number(searchParams.get("limit"));
   }
 
-  console.log("pageLimit", pageLimit);
+  logger.log("pageLimit", pageLimit);
 
   const totalPages = parseInt(total / pageLimit) + 1;
 
-  console.log("totalPages", totalPages);
+  logger.log("totalPages", totalPages);
 
 
   const hasViewPermission = true;

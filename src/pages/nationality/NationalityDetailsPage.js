@@ -29,6 +29,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import HorizentalTextField from "../../components/Utilities/HorizentalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import { FormControlLabel, Checkbox } from "@mui/material";
+import logger from "../../utils/logger";
 
 export default function NationalityDetailsPage() {
   const theme = useTheme();
@@ -38,7 +39,7 @@ export default function NationalityDetailsPage() {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const location = useLocation();
 
-  console.log("location", location);
+  logger.log("location", location);
 
   const [
     UpdateNationality,
@@ -65,11 +66,11 @@ export default function NationalityDetailsPage() {
   // const handleChange = (e) => {
   //   const file = e.target.files[0];
   //   if (file) {
-  //     console.log("Selected file:", file);
+  //     logger.log("Selected file:", file);
   //   }
   // };
 
-  console.log('selectedFile', selectedFile);
+  logger.log('selectedFile', selectedFile);
 
   const formik = useFormik({
     initialValues: {
@@ -89,8 +90,8 @@ export default function NationalityDetailsPage() {
         flag: values?.flag,
       };
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-        console.log(data);
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+        logger.log(data);
 
         const result = await UpdateNationality(
           {
@@ -100,14 +101,14 @@ export default function NationalityDetailsPage() {
             }
           });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
         setTimeout(() => navigate('/nationality'), 2000);
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {
@@ -120,7 +121,7 @@ export default function NationalityDetailsPage() {
     const file = e.target.files?.[0] ?? null;
 
 
-    console.log("ppppppppppppppppppppppp", file);
+    logger.log("ppppppppppppppppppppppp", file);
 
     // fileInputRef.current=file?.name;
 
@@ -145,7 +146,7 @@ export default function NationalityDetailsPage() {
         },
       });
 
-      console.log("res", res?.data?.url);
+      logger.log("res", res?.data?.url);
       setSelectedFile(res?.data?.url);
       formik.values.flag=res?.data?.url;
 
@@ -154,14 +155,14 @@ export default function NationalityDetailsPage() {
       // setBankTr=>setPransferDocument(`${baseURL}${res?.data?.url}`);
     } catch (error) {
       notify(t("errorUplaod"), "error");
-      console.log("error", error.message);
+      logger.log("error", error.message);
     }
 
 
   };
 
 
-    console.log('formik.values',formik.values);
+    logger.log('formik.values',formik.values);
 
   let translateText = isArabic ? "الجنسية" : "Nationality";
 

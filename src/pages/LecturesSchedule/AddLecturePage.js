@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
 import { CREATE_MAIN_TIME_TABLE, CREATE_TIME_TABLE } from "../../graphql/TimeTableQueries";
 import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms.js";
+import logger from "../../utils/logger.js";
 
 export default function AddLecturePage() {
 
@@ -108,7 +109,7 @@ export default function AddLecturePage() {
         }),
         onSubmit: async (values) => {
 
-            console.log("suuuubmit");
+            logger.log("suuuubmit");
 
 
             let data = {
@@ -126,8 +127,8 @@ export default function AddLecturePage() {
 
 
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
-                // console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
+                // logger.log(data);
 
                 //  return;
                 const result = await CreateMainTimeTable({
@@ -136,14 +137,14 @@ export default function AddLecturePage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
                 navigate(location.pathname.split('/add')[0]);
 
             } catch (error) {
-                // console.error("Error logging in:", error);
+                // logger.error("Error logging in:", error);
                 // notify(t("error"), "error");
                  // أضف رسالة الخطأ الفعلية
                         const errorMessage = error?.graphQLErrors?.[0]?.message 
@@ -158,7 +159,7 @@ export default function AddLecturePage() {
     });
 
     // const date=new Date();
-    // console.log("date",formatDateToString(new Date()));
+    // logger.log("date",formatDateToString(new Date()));
 
     let translateText = isArabic ? "جدول محاضرة" : "Lecture Schedule";
     let translateText2 = isArabic ? "العنوان بالعربية" : "Title in Arabic";
@@ -254,7 +255,7 @@ export default function AddLecturePage() {
                     }}
 
                     onBlur={(e) => {
-                        // console.log('blur',selectedSemester);
+                        // logger.log('blur',selectedSemester);
                         if (selectedFaculity != 0) formik.setFieldError("selectedFaculity", undefined);
 
                     }}
@@ -288,7 +289,7 @@ export default function AddLecturePage() {
                     onChange={(e) => {
                         // 44444444444444444444444444444
                         if (e.target.value != "") {
-                            console.log("nnnnnnnnnnnnn", e.target.value);
+                            logger.log("nnnnnnnnnnnnn", e.target.value);
                             getAcademyTermsByFacultyDepartment({
                                 variables: {
                                     faculty_department_id: e.target.value
@@ -306,7 +307,7 @@ export default function AddLecturePage() {
                     //     });
                     //   }}
                     onBlur={(e) => {
-                        // console.log('blur',selectedSemester);
+                        // logger.log('blur',selectedSemester);
                         if (selectedDepartment != 0) formik.setFieldError("selectedDepartment", undefined);
 
                     }}
@@ -337,7 +338,7 @@ export default function AddLecturePage() {
                     setValue={setSelectedAcademicTerm}
                  
                     onBlur={(e) => {
-                        // console.log('blur',selectedSemester);
+                        // logger.log('blur',selectedSemester);
                         if (selectedAcademicTerm != 0) formik.setFieldError("selectedAcademicTerm", undefined);
 
                     }}

@@ -22,6 +22,7 @@ import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import { examTypes } from "../../constants";
 import { GET_STUDENT_BY_MATERIAL_ID } from "../../graphql/materialQueries";
 import { GET_EXAM_DEGREES } from "../../graphql/studentDegreeQueries";
+import logger from "../../utils/logger";
 
 export default function ExamStudentDegreesPage() {
     const theme = useTheme();
@@ -35,7 +36,7 @@ export default function ExamStudentDegreesPage() {
 
     const location = useLocation();
 
-    console.log("location", location.state);
+    logger.log("location", location.state);
 
    
     const [
@@ -68,7 +69,7 @@ export default function ExamStudentDegreesPage() {
     
             let searchText = "";
     
-            console.log('searchParams.get("search")',searchParams.get("search"));
+            logger.log('searchParams.get("search")',searchParams.get("search"));
 
             if (searchParams.get("search")) {
                 searchText = searchParams.get("search");
@@ -118,14 +119,14 @@ export default function ExamStudentDegreesPage() {
     });
 
      const studentDegreesNavigate=(row) => {
-        console.log("row",row);
+        logger.log("row",row);
 
         navigate(`/exams/studentDegrees/${row?.student_id?.id}`,{
             state:row
         });
     };
      const handleDetailsClick = (selectedRow) => {
-        console.log('handleDetailsClick', selectedRow);
+        logger.log('handleDetailsClick', selectedRow);
         let row = studentDegrees?.find(el => el?.id == selectedRow?.id);
 
         navigate(`details/${selectedRow?.id}`, {
@@ -167,14 +168,14 @@ export default function ExamStudentDegreesPage() {
             //     type
             // });
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
 
-    console.log("studentDegrees", studentDegrees);
+    logger.log("studentDegrees", studentDegrees);
 
       const onFilterChange = async (filterOBJ) => {
-        console.log("filterOBJ", filterOBJ);
+        logger.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
        // if (filterOBJ.hasOwnProperty("exam_type") && filterOBJ.exam_type !== "0") searchParams.set("exam_type", filterOBJ.exam_type);
         // if (filterOBJ.role) searchParams.set("role", filterOBJ.role);
@@ -193,11 +194,11 @@ export default function ExamStudentDegreesPage() {
         pageLimit = Number(searchParams.get("limit"));
     }
 
-    console.log("pageLimit", pageLimit);
+    logger.log("pageLimit", pageLimit);
 
     const totalPages = parseInt(total / pageLimit) + 1;
 
-    console.log("totalPages", totalPages);
+    logger.log("totalPages", totalPages);
 
     let translateText = isArabic ? "درجة" : "Degree";
     let searchText = isArabic ? "اسم الطالب" : "Student Name";

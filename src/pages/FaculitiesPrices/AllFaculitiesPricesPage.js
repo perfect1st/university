@@ -25,6 +25,7 @@ import { transactionTypesArr, TrueOrFalseArr } from "../../constants";
 import notify from "../../components/notify";
 import { GET_ALL_DEPARTMENTS_FOR_FILTER, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
+import logger from "../../utils/logger";
 
 
 export default function AllFaculitiesPricesPage() {
@@ -48,14 +49,14 @@ export default function AllFaculitiesPricesPage() {
     loading:facultyDepartmentsLoading
   }=useQuery(GET_ALL_DEPARTMENTS_FOR_FILTER, { fetchPolicy: "network-only" });
 
-  // console.log("facultyDepartments",facultyDepartments);
+  // logger.log("facultyDepartments",facultyDepartments);
 
   // all faculity prices
   const{
     data
   }=useQuery(GET_ALL_FACULITY_PRICES, { fetchPolicy: "network-only" });
 
- // console.log("data",data);
+ // logger.log("data",data);
 
   // faculity prices with filter
   const [
@@ -118,7 +119,7 @@ export default function AllFaculitiesPricesPage() {
     });
   }, [searchParams]);
 
-  console.log("facultyPrices", facultyPrices);
+  logger.log("facultyPrices", facultyPrices);
 
   let columns = [
     { key: "serial", label: t("Serial") },
@@ -132,7 +133,7 @@ export default function AllFaculitiesPricesPage() {
 
   const fetchAndExport = async (type) => {
     try {
-      console.log("data?.facultyPrices",data?.facultyPrices);
+      logger.log("data?.facultyPrices",data?.facultyPrices);
 
       const exportData = data?.facultyPrices?.map((user,i) => ({
         ID: i,
@@ -153,21 +154,21 @@ export default function AllFaculitiesPricesPage() {
 
      
     } catch (err) {
-      console.error("Export error:", err);
+      logger.error("Export error:", err);
     }
   };
 
   const addNavigate = () => navigate('add');
 
   const handleDetailsClick = (selectedRow) => {
-    console.log('handleDetailsClick', selectedRow);
+    logger.log('handleDetailsClick', selectedRow);
     navigate(`details/${selectedRow?.id}`, {
       state: selectedRow
     });
   }
 
   const onFilterChange = async (filterOBJ) => {
-    console.log("filterOBJ", filterOBJ);
+    logger.log("filterOBJ", filterOBJ);
     if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
    // if (filterOBJ.hasOwnProperty("operation_type") && filterOBJ.operation_type !== "0") searchParams.set("operation_type", filterOBJ.operation_type);
     if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
@@ -180,7 +181,7 @@ export default function AllFaculitiesPricesPage() {
 
   const onStatusChange = async (selectedRow, newStatus) => {
     try {
-      // console.log("selectedRow", selectedRow, newStatus);
+      // logger.log("selectedRow", selectedRow, newStatus);
       // let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
 
       // // return;
@@ -200,7 +201,7 @@ export default function AllFaculitiesPricesPage() {
         }
       });
 
-      console.log("reeesult", result);
+      logger.log("reeesult", result);
 
       notify(t("success"), "success");
 
@@ -217,11 +218,11 @@ export default function AllFaculitiesPricesPage() {
     pageLimit = Number(searchParams.get("limit"));
   }
 
-  console.log("pageLimit", pageLimit);
+  logger.log("pageLimit", pageLimit);
 
   const totalPages = parseInt(total / pageLimit) + 1;
 
-  // console.log("facultyPrices",facultyPrices);
+  // logger.log("facultyPrices",facultyPrices);
   // const onActionClick=()=>navigate('details')
   // Permissions: for the dummy page we allow viewing. Replace with your real permission check if needed.
   const hasViewPermission = true;

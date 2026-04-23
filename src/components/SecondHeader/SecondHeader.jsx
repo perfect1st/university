@@ -20,7 +20,7 @@ export default function SecondHeader() {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const isNavOpen=useSelector(state=>state.user.isNavOpen);
 
-  // console.log("isNavOpen",isNavOpen);
+  // logger.log("isNavOpen",isNavOpen);
 
   // isNavOpen
   

@@ -21,6 +21,7 @@ import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import { GET_LECTURE_SESSIONS_FOR_DOCTOR, GET_LECTURE_SESSIONS_FOR_STUDENT } from "../../graphql/LectureSessionQueries";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
 import { useSelector } from "react-redux";
+import logger from "../../utils/logger";
 
 export default function StudentComponent() {
     const theme = useTheme();
@@ -152,12 +153,12 @@ export default function StudentComponent() {
             //     type
             // });
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
 
     const handleDetailsClick = (selectedRow) => {
-        console.log('handleDetailsClick', selectedRow);
+        logger.log('handleDetailsClick', selectedRow);
         let row = lectureSessions?.find(el => el?.id == selectedRow?.id);
 
         navigate(`/LectureSessionDetails/${selectedRow?.id}`, {
@@ -166,7 +167,7 @@ export default function StudentComponent() {
     }
 
     const onFilterChange = async (filterOBJ) => {
-        console.log("filterOBJ", filterOBJ);
+        logger.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         // if (filterOBJ.hasOwnProperty("is_paid") && filterOBJ.is_paid !== "0") searchParams.set("is_paid", filterOBJ.is_paid);
         if (filterOBJ.lecture_date) searchParams.set("lecture_date", filterOBJ.lecture_date);
@@ -175,7 +176,7 @@ export default function StudentComponent() {
     }
 
 
-    console.log("lectureSessions", lectureSessions);
+    logger.log("lectureSessions", lectureSessions);
 
     const hasViewPermission = true;
     const hasAddPermission = true;
@@ -188,11 +189,11 @@ export default function StudentComponent() {
         pageLimit = Number(searchParams.get("limit"));
     }
 
-    console.log("pageLimit", pageLimit);
+    logger.log("pageLimit", pageLimit);
 
     const totalPages = parseInt(total / pageLimit) + 1;
 
-    console.log("totalPages", totalPages);
+    logger.log("totalPages", totalPages);
 
     if (!hasViewPermission) return <Navigate to="/profile" />;
 

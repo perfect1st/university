@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from "../../i18n/i18n";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import logger from '../../utils/logger';
 
 
 export default function MaterialArrComponent({rows,setRows}) {
@@ -13,7 +14,7 @@ export default function MaterialArrComponent({rows,setRows}) {
 
 
     const onInputChange = (e, index) => {
-        console.log('eeee', e.target.value, index, e.target.name);
+        logger.log('eeee', e.target.value, index, e.target.name);
 
         let key = e.target.name;
         let newRows = rows?.map(el => {
@@ -33,7 +34,7 @@ export default function MaterialArrComponent({rows,setRows}) {
         setRows(newRows);
     }
 
-    console.log('rows', rows);
+    logger.log('rows', rows);
 
     const handleAddRow = () => {
         const newRow = {
@@ -48,7 +49,7 @@ export default function MaterialArrComponent({rows,setRows}) {
     };
 
     const handleDeleteRow = (index) => {
-        console.log('index', index);
+        logger.log('index', index);
         let newRows = rows?.filter(el => el?.index != index);
 
         // ظبط ال index

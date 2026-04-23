@@ -17,6 +17,7 @@ import { baseURL } from "../../Api/apolloClient";
 import axios from "axios";
 import UploadFileField from "../../components/Utilities/UploadFileField";
 import LoadingPage from "../../components/LoadingComponent";
+import logger from "../../utils/logger";
 
 
 export default function ArticleDetailsPage() {
@@ -66,7 +67,7 @@ export default function ArticleDetailsPage() {
     const file = e.target.files?.[0] ?? null;
 
 
-    console.log("ppppppppppppppppppppppp", file);
+    logger.log("ppppppppppppppppppppppp", file);
 
     // fileInputRef.current=file?.name;
 
@@ -91,7 +92,7 @@ export default function ArticleDetailsPage() {
         },
       });
 
-      console.log("res", res?.data?.url);
+      logger.log("res", res?.data?.url);
       setSelectedFile(`${baseURL}${res?.data?.url}`);
 
       formik.values.main_image=`${res?.data?.url}`;
@@ -99,7 +100,7 @@ export default function ArticleDetailsPage() {
       // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
     } catch (error) {
       notify(t("errorUplaod"), "error");
-      console.log("error", error.message);
+      logger.log("error", error.message);
     }
 
 
@@ -135,12 +136,12 @@ export default function ArticleDetailsPage() {
         },
       });
 
-      console.log("res", res?.data?.urls);
+      logger.log("res", res?.data?.urls);
       let urlsToSend = res?.data?.urls?.map(el => `${baseURL}${el}`);
 
     // let urlsToSend=res?.data?.urls;
 
-      console.log("urlsToSend", urlsToSend);
+      logger.log("urlsToSend", urlsToSend);
 
       setFiles(urlsToSend);
 
@@ -149,12 +150,12 @@ export default function ArticleDetailsPage() {
       // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
     } catch (error) {
       notify(t("errorUplaod"), "error");
-      console.log("error", error.message);
+      logger.log("error", error.message);
     }
 
   }
 
- // console.log("location?.state?.main_image",location?.state?.main_image.split(baseURL)[1]);
+ // logger.log("location?.state?.main_image",location?.state?.main_image.split(baseURL)[1]);
   const formik = useFormik({
     initialValues: {
       title_ar: location?.state?.title_ar,
@@ -177,7 +178,7 @@ export default function ArticleDetailsPage() {
     }),
     onSubmit: async (values) => {
 
-      console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+      logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
       let data = {
         title_ar: values?.title_ar,
         title_en: values?.title_en,
@@ -194,8 +195,8 @@ export default function ArticleDetailsPage() {
         if(files?.length>0) data.images_array=files;
 
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-        console.log(data);
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+        logger.log(data);
 
         // return;
         const result = await UpdateWebsiteArticle({
@@ -205,14 +206,14 @@ export default function ArticleDetailsPage() {
           }
         });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
         navigate(location.pathname.split('/details')[0]);
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {
@@ -221,9 +222,9 @@ export default function ArticleDetailsPage() {
     },
   });
 
-  console.log("location", location?.state);
+  logger.log("location", location?.state);
 
-  console.log("formik",formik.values);
+  logger.log("formik",formik.values);
 
   let translateText = isArabic ? "مقالة" : "Article";
   let translateText2 = isArabic ? "المقالة" : "Article";
@@ -301,7 +302,7 @@ export default function ArticleDetailsPage() {
           value={selectedDepartment}
           setValue={setSelectedDepartment}
           onBlur={(e) => {
-            console.log('blur', selectedDepartment);
+            logger.log('blur', selectedDepartment);
             if (selectedDepartment != 0) formik.setFieldError("selectedDepartment", undefined);
 
           }}

@@ -126,7 +126,10 @@
     "paymentSuccess": "Payment successful",
     "departmentTerm": "Academy Term",
     "uploadComplete": "Upload complete",
-    "loadingData": "Loading data..."
+    "loadingData": "Loading data...",
+    "uploadReceipt": "Upload Payment Receipt",
+    "changeReceipt": "Change Receipt",
+    "selectReceipt": "Select Receipt"
   },
   "studentDashboard": {
     "majorInformation": "Major Information",

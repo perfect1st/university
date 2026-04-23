@@ -10,6 +10,7 @@ import TitleComponent from "./TitleComponent";
 import { useTranslation } from "react-i18next";
 import mainImage from "../../assets/news.jpg";
 import { useNavigate } from "react-router-dom";
+import logger from "../../utils/logger";
 
 export default function News({ news = [] }) {
   const theme = useTheme();
@@ -21,7 +22,7 @@ export default function News({ news = [] }) {
 
   // Show only first 6 on homepage
   const displayedNews = newsList.slice(0, 6);
-  console.log("displayedNews",displayedNews)
+  logger.log("displayedNews",displayedNews)
 
   return (
     <Box

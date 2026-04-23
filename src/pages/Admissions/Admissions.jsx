@@ -52,6 +52,7 @@ import formatDateToString from "../../components/Utilities/FormatDateToString.js
 import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms.js";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import LoadingPage from "../../components/LoadingComponent.jsx";
+import logger from "../../utils/logger.js";
 
 // CustomTextField wrapper (keeps placeholder support + helperText)
 function CustomTextField(props) {
@@ -124,7 +125,7 @@ export default function Admissions() {
     variables: { departmentId: "69d4e86acbc5ef33bbd3eada" },
     fetchPolicy: "network-only",
   });
-  console.log("ArticalesData", ArticalesData);
+  logger.log("ArticalesData", ArticalesData);
   // get all nationalities
   const {
     data: nationalitiesData,
@@ -240,6 +241,10 @@ export default function Admissions() {
   const [uploadError, setUploadError] = useState("");
 
   const fileInputRef = useRef(null);
+  const paymentDocInputRef = useRef(null);
+  const [paymentDocumentFile, setPaymentDocumentFile] = useState(null);
+  const [isUploadingPaymentDoc, setIsUploadingPaymentDoc] = useState(false);
+  const [uploadPaymentDocProgress, setUploadPaymentDocProgress] = useState(0);
   const genders = [
     { value: "male", label: t("admissions.male") },
     { value: "female", label: t("admissions.female") },
@@ -269,7 +274,7 @@ export default function Admissions() {
   // FIRST term data and active terms
   let firstTermData = termsData?.filter(el => (el.term_number == 1 && el.status));
 
-  console.log('firstTermData', firstTermData);
+  logger.log('firstTermData', firstTermData);
 
   // --- validation helpers (returns message or empty string) ---
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -377,7 +382,7 @@ export default function Admissions() {
     ];
     const newErrors = {};
 
-    console.log("personal", personal);
+    logger.log("personal", personal);
 
     keys.forEach((k) => {
       const msg = validateField(k, personal[k], false);
@@ -385,7 +390,7 @@ export default function Admissions() {
     });
     setErrors(newErrors);
 
-    console.log("personal error", newErrors);
+    logger.log("personal error", newErrors);
 
     // newErrors?.national_id_type
     if (newErrors?.national_id_type)
@@ -414,18 +419,18 @@ export default function Admissions() {
       if (msg) newErrors[k] = msg;
     });
 
-    console.log("newErrors", newErrors);
+    logger.log("newErrors", newErrors);
     setAcadErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   // single-field onBlur validation (for immediate feedback)
   const handlePersonalBlur = (field) => {
-    console.log("field", field, "personal[field]", personal[field]);
+    logger.log("field", field, "personal[field]", personal[field]);
 
     const msg = validateField(field, personal[field], false);
 
-    console.log("msg personal", msg);
+    logger.log("msg personal", msg);
     setErrors((prev) => ({ ...prev, [field]: msg }));
   };
 
@@ -445,9 +450,9 @@ export default function Admissions() {
     // try {
 
     // return setShowPaymentModal(true);
-    console.log("finish", validateStep2());
+    logger.log("finish", validateStep2());
     if (validateStep2()) {
-      // console.log('oooooooooooooooo');
+      // logger.log('oooooooooooooooo');
       const formData = new FormData();
 
       // Append personal data
@@ -469,16 +474,16 @@ export default function Admissions() {
         }
       });
 
-      console.log("formData", formData);
+      logger.log("formData", formData);
       let objToSend = {
         address: "aaaaaaaaaaaaaa",
       };
       for (let [key, value] of formData.entries()) {
-        console.log(key, value);
+        logger.log(key, value);
         objToSend[key] = value;
       }
 
-      console.log("objToSend", objToSend);
+      logger.log("objToSend", objToSend);
       setIsLoading(true);
       const result = await createRegisterForm({
         variables: {
@@ -486,7 +491,7 @@ export default function Admissions() {
         },
       });
       setIsLoading(false);
-      console.log("result", result?.data?.createRegisterForm);
+      logger.log("result", result?.data?.createRegisterForm);
       if (result?.data?.createRegisterForm?.success) {
         setRegisterationFeesResults(result?.data?.createRegisterForm);
         setShowPaymentModal(true);
@@ -535,17 +540,18 @@ export default function Admissions() {
         transaction_date: formatDateToString(new Date()),
         amount: registerationFeesResults?.registration_Fees_Value,
         register_form_id: registerationFeesResults?.form?.id,
-        source_type: "REGISTER_FORM"
+        source_type: "REGISTER_FORM",
+        payment_document_file: paymentDocumentFile,
       };
 
-      console.log("transactionObj", transactionObj);
+      logger.log("transactionObj", transactionObj);
       const result = await createTransaction({
         variables: {
           input: transactionObj,
         },
       });
 
-      console.log("payment result", result?.data?.createTransaction);
+      logger.log("payment result", result?.data?.createTransaction);
 
       notify(t("admissions.paymentSuccess"), "success");
       setShowPaymentModal(false);
@@ -553,7 +559,7 @@ export default function Admissions() {
       setTimeout(() => navigate('/login'), 2000);
 
     } catch (error) {
-      console.log("error", error);
+      logger.log("error", error);
       notify(t("admissions.error"), "error");
     }
   };
@@ -594,7 +600,7 @@ export default function Admissions() {
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
           const data = JSON.parse(xhr.responseText);
-          console.log("Upload successful:", data);
+          logger.log("Upload successful:", data);
           setAcademic((a) => ({
             ...a,
             high_school_certificate_file: `${baseURL}${data?.url}`,
@@ -633,15 +639,58 @@ export default function Admissions() {
     xhr.send(formData);
   };
 
-  console.log("i18n ", i18n.language);
+  const handlePaymentDocChange = (e) => {
+    const file = e.target.files?.[0] ?? null;
+    if (!file) return;
 
-  console.log("academic.city", academic.city);
+    setIsUploadingPaymentDoc(true);
+    setUploadPaymentDocProgress(0);
 
-  console.log("setSelectedPaymentMethod", selectedPaymnetMethod);
+    const formData = new FormData();
+    formData.append("file", file);
 
-  console.log("fileInputRef", fileInputRef);
+    const xhr = new XMLHttpRequest();
 
-  console.log('countriesLoading', countriesLoading);
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        const percent = Math.round((event.loaded / event.total) * 100);
+        setUploadPaymentDocProgress(percent);
+      }
+    });
+
+    xhr.addEventListener("load", () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          setPaymentDocumentFile(`${baseURL}${data?.url}`);
+          setUploadPaymentDocProgress(100);
+        } catch (parseError) {
+          notify(t("admissions.errorUplaod") || "Upload failed", "error");
+        }
+      } else {
+        notify(t("admissions.errorUplaod") || "Upload failed", "error");
+      }
+      setIsUploadingPaymentDoc(false);
+    });
+
+    xhr.addEventListener("error", () => {
+      notify(t("admissions.errorUplaod") || "Upload failed", "error");
+      setIsUploadingPaymentDoc(false);
+    });
+
+    xhr.open("POST", `${baseURL}/api/forms/single`);
+    xhr.send(formData);
+  };
+
+  logger.log("i18n ", i18n.language);
+
+  logger.log("academic.city", academic.city);
+
+  logger.log("setSelectedPaymentMethod", selectedPaymnetMethod);
+
+  logger.log("fileInputRef", fileInputRef);
+
+  logger.log('countriesLoading', countriesLoading);
 
   // Check if initial data is still loading
   const initialLoading = ArticalesLoading || nationalitiesLoading || countriesLoading || faculitiesLoading;
@@ -710,6 +759,44 @@ export default function Admissions() {
                 ))}
               </RadioGroup>
             </FormControl>
+
+            {(selectedPaymnetMethod === "CASH" || selectedPaymnetMethod === "BANK_TRANSFER") && (
+              <Box sx={{ mt: 2 }}>
+                <Typography variant="body2" sx={{ mb: 1, fontWeight: "bold" }}>
+                  {t("admissions.uploadReceipt")}
+                </Typography>
+                <input
+                  type="file"
+                  hidden
+                  ref={paymentDocInputRef}
+                  onChange={handlePaymentDocChange}
+                  accept="image/*"
+                />
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => paymentDocInputRef.current?.click()}
+                  startIcon={<AddCircleOutlineIcon />}
+                  sx={{ py: 1.5 }}
+                >
+                  {paymentDocumentFile ? t("admissions.changeReceipt") : t("admissions.selectReceipt")}
+                </Button>
+                {isUploadingPaymentDoc && (
+                  <Box sx={{ mt: 1 }}>
+                    <LinearProgress variant="determinate" value={uploadPaymentDocProgress} />
+                  </Box>
+                )}
+                {paymentDocumentFile && !isUploadingPaymentDoc && (
+                  <Box sx={{ mt: 1, textAlign: "center" }}>
+                    <img 
+                      src={paymentDocumentFile} 
+                      alt="Payment Receipt" 
+                      style={{ maxWidth: "100%", maxHeight: 200, borderRadius: 8, marginTop: 8 }} 
+                    />
+                  </Box>
+                )}
+              </Box>
+            )}
           </Box>
 
           <DialogActions sx={{ mx: 1 }}>
@@ -718,7 +805,12 @@ export default function Admissions() {
               variant="contained"
               disabled={transactionLoading || onlinePaymentLoading}
               sx={{ width: "100%", mt: 1 }}
-              onClick={() => handleSubmitPayment()}
+              onClick={() => {
+                if ((selectedPaymnetMethod === "CASH" || selectedPaymnetMethod === "BANK_TRANSFER") && !paymentDocumentFile) {
+                  return notify(t("admissions.errors.requiredFile"), "error");
+                }
+                handleSubmitPayment();
+              }}
             >
               {(transactionLoading || onlinePaymentLoading) ? (
                 <CircularProgress size={24} sx={{ color: "white" }} />
@@ -888,7 +980,7 @@ export default function Admissions() {
                       placeholder={t("admissions.nationality")}
                       value={personal.nationality_id}
                       onChange={(e) => {
-                        console.log("e.target.value", e.target);
+                        logger.log("e.target.value", e.target);
                         setPersonal((p) => ({
                           ...p,
                           nationality_id: e.target.value,
@@ -1599,7 +1691,7 @@ export default function Admissions() {
                       onChange={(e) => {
                         // 44444444444444444444444444444
                         if (e.target.value != "") {
-                          console.log("nnnnnnnnnnnnn", e.target.value);
+                          logger.log("nnnnnnnnnnnnn", e.target.value);
                           getAcademyTermsByFacultyDepartment({
                             variables: {
                               faculty_department_id: e.target.value

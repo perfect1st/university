@@ -18,6 +18,7 @@ import notify from "../../components/notify";
 import { GetWebsiteArticles, UPDATE_WEBSITE_ARTICLE_BY_ID } from "../../graphql/articleQueries";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 import NoPermissionPage from "../../components/NoPermissionPage";
+import logger from "../../utils/logger";
 
 export default function AllArticlesPage() {
   const theme = useTheme();
@@ -109,7 +110,7 @@ export default function AllArticlesPage() {
         printableWindow.print();
       }
     } catch (err) {
-      console.error("Export error:", err);
+      logger.error("Export error:", err);
     }
   };
 
@@ -126,7 +127,7 @@ export default function AllArticlesPage() {
 
   const onStatusChange = async (selectedRow, newStatus) => {
     try {
-      // console.log("selectedRow", selectedRow, newStatus);
+      // logger.log("selectedRow", selectedRow, newStatus);
       // let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
 
       // // return;
@@ -148,7 +149,7 @@ export default function AllArticlesPage() {
         }
       });
 
-      console.log("reeesult", result);
+      logger.log("reeesult", result);
 
       notify(t("success"), "success");
 
@@ -157,7 +158,7 @@ export default function AllArticlesPage() {
     }
   }
 
-  console.log("GetWebsiteArticles", getWebsiteArticles);
+  logger.log("GetWebsiteArticles", getWebsiteArticles);
 
   const getWebsiteArticlesToShow = getWebsiteArticles?.map(el => {
     return {

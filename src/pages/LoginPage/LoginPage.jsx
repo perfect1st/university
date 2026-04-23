@@ -23,6 +23,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LOGIN_USER } from "../../graphql/usersQueries";
 import { useMutation } from "@apollo/client/react";
 import notify from "../../components/notify";
+import logger from "../../utils/logger";
 
 
 const LoginPage = () => {
@@ -68,7 +69,7 @@ const LoginPage = () => {
         }
        });
 
-       console.log('response',response);
+       logger.log('response',response);
       //  if(response?.data?.login?.status == true){
 
          setTimeout(()=>{
@@ -127,7 +128,7 @@ const LoginPage = () => {
         //   navigate("/home");
         // }
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify("invalid Credentials","error");
       } finally {
         setIsLoading(false);

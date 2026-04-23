@@ -25,6 +25,7 @@ import LoadingPage from "../../components/LoadingComponent";
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { CREATE_USER_STUDY_MATERIAL , GET_USER_STUDY_MATERIALS_BY_USER_ID } from "../../graphql/usersQueries";
 import notify from "../../components/notify";
+import logger from "../../utils/logger";
 
 
 export default function StudentDashboard() {
@@ -44,11 +45,11 @@ export default function StudentDashboard() {
     }
 
     //e.target.checked = true;
-   // console.log("subj",e.target.value,e.target.checked);
+   // logger.log("subj",e.target.value,e.target.checked);
     // setChecked(event.target.checked);
   };
 
-  console.log('selectedSubjects',selectedSubjects);
+  logger.log('selectedSubjects',selectedSubjects);
 
   const me = useSelector((state) => state.user.loggedUser);
 
@@ -81,7 +82,7 @@ export default function StudentDashboard() {
 
   useEffect(() => {
       if (me?.id) {
-      console.log("meeeee",me?.id);
+      logger.log("meeeee",me?.id);
       
         GetRegisterFormByUserId({ variables: { user_id: me?.id } });
         GetUserStudyMaterialsByUser({ variables: { user_id: me?.id } });
@@ -95,7 +96,7 @@ export default function StudentDashboard() {
     try {
       // الاول اعمل check علي عدد الساعات
       let selectedMaterialsArr=selectedSubjects?.map(el=>subjects?.find(ele=>ele?.id==el));
-      console.log('selectedMaterialsArr',selectedMaterialsArr);
+      logger.log('selectedMaterialsArr',selectedMaterialsArr);
 
       let totalMaterialHours=0;
       let academyMinHours=getRegisterFormByUserId?.academyTerm_id?.min_study_hours;
@@ -103,7 +104,7 @@ export default function StudentDashboard() {
 
       selectedMaterialsArr?.map(el=>totalMaterialHours+=el?.material_hours);
 
-      console.log('totalMaterialHours',totalMaterialHours);
+      logger.log('totalMaterialHours',totalMaterialHours);
 
       if(totalMaterialHours>=academyMinHours && totalMaterialHours<=academyMaxHours){
          
@@ -119,7 +120,7 @@ export default function StudentDashboard() {
       }
      });
 
-     console.log("result",result);
+     logger.log("result",result);
      notify(t("success"),"success");
 
      window.location.reload();
@@ -130,33 +131,33 @@ export default function StudentDashboard() {
       }
 
     } catch (error) {
-      console.log('error',error);
+      logger.log('error',error);
       notify(t("error"),"error");
     }
   }
 
-  console.log('subjects',subjects);
+  logger.log('subjects',subjects);
 
-  console.log("getRegisterFormByUserId", getRegisterFormByUserId);
+  logger.log("getRegisterFormByUserId", getRegisterFormByUserId);
 
 
-  console.log('getUserStudyMaterialsByUser',getUserStudyMaterialsByUser);
+  logger.log('getUserStudyMaterialsByUser',getUserStudyMaterialsByUser);
   // لو مفيش مواد مسجل فيها
   const isPending = getUserStudyMaterialsByUser ? true : false;
 
   // في مواد و ب انتظار موافقة المشرف
   const isDisabled= getUserStudyMaterialsByUser?.length>0 && (getUserStudyMaterialsByUser[0]?.status=="pending" ? true : false)
 
-  console.log("isPending", isPending);
-  console.log("isDisabled",isDisabled);
+  logger.log("isPending", isPending);
+  logger.log("isDisabled",isDisabled);
 
-  console.log("getUserStudyMaterialsByUser",getUserStudyMaterialsByUser?.length>0 &&getUserStudyMaterialsByUser[0]?.material_id);
+  logger.log("getUserStudyMaterialsByUser",getUserStudyMaterialsByUser?.length>0 &&getUserStudyMaterialsByUser[0]?.material_id);
 
 
   let prevSelectedMaterialsByStudent=getUserStudyMaterialsByUser?.length>0 &&getUserStudyMaterialsByUser[0]?.material_id;
   if (me == null || GetRegisterFormByUserIdLoading || getUserStudyMaterialsLoading) return <LoadingPage />;
 
-  console.log('prevSelectedMaterialsByStudent?.find(el=>el.id==subj?.id)',prevSelectedMaterialsByStudent&& prevSelectedMaterialsByStudent?.find(el=>el?.id=="690b32d1ae33204319ed82ad"));
+  logger.log('prevSelectedMaterialsByStudent?.find(el=>el.id==subj?.id)',prevSelectedMaterialsByStudent&& prevSelectedMaterialsByStudent?.find(el=>el?.id=="690b32d1ae33204319ed82ad"));
   return (
     <Box sx={{ p: 3 }}>
       <Grid container spacing={3}>

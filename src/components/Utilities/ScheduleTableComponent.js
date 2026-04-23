@@ -19,6 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation } from "@apollo/client/react";
 import { DELETE_TIME_TABLE_BY_ID, GET_TIME_TABLES_BY_MAIN_TABLE_ID } from "../../graphql/TimeTableQueries";
 import { useLocation } from "react-router-dom";
+import logger from "../../utils/logger";
 
 
 // const colors=["#e3f2fd","#f3e5f5","#e8f5e9"];
@@ -146,8 +147,8 @@ export default function ScheduleTable({ rows, canDelete = false }) {
                                         {days?.map((day, i) => {
                                             let foundDay = row?.items?.find(el => el?.day == day?.key);
 
-                                            // console.log('foundDay',foundDay);
-                                            // console.log("day",day);
+                                            // logger.log('foundDay',foundDay);
+                                            // logger.log("day",day);
 
                                             return <TableCell
                                                 key={i}
@@ -168,19 +169,19 @@ export default function ScheduleTable({ rows, canDelete = false }) {
                                                         }}
                                                         onClick={async () => {
                                                             if (!canDelete) return;
-                                                            console.log("row to delete", row);
+                                                            logger.log("row to delete", row);
 
                                                             const confirm = window.confirm(t("Dashboard.confirm"));
                                                             if (confirm) {
-                                                                console.log("bbbbbbbbbbbbbbbb");
+                                                                logger.log("bbbbbbbbbbbbbbbb");
                                                                 await DeleteTimeTable({
                                                                     variables: {
                                                                         id: foundDay?.id
                                                                     }
                                                                 })
                                                             }
-                                                            // console.log("day", day);
-                                                            // console.log("row[day.key]", row[day.key]);
+                                                            // logger.log("day", day);
+                                                            // logger.log("row[day.key]", row[day.key]);
                                                         }}
                                                     >
                                                         <Box fontSize={12} fontWeight={700}>

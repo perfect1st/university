@@ -35,6 +35,7 @@ import ScheduleTable from "../../../components/Utilities/ScheduleTableComponent"
 import ToDayTimeTableComponent from "../../../components/Utilities/ToDayTimeTableComponent";
 import usePermissionsByModule from "../../../hooks/getPermissionsByScreen";
 import NoPermissionPage from "../../../components/NoPermissionPage";
+import logger from "../../../utils/logger";
 export default function StudentLecturesPage() {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -52,7 +53,7 @@ export default function StudentLecturesPage() {
     delete: canDelete,
   } = usePermissionsByModule("timeTables");
 
-  console.log("storedStudentForm", storedStudentForm);
+  logger.log("storedStudentForm", storedStudentForm);
 
   const [
     TimeTablesByTerm,
@@ -70,11 +71,11 @@ export default function StudentLecturesPage() {
 
   useEffect(() => {
     if (me?.id) {
-      // console.log('meeeee', me?.id);
+      // logger.log('meeeee', me?.id);
       const date = new Date();
       const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
 
-      console.log("dayName", dayName);
+      logger.log("dayName", dayName);
       TimeTablesByTerm({
         variables: { academy_term_id: storedStudentForm?.academyTerm_id?.id },
       });
@@ -113,7 +114,7 @@ export default function StudentLecturesPage() {
       return getOrder(hoursA) - getOrder(hoursB);
     });
 
-    console.log("sortedTimes", sortedTimes);
+    logger.log("sortedTimes", sortedTimes);
 
     // اصنع rows لكل ساعة
     const rows = [];

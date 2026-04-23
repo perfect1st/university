@@ -19,6 +19,7 @@ import { examTypes, YES_OR_NO_ARR } from "../../constants";
 import VerticalTextField from "../../components/Utilities/VerticalTextField";
 import FormatHTMLDate from "../../components/Utilities/FormatHTMLDate";
 import { UPDATE_STUDENT_DEGREE } from "../../graphql/studentDegreeQueries";
+import logger from "../../utils/logger";
 
 export default function StudentDegreesDetailsPage() {
   const theme = useTheme();
@@ -29,7 +30,7 @@ export default function StudentDegreesDetailsPage() {
   const { id, studentDegreeId } = useParams();
 
   const location = useLocation();
-  console.log("location", location.state);
+  logger.log("location", location.state);
 
   // const [selectedStudent, setSelectedStudent] = useState(() => location?.state?.student_id?.id);
   const [selectedExamAttendence, setSelectedExamAttendence] = useState(() => location?.state?.exam_attendance === true);
@@ -77,8 +78,8 @@ export default function StudentDegreesDetailsPage() {
     onSubmit: async (values) => {
 
 
-      console.log('xxxxxxxxxxxxxxxxxxxxxxx');
-      console.log("selectedExamAttendence", selectedExamAttendence);
+      logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
+      logger.log("selectedExamAttendence", selectedExamAttendence);
 
       let data = {
         // student_id: selectedStudent,
@@ -92,14 +93,14 @@ export default function StudentDegreesDetailsPage() {
         // amount: values?.amount,
       };
 
-      console.log("data", data);
+      logger.log("data", data);
       //   return;
 
       // if(selectedFile!=null) data.payment_document_file=selectedFile;
 
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-        console.log(data);
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+        logger.log(data);
 
         // return;
         const result = await UpdateStudentDegree({
@@ -109,7 +110,7 @@ export default function StudentDegreesDetailsPage() {
           }
         });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
@@ -117,7 +118,7 @@ export default function StudentDegreesDetailsPage() {
         navigate(-1);
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {
@@ -126,7 +127,7 @@ export default function StudentDegreesDetailsPage() {
     },
   });
 
-   console.log("location?.state?.student_id", location?.state?.student_id?.fullname);
+   logger.log("location?.state?.student_id", location?.state?.student_id?.fullname);
 
   let translateText = isArabic ? "درجة" : "Degree";
   // if (studentsByMaterialLoading) return <LoadingPage />;
@@ -194,7 +195,7 @@ export default function StudentDegreesDetailsPage() {
           value={selectedExamAttendence}
           setValue={setSelectedExamAttendence}
           onBlur={(e) => {
-            console.log('blur', selectedExamAttendence);
+            logger.log('blur', selectedExamAttendence);
             if (selectedExamAttendence != 0) formik.setFieldError("selectedExamAttendence", undefined);
 
           }}

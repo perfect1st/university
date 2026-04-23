@@ -21,6 +21,7 @@ import { TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import NoPermissionPage from "../../components/NoPermissionPage";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import logger from "../../utils/logger";
 
 export default function AllFeesTypesPage() {
     const theme = useTheme();
@@ -112,7 +113,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("fees
             });
 
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
 
@@ -127,7 +128,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("fees
 
     const onStatusChange = async (selectedRow, newStatus) => {
         try {
-            console.log("selectedRow", selectedRow, newStatus);
+            logger.log("selectedRow", selectedRow, newStatus);
             // return;
             let data = {
                 status: newStatus == "inActive" ? false : true,
@@ -143,7 +144,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("fees
                 }
             });
 
-            console.log("reeesult", result);
+            logger.log("reeesult", result);
 
             notify(t("success"), "success");
 
@@ -152,10 +153,10 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("fees
         }
     }
 
-    // console.log("faculties", faculties);
+    // logger.log("faculties", faculties);
 
     const onFilterChange = (filterOBJ) => {
-        console.log("filterOBJ", filterOBJ);
+        logger.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
 
@@ -171,7 +172,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("fees
         pageLimit = Number(searchParams.get("limit"));
     }
 
-    console.log("pageLimit", pageLimit);
+    logger.log("pageLimit", pageLimit);
 
     const totalPages = parseInt(total / pageLimit) + 1;
 
@@ -181,7 +182,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("fees
     let translateText = isArabic ? "رسوم" : "fee type";
     let searchText = isArabic ? "ب اسم الرسوم" : "Fee Types Title";
 
-    console.log("getFeesTypes", getFeesTypes);
+    logger.log("getFeesTypes", getFeesTypes);
 
     if (gettingFees) return <LoadingPage />
     return (

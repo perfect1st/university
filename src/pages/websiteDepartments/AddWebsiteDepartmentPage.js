@@ -15,6 +15,7 @@ import { CREATE_WEBSITE_DEPARTMENT_BY_ADMIN } from "../../graphql/departmentsQue
 import { baseURL } from "../../Api/apolloClient";
 import axios from "axios";
 import UploadFileField from "../../components/Utilities/UploadFileField";
+import logger from "../../utils/logger";
 
 
 export default function AddWebsiteDepartmentPage() {
@@ -39,7 +40,7 @@ export default function AddWebsiteDepartmentPage() {
     const file = e.target.files?.[0] ?? null;
 
 
-    console.log("ppppppppppppppppppppppp", file);
+    logger.log("ppppppppppppppppppppppp", file);
 
     // fileInputRef.current=file?.name;
 
@@ -64,12 +65,12 @@ export default function AddWebsiteDepartmentPage() {
         },
       });
 
-      console.log("res", res?.data?.url);
+      logger.log("res", res?.data?.url);
       setSelectedFile(`${baseURL}${res?.data?.url}`);
       // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
     } catch (error) {
       notify(t("errorUplaod"), "error");
-      console.log("error", error.message);
+      logger.log("error", error.message);
     }
 
 
@@ -82,7 +83,7 @@ export default function AddWebsiteDepartmentPage() {
     }
   ] = useMutation(CREATE_WEBSITE_DEPARTMENT_BY_ADMIN, { fetchPolicy: "network-only" });
 
-  console.log("id",id);
+  logger.log("id",id);
   
   const formik = useFormik({
     initialValues: {
@@ -99,7 +100,7 @@ export default function AddWebsiteDepartmentPage() {
     }),
     onSubmit: async (values) => {
 
-      console.log("suuuubmit");
+      logger.log("suuuubmit");
 
 
       let data = {
@@ -113,8 +114,8 @@ export default function AddWebsiteDepartmentPage() {
       if (selectedFile != null) data.image = selectedFile;
 
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
-        // console.log(data);
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
+        // logger.log(data);
 
         //  return;
         const result = await CreateWebsiteDepartment({
@@ -123,7 +124,7 @@ export default function AddWebsiteDepartmentPage() {
           }
         });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
@@ -131,7 +132,7 @@ export default function AddWebsiteDepartmentPage() {
         navigate(location.pathname.split('/add')[0]);
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {

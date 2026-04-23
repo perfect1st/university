@@ -19,6 +19,7 @@ import { GET_ALL_FACULITIES, GET_ALL_DEPARTMENTS } from "../../graphql/facultyQu
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import NoPermissionPage from "../../components/NoPermissionPage";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import logger from "../../utils/logger";
 
 export default function AllRegisterFormsPage() {
     const theme = useTheme();
@@ -39,8 +40,8 @@ export default function AllRegisterFormsPage() {
     const { data: facultiesData, loading: facultiesLoading } = useQuery(GET_ALL_FACULITIES);
     const { data: departmentsData, loading: departmentsLoading } = useQuery(GET_ALL_DEPARTMENTS);
 
-    console.log("facultiesData", facultiesData);
-    console.log("departmentsData", departmentsData);
+    logger.log("facultiesData", facultiesData);
+    logger.log("departmentsData", departmentsData);
     const [selectedFacultyId, setSelectedFacultyId] = useState(searchParams.get("faculty_id") || "0");
 
     const filteredDepartments = useMemo(() => {
@@ -229,7 +230,7 @@ export default function AllRegisterFormsPage() {
                 type,
             });
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
 
@@ -249,7 +250,7 @@ export default function AllRegisterFormsPage() {
                     variables: { id: selectedRow.id }
                 });
             } catch (error) {
-                console.error("Delete error:", error);
+                logger.error("Delete error:", error);
             }
         }
     };
@@ -276,7 +277,7 @@ export default function AllRegisterFormsPage() {
                 });
             }
         } catch (error) {
-            console.error("Status change error:", error);
+            logger.error("Status change error:", error);
         }
     };
 

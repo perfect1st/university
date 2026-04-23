@@ -27,6 +27,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
+import logger from "../../utils/logger";
 
 export default function AllContactMessagesPage() {
   const { t } = useTranslation();
@@ -90,7 +91,7 @@ export default function AllContactMessagesPage() {
         // We don't necessarily need to refetch immediately here if we don't want to break UX
         // but we should update the local state or refetch after dialog close
       } catch (err) {
-        console.error("Error marking as read:", err);
+        logger.error("Error marking as read:", err);
       }
     }
   };

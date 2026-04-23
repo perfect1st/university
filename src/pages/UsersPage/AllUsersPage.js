@@ -33,6 +33,7 @@ import { TrueOrFalseArr, userRules } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 import NoPermissionPage from "../../components/NoPermissionPage";
+import logger from "../../utils/logger";
 
 export default function AllUsersPage() {
   const theme = useTheme();
@@ -87,7 +88,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
     FilteredPagedUsers({ variables: variablesObj });
   }, [searchParams]);
 
-  console.log("filteredPagedUsers", filteredPagedUsers);
+  logger.log("filteredPagedUsers", filteredPagedUsers);
 
   const [UpdateUser, { loading: updatingStatus }] = useMutation(
     UPDATE_USER_BY_ADMIN,
@@ -120,7 +121,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
         type,
       });
     } catch (err) {
-      console.error("Export error:", err);
+      logger.error("Export error:", err);
     }
   };
 
@@ -139,7 +140,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
 
   const onStatusChange = async (selectedRow, newStatus) => {
     try {
-      // console.log("selectedRow", selectedRow, newStatus);
+      // logger.log("selectedRow", selectedRow, newStatus);
       // let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
 
       // // return;
@@ -154,7 +155,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
         },
       });
 
-      console.log("reeesult", result);
+      logger.log("reeesult", result);
 
       notify(t("success"), "success");
     } catch (error) {
@@ -163,7 +164,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
   };
 
   const onFilterChange = async (filterOBJ) => {
-    console.log("filterOBJ", filterOBJ);
+    logger.log("filterOBJ", filterOBJ);
     if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
     if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0")
       searchParams.set("status", filterOBJ.status);
@@ -174,7 +175,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
 
   // const usersToShow=[];
   const usersToShow = filteredPagedUsers?.users?.map((el) => {
-    console.log("el", el);
+    logger.log("el", el);
     return {
       ...el,
       role: t(`Dashboard.${el.role}`),
@@ -192,11 +193,11 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
     pageLimit = Number(searchParams.get("limit"));
   }
 
-  console.log("pageLimit", pageLimit);
+  logger.log("pageLimit", pageLimit);
 
   const totalPages = parseInt(filteredPagedUsers?.total / pageLimit) + 1;
 
-  console.log("totalPages", totalPages);
+  logger.log("totalPages", totalPages);
 
 
 
@@ -206,7 +207,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
 
   if (usersLoading) return <LoadingPage />;
 
-  // console.log("users", users);
+  // logger.log("users", users);
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Grid container spacing={3}>

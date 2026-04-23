@@ -14,6 +14,7 @@ import { SearchByTypingSelect2 } from "../../components/Utilities/VerticalTextFi
 import { userRules } from "../../constants";
 import { UPDATE_USER_BY_ADMIN } from "../../graphql/userQueriesForAdmin";
 import { GET_GROUPS } from "../../graphql/groupQueries";
+import logger from "../../utils/logger";
 
 export default function UserDetailsPage() {
   const theme = useTheme();
@@ -22,7 +23,7 @@ export default function UserDetailsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const userData = location?.state;
-  console.log("location",location)
+  logger.log("location",location)
 
   // Fetch Groups for the selection list
   const { data: groupsData } = useQuery(GET_GROUPS);

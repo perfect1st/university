@@ -13,6 +13,7 @@ import SubmitButton from "../../components/Utilities/SubmitButton";
 import { CREATE_FACULITY_DEPARTMENT, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import LoadingPage from "../../components/LoadingComponent";
 import { useEffect, useState } from "react";
+import logger from "../../utils/logger";
 
 
 export default function AddDepartmentPage() {
@@ -45,7 +46,7 @@ export default function AddDepartmentPage() {
         Faculties();
     }, []);
 
-    console.log("faculties", faculties);
+    logger.log("faculties", faculties);
 
     const formik = useFormik({
         initialValues: {
@@ -65,13 +66,13 @@ export default function AddDepartmentPage() {
 
             // ✅ التحقق اليدوي قبل الإرسال
             if (selected==0) {
-                // console.log('rrrrrrrrrrrrrrrrrrrrrrr');
+                // logger.log('rrrrrrrrrrrrrrrrrrrrrrr');
                 // formik.setFieldError("faculty_id", t("admissions.errors.required"));
 
                 setSelectError(t("admissions.errors.required"));
                 return; // وقف الإرسال لحد ما المستخدم يختار
             }
-            console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+            logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
             const data = {
                 title_ar: values?.title_ar,
                 title_en: values.title_en,
@@ -79,8 +80,8 @@ export default function AddDepartmentPage() {
 
             };
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                logger.log(data);
 
                 // return;
                 const result = await CreateFacultyDepartment({
@@ -89,14 +90,14 @@ export default function AddDepartmentPage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
                 navigate('/departments');
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {

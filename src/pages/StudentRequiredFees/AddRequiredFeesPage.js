@@ -17,6 +17,7 @@ import { GET_ALL_FEES_TYPES } from "../../graphql/feeTypesQueries";
 import { GET_ALL_FACULITIES, GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID } from "../../graphql/facultyQuiries";
 import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms";
 import { useSelector } from "react-redux";
+import logger from "../../utils/logger";
 
 
 export default function AddRequiredFeesPage() {
@@ -83,7 +84,7 @@ export default function AddRequiredFeesPage() {
       loading: academyTermsLoading
     }
   ] = useLazyQuery(GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID, { fetchPolicy: "network-only" });
-  console.log("academyTerms",academyTerms)
+  logger.log("academyTerms",academyTerms)
 
   const me = useSelector(state => state.user.loggedUser);
 
@@ -93,7 +94,7 @@ export default function AddRequiredFeesPage() {
   const [selectedFaculty, setSelectedFaculty] = useState(null);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
 
-  // console.log("users",users);
+  // logger.log("users",users);
 
 
 
@@ -114,8 +115,8 @@ export default function AddRequiredFeesPage() {
     onSubmit: async (values) => {
 
 
-      console.log('xxxxxxxxxxxxxxxxxxxxxxx');
-      console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+      logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
+      logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
       let data = {
         academy_term_id: selectedAcademyTerm,
         fees_types_ids: selectedFeeType,
@@ -127,7 +128,7 @@ export default function AddRequiredFeesPage() {
       // if(selectedFile!=null) data.payment_document_file=selectedFile;
 
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
         
         // return;
         const result = await CreateUsersRequiredFees({
@@ -136,14 +137,14 @@ export default function AddRequiredFeesPage() {
           }
         });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
         navigate(location.pathname.split('/add')[0]);
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {
@@ -152,7 +153,7 @@ export default function AddRequiredFeesPage() {
     },
   });
 
-  console.log("getFeesTypes", getFeesTypes);
+  logger.log("getFeesTypes", getFeesTypes);
 
   let translateText = isArabic ? "رسوم الطلاب" : "Student Required Fees";
   let translateText2 = isArabic ? "رسوم الطلاب" : "Student Required Fees";

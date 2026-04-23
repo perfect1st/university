@@ -26,6 +26,7 @@ import notify from "../../components/notify";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 import NoPermissionPage from "../../components/NoPermissionPage";
+import logger from "../../utils/logger";
 
 
 export default function AllNationalitiesPage() {
@@ -73,7 +74,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("nati
       fetchPolicy: "network-only",
     });
 
-    // console.log("allNationalities",allNationalities);
+    // logger.log("allNationalities",allNationalities);
 
   useEffect(() => {
     let page;
@@ -104,14 +105,14 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("nati
     if (searchParams.get("status")) variablesObj.status = searchParams.get("status") === "true" ? true : false;
 
 
-    console.log("(searchParams.get('status)", searchParams.get("status"));
+    logger.log("(searchParams.get('status)", searchParams.get("status"));
     FilteredPagedNationalities({ variables: variablesObj });
 
     // FilteredPagedUsers({ variables: { page, limit } });
     // setLimit(parseInt(searchParams.get("limit"), 10));
   }, [searchParams]);
 
-  console.log("nationalities", nationalities);
+  logger.log("nationalities", nationalities);
 
   // const [allUsers, setAllUsers] = useState(DUMMY_USERS);
   const isArabic = i18n.language === "ar";
@@ -147,7 +148,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("nati
         type
       });
     } catch (err) {
-      console.error("Export error:", err);
+      logger.error("Export error:", err);
     }
   };
 
@@ -163,7 +164,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("nati
 
   const onStatusChange = async (selectedRow, newStatus) => {
     try {
-      // console.log("selectedRow", selectedRow, newStatus);
+      // logger.log("selectedRow", selectedRow, newStatus);
       // let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
 
       // // return;
@@ -178,7 +179,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("nati
         }
       });
 
-      console.log("reeesult", result);
+      logger.log("reeesult", result);
 
       notify(t("success"), "success");
 
@@ -188,7 +189,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("nati
   }
 
   const onFilterChange = async (filterOBJ) => {
-    console.log("filterOBJ", filterOBJ);
+    logger.log("filterOBJ", filterOBJ);
     if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
     if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
     // searchParams.get("search", e.target.value);

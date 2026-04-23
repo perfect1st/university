@@ -20,6 +20,7 @@ import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/Academ
 import { baseURL } from '../../Api/apolloClient';
 import { Button, CircularProgress } from '@mui/material';
 import LoadingPage from '../../components/LoadingComponent';
+import logger from '../../utils/logger';
 
 export default function RegisterFormDetailsPage() {
     const { t } = useTranslation();
@@ -35,7 +36,7 @@ export default function RegisterFormDetailsPage() {
     });
 
     const formData = registerFormData?.getRegisterFormById;
-console.log('formData', formData);
+logger.log('formData', formData);
     const { data: transactionsData, loading: loadingTransactions } = useQuery(GET_TRANSACTIONS_BY_USER, {
         variables: { user_id: formData?.user_id?.id },
         skip: !formData?.user_id?.id
@@ -193,7 +194,7 @@ console.log('formData', formData);
                 notify(t("success"), "success");
                 navigate("/registerForms");
             } catch (error) {
-                console.error("Update error:", error);
+                logger.error("Update error:", error);
                 notify(error.message || t("error"), "error");
             }
         }

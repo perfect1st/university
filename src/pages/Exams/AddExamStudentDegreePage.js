@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { ADD_NEW_EXAM } from "../../graphql/ExamsQueries";
 import { examTypes, YES_OR_NO_ARR } from "../../constants";
 import { CREATE_STUDENT_DEGREE } from "../../graphql/studentDegreeQueries";
+import logger from "../../utils/logger";
 
 export default function AddExamStudentDegreePage() {
     const theme = useTheme();
@@ -75,8 +76,8 @@ export default function AddExamStudentDegreePage() {
         onSubmit: async (values) => {
 
 
-            console.log('xxxxxxxxxxxxxxxxxxxxxxx');
-            console.log("selectedExamAttendence",selectedExamAttendence);
+            logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
+            logger.log("selectedExamAttendence",selectedExamAttendence);
           
             let data = {
                 student_id: selectedStudent,
@@ -90,14 +91,14 @@ export default function AddExamStudentDegreePage() {
                 // amount: values?.amount,
             };
 
-            console.log("data",data);
+            logger.log("data",data);
             //   return;
 
             // if(selectedFile!=null) data.payment_document_file=selectedFile;
 
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                logger.log(data);
 
                 // return;
                 const result = await CreateStudentDegree({
@@ -106,7 +107,7 @@ export default function AddExamStudentDegreePage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
@@ -114,7 +115,7 @@ export default function AddExamStudentDegreePage() {
                 navigate(-1);
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {
@@ -123,8 +124,8 @@ export default function AddExamStudentDegreePage() {
         },
     });
 
-    console.log("location", location.state);
-    console.log("studentsByMaterial", studentsByMaterial);
+    logger.log("location", location.state);
+    logger.log("studentsByMaterial", studentsByMaterial);
 
     let translateText = isArabic ? "درجة" : "Degree";
     if (studentsByMaterialLoading) return <LoadingPage />;
@@ -162,7 +163,7 @@ export default function AddExamStudentDegreePage() {
                     value={selectedStudent}
                     setValue={setSelectedStudent}
                     onBlur={(e) => {
-                        console.log('blur', selectedStudent);
+                        logger.log('blur', selectedStudent);
                         if (selectedStudent != 0) formik.setFieldError("selectedStudent", undefined);
 
                     }}
@@ -213,7 +214,7 @@ export default function AddExamStudentDegreePage() {
                     value={selectedExamAttendence}
                     setValue={setSelectedExamAttendence}
                     onBlur={(e) => {
-                        console.log('blur', selectedExamAttendence);
+                        logger.log('blur', selectedExamAttendence);
                         if (selectedExamAttendence != 0) formik.setFieldError("selectedExamAttendence", undefined);
 
                     }}

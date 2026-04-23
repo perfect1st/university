@@ -17,6 +17,7 @@ import { FILTERED_USERS } from "../../graphql/userQueriesForAdmin";
 import { baseURL } from "../../Api/apolloClient";
 import axios from "axios";
 import UploadFileField from "../../components/Utilities/UploadFileField";
+import logger from "../../utils/logger";
 
 //import MaterialArrComponent from "./MaterialArrComponent";
 
@@ -47,7 +48,7 @@ export default function AddMaterialPage() {
     const file = e.target.files?.[0] ?? null;
 
 
-    console.log("ppppppppppppppppppppppp", file);
+    logger.log("ppppppppppppppppppppppp", file);
 
     // fileInputRef.current=file?.name;
 
@@ -72,12 +73,12 @@ export default function AddMaterialPage() {
         },
       });
 
-      console.log("res", res?.data?.url);
+      logger.log("res", res?.data?.url);
       setSelectedFile(res?.data?.url);
       // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
     } catch (error) {
       notify(t("errorUplaod"), "error");
-      console.log("error", error.message);
+      logger.log("error", error.message);
     }
 
 
@@ -112,7 +113,7 @@ export default function AddMaterialPage() {
     })
   }, []);
 
-  console.log("users", users);
+  logger.log("users", users);
 
   // get departments in faculty
   const [
@@ -166,14 +167,14 @@ export default function AddMaterialPage() {
     }),
     onSubmit: async (values) => {
 
-      console.log("suuuubmit");
+      logger.log("suuuubmit");
 
       // // ✅ التحقق اليدوي قبل الإرسال
       // selectedFaculity || selectedSemester || selectedDepartment
-      // console.log('ppppppppppppp', values?.min_study_hours)
+      // logger.log('ppppppppppppp', values?.min_study_hours)
 
 
-      // console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+      // logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
 
       if (Number(values?.success_degree) > Number(values?.fullmark_degree)) {
 
@@ -201,8 +202,8 @@ export default function AddMaterialPage() {
 
 
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
-        // console.log(data);
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
+        // logger.log(data);
         // return;
         const result = await CreateMaterial({
           variables: {
@@ -210,14 +211,14 @@ export default function AddMaterialPage() {
           }
         });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
         navigate('/materials');
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {

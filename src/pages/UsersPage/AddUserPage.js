@@ -14,6 +14,7 @@ import { useState } from "react";
 import { CREATE_USER_BY_ADMIN } from "../../graphql/userQueriesForAdmin";
 import { userRules } from "../../constants";
 import { GET_GROUPS } from "../../graphql/groupQueries";
+import logger from "../../utils/logger";
 
 
 export default function AddUserPage() {
@@ -77,7 +78,7 @@ export default function AddUserPage() {
         notify(t("success"), "success");
         navigate(location.pathname.split('/add')[0]);
     } catch (error) {
-        console.error("Error:", error);
+        logger.error("Error:", error);
         // أضف رسالة الخطأ الفعلية
         const errorMessage = error?.graphQLErrors?.[0]?.message 
             || error?.message 

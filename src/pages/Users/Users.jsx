@@ -13,6 +13,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useQuery } from "@apollo/client/react";
 import { GET_USERS } from "../../graphql/usersQueries.js";
+import logger from "../../utils/logger.js";
 
 // Dummy data for second project
 const DUMMY_USERS = [
@@ -47,7 +48,7 @@ const UsersPage = () => {
     // variables: { page, limit: 10, keyword, status: statusParam },
     fetchPolicy: "network-only",
   });
-  console.log("data",data)
+  logger.log("data",data)
 
   // local "server" state
   const [allUsers, setAllUsers] = useState(DUMMY_USERS);
@@ -176,7 +177,7 @@ const UsersPage = () => {
         printableWindow.print();
       }
     } catch (err) {
-      console.error("Export error:", err);
+      logger.error("Export error:", err);
     }
   };
 

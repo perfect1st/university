@@ -13,6 +13,7 @@ import LoadingPage from "../../components/LoadingComponent";
 import { useEffect, useState } from "react";
 import { UPDATE_FACULITY_DEPARTMENT_BY_ID } from "../../graphql/facultyQuiries"
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
+import logger from "../../utils/logger";
 
 // UPDATE_FACULITY_DEPARTMENT_BY_ID
 export default function DepartmentDetailsPage() {
@@ -46,8 +47,8 @@ export default function DepartmentDetailsPage() {
             Faculties();
         }, []);
     
-        console.log("faculties", faculties);
-        console.log("location",location?.state);
+        logger.log("faculties", faculties);
+        logger.log("location",location?.state);
 
         // faculty_id?.id
         const formik = useFormik({
@@ -71,7 +72,7 @@ export default function DepartmentDetailsPage() {
                         setSelectError(t("admissions.errors.required"));
                         return; // وقف الإرسال لحد ما المستخدم يختار
                     }
-                    console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+                    logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
                     const data = {
                         title_ar: values?.title_ar,
                         title_en: values.title_en,
@@ -79,8 +80,8 @@ export default function DepartmentDetailsPage() {
         
                     };
                     try {
-                        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                        console.log(data);
+                        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                        logger.log(data);
         
                        const result=await UpdateFacultyDepartment({
                     variables:{
@@ -89,14 +90,14 @@ export default function DepartmentDetailsPage() {
                     }
                 });
         
-                        console.log('result', result);
+                        logger.log('result', result);
         
                         notify(t("success"), "success");
         
                         navigate('/departments');
         
                     } catch (error) {
-                        console.error("Error logging in:", error);
+                        logger.error("Error logging in:", error);
                         notify(t("error"), "error");
         
                     } finally {

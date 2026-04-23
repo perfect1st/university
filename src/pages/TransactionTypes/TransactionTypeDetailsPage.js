@@ -12,6 +12,7 @@ import {  useState } from "react";
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
 import { UPDATE_TRANSACTION_TYPE } from "../../graphql/transactionTypeQueries"
 import { transactionTypesArr } from "../../constants";
+import logger from "../../utils/logger";
 
 export default function TransactionTypeDetailsPage() {
   const theme = useTheme();
@@ -62,14 +63,14 @@ export default function TransactionTypeDetailsPage() {
     }),
     onSubmit: async (values) => {
 
-      console.log("suuuubmit");
+      logger.log("suuuubmit");
 
       // // ✅ التحقق اليدوي قبل الإرسال
       // selectedFaculity || selectedSemester || selectedDepartment
-      // console.log('ppppppppppppp', values?.min_study_hours)
+      // logger.log('ppppppppppppp', values?.min_study_hours)
 
 
-      // console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+      // logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
 
 
 
@@ -86,8 +87,8 @@ export default function TransactionTypeDetailsPage() {
 
 
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
-        // console.log(data);
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
+        // logger.log(data);
         // return;
         const result = await UpdateTransactionType({
           variables: {
@@ -96,14 +97,14 @@ export default function TransactionTypeDetailsPage() {
           }
         });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
         navigate(location.pathname.split('/details')[0]);
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {
@@ -112,7 +113,7 @@ export default function TransactionTypeDetailsPage() {
     },
   });
 
-  console.log("location", location?.state);
+  logger.log("location", location?.state);
   let translateText = isArabic ? "نوع معاملة مالية" : "Transaction Type";
   let translateText2 = isArabic ? "نوع المعاملة المالية" : "Transaction Type";
   return (

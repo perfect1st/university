@@ -37,6 +37,7 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import SubmitButton from '../../components/Utilities/SubmitButton';
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
+import logger from '../../utils/logger';
 
 export default function EditLecturePage() {
     const theme = useTheme();
@@ -45,7 +46,7 @@ export default function EditLecturePage() {
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const location = useLocation();
-    console.log("location", location);
+    logger.log("location", location);
 
     // const [selectedSemester, setSelectedSemester] = useState(0);
     const [selectedFaculity, setSelectedFaculity] = useState(() => location?.state?.faculty_id?.id);
@@ -137,7 +138,7 @@ export default function EditLecturePage() {
         }),
         onSubmit: async (values) => {
 
-            console.log("suuuubmit");
+            logger.log("suuuubmit");
 
 
             let data = {
@@ -155,8 +156,8 @@ export default function EditLecturePage() {
 
 
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
-                // console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
+                // logger.log(data);
 
                 //  return;
                 const result = await UpdateMainTimeTable({
@@ -166,14 +167,14 @@ export default function EditLecturePage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
                 navigate(location.pathname.split('/edit')[0]);
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {
@@ -279,7 +280,7 @@ export default function EditLecturePage() {
                     }}
 
                     onBlur={(e) => {
-                        // console.log('blur',selectedSemester);
+                        // logger.log('blur',selectedSemester);
                         if (selectedFaculity != 0) formik.setFieldError("selectedFaculity", undefined);
 
                     }}
@@ -313,7 +314,7 @@ export default function EditLecturePage() {
                     onChange={async (e) => {
                         // 44444444444444444444444444444
                         if (e.target.value != "") {
-                            console.log("nnnnnnnnnnnnn", e.target.value);
+                            logger.log("nnnnnnnnnnnnn", e.target.value);
                             await getAcademyTermsByFacultyDepartment({
                                 variables: {
                                     faculty_department_id: e.target.value
@@ -331,7 +332,7 @@ export default function EditLecturePage() {
                     //     });
                     //   }}
                     onBlur={(e) => {
-                        // console.log('blur',selectedSemester);
+                        // logger.log('blur',selectedSemester);
                         if (selectedDepartment != 0) formik.setFieldError("selectedDepartment", undefined);
 
                     }}
@@ -362,7 +363,7 @@ export default function EditLecturePage() {
                     setValue={setSelectedAcademicTerm}
 
                     onBlur={(e) => {
-                        // console.log('blur',selectedSemester);
+                        // logger.log('blur',selectedSemester);
                         if (selectedAcademicTerm != 0) formik.setFieldError("selectedAcademicTerm", undefined);
 
                     }}

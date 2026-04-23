@@ -26,6 +26,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useParams } from "react-router-dom"
 import { useQuery } from "@apollo/client/react";
 import { GET_USER_BY_ID } from "../../graphql/usersQueries.js";
+import logger from "../../utils/logger.js";
 // Reusable row component that supports inline edit and file actions
 function LabelValueRow({
   label,
@@ -228,7 +229,7 @@ export default function UserDetails() {
     variables: { id },
     skip: !id, // 👈 لو مفيش userId متبعت، ميعملش query
   });
-console.log("data",data)
+logger.log("data",data)
   // available permission groups (dummy)
   const permissionGroups = ["read", "write", "delete", "admin"];
 
@@ -238,7 +239,7 @@ console.log("data",data)
     // if there's a file passed you could upload to server here
     if (file) {
       // demo: we don't upload but you can implement
-      console.log("file chosen for", field, file);
+      logger.log("file chosen for", field, file);
     }
   };
 

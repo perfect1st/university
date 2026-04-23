@@ -15,6 +15,7 @@ import { baseURL } from "../../Api/apolloClient";
 import axios from "axios";
 import UploadFileField from "../../components/Utilities/UploadFileField";
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
+import logger from "../../utils/logger";
 
 
 export default function SubTitleDetailsPage() {
@@ -32,7 +33,7 @@ export default function SubTitleDetailsPage() {
     const [selectedToShowFile, setSelectedToShowFile] = useState(null);
     const [progress, setProgress] = useState(0);
 
-    console.log("location",location?.state);
+    logger.log("location",location?.state);
     const [
         UpdateWebsiteDepartment,
         {
@@ -41,7 +42,7 @@ export default function SubTitleDetailsPage() {
         }
     ] = useMutation(UPDATE_WEBSITE_DEPARTMENT_BY_ID, { fetchPolicy: "network-only" });
 
-    console.log("updating",updating);
+    logger.log("updating",updating);
 
     const handlePickFile = () => {
         if (fileInputRef.current) fileInputRef.current.click();
@@ -51,7 +52,7 @@ export default function SubTitleDetailsPage() {
     const file = e.target.files?.[0] ?? null;
 
 
-    console.log("ppppppppppppppppppppppp", file);
+    logger.log("ppppppppppppppppppppppp", file);
 
     // fileInputRef.current=file?.name;
 
@@ -76,7 +77,7 @@ export default function SubTitleDetailsPage() {
         },
       });
 
-      console.log("res", res?.data?.url);
+      logger.log("res", res?.data?.url);
       setSelectedFile(`${baseURL}${res?.data?.url}`);
 
       formik.values.image=`${res?.data?.url}`;
@@ -84,7 +85,7 @@ export default function SubTitleDetailsPage() {
       // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
     } catch (error) {
       notify(t("errorUplaod"), "error");
-      console.log("error", error.message);
+      logger.log("error", error.message);
     }
 
 
@@ -106,7 +107,7 @@ export default function SubTitleDetailsPage() {
         }),
         onSubmit: async (values) => {
 
-            console.log("suuuubmit");
+            logger.log("suuuubmit");
 
 
             let data = {
@@ -119,8 +120,8 @@ export default function SubTitleDetailsPage() {
             if (selectedFile != null) data.image = selectedFile;
 
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
-                // console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
+                // logger.log(data);
 
                 //  return;
                 const result = await UpdateWebsiteDepartment({
@@ -130,7 +131,7 @@ export default function SubTitleDetailsPage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
@@ -138,7 +139,7 @@ export default function SubTitleDetailsPage() {
                 navigate(location.pathname.split('/edit')[0]);
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {

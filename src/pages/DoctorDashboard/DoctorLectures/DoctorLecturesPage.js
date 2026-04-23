@@ -32,6 +32,7 @@ import LoadingPage from "../../../components/LoadingComponent";
 import Header from "../../../components/PageHeader/header";
 import ScheduleTable from "../../../components/Utilities/ScheduleTableComponent";
 import ToDayTimeTableComponent from "../../../components/Utilities/ToDayTimeTableComponent";
+import logger from "../../../utils/logger";
 
 export default function DoctorLecturesPage() {
   const theme = useTheme();
@@ -58,11 +59,11 @@ export default function DoctorLecturesPage() {
 
   useEffect(() => {
     if (me?.id) {
-      // console.log('meeeee', me?.id);
+      // logger.log('meeeee', me?.id);
       const date = new Date();
       const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
 
-      console.log("dayName", dayName);
+      logger.log("dayName", dayName);
       TimeTablesByDoctor({ variables: { doctor_id: me?.id } });
       TodayTimeTable({ variables: { doctor_id: me?.id, day: dayName } });
       // data({variables:{doctor_id:me?.id}});
@@ -124,9 +125,9 @@ export default function DoctorLecturesPage() {
     return rows;
   })();
 
-  console.log("me", me);
-  console.log("timeTablesByDoctor", timeTablesByDoctor);
-  console.log("todayTimeTable", todayTimeTable);
+  logger.log("me", me);
+  logger.log("timeTablesByDoctor", timeTablesByDoctor);
+  logger.log("todayTimeTable", todayTimeTable);
 
   if (getTimeTableLoading || getTodayTimeTableLoading) return <LoadingPage />;
   return (

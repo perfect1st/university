@@ -22,6 +22,7 @@ import LoadingPage from "../../components/LoadingComponent";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
 import i18n from "../../i18n/i18n";
 import { useSelector } from "react-redux";
+import logger from "../../utils/logger";
 
 export default function ProfilePage() {
   const theme = useTheme();
@@ -74,15 +75,15 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (me?.id) {
-      console.log("meeeee");
+      logger.log("meeeee");
       GetRegisterFormByUserId({ variables: { user_id: me?.id } });
     }
   }, [me]);
 
-  console.log("getRegisterFormByUserId", getRegisterFormByUserId);
-  console.log("userData", me);
+  logger.log("getRegisterFormByUserId", getRegisterFormByUserId);
+  logger.log("userData", me);
 
-  console.log("GetRegisterFormByUserIdLoading", GetRegisterFormByUserIdLoading);
+  logger.log("GetRegisterFormByUserIdLoading", GetRegisterFormByUserIdLoading);
 
   const handleOpenFile = (url) => window.open(url, "_blank");
   const handleDownloadFile = (url) => {
@@ -93,7 +94,7 @@ export default function ProfilePage() {
       link.download = url.split("/").pop();
       link.click();
     } catch (error) {
-      console.error("error", error.message);
+      logger.error("error", error.message);
     }
   };
 
@@ -105,7 +106,7 @@ export default function ProfilePage() {
   }
   const highSchoolFile = getRegisterFormByUserId?.high_school_certificate_file;
 
-  console.log("high_school_certificate_file", highSchoolFile);
+  logger.log("high_school_certificate_file", highSchoolFile);
 
   let genderTransArr = [
     {
@@ -123,7 +124,7 @@ export default function ProfilePage() {
   );
 
   if (me == null || GetRegisterFormByUserIdLoading) return <LoadingPage />;
-  // console.log('genderrrrr',gender)
+  // logger.log('genderrrrr',gender)
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Grid container spacing={3}>

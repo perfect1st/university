@@ -22,6 +22,7 @@ import formatDateToString from "../../components/Utilities/FormatDateToString";
 import MaterialArrComponent from "../AcademyTerms/MaterialArrComponent";
 import RequiredFeesTable from "./RequiredFeesTable";
 import { useEffect } from "react";
+import logger from "../../utils/logger";
 
 
 export default function RequiredFeeDetailsPage() {
@@ -149,7 +150,7 @@ export default function RequiredFeeDetailsPage() {
     onSubmit: async (values) => {
 
 
-      console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+      logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
       let data = {
         academy_term_id: selectedAcademyTerm,
         fees_types_ids: selectedFeeType,
@@ -161,8 +162,8 @@ export default function RequiredFeeDetailsPage() {
       // if(selectedFile!=null) data.payment_document_file=selectedFile;
 
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-        console.log(data);
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+        logger.log(data);
 
         // return;
         const result = await UpdateUsersRequiredFees({
@@ -172,14 +173,14 @@ export default function RequiredFeeDetailsPage() {
           }
         });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
         navigate(location.pathname.split('/details')[0]);
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {
@@ -325,28 +326,28 @@ export default function RequiredFeeDetailsPage() {
           value={selectedFeeType}
           setValue={setSelectedFeeType}
           onChangeFn={(newIDS) => {
-            console.log("newIDS", newIDS);
+            logger.log("newIDS", newIDS);
             let rows = [];
             rows = getFeesTypes?.filter(m => newIDS?.find(el => el == m?.id));
-            console.log("rows", rows);
+            logger.log("rows", rows);
             setRows(rows);
           }
           }
           // error={formik.errors.selectedFeeType && t("admissions.errors.required")}
           onBlur={(e) => {
-            // console.log("selectedFeeType blur",selectedFeeType);
+            // logger.log("selectedFeeType blur",selectedFeeType);
             // let totalAmount = 0;
 
             // materialsByDepartment?.map(fee => {
             //   let feeObj = selectedFeeType?.find(el => el == fee?.id);
-            //   console.log("feeObj", feeObj);
+            //   logger.log("feeObj", feeObj);
             //   if (feeObj) {
             //     if (isInSideYemen == true) totalAmount += Number(fee?.inside_yemen_value)
             //     else totalAmount += Number(fee?.outside_yemen_value)
             //   }
             // });
 
-            // console.log('total amount',totalAmount);
+            // logger.log('total amount',totalAmount);
 
             // formik.values.amount = totalAmount;
 

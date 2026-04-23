@@ -77,7 +77,6 @@ const userSlice = createSlice({
   },
   reducers:{
     storeLoggedUser:(state,action)=>{
-     // console.log('action',action);
       state.loggedUser = action.payload
     },
 

@@ -16,6 +16,7 @@ import image from "../../assets/news.jpg";
 import { useQuery } from "@apollo/client/react";
 import { ArticalesById } from "../../graphql/articleQueries.js";
 import { useNavigate } from "react-router-dom";
+import logger from "../../utils/logger.js";
 
 /**
  * Small image slider used inside each card.
@@ -104,7 +105,7 @@ export default function ActivitiesPrograms({ Activities = [] }) {
   });
 
   const articles = newsData?.getArticlesByDepartment?.filter((el)=>el.status == "published") ?? [];
-console.log("Articles for selected activity:", articles);
+logger.log("Articles for selected activity:", articles);
   const handleChange = (event, newValue) => {
     setTab(newValue);
   };

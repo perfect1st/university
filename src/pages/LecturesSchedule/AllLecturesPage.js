@@ -23,6 +23,7 @@ import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import { GET_FILTERED_MAIN_TABLES, UPDATE_MAIN_TIME_TABLE_BY_ID } from "../../graphql/TimeTableQueries";
 import NoPermissionPage from "../../components/NoPermissionPage";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import logger from "../../utils/logger";
 export default function AllLecturesPage() {
     const theme = useTheme();
     const { t } = useTranslation();
@@ -115,7 +116,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("main
         GetMainTimeTablesFiltered({ variables: variablesObj });
     }, [searchParams]);
 
-    console.log("mainTimeTables", mainTimeTables);
+    logger.log("mainTimeTables", mainTimeTables);
 
     let columns = [
         { key: "serial", label: t("Serial") },
@@ -148,7 +149,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("main
             //     type
             //   });
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
 
@@ -174,7 +175,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("main
                 }
             });
 
-            console.log("reeesult", result);
+            logger.log("reeesult", result);
 
             notify(t("success"), "success");
 
@@ -183,7 +184,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("main
         }
     }
     const onFilterChange = async (filterOBJ) => {
-        console.log("filterOBJ", filterOBJ);
+        logger.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
         if (filterOBJ.hasOwnProperty("faculty_department_id") && filterOBJ.faculty_department_id !== "0") searchParams.set("faculty_department_id", filterOBJ.faculty_department_id);
@@ -214,15 +215,15 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("main
         pageLimit = Number(searchParams.get("limit"));
     }
 
-    console.log("pageLimit", pageLimit);
+    logger.log("pageLimit", pageLimit);
 
     const totalPages = parseInt(total / pageLimit) + 1;
 
-    console.log("totalPages", totalPages);
+    logger.log("totalPages", totalPages);
     if (!view) return <NoPermissionPage />;
 
 
-    console.log('t("Dashboard.Lectures")', t("Dashboard.Lectures"));
+    logger.log('t("Dashboard.Lectures")', t("Dashboard.Lectures"));
     // departments
     let translateText = isArabic ? "جدول محاضرة" : "Lecture Table";
     const searchText = isArabic ? "بحث ب بالاسم" : " Search by Name";

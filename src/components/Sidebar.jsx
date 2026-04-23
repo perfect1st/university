@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import FlagIcon from "@mui/icons-material/Flag";
 import { closeNav } from "../redux/slices/user/userSlice";
 import useAccessibleRoutes from "../hooks/getAccessibleRoutes";
+import logger from "../utils/logger";
 
 const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
   const theme = useTheme();
@@ -44,7 +45,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
 
   const lang = i18n.language;
   const accessibleRoutes = useAccessibleRoutes();
-  console.log("accessibleRoutes", accessibleRoutes);
+  logger.log("accessibleRoutes", accessibleRoutes);
 
   // const menuItems = useMemo(() => getAccessibleRoutes("admin"), []);  .role
   let menuItems = accessibleRoutes;
@@ -411,7 +412,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
 
           const IconComponent = item.icon;
 
-          console.log("item.key", item.key);
+          logger.log("item.key", item.key);
 
           return (
             <React.Fragment key={item.key}>
@@ -547,7 +548,7 @@ const Sidebar = ({ userType = "admin", mobileOpen, onClose, onAction }) => {
     </Box>
   );
 
-  // console.log('sidebaaaaaaaaaaaaaaaar');
+  // logger.log('sidebaaaaaaaaaaaaaaaar');
 
   if (me == null) return <CircularProgress />;
   return (

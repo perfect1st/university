@@ -164,7 +164,10 @@
     "paymentSuccess": "تم دفع الطلب بنجاح",
     "departmentTerm": "الفصول الدراسية",
     "uploadComplete": "تم رفع الملف بنجاح",
-    "loadingData": "جاري تحميل البيانات..."
+    "loadingData": "جاري تحميل البيانات...",
+    "uploadReceipt": "رفع سند الدفع",
+    "changeReceipt": "تغيير السند",
+    "selectReceipt": "اختر سند الدفع"
   },
   "studentDashboard": {
     "majorInformation": "المعلومات الأساسية",

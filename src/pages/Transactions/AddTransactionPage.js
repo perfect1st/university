@@ -21,6 +21,7 @@ import axios from "axios";
 import ConfirmModal from "../../components/Utilities/ConfirmModal";
 import { baseURL } from "../../Api/apolloClient";
 import UploadFileField from "../../components/Utilities/UploadFileField";
+import logger from "../../utils/logger";
 
 
 export default function AddTransactionPage() {
@@ -53,7 +54,7 @@ export default function AddTransactionPage() {
         const file = e.target.files?.[0] ?? null;
 
 
-        console.log("ppppppppppppppppppppppp", file);
+        logger.log("ppppppppppppppppppppppp", file);
 
         // fileInputRef.current=file?.name;
 
@@ -78,18 +79,18 @@ export default function AddTransactionPage() {
                 },
             });
 
-            console.log("res", res?.data?.url);
+            logger.log("res", res?.data?.url);
             setSelectedFile(res?.data?.url);
             // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
         } catch (error) {
             notify(t("errorUplaod"), "error");
-            console.log("error", error.message);
+            logger.log("error", error.message);
         }
 
 
     };
 
-    console.log('selectedFile', selectedFile);
+    logger.log('selectedFile', selectedFile);
 
 
     const [CreateTransaction, {
@@ -151,13 +152,13 @@ export default function AddTransactionPage() {
 
             // ✅ التحقق اليدوي قبل الإرسال
             // if (selected==0) {
-            //     // console.log('rrrrrrrrrrrrrrrrrrrrrrr');
+            //     // logger.log('rrrrrrrrrrrrrrrrrrrrrrr');
             //     // formik.setFieldError("faculty_id", t("admissions.errors.required"));
 
             //     setSelectError(t("admissions.errors.required"));
             //     return; // وقف الإرسال لحد ما المستخدم يختار
             // }
-            console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+            logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
             let data = {
                 payment_method_type: selectedPaymentMethod,
                 transaction_type_id: selectedTransactionType,
@@ -170,8 +171,8 @@ export default function AddTransactionPage() {
             if(selectedFile!=null) data.payment_document_file=selectedFile;
 
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                logger.log(data);
 
                 // return;
                 const result = await CreateTransaction({
@@ -180,14 +181,14 @@ export default function AddTransactionPage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
                 navigate(location.pathname.split('/add')[0]);
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {
@@ -196,9 +197,9 @@ export default function AddTransactionPage() {
         },
     });
 
-    // console.log("getTransactionTypes", getTransactionTypes);
-    console.log("getFeesTypes", getFeesTypes);
-    console.log("users", users);
+    // logger.log("getTransactionTypes", getTransactionTypes);
+    logger.log("getFeesTypes", getFeesTypes);
+    logger.log("users", users);
 
     let translateText = isArabic ? "معاملة مالية" : "Transaction";
     let translateText2 = isArabic ? "المعاملة المالية" : "Transaction";
@@ -206,9 +207,9 @@ export default function AddTransactionPage() {
     if (gettingFees || transactionTypesLoading || usersLoading) return <LoadingPage />;
 
 
-    // console.log("selectedFeeType",selectedFeeType);
-    // console.log("selectedUser",selectedUser);
-    // console.log("isInSideYemen",isInSideYemen);
+    // logger.log("selectedFeeType",selectedFeeType);
+    // logger.log("selectedUser",selectedUser);
+    // logger.log("isInSideYemen",isInSideYemen);
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
 
@@ -249,7 +250,7 @@ export default function AddTransactionPage() {
                     value={selectedPaymentMethod}
                     setValue={setSelectedPaymentMethod}
                     onBlur={(e) => {
-                        console.log('blur', selectedPaymentMethod);
+                        logger.log('blur', selectedPaymentMethod);
                         if (selectedPaymentMethod != 0) formik.setFieldError("selectedPaymentMethod", undefined);
 
                     }}
@@ -282,7 +283,7 @@ export default function AddTransactionPage() {
                     value={isInSideYemen}
                     setValue={setIsInSideYemen}
                     onBlur={(e) => {
-                        // console.log('blur', selectedPaymentMethod);
+                        // logger.log('blur', selectedPaymentMethod);
                         // if (selectedPaymentMethod != 0) formik.setFieldError("selectedPaymentMethod", undefined);
 
                     }}
@@ -331,19 +332,19 @@ export default function AddTransactionPage() {
                     setValue={setSelectedFeeType}
                     error={formik.errors.selectedFeeType && t("admissions.errors.required")}
                     onBlur={(e) => {
-                        // console.log("selectedFeeType blur",selectedFeeType);
+                        // logger.log("selectedFeeType blur",selectedFeeType);
                         let totalAmount = 0;
 
                         getFeesTypes?.map(fee => {
                             let feeObj = selectedFeeType?.find(el => el == fee?.id);
-                            console.log("feeObj", feeObj);
+                            logger.log("feeObj", feeObj);
                             if (feeObj) {
                                 if (isInSideYemen == true) totalAmount += Number(fee?.inside_yemen_value)
                                 else totalAmount += Number(fee?.outside_yemen_value)
                             }
                         });
 
-                        // console.log('total amount',totalAmount);
+                        // logger.log('total amount',totalAmount);
 
                         formik.values.amount = totalAmount;
 

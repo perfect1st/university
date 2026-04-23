@@ -21,6 +21,7 @@ import notify from "../../components/notify";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 import NoPermissionPage from "../../components/NoPermissionPage";
+import logger from "../../utils/logger";
 
 
 
@@ -138,7 +139,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("coun
       });
 
     } catch (err) {
-      console.error("Export error:", err);
+      logger.error("Export error:", err);
     }
   };
 
@@ -153,7 +154,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("coun
 
   const onStatusChange = async (selectedRow, newStatus) => {
     try {
-      // console.log("selectedRow", selectedRow, newStatus);
+      // logger.log("selectedRow", selectedRow, newStatus);
       // let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
 
       // // return;
@@ -168,7 +169,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("coun
         }
       });
 
-      console.log("reeesult", result);
+      logger.log("reeesult", result);
 
       notify(t("success"), "success");
 
@@ -181,7 +182,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("coun
   // const onActionClick=()=>navigate('details')
   // Permissions: for the dummy page we allow viewing. Replace with your real permission check if needed.
   const onFilterChange = async (filterOBJ) => {
-    console.log("filterOBJ", filterOBJ);
+    logger.log("filterOBJ", filterOBJ);
     if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
     if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
     // searchParams.get("search", e.target.value);
@@ -196,11 +197,11 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("coun
     pageLimit = Number(searchParams.get("limit"));
   }
 
-  console.log("pageLimit", pageLimit);
+  logger.log("pageLimit", pageLimit);
 
   const totalPages = parseInt(total / pageLimit) + 1;
 
-  console.log("totalPages", totalPages);
+  logger.log("totalPages", totalPages);
     if (!view) return <NoPermissionPage />;
 
 

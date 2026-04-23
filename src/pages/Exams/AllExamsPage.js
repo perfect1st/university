@@ -20,6 +20,7 @@ import { GET_FILTERED_EXAMS } from "../../graphql/ExamsQueries";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import { examTypes } from "../../constants";
+import logger from "../../utils/logger";
 
 
 export default function AllExamsPage() {
@@ -82,7 +83,7 @@ export default function AllExamsPage() {
 
     }, [searchParams]);
 
-    console.log("exams", exams);
+    logger.log("exams", exams);
 
     const columns = [
         { key: "serial", label: t("Serial") },
@@ -139,14 +140,14 @@ export default function AllExamsPage() {
             //     type
             // });
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
 
     const addNavigate = () => navigate('add');
 
     const studentDegreesNavigate=(row) => {
-        console.log("row",row);
+        logger.log("row",row);
 
         navigate(`examStudentDegrees/${row?.id}`,{
             state:row
@@ -154,7 +155,7 @@ export default function AllExamsPage() {
     };
 
     const handleDetailsClick = (selectedRow) => {
-        console.log('handleDetailsClick', selectedRow);
+        logger.log('handleDetailsClick', selectedRow);
         let row = exams?.find(el => el?.id == selectedRow?.id);
 
         navigate(`details/${selectedRow?.id}`, {
@@ -164,7 +165,7 @@ export default function AllExamsPage() {
 
     const onStatusChange = async (selectedRow, newStatus) => {
         try {
-            // console.log("selectedRow", selectedRow, newStatus);
+            // logger.log("selectedRow", selectedRow, newStatus);
             // let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
 
             // // return;
@@ -183,7 +184,7 @@ export default function AllExamsPage() {
             //     }
             // });
 
-            // console.log("reeesult", result);
+            // logger.log("reeesult", result);
 
             notify(t("success"), "success");
 
@@ -193,7 +194,7 @@ export default function AllExamsPage() {
     }
 
     const onFilterChange = async (filterOBJ) => {
-        console.log("filterOBJ", filterOBJ);
+        logger.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         if (filterOBJ.hasOwnProperty("exam_type") && filterOBJ.exam_type !== "0") searchParams.set("exam_type", filterOBJ.exam_type);
         // if (filterOBJ.role) searchParams.set("role", filterOBJ.role);
@@ -212,11 +213,11 @@ export default function AllExamsPage() {
         pageLimit = Number(searchParams.get("limit"));
     }
 
-    console.log("pageLimit", pageLimit);
+    logger.log("pageLimit", pageLimit);
 
     const totalPages = parseInt(total / pageLimit) + 1;
 
-    console.log("totalPages", totalPages);
+    logger.log("totalPages", totalPages);
 
     let translateText = isArabic ? "امتحان" : "Exam";
     let searchText=isArabic ? "اسم الامتحان" : "Exam Name";

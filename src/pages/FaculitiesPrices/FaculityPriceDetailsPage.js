@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { UPDATE_FACULITY_DEPARTMENT_BY_ID } from "../../graphql/facultyQuiries"
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
 import { UPDATE_FACULITY_PRICE_BY_ID } from "../../graphql/faculityPricesQueries";
+import logger from "../../utils/logger";
 
 export default function FaculityPriceDetailsPage() {
   const theme = useTheme();
@@ -96,7 +97,7 @@ export default function FaculityPriceDetailsPage() {
     }),
     onSubmit: async (values) => {
 
-      console.log("suuuubmit");
+      logger.log("suuuubmit");
 
 
       let data = {
@@ -110,8 +111,8 @@ export default function FaculityPriceDetailsPage() {
 
 
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
-        // console.log(data);
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
+        // logger.log(data);
 
         //  return;
         const result = await UpdateFacultyPrice({
@@ -121,14 +122,14 @@ export default function FaculityPriceDetailsPage() {
           }
         });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
         navigate(location.pathname.split('/details')[0]);
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {
@@ -177,7 +178,7 @@ export default function FaculityPriceDetailsPage() {
           }}
 
           onBlur={(e) => {
-            // console.log('blur',selectedSemester);
+            // logger.log('blur',selectedSemester);
             if (selectedFaculity != 0) formik.setFieldError("selectedFaculity", undefined);
 
           }}
@@ -218,7 +219,7 @@ export default function FaculityPriceDetailsPage() {
           //     });
           //   }}
           onBlur={(e) => {
-            // console.log('blur',selectedSemester);
+            // logger.log('blur',selectedSemester);
             if (selectedDepartment != 0) formik.setFieldError("selectedDepartment", undefined);
 
           }}

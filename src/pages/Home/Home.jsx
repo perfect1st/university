@@ -10,6 +10,7 @@ import FutureVision from "../../components/HomeComponants/FutureVision";
 import { useQuery } from "@apollo/client/react";
 import { GetWebsiteArticles ,ArticalesById} from "../../graphql/articleQueries.js";
 import { GetWebsiteDepartments, getDepartmentByFatherId } from "../../graphql/departmentsQueries.js";
+import logger from "../../utils/logger.js";
 
 const Home = () => {
   const theme = useTheme();
@@ -38,10 +39,10 @@ const Home = () => {
   const news = newsArticalesData?.getArticlesByDepartment.filter((el)=>el.status == "published") || [];
   const vision = visionArticalesData?.getArticlesByDepartment.filter((el)=>el.status == "published") || [];
   const Activities = getDepartmentByFatherIdData?.getDepartmentsByFather.filter((el)=>el.status == true) || [];
-  console.log("News Articles:", news);
-  console.log("Home Slider Data:", HomeSliderData);
-  console.log("Vision Articles:", vision);
-  console.log("Activities Articles:", getDepartmentByFatherIdData);
+  logger.log("News Articles:", news);
+  logger.log("Home Slider Data:", HomeSliderData);
+  logger.log("Vision Articles:", vision);
+  logger.log("Activities Articles:", getDepartmentByFatherIdData);
   
   const loading = HomeSliderLoading || newsArticalesLoading || visionArticalesLoading || getDepartmentByFatherIdLoading;
   if (loading) return <LoadingComponent />;

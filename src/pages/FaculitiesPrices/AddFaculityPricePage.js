@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { paymentMethodsArr, transactionTypesArr, TrueOrFalseArr } from "../../constants";
 import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import { CREATE_NEW_FACULTY_PRICE } from "../../graphql/faculityPricesQueries";
+import logger from "../../utils/logger";
 
 
 export default function AddFaculityPricePage() {
@@ -92,7 +93,7 @@ export default function AddFaculityPricePage() {
         }),
         onSubmit: async (values) => {
 
-            console.log("suuuubmit");
+            logger.log("suuuubmit");
 
 
             let data = {
@@ -106,8 +107,8 @@ export default function AddFaculityPricePage() {
 
 
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
-                // console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
+                // logger.log(data);
 
                 //  return;
                 const result = await CreateFacultyPrice({
@@ -116,14 +117,14 @@ export default function AddFaculityPricePage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
                 navigate(location.pathname.split('/add')[0]);
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {
@@ -174,7 +175,7 @@ export default function AddFaculityPricePage() {
                     }}
 
                     onBlur={(e) => {
-                        // console.log('blur',selectedSemester);
+                        // logger.log('blur',selectedSemester);
                         if (selectedFaculity != 0) formik.setFieldError("selectedFaculity", undefined);
 
                     }}
@@ -215,7 +216,7 @@ export default function AddFaculityPricePage() {
                     //     });
                     //   }}
                     onBlur={(e) => {
-                        // console.log('blur',selectedSemester);
+                        // logger.log('blur',selectedSemester);
                         if (selectedDepartment != 0) formik.setFieldError("selectedDepartment", undefined);
 
                     }}

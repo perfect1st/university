@@ -24,6 +24,7 @@ import { ReactComponent as InfoIcon } from "../../assets/InfoIcon.svg";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { baseURL } from "../../Api/apolloClient";
+import logger from "../../utils/logger";
 
 // Define only necessary status styles
 const statusStyles = {
@@ -222,13 +223,13 @@ const TableComponent = ({
             {data?.map((row, index) => {
               const status = row[statusKey];
               const styles = getStatusStyles(status);
-              console.log(
+              logger.log(
                 "row[column.key]",
                 visibleColumns[visibleColumns?.length - 1].isInput,
               );
 
-              // console.log("styles.bgColor",styles.bgColor);
-              //  console.log('rrrrrrrr',row);
+              // logger.log("styles.bgColor",styles.bgColor);
+              //  logger.log('rrrrrrrr',row);
               return (
                 <TableRow key={row.id} hover>
                   {visibleColumns?.map((column) => (
@@ -350,15 +351,15 @@ const TableComponent = ({
                               sx={{ px: 2 }}
                               cl={`textField${index}`}
                               onChange={(e) => {
-                                console.log("index", index, e.target);
+                                logger.log("index", index, e.target);
                                 const els =
                                   document.getElementsByClassName("textField");
                                 const values = Array.from(els).map(
                                   (el) => el.value,
                                 );
-                                console.log(values);
+                                logger.log(values);
 
-                                // console.log("oooo",document.getElementsByClassName(`textField${index}`)[0]?.value);
+                                // logger.log("oooo",document.getElementsByClassName(`textField${index}`)[0]?.value);
                               }}
                             />
                           ) : (
@@ -424,7 +425,7 @@ const TableComponent = ({
                           variant="contained"
                           color="primary"
                           onClick={(e) => {
-                            console.log("uuuuuuuuuuuuuu");
+                            logger.log("uuuuuuuuuuuuuu");
                             onActionClick?.(e, row);
                           }}
                           sx={{
@@ -460,7 +461,7 @@ const TableComponent = ({
                         <IconButton
                           size="small"
                           onClick={(e) => {
-                            // console.log('llllllllllllllllllllllllll');
+                            // logger.log('llllllllllllllllllllllllll');
                             handleClick(e, row);
                           }}
                           sx={{
@@ -506,7 +507,7 @@ const TableComponent = ({
             onClick={() => {
               handleDetailsClick(selectedRow);
 
-              // console.log('handleDetailsClick',selectedRow);
+              // logger.log('handleDetailsClick',selectedRow);
             }}
             sx={{
               borderLeft: isArabic

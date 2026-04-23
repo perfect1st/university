@@ -33,6 +33,7 @@ import {
   MARK_NOTIFICATION_AS_READ,
   MARK_ALL_NOTIFICATIONS_AS_READ,
 } from "../graphql/userQueriesForAdmin";
+import logger from "../utils/logger";
 
 /* ─── helpers ─────────────────────────────────────────────── */
 
@@ -187,12 +188,12 @@ const NotificationButton = () => {
       });
       refetchCount();
     },
-    onError: (err) => console.error("markOneRead error:", err),
+    onError: (err) => logger.error("markOneRead error:", err),
   });
 
   const [markAllRead] = useMutation(MARK_ALL_NOTIFICATIONS_AS_READ, {
     onCompleted: () => { refetch(); refetchCount(); },
-    onError: (err) => console.error("markAllRead error:", err),
+    onError: (err) => logger.error("markAllRead error:", err),
   });
 
   /* ── derived ── */
@@ -234,7 +235,7 @@ const NotificationButton = () => {
     try {
       await markAllRead();
     } catch (err) {
-      console.error("markAllRead error:", err);
+      logger.error("markAllRead error:", err);
     } finally {
       setMarkingAll(false);
     }

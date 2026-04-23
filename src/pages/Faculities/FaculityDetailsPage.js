@@ -12,6 +12,7 @@ import notify from '../../components/notify';
 import * as Yup from "yup";
 import { useFormik } from 'formik';
 import { UPDATE_FACULITY_BY_ID } from '../../graphql/facultyQuiries';
+import logger from '../../utils/logger';
 
 export default function FaculityDetailsPage() {
         const theme = useTheme();
@@ -50,7 +51,7 @@ export default function FaculityDetailsPage() {
 
         }),
         onSubmit: async (values) => {
-            console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+            logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
             const data = {
                 title_ar: values?.title_ar,
                 title_en: values.title_en,
@@ -58,8 +59,8 @@ export default function FaculityDetailsPage() {
                 required_dep:false
             };
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                logger.log(data);
 
                 const result = await UpdateFaculty({
                     variables: {
@@ -68,14 +69,14 @@ export default function FaculityDetailsPage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
                 navigate('/faculities');
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {

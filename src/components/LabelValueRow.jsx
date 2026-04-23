@@ -12,7 +12,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 export default function LabelValueRow({ label, value, file = false, onOpen, onDownload }) {
   const theme = useTheme();
 
- // console.log('file........',file);
+ // logger.log('file........',file);
 
   return (
     <Box

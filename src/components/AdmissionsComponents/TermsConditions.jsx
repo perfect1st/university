@@ -10,15 +10,16 @@ import {
 import { ArrowForward } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import logger from "../../utils/logger";
 export default function TermsConditions({setAcceptTerms, acceptTerms, data = []}) {
   const theme = useTheme();
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language == "ar"
   const handleAcceptTerms = () =>{
     setAcceptTerms(true)
-    console.log("acceptTerms",acceptTerms)
+    logger.log("acceptTerms",acceptTerms)
   }
-console.log("data",data)
+logger.log("data",data)
 
   return (
     <Box

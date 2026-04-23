@@ -16,6 +16,7 @@ import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../
 import { CREATE_NEW_FACULTY_PRICE } from "../../graphql/faculityPricesQueries";
 import { CREATE_SUPPORT_TICKET } from "../../graphql/supportTicketQueries";
 import { useSelector } from "react-redux";
+import logger from "../../utils/logger";
 
 export default function AddSupportTicketPage() {
     const theme = useTheme();
@@ -55,7 +56,7 @@ export default function AddSupportTicketPage() {
         }),
         onSubmit: async (values) => {
 
-            console.log("suuuubmit");
+            logger.log("suuuubmit");
 
 
             let data = {
@@ -68,8 +69,8 @@ export default function AddSupportTicketPage() {
 
 
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
-                // console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
+                // logger.log(data);
 
                 //  return;
                 const result = await CreateSupportTicket({
@@ -78,14 +79,14 @@ export default function AddSupportTicketPage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
                 navigate(location.pathname.split('/add')[0]);
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {
@@ -144,7 +145,7 @@ export default function AddSupportTicketPage() {
 
 
                     onBlur={(e) => {
-                        // console.log('blur',selectedSemester);
+                        // logger.log('blur',selectedSemester);
                         if (selectedType != 0) formik.setFieldError("selectedType", undefined);
 
                     }}

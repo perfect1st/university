@@ -2,6 +2,7 @@
 import { ApolloLink } from "@apollo/client";
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { getToken, getUserCookie } from "../hooks/authCookies";
+import logger from "../utils/logger";
 
 export const baseURL="https://uas.edu.ye";
 // http://server.perfect1st.com:4000/graphql
@@ -12,7 +13,7 @@ const httpLink = new HttpLink({ uri: `${baseURL}/graphql` });
 const authLink = new ApolloLink((operation, forward) => {
   const token = getToken();
 
-  console.log('token',token);
+  logger.log('token',token);
 
   operation.setContext(({ headers = {} }) => ({
     headers: {

@@ -18,6 +18,7 @@ import { GET_WEBSITE_DEPARTMENTS_BY_ADMIN, UPDATE_WEBSITE_DEPARTMENT_BY_ID } fro
 import NoPermissionPage from "../../components/NoPermissionPage";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 import { useState } from "react";
+import logger from "../../utils/logger";
 
 export default function AllDepartmentsPage() {
     const theme = useTheme();
@@ -37,7 +38,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("webs
     loading:updatingStatus
   }]=useMutation(UPDATE_WEBSITE_DEPARTMENT_BY_ID,{fetchPolicy:"network-only"});
 
-  console.log("websiteDepartments",websiteDepartments);
+  logger.log("websiteDepartments",websiteDepartments);
 
   let columns = [
     { key: "serial", label: t("Serial") },
@@ -109,7 +110,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("webs
           printableWindow.print();
         }
       } catch (err) {
-        console.error("Export error:", err);
+        logger.error("Export error:", err);
       }
     };
   
@@ -126,7 +127,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("webs
   
     const onStatusChange = async (selectedRow, newStatus) => {
       try {
-        // console.log("selectedRow", selectedRow, newStatus);
+        // logger.log("selectedRow", selectedRow, newStatus);
         // let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
   
         // // return;
@@ -141,7 +142,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("webs
           }
         });
   
-       console.log("reeesult", result);
+       logger.log("reeesult", result);
   
         notify(t("success"), "success");
   

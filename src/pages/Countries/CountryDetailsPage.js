@@ -11,6 +11,7 @@ import Header from '../../components/PageHeader/header';
 import notify from '../../components/notify';
 import * as Yup from "yup";
 import { useFormik } from 'formik';
+import logger from '../../utils/logger';
 
 
 
@@ -55,8 +56,8 @@ export default function CountryDetailsPage() {
                 is_local: values.is_local
               };
               try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                logger.log(data);
         
                 const result = await UpdateCountry(
                   {
@@ -66,14 +67,14 @@ export default function CountryDetailsPage() {
                     }
                   });
         
-                console.log('result', result);
+                logger.log('result', result);
         
                 notify(t("success"), "success");
         
                 setTimeout(() => navigate('/countries'), 2000);
         
               } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
         
               } finally {
@@ -81,7 +82,7 @@ export default function CountryDetailsPage() {
               }
             },
           });
-      console.log("location", location);
+      logger.log("location", location);
 
       let translateText = isArabic ? "دولة" : "Country";
     let translateText2 = isArabic ? "الدولة" : "Country";

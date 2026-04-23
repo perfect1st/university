@@ -24,6 +24,7 @@ import { examTypes, isOpen, ticketTypes } from "../../constants";
 import { GET_ALL_SUPPORT_TICKETS, GET_SUPPORT_TICKETS_BY_USER_ID } from "../../graphql/supportTicketQueries";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 import NoPermissionPage from "../../components/NoPermissionPage";
+import logger from "../../utils/logger";
 
 
 
@@ -64,7 +65,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("supp
 
 
     useEffect(() => {
-        console.log("me", me);
+        logger.log("me", me);
 
         if (me?.id) {
 
@@ -128,7 +129,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("supp
 
     }
 
-    console.log("ticketsToShow", ticketsToShow);
+    logger.log("ticketsToShow", ticketsToShow);
 
     const fetchAndExport = async (type) => {
         try {
@@ -161,7 +162,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("supp
             //     type
             // });
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
     const addNavigate = () => navigate('add');
@@ -179,7 +180,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("supp
             row = getSupportTicketsByUser?.find(el => el?.id == selectedRow?.id);
         }
 
-        console.log("row", row);
+        logger.log("row", row);
 
         navigate(`details/${selectedRow?.id}`, {
             state: row
@@ -187,7 +188,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("supp
 
     }
 
-    console.log("getSupportTicketsByUser", getSupportTicketsByUser);
+    logger.log("getSupportTicketsByUser", getSupportTicketsByUser);
 
     let translateText = isArabic ? "تذكرة" : "Ticket";
     if (!view) return <NoPermissionPage />;

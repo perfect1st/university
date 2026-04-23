@@ -26,6 +26,7 @@ import UploadFileField from "../../components/Utilities/UploadFileField";
 import { UPDATE_SUPPORT_TICKET_BY_ID } from "../../graphql/supportTicketQueries";
 import { ticketTypes } from "../../constants";
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
+import logger from "../../utils/logger";
 
 
 export default function EditSupportTicketPage() {
@@ -35,7 +36,7 @@ export default function EditSupportTicketPage() {
     const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const location = useLocation();
-    console.log("location", location.state);
+    logger.log("location", location.state);
 
 
     const [
@@ -69,7 +70,7 @@ export default function EditSupportTicketPage() {
             }),
             onSubmit: async (values) => {
     
-                console.log("suuuubmit");
+                logger.log("suuuubmit");
     
     
                 let data = {
@@ -83,8 +84,8 @@ export default function EditSupportTicketPage() {
     
     
                 try {
-                    console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
-                    // console.log(data);
+                    logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
+                    // logger.log(data);
     
                     //  return;
                     const result = await UpdateSupportTicket({
@@ -94,14 +95,14 @@ export default function EditSupportTicketPage() {
                         }
                     });
     
-                    console.log('result', result);
+                    logger.log('result', result);
     
                     notify(t("success"), "success");
     
                     navigate(location.pathname.split('/details')[0]);
     
                 } catch (error) {
-                    console.error("Error logging in:", error);
+                    logger.error("Error logging in:", error);
                     notify(t("error"), "error");
     
                 } finally {

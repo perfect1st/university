@@ -13,6 +13,7 @@ import SubmitButton from "../../components/Utilities/SubmitButton";
 import LoadingPage from "../../components/LoadingComponent";
 import { useState } from "react";
 import {  transactionTypesArr } from "../../constants";
+import logger from "../../utils/logger";
 
 
 export default function AddTransactionTypePage() {
@@ -47,7 +48,7 @@ export default function AddTransactionTypePage() {
     }),
     onSubmit: async (values) => {
 
-      console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+      logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
       let data = {
         title_ar: values?.title_ar,
         title_en: values?.title_en,
@@ -58,8 +59,8 @@ export default function AddTransactionTypePage() {
       // if(selectedFile!=null) data.payment_document_file=selectedFile;
 
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-        console.log(data);
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+        logger.log(data);
 
         // return;
         const result = await CreateTransactionType({
@@ -68,14 +69,14 @@ export default function AddTransactionTypePage() {
           }
         });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
         navigate(location.pathname.split('/add')[0]);
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {
@@ -87,7 +88,7 @@ export default function AddTransactionTypePage() {
   let translateText = isArabic ? "نوع معاملة مالية" : "Transaction Type";
   let translateText2 = isArabic ? "نوع المعاملة المالية" : "Transaction Type";
 
-  // console.log("selectedOperationType",selectedOperationType);
+  // logger.log("selectedOperationType",selectedOperationType);
 
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>

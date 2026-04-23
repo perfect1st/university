@@ -21,6 +21,7 @@ import UploadFileField from "../../components/Utilities/UploadFileField";
 import { CREATE_WEBSITE_ARTICLE } from "../../graphql/articleQueries";
 import { GET_WEBSITE_DEPARTMENTS_BY_ADMIN } from "../../graphql/departmentsQueries";
 import { useSelector } from "react-redux";
+import logger from "../../utils/logger";
 
 export default function AddArticlePage() {
   const theme = useTheme();
@@ -48,7 +49,7 @@ export default function AddArticlePage() {
     WebsiteDepartments();
   }, []);
 
-  console.log("websiteDepartments", websiteDepartments);
+  logger.log("websiteDepartments", websiteDepartments);
 
   const [selectedDepartment, setSelectedDepartment] = useState(0);
 
@@ -70,7 +71,7 @@ export default function AddArticlePage() {
     const file = e.target.files?.[0] ?? null;
 
 
-    console.log("ppppppppppppppppppppppp", file);
+    logger.log("ppppppppppppppppppppppp", file);
 
     // fileInputRef.current=file?.name;
 
@@ -95,12 +96,12 @@ export default function AddArticlePage() {
         },
       });
 
-      console.log("res", res?.data?.url);
+      logger.log("res", res?.data?.url);
       setSelectedFile(`${baseURL}${res?.data?.url}`);
       // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
     } catch (error) {
       notify(t("errorUplaod"), "error");
-      console.log("error", error.message);
+      logger.log("error", error.message);
     }
 
 
@@ -136,17 +137,17 @@ export default function AddArticlePage() {
         },
       });
 
-      console.log("res", res?.data?.urls);
+      logger.log("res", res?.data?.urls);
       let urlsToSend=res?.data?.urls?.map(el=>`${baseURL}${el}`);
 
-      console.log("urlsToSend",urlsToSend);
+      logger.log("urlsToSend",urlsToSend);
 
       setFiles(urlsToSend);
       //  setSelectedFile(`${baseURL}${res?.data?.url}`);
       // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
     } catch (error) {
       notify(t("errorUplaod"), "error");
-      console.log("error", error.message);
+      logger.log("error", error.message);
     }
 
   }
@@ -173,7 +174,7 @@ export default function AddArticlePage() {
     }),
     onSubmit: async (values) => {
 
-      console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+      logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
       let data = {
         title_ar: values?.title_ar,
         title_en: values?.title_en,
@@ -191,8 +192,8 @@ export default function AddArticlePage() {
       if(files?.length>0) data.images_array=files;
 
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-        console.log(data);
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+        logger.log(data);
 
         // return;
         const result = await CreateWebsiteArticle({
@@ -201,14 +202,14 @@ export default function AddArticlePage() {
           }
         });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
         navigate(location.pathname.split('/add')[0]);
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {
@@ -292,7 +293,7 @@ export default function AddArticlePage() {
           value={selectedDepartment}
           setValue={setSelectedDepartment}
           onBlur={(e) => {
-            console.log('blur', selectedDepartment);
+            logger.log('blur', selectedDepartment);
             if (selectedDepartment != 0) formik.setFieldError("selectedDepartment", undefined);
 
           }}

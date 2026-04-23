@@ -44,6 +44,7 @@ import { PAY_USER_REQUIRED_FEES } from "../../graphql/usersQueries";
 import notify from "../notify";
 import { paymentMethodsArr } from "../../constants";
 import { baseURL } from "../../Api/apolloClient";
+import logger from "../../utils/logger";
 
 export default function FeeCard({
   data,
@@ -87,16 +88,16 @@ export default function FeeCard({
         },
       });
 
-      console.log("res", res?.data?.url);
+      logger.log("res", res?.data?.url);
 
       setBankTransferDocument(`${baseURL}${res?.data?.url}`);
     } catch (error) {
       notify(t("errorUplaod"), "error");
-      console.log("error", error.message);
+      logger.log("error", error.message);
     }
   };
 
-  console.log("bankTransferDocument", bankTransferDocument);
+  logger.log("bankTransferDocument", bankTransferDocument);
 
   const isArabic = i18n.language === "ar";
   // const isPaid = !!data?.is_paid;
@@ -104,7 +105,7 @@ export default function FeeCard({
 
   let total_payment = 0;
 
-  console.log("is_inside_yemen", is_inside_yemen);
+  logger.log("is_inside_yemen", is_inside_yemen);
 
   data?.fees_types_ids?.map((fee) => {
     if (is_inside_yemen == true) {
@@ -116,8 +117,8 @@ export default function FeeCard({
 
   total_payment = total_payment.toFixed(2);
 
-  console.log("total_payment", total_payment);
-  console.log("data", data);
+  logger.log("total_payment", total_payment);
+  logger.log("data", data);
   return (
     <Paper sx={{ p: 2, mb: 2 }}>
       <Grid container alignItems="center" spacing={2}>
@@ -162,7 +163,7 @@ export default function FeeCard({
                           "_blank"
                         );
                       } catch (error) {
-                        console.log("error", error);
+                        logger.log("error", error);
                       }
                     }}
                     sx={{ textTransform: "none", gap: 1 }}
@@ -194,7 +195,7 @@ export default function FeeCard({
                         document.body.removeChild(link);
                         URL.revokeObjectURL(link.href);
                       } catch (error) {
-                        console.log("error", error);
+                        logger.log("error", error);
                       }
                     }}
                     sx={{ textTransform: "none", gap: 1 }}
@@ -463,7 +464,7 @@ export default function FeeCard({
             <Button
               variant="contained"
               onClick={async () => {
-                console.log("paymentOBJ", data);
+                logger.log("paymentOBJ", data);
 
                 if (method == "")
                   return notify(t("fee.paymentRequired"), "error");
@@ -478,7 +479,7 @@ export default function FeeCard({
                   amount: parseFloat(total_payment),
                 };
 
-                console.log("paymentOBJ", paymentOBJ);
+                logger.log("paymentOBJ", paymentOBJ);
 
                 if (method == "BANK_TRANSFER")
                   paymentOBJ.payment_document_file = bankTransferDocument;
@@ -490,7 +491,7 @@ try{
     },
   });
 } catch(error){
-  console.log("error", error);
+  logger.log("error", error);
   notify(t("error"), "error");
   return;
 }

@@ -21,6 +21,7 @@ import FilterComponent from "../../components/TableComponent/FilterComponent";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import { examTypes } from "../../constants";
 import { GET_STUDENT_DEGRESS_BY_STUDENT_ID } from "../../graphql/studentDegreeQueries";
+import logger from "../../utils/logger";
 
 export default function AllDegreesForStudentPage() {
   const theme = useTheme();
@@ -31,7 +32,7 @@ export default function AllDegreesForStudentPage() {
   const { id } = useParams();
   const location = useLocation();
 
-  console.log("location.state",location.state);
+  logger.log("location.state",location.state);
 
   const isArabic = i18n.language === "ar";
 
@@ -57,7 +58,7 @@ export default function AllDegreesForStudentPage() {
     // { key: "is_paid", label: t("Status") }
   ];
 
-  // console.log("studentDegreeByStudent",studentDegreeByStudent);
+  // logger.log("studentDegreeByStudent",studentDegreeByStudent);
 
   let total_full_mark_degree = 0;
   let total_lecture_attendance = 0;
@@ -66,7 +67,7 @@ export default function AllDegreesForStudentPage() {
 
   let studentDegreeByStudentToShow = studentDegreeByStudent?.map((degree) => {
 
-    console.log("degree?.exams", degree?.totals?.total_exam_degree);
+    logger.log("degree?.exams", degree?.totals?.total_exam_degree);
     let exam = degree?.exams[0];
 
     total_full_mark_degree+=degree?.totals?.total_full_mark;
@@ -88,7 +89,7 @@ export default function AllDegreesForStudentPage() {
     }
   });
 
-  console.log("llllllllll",total_full_mark_degree,total_lecture_attendance,total_total_exam_degree)
+  logger.log("llllllllll",total_full_mark_degree,total_lecture_attendance,total_total_exam_degree)
     const fetchAndExport = async (type) => {
         try {
             // const exportData = data?.getUsersRequiredFees?.map((user, i) => {
@@ -120,12 +121,12 @@ export default function AllDegreesForStudentPage() {
             //     type
             // });
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
 
     const onFilterChange = async (filterOBJ) => {
-        console.log("filterOBJ", filterOBJ);
+        logger.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
        // if (filterOBJ.hasOwnProperty("exam_type") && filterOBJ.exam_type !== "0") searchParams.set("exam_type", filterOBJ.exam_type);
         // if (filterOBJ.role) searchParams.set("role", filterOBJ.role);
@@ -136,7 +137,7 @@ export default function AllDegreesForStudentPage() {
      const hasViewPermission = true;
     const hasAddPermission = true;
 
-  console.log("studentDegreeByStudentToShow", studentDegreeByStudentToShow);
+  logger.log("studentDegreeByStudentToShow", studentDegreeByStudentToShow);
 
 
 

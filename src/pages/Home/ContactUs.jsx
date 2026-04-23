@@ -19,6 +19,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import SendIcon from '@mui/icons-material/Send';
 import SchoolIcon from '@mui/icons-material/School';
 import PersonIcon from '@mui/icons-material/Person';
+import logger from "../../utils/logger";
 
 export default function UniversityContact() {
   const { t } = useTranslation();
@@ -53,7 +54,7 @@ export default function UniversityContact() {
         setShowSuccess(true);
     },
     onError: (error) => {
-        console.error("Contact Us submission error:", error);
+        logger.error("Contact Us submission error:", error);
     }
   });
 
@@ -81,7 +82,7 @@ export default function UniversityContact() {
         });
         resetForm();
       } catch (err) {
-        console.error("Contact form error:", err);
+        logger.error("Contact form error:", err);
       } finally {
         setSubmitting(false);
       }

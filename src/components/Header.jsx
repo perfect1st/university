@@ -61,6 +61,7 @@ import { storeLoggedUser } from "../redux/slices/user/userSlice";
 import useAccessibleRoutes from "../hooks/getAccessibleRoutes";
 import { MY_NOTIFICATIONS } from "../graphql/userQueriesForAdmin";
 import NotificationButton from "./Notificationpanel";
+import logger from "../utils/logger";
 
 const typeColors = {
   new_driver: "#81C784",
@@ -101,7 +102,7 @@ const Header = ({ onAction }) => {
     pollInterval: 60000,
 
   });
-  console.log("myNotificationsData", myNotificationsData);
+  logger.log("myNotificationsData", myNotificationsData);
   const Notifications = [];
 
 
@@ -123,7 +124,7 @@ const Header = ({ onAction }) => {
 
   const user = me;
 
-  // console.log("me in nav", me);
+  // logger.log("me in nav", me);
   const isAuthenticated = Boolean(me);
 
   const currentRoutes = routes.admin;
@@ -217,7 +218,7 @@ const Header = ({ onAction }) => {
   const toggleOpen = (key) =>
     setOpenKeys((prev) => ({ ...prev, [key]: !prev[key] }));
 
-  console.log("user?.fullname", user?.fullname);
+  logger.log("user?.fullname", user?.fullname);
 
   const drawerContent = (
     <Box

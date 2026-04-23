@@ -14,6 +14,7 @@ import LoadingPage from "../../components/LoadingComponent";
 import { useEffect, useState } from "react";
 import { UPDATE_ONE_FEE_BY_ID } from "../../graphql/feeTypesQueries";
 import HorizentalTextField from "../../components/Utilities/HorizentalTextField";
+import logger from "../../utils/logger";
 
 export default function FeeDetailsPage() {
    const theme = useTheme();
@@ -47,7 +48,7 @@ export default function FeeDetailsPage() {
                onSubmit: async (values) => {
        
        
-                   console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+                   logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
                    const data = {
                        title_ar: values?.title_ar,
                        title_en: values.title_en,
@@ -56,8 +57,8 @@ export default function FeeDetailsPage() {
        
                    };
                    try {
-                       console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                       console.log(data);
+                       logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                       logger.log(data);
        
                        // return;
                        const result = await UpdateFeesType({
@@ -67,14 +68,14 @@ export default function FeeDetailsPage() {
                            }
                        });
        
-                       console.log('result', result);
+                       logger.log('result', result);
        
                        notify(t("success"), "success");
        
                        navigate('/feesTypes');
        
                    } catch (error) {
-                       console.error("Error logging in:", error);
+                       logger.error("Error logging in:", error);
                        notify(t("error"), "error");
        
                    } finally {

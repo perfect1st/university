@@ -29,6 +29,7 @@ import { useMutation } from "@apollo/client/react";
 import VerticalTextField from "../../components/Utilities/VerticalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import UploadFileField from "../../components/Utilities/UploadFileField";
+import logger from "../../utils/logger";
 
 
 
@@ -66,7 +67,7 @@ export default function AddNationalityPage() {
     const file = e.target.files?.[0] ?? null;
 
 
-    console.log("ppppppppppppppppppppppp", file);
+    logger.log("ppppppppppppppppppppppp", file);
 
     // fileInputRef.current=file?.name;
 
@@ -91,18 +92,18 @@ export default function AddNationalityPage() {
         },
       });
 
-      console.log("res", res?.data?.url);
+      logger.log("res", res?.data?.url);
       setSelectedFile(res?.data?.url);
       // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
     } catch (error) {
       notify(t("errorUplaod"), "error");
-      console.log("error", error.message);
+      logger.log("error", error.message);
     }
 
 
   };
 
-  console.log('selectedFile', selectedFile);
+  logger.log('selectedFile', selectedFile);
 
   const formik = useFormik({
     initialValues: {
@@ -122,8 +123,8 @@ export default function AddNationalityPage() {
         flag: selectedFile
       };
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-        console.log(data);
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+        logger.log(data);
 
         const result = await createNationality({
           variables: {
@@ -131,14 +132,14 @@ export default function AddNationalityPage() {
           }
         });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
         navigate('/nationality');
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {
@@ -149,7 +150,7 @@ export default function AddNationalityPage() {
 
   let translateText = isArabic ? "الجنسية" : "Nationality";
 
-  // console.log("fileInputRef",fileInputRef);
+  // logger.log("fileInputRef",fileInputRef);
 
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>

@@ -21,6 +21,7 @@ import autoTable from "jspdf-autotable";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
+import logger from "../../utils/logger";
 
 export default function WebSiteDepartmentDetailsPage() {
     const theme = useTheme();
@@ -129,14 +130,14 @@ export default function WebSiteDepartmentDetailsPage() {
                 printableWindow.print();
             }
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
 
     const addNavigate = () => navigate("add");
 
     const handleDetailsClick = (selectedRow) => {
-        console.log('handleDetailsClick', selectedRow);
+        logger.log('handleDetailsClick', selectedRow);
         navigate(`edit/${selectedRow?.id}`, {
             state: selectedRow
         });
@@ -144,7 +145,7 @@ export default function WebSiteDepartmentDetailsPage() {
 
     const onStatusChange = async (selectedRow, newStatus) => {
         try {
-            console.log("selectedRow", selectedRow, newStatus);
+            logger.log("selectedRow", selectedRow, newStatus);
             // return;
             let data = {
                 status: newStatus == "inActive" ? false : true
@@ -157,7 +158,7 @@ export default function WebSiteDepartmentDetailsPage() {
                 }
             });
 
-            console.log("reeesult", result);
+            logger.log("reeesult", result);
 
             notify(t("success"), "success");
 
@@ -168,13 +169,13 @@ export default function WebSiteDepartmentDetailsPage() {
 
    
 
-    // console.log("faculties", faculties);
-    console.log("location", location?.state);
-    console.log("getDepartmentsByFather", getDepartmentsByFather);
+    // logger.log("faculties", faculties);
+    logger.log("location", location?.state);
+    logger.log("getDepartmentsByFather", getDepartmentsByFather);
 
     let currentDep=websiteDepartments?.find(el=>el?.id==id);
 
-    console.log("currentDep",currentDep);
+    logger.log("currentDep",currentDep);
 
     // faculty_id?.id
     const formik = useFormik({
@@ -200,7 +201,7 @@ export default function WebSiteDepartmentDetailsPage() {
             //     setSelectError(t("admissions.errors.required"));
             //     return; // وقف الإرسال لحد ما المستخدم يختار
             // }
-            console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+            logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
             const data = {
                 title_ar: values?.title_ar,
                 title_en: values?.title_en,
@@ -210,8 +211,8 @@ export default function WebSiteDepartmentDetailsPage() {
 
             };
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                logger.log(data);
 
                 const result = await UpdateWebsiteDepartment({
                     variables: {
@@ -220,14 +221,14 @@ export default function WebSiteDepartmentDetailsPage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
                 navigate('/website-departments');
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {
@@ -257,7 +258,7 @@ export default function WebSiteDepartmentDetailsPage() {
 
     if (getDepartmentsByFatherLoading || websiteDepartmentsLoading) return <LoadingPage />;
 
-    // console.log("DepartmentDetailsPage");
+    // logger.log("DepartmentDetailsPage");
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
             <Header

@@ -24,6 +24,7 @@ import { isPaidArr, TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import NoPermissionPage from "../../components/NoPermissionPage";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import logger from "../../utils/logger";
 
 
 export default function AllRequiredFeesPage() {
@@ -134,9 +135,9 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
         }
     })
 
-    console.log("getUsersRequiredFeesToShow", getUsersRequiredFeesToShow);
+    logger.log("getUsersRequiredFeesToShow", getUsersRequiredFeesToShow);
 
-    console.log("data", data);
+    logger.log("data", data);
 
     const fetchAndExport = async (type) => {
         try {
@@ -169,7 +170,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
                 type
             });
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
 
@@ -186,7 +187,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
 
     const onStatusChange = async (selectedRow, newStatus) => {
         try {
-            // console.log("selectedRow", selectedRow, newStatus);
+            // logger.log("selectedRow", selectedRow, newStatus);
             // let row=getTransactionTypes?.find(el=>el?.id==selectedRow?.id);
 
             // // return;
@@ -203,7 +204,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
                 }
             });
 
-            console.log("reeesult", result);
+            logger.log("reeesult", result);
 
             notify(t("success"), "success");
 
@@ -213,7 +214,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
     }
 
     const onFilterChange = async (filterOBJ) => {
-        console.log("filterOBJ", filterOBJ);
+        logger.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         if (filterOBJ.hasOwnProperty("is_paid") && filterOBJ.is_paid !== "0") searchParams.set("is_paid", filterOBJ.is_paid);
         if (filterOBJ.role) searchParams.set("role", filterOBJ.role);
@@ -230,17 +231,17 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
         pageLimit = Number(searchParams.get("limit"));
     }
 
-    console.log("pageLimit", pageLimit);
+    logger.log("pageLimit", pageLimit);
 
     const totalPages = parseInt(total / pageLimit) + 1;
 
-    console.log("totalPages", totalPages);
+    logger.log("totalPages", totalPages);
 
 
     if (!view) return <NoPermissionPage />;
     let translateText = isArabic ? "رسوم مطلوبة" : "Required Fees";
 
-    console.log("isPaidArr", isPaidArr);
+    logger.log("isPaidArr", isPaidArr);
 
     if (pageLoading) return <LoadingPage />;
 

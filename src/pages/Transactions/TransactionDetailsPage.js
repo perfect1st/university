@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import HorizentalTextField from "../../components/Utilities/HorizentalTextField";
 import { GET_TRANSACTION_BY_ID } from "../../graphql/transactionQueries";
 import HistoryIcon from "@mui/icons-material/History";
+import logger from "../../utils/logger";
 
 export default function TransactionDetailsPage() {
   const theme = useTheme();
@@ -32,13 +33,13 @@ export default function TransactionDetailsPage() {
     })
   }, []);
 
-  console.log("location", location?.state);
-  console.log("getTransactionById", getTransactionById);
+  logger.log("location", location?.state);
+  logger.log("getTransactionById", getTransactionById);
 
   let translateText = isArabic ? "معاملة مالية" : "Transaction";
   let translateText2 = isArabic ? "المعاملة المالية" : "Transaction";
 
-  console.log("getTransactionById?.fees_type_ids",getTransactionById?.fees_type_ids);
+  logger.log("getTransactionById?.fees_type_ids",getTransactionById?.fees_type_ids);
 
   if (loadingTrans) return <LoadingPage />
   return (
@@ -99,6 +100,23 @@ export default function TransactionDetailsPage() {
               ? `${getTransactionById?.user_id?.fullname} - ${getTransactionById?.user_id?.email}`
               : `${getTransactionById?.register_form_id?.first_name || ""} ${getTransactionById?.register_form_id?.second_name || ""} ${getTransactionById?.register_form_id?.third_name || ""} ${getTransactionById?.register_form_id?.fourth_name || ""} - ${getTransactionById?.register_form_id?.email || ""}`
           }
+        />
+
+        <HorizentalTextField
+          isDisabled={true}
+          title={t("transactions.amount")}
+          fieldID={"amount"}
+          fieldName={"amount"}
+          value={`${getTransactionById?.amount || 0} ${t("transactions.currency")}`}
+        />
+
+        <HorizentalTextField
+          isDisabled={true}
+          type="file"
+          title={t("transactions.viewDocument")}
+          fieldID={"payment_document_file"}
+          fieldName={"payment_document_file"}
+          value={getTransactionById?.payment_document_file}
         />
 
          {/* Collapsible table */}

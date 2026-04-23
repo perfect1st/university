@@ -4,6 +4,7 @@ import Select, { components as RSComponents } from "react-select";
 import Flag from "react-world-flags";
 import { InputAdornment } from "@mui/material";
 import CustomTextField from "./RTLTextField";
+import logger from "../utils/logger";
 
 /**
  * PhoneNumberInput - يعرض country select داخل startAdornment للحقل المخصص (لا يغيّر ستايل CustomTextField)
@@ -63,7 +64,7 @@ const PhoneNumberInput = ({ personal, setPersonal, errors, handlePersonalBlur })
           }
         }
       } catch (err) {
-        console.error("fetch countries error:", err);
+        logger.error("fetch countries error:", err);
         setLoading(false);
       }
     };

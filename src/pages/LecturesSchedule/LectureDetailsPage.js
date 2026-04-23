@@ -36,6 +36,7 @@ import {
   GET_TIME_TABLES_BY_MAIN_TABLE_ID,
   DELETE_TIME_TABLE_BY_ID,
 } from "../../graphql/TimeTableQueries";
+import logger from "../../utils/logger";
 
 export default function LectureDetailsPage() {
   const theme = useTheme();
@@ -54,7 +55,7 @@ export default function LectureDetailsPage() {
   const [from, setFrom] = useState("08:00");
   const [to, setTo] = useState("09:00");
 
-  console.log("location", location.state);
+  logger.log("location", location.state);
 
   const [CreateTimeTable, { loading: creating }] = useMutation(
     CREATE_TIME_TABLE,
@@ -80,11 +81,11 @@ export default function LectureDetailsPage() {
     },
     fetchPolicy: "network-only",
     // onCompleted: (data) => {
-    //   console.log("completed",data);
+    //   logger.log("completed",data);
     // }
   });
 
-  console.log("timeTablesByMainTimeTable", timeTablesByMainTimeTable);
+  logger.log("timeTablesByMainTimeTable", timeTablesByMainTimeTable);
 
   //   const groupedTimeTablesByMainTimeTable = timeTablesByMainTimeTable?.reduce((acc, item) => {
   //   const key = `${item.start_time}-${item.end_time}`;
@@ -155,7 +156,7 @@ export default function LectureDetailsPage() {
     return rows;
   })();
 
-  console.log(
+  logger.log(
     "groupedTimeTablesByMainTimeTable",
     groupedTimeTablesByMainTimeTable,
   );
@@ -194,7 +195,7 @@ export default function LectureDetailsPage() {
         academy_term_id: location?.state?.academy_term_id?.id,
       };
 
-      console.log("data to send", data);
+      logger.log("data to send", data);
 
       const result = await CreateTimeTable({
         variables: {
@@ -202,7 +203,7 @@ export default function LectureDetailsPage() {
         },
       });
 
-      console.log("result", result?.data);
+      logger.log("result", result?.data);
       // let time = fromString + " - " + toString;
 
       // if (selectedDay == 0 || selectedDoctor == 0 || selectedMaterialDepartment == 0) return notify(t("completeData"), "error");
@@ -221,8 +222,8 @@ export default function LectureDetailsPage() {
       // }
 
       // rowOBJ[selectedDay] = newObj;
-      // console.log("rowOBJ", rowOBJ);
-      // console.log("selectedDoctor", selectedDoctor);
+      // logger.log("rowOBJ", rowOBJ);
+      // logger.log("selectedDoctor", selectedDoctor);
 
       // setRows(prev => {
       //   // هل يوجد صف بنفس الوقت؟
@@ -245,15 +246,15 @@ export default function LectureDetailsPage() {
       //   return [...prev, rowOBJ];
       // });
     } catch (error) {
-      console.log("error", error.message);
+      logger.log("error", error.message);
       error?.message
         ? notify(error.message, "error")
         : notify(t("error"), "error");
     }
   };
 
-  // console.log("rows", rows);
-  console.log("materialsByDepartment", materialsByDepartment);
+  // logger.log("rows", rows);
+  logger.log("materialsByDepartment", materialsByDepartment);
 
   let translateText = isArabic ? "جدول المحاضرة" : "Lecture Schedule";
   let translateText2 = isArabic ? "مادة جديدة" : "New Subject";
@@ -323,7 +324,7 @@ export default function LectureDetailsPage() {
               // }}
 
               onBlur={(e) => {
-                // console.log('blur',selectedSemester);
+                // logger.log('blur',selectedSemester);
                 // if (selectedFaculity != 0) formik.setFieldError("selectedFaculity", undefined);
               }}
 
@@ -374,7 +375,7 @@ export default function LectureDetailsPage() {
                 // }}
 
                 onBlur={(e) => {
-                  // console.log('blur',selectedSemester);
+                  // logger.log('blur',selectedSemester);
                   // if (selectedFaculity != 0) formik.setFieldError("selectedFaculity", undefined);
                 }}
 

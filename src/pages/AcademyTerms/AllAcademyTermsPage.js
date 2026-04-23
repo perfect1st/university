@@ -22,6 +22,7 @@ import { TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import NoPermissionPage from "../../components/NoPermissionPage";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import logger from "../../utils/logger";
 
 
 export default function AllAcademyTermsPage() {
@@ -135,7 +136,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("acad
         }
     });
 
-    console.log('getAcademyTermsToShow', getAcademyTermsToShow);
+    logger.log('getAcademyTermsToShow', getAcademyTermsToShow);
 
     let columns = [
         { key: "serial", label: t("Serial") },
@@ -168,7 +169,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("acad
                 type
             });
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
 
@@ -183,11 +184,11 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("acad
 
     const onStatusChange = async (selectedRow, newStatus) => {
         try {
-            //  console.log("selectedRow", selectedRow, newStatus);
+            //  logger.log("selectedRow", selectedRow, newStatus);
             // return;
             // let row={...selectedRow}:{faculty_department_id,faculty_id}
             //    let { faculty_department_id, faculty_id,__typename,id ,...row } = selectedRow;
-            //     console.log('row',row);
+            //     logger.log('row',row);
 
             let data = {
                 // ...row,
@@ -204,7 +205,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("acad
                 }
             });
 
-            console.log("reeesult", result);
+            logger.log("reeesult", result);
 
             notify(t("success"), "success");
 
@@ -214,7 +215,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("acad
     }
 
     const onFilterChange = async (filterOBJ) => {
-        console.log("filterOBJ", filterOBJ);
+        logger.log("filterOBJ", filterOBJ);
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
         if (filterOBJ.hasOwnProperty("faculty_department_id") && filterOBJ.faculty_department_id !== "0") searchParams.set("faculty_department_id", filterOBJ.faculty_department_id);
@@ -233,11 +234,11 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("acad
         pageLimit = Number(searchParams.get("limit"));
     }
 
-    console.log("pageLimit", pageLimit);
+    logger.log("pageLimit", pageLimit);
 
     const totalPages = parseInt(total / pageLimit) + 1;
 
-    console.log("totalPages", totalPages);
+    logger.log("totalPages", totalPages);
 
       if (!view) return <NoPermissionPage />;
 

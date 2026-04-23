@@ -17,6 +17,7 @@ import { GET_MATERIALS_BY_DEPARTMENT_ID } from "../../graphql/materialQueries";
 import { SearchByTypingSelect } from "../../components/Utilities/VerticalTextField";
 import MaterialArrComponent from "./MaterialArrComponent";
 import { terms_optionsArr } from "../../constants";
+import logger from "../../utils/logger";
 
 // GET_ONE_ACADEMY_TERM_BY_ID
 export default function AcademyTermDetailsPage() {
@@ -35,7 +36,7 @@ export default function AcademyTermDetailsPage() {
   const [pageLoaded, setPageLoaded] = useState(false);
   const [rows, setRows] = useState([]);
 
-  console.log("location", location?.state);
+  logger.log("location", location?.state);
 
   // const terms_optionsArr = [
   //   { id: 1, value: 1 },
@@ -114,8 +115,8 @@ export default function AcademyTermDetailsPage() {
     }
   }, [getAcademyTermById]);
 
-  console.log("getAcademyTermById", getAcademyTermById);
-  console.log("getFacultyDepartmentsByFaculty", getFacultyDepartmentsByFaculty);
+  logger.log("getAcademyTermById", getAcademyTermById);
+  logger.log("getFacultyDepartmentsByFaculty", getFacultyDepartmentsByFaculty);
 
   const formik = useFormik({
     initialValues: {
@@ -161,14 +162,14 @@ export default function AcademyTermDetailsPage() {
     }),
     onSubmit: async (values) => {
 
-      console.log("suuuubmit");
+      logger.log("suuuubmit");
 
       // // ✅ التحقق اليدوي قبل الإرسال
       // selectedFaculity || selectedSemester || selectedDepartment
-      // console.log('ppppppppppppp', values?.min_study_hours)
+      // logger.log('ppppppppppppp', values?.min_study_hours)
 
       if (Number(values?.min_study_hours) > Number(values?.max_study_hours)) {
-        console.log('rrrrrrrrrrrrrrrrrrrrrrr');
+        logger.log('rrrrrrrrrrrrrrrrrrrrrrr');
 
         notify(t("Dashboard.greaterThanError", {
           more: t("studentDashboard.maxAcademyHours"),
@@ -177,7 +178,7 @@ export default function AcademyTermDetailsPage() {
 
         return; // وقف الإرسال لحد ما المستخدم يختار
       }
-      // console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+      // logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
 
       let MaterialHours = 0;
       let hoursError = false;
@@ -193,12 +194,12 @@ export default function AcademyTermDetailsPage() {
         // واقل من اقصي عدد ساعات للترم
 
         if (Number(MaterialHours) < Number(values?.min_study_hours) || Number(MaterialHours) > Number(values?.max_study_hours)) {
-          console.log("MaterialHours error", MaterialHours);
+          logger.log("MaterialHours error", MaterialHours);
           hoursError = true;
         }
       }
 
-      console.log("MaterialHours", MaterialHours);
+      logger.log("MaterialHours", MaterialHours);
 
       if (hoursError) {
         notify(t("Dashboard.termHoursError"), "error");
@@ -221,8 +222,8 @@ export default function AcademyTermDetailsPage() {
 
 
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
-        // console.log(data);
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
+        // logger.log(data);
 
         //  return;
         const result = await UpdateAcademyTerm({
@@ -232,14 +233,14 @@ export default function AcademyTermDetailsPage() {
           }
         });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
         navigate(location.pathname.split('/details')[0]);
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {
@@ -351,7 +352,7 @@ export default function AcademyTermDetailsPage() {
           setValue={setSelectedSemester}
           //  onChange={()=>selectedSemester !=0 &&formik.setFieldError("selectedSemester", undefined)}
           onBlur={(e) => {
-            console.log('blur', selectedSemester);
+            logger.log('blur', selectedSemester);
             if (selectedSemester != 0) formik.setFieldError("selectedSemester", undefined);
 
           }}
@@ -388,7 +389,7 @@ export default function AcademyTermDetailsPage() {
           }}
 
           onBlur={(e) => {
-            // console.log('blur',selectedSemester);
+            // logger.log('blur',selectedSemester);
             if (selectedFaculity != 0) formik.setFieldError("selectedFaculity", undefined);
 
           }}
@@ -432,7 +433,7 @@ export default function AcademyTermDetailsPage() {
              
           }}
           onBlur={(e) => {
-            // console.log('blur',selectedSemester);
+            // logger.log('blur',selectedSemester);
             if (selectedDepartment != 0) formik.setFieldError("selectedDepartment", undefined);
 
           }}
@@ -464,28 +465,28 @@ export default function AcademyTermDetailsPage() {
           value={selectedMaterials}
           setValue={setSelectedMaterials}
           onChangeFn={(newIDS) => {
-            console.log("newIDS", newIDS);
+            logger.log("newIDS", newIDS);
             let rows = [];
             rows = materialsByDepartment?.filter(m => newIDS?.find(el => el == m?.id));
-            console.log("rows", rows);
+            logger.log("rows", rows);
             setRows(rows);
           }
           }
           // error={formik.errors.selectedFeeType && t("admissions.errors.required")}
           onBlur={(e) => {
-            // console.log("selectedFeeType blur",selectedFeeType);
+            // logger.log("selectedFeeType blur",selectedFeeType);
             // let totalAmount = 0;
 
             // materialsByDepartment?.map(fee => {
             //   let feeObj = selectedFeeType?.find(el => el == fee?.id);
-            //   console.log("feeObj", feeObj);
+            //   logger.log("feeObj", feeObj);
             //   if (feeObj) {
             //     if (isInSideYemen == true) totalAmount += Number(fee?.inside_yemen_value)
             //     else totalAmount += Number(fee?.outside_yemen_value)
             //   }
             // });
 
-            // console.log('total amount',totalAmount);
+            // logger.log('total amount',totalAmount);
 
             // formik.values.amount = totalAmount;
 

@@ -26,6 +26,7 @@ import VerticalTextField from "./VerticalTextField";
 import { useMutation } from "@apollo/client/react";
 import { ATTEND_LECTURE_FOR_STUDENT, CANCEL_LECTURE_SESSION, CREATE_LECTURE_SESSION } from "../../graphql/LectureSessionQueries";
 import ConfirmModal from "./ConfirmModal";
+import logger from "../../utils/logger";
 
 
 
@@ -70,7 +71,7 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
         data.lecture_url = lectureLink;
         data.timetable_id = selectedRow?.id;
 
-        console.log("selectedRow", selectedRow);
+        logger.log("selectedRow", selectedRow);
 
         const result = await CreateLectureSession({
             variables: {
@@ -78,12 +79,12 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
             }
         });
 
-        console.log("result", result);
+        logger.log("result", result);
 
         const date = new Date();
         const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
 
-        console.log("dayName", dayName);
+        logger.log("dayName", dayName);
 
         func({ variables: { doctor_id: me?.id, day: dayName } });
 
@@ -93,17 +94,17 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
     const handleCancelLecture = async () => {
         // let data = {};
         // data.timetable_id = selectedRow?.id;
-        // console.log("selectedRow", selectedRow);
+        // logger.log("selectedRow", selectedRow);
 
         // return;
         const result = await CreateCanceledLectureSession({
             variables: { timetable_id: selectedRow?.id }
         });
-        console.log("result", result);
+        logger.log("result", result);
         const date = new Date();
         const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
 
-        console.log("dayName", dayName);
+        logger.log("dayName", dayName);
         func({ variables: { doctor_id: me?.id, day: dayName } });
         setCancelPopUp(false);
     }
@@ -214,12 +215,12 @@ export default function ToDayTimeTableComponent({ rows = [], canEdit = false, fu
                                                     onClick={async () => {
                                                         try {
 
-                                                            console.log("clicked", row);
+                                                            logger.log("clicked", row);
                                                             const result = await AttendLecture({ variables: { lecture_session_id: row?.lecture_id } });
 
-                                                            // console.log("result", result);
+                                                            // logger.log("result", result);
                                                         } catch (error) {
-                                                            console.log("error", error);
+                                                            logger.log("error", error);
                                                             
                                                         }
                                                         finally {

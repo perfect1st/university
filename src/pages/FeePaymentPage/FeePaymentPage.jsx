@@ -7,6 +7,7 @@ import { GET_LOGGED_USER_BY_TOKEN, GET_USER_REQUIRED_FEES_BY_STUDENT_ID , PAY_US
 import LoadingPage from "../../components/LoadingComponent";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import logger from "../../utils/logger";
 
 
 export default function FeePaymentPage() {
@@ -22,15 +23,15 @@ export default function FeePaymentPage() {
 
      useEffect(()=>{
         if(me?.id){
-          console.log('meeeee');
+          logger.log('meeeee');
           GetUsersRequiredFeesByStudent({variables:{student_id:me?.id}});
         }
       },[me]);
 
       // const{required_fees,is_inside_yemen}=getUsersRequiredFeesByStudent;
-      console.log('getUsersRequiredFeesByStudent',getUsersRequiredFeesByStudent);
+      logger.log('getUsersRequiredFeesByStudent',getUsersRequiredFeesByStudent);
 
-      // console.log('required_fees',required_fees);
+      // logger.log('required_fees',required_fees);
       
        if(me==null||getFeesLoading) return <LoadingPage />
 

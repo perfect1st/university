@@ -10,6 +10,7 @@ import * as Yup from "yup";
 import VerticalTextField from "../../components/Utilities/VerticalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import { CREATE_NEW_FACULITY } from "../../graphql/facultyQuiries";
+import logger from "../../utils/logger";
 
 export default function AddFaculityPage() {
 
@@ -54,15 +55,15 @@ export default function AddFaculityPage() {
 
         }),
         onSubmit: async (values) => {
-            console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+            logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
             const data = {
                 title_ar: values?.title_ar,
                 title_en: values.title_en,
                 study_years_count:values?.study_years_count
             };
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                logger.log(data);
 
                 const result = await CreateFaculty({
                     variables: {
@@ -70,14 +71,14 @@ export default function AddFaculityPage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
                 navigate('/faculities');
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {

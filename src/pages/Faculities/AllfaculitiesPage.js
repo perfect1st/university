@@ -21,6 +21,7 @@ import { TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import NoPermissionPage from "../../components/NoPermissionPage";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import logger from "../../utils/logger";
 
 export default function AllfaculitiesPage() {
     const theme = useTheme();
@@ -52,7 +53,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("facu
         error: faculitiesError,
       } = useQuery(GET_ALL_FACULITIES, { fetchPolicy: "network-only" });
 
-      console.log("faculitiesData",faculties);
+      logger.log("faculitiesData",faculties);
 
     const [UpdateFaculty, {
         data,
@@ -118,7 +119,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("facu
                 type
             });
         } catch (err) {
-            console.error("Export error:", err);
+            logger.error("Export error:", err);
         }
     };
 
@@ -133,7 +134,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("facu
 
     const onStatusChange = async (selectedRow, newStatus) => {
         try {
-            console.log("selectedRow", selectedRow, newStatus);
+            logger.log("selectedRow", selectedRow, newStatus);
             // return;
             let data={
                 status:newStatus=="inActive" ? false :true
@@ -145,7 +146,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("facu
                 }
             });
 
-            console.log("reeesult",result);
+            logger.log("reeesult",result);
 
              notify(t("success"), "success");
 
@@ -155,7 +156,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("facu
     }
 
      const onFilterChange=async(filterOBJ)=>{
-        console.log("filterOBJ",filterOBJ);
+        logger.log("filterOBJ",filterOBJ);
         if(filterOBJ.search) searchParams.set("search", filterOBJ.search);
         if( filterOBJ.hasOwnProperty("status")&&filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
             // searchParams.get("search", e.target.value);
@@ -171,11 +172,11 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("facu
         pageLimit = Number(searchParams.get("limit"));
     }
 
-    console.log("pageLimit", pageLimit);
+    logger.log("pageLimit", pageLimit);
 
     const totalPages = parseInt(filteredPagedFaculties?.total / pageLimit) + 1;
 
-    console.log("filteredPagedFaculties", filteredPagedFaculties);
+    logger.log("filteredPagedFaculties", filteredPagedFaculties);
 
     if (!view) return <NoPermissionPage />;
 

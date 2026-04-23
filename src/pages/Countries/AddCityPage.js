@@ -10,6 +10,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import VerticalTextField from "../../components/Utilities/VerticalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
+import logger from "../../utils/logger";
 
 export default function AddCityPage() {
     const theme = useTheme();
@@ -20,7 +21,7 @@ export default function AddCityPage() {
     const location = useLocation();
     const{id}=useParams();
 
-    console.log("id",id);
+    logger.log("id",id);
     
     const[CreateCity,{
         data,
@@ -46,8 +47,8 @@ export default function AddCityPage() {
                     country_id:id
                 };
                 try {
-                    console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                    console.log(data);
+                    logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                    logger.log(data);
     
                     const result = await CreateCity({
                         variables: {
@@ -55,14 +56,14 @@ export default function AddCityPage() {
                         }
                     });
     
-                    console.log('result', result);
+                    logger.log('result', result);
     
                     notify(t("success"), "success");
     
                     navigate(`/countries/cities/${id}`);
     
                 } catch (error) {
-                    console.error("Error logging in:", error);
+                    logger.error("Error logging in:", error);
                     notify(t("error"), "error");
     
                 } finally {

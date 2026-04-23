@@ -17,6 +17,7 @@ import { FILTERED_USERS } from "../../graphql/userQueriesForAdmin";
 import { baseURL } from "../../Api/apolloClient";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import logger from "../../utils/logger";
 
 export default function MaterialDetailsPage() {
     const theme = useTheme();
@@ -27,7 +28,7 @@ export default function MaterialDetailsPage() {
     const location = useLocation();
     const me=useSelector(state=>state.user.loggedUser);
 
-    console.log('location', location?.state);
+    logger.log('location', location?.state);
     //   const [selectedSemester, setSelectedSemester] = useState(0);
     const [selectedFaculity, setSelectedFaculity] = useState(() => location?.state?.faculty_id?.id);
     const [selectedDepartment, setSelectedDepartment] = useState(() => location?.state?.faculty_department_id?.id);
@@ -47,7 +48,7 @@ export default function MaterialDetailsPage() {
         const file = e.target.files?.[0] ?? null;
 
 
-        console.log("ppppppppppppppppppppppp", file);
+        logger.log("ppppppppppppppppppppppp", file);
 
         // fileInputRef.current=file?.name;
 
@@ -72,20 +73,20 @@ export default function MaterialDetailsPage() {
                 },
             });
 
-            console.log("res", res?.data?.url);
+            logger.log("res", res?.data?.url);
             setSelectedFile(res?.data?.url);
 
             formik.values.file = `${res?.data?.url}`;
             // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
         } catch (error) {
             notify(t("errorUplaod"), "error");
-            console.log("error", error.message);
+            logger.log("error", error.message);
         }
 
 
     };
 
-    // console.log('selectedFaculity',selectedFaculity,"selectedDepartment",selectedDepartment);
+    // logger.log('selectedFaculity',selectedFaculity,"selectedDepartment",selectedDepartment);
 
     // get all faculities
     const [
@@ -158,7 +159,7 @@ export default function MaterialDetailsPage() {
         
         }
         catch(e){
-            console.log("error",e.message);
+            logger.log("error",e.message);
         }
         
     };
@@ -203,14 +204,14 @@ export default function MaterialDetailsPage() {
         }),
         onSubmit: async (values) => {
 
-            console.log("suuuubmit");
+            logger.log("suuuubmit");
 
             // // ✅ التحقق اليدوي قبل الإرسال
             // selectedFaculity || selectedSemester || selectedDepartment
-            // console.log('ppppppppppppp', values?.min_study_hours)
+            // logger.log('ppppppppppppp', values?.min_study_hours)
 
 
-            // console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+            // logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
 
             if (Number(values?.success_degree) > Number(values?.fullmark_degree)) {
 
@@ -238,8 +239,8 @@ export default function MaterialDetailsPage() {
 
 
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
-                // console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
+                // logger.log(data);
                 // return;
                 const result = await UpdateMaterial({
                     variables: {
@@ -248,14 +249,14 @@ export default function MaterialDetailsPage() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
                 navigate('/materials');
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {

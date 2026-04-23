@@ -5,6 +5,7 @@ import Select, { components as RSComponents } from "react-select";
 import Flag from "react-world-flags";
 import { InputAdornment, TextField, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import logger from "../utils/logger";
 
 /**
  * PhoneNumberInput
@@ -113,7 +114,7 @@ const PhoneNumberInput = (props) => {
           }
         }
       } catch (err) {
-        console.error("PhoneInput fetch error:", err);
+        logger.error("PhoneInput fetch error:", err);
         setLoading(false);
       }
     };

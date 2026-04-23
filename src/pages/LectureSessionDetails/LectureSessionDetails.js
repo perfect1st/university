@@ -23,6 +23,7 @@ import SubmitButton from "../../components/Utilities/SubmitButton";
 import axios from "axios";
 import { baseURL } from "../../Api/apolloClient";
 import UploadFileField from "../../components/Utilities/UploadFileField";
+import logger from "../../utils/logger";
 
 // import LoadingPage from "../../../components/LoadingComponent";
 // import Header from "../../../components/PageHeader/header";
@@ -78,17 +79,17 @@ export default function LectureSessionDetails() {
                 },
             });
 
-            console.log("res", res?.data?.urls);
+            logger.log("res", res?.data?.urls);
             let urlsToSend = res?.data?.urls?.map(el => `${baseURL}${el}`);
 
-            console.log("urlsToSend", urlsToSend);
+            logger.log("urlsToSend", urlsToSend);
 
             setFiles(urlsToSend);
             //  setSelectedFile(`${baseURL}${res?.data?.url}`);
             // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
         } catch (error) {
             notify(t("errorUplaod"), "error");
-            console.log("error", error.message);
+            logger.log("error", error.message);
         }
 
     }
@@ -131,17 +132,17 @@ export default function LectureSessionDetails() {
                 },
             });
 
-            console.log("res", res?.data?.urls);
+            logger.log("res", res?.data?.urls);
             let urlsToSend = res?.data?.urls?.map(el => `${baseURL}${el}`);
 
-            console.log("urlsToSend", urlsToSend);
+            logger.log("urlsToSend", urlsToSend);
 
             setFiles2(urlsToSend);
             //  setSelectedFile(`${baseURL}${res?.data?.url}`);
             // setBankTransferDocument(`${baseURL}${res?.data?.url}`);
         } catch (error) {
             notify(t("errorUplaod"), "error");
-            console.log("error", error.message);
+            logger.log("error", error.message);
         }
 
     }
@@ -181,7 +182,7 @@ export default function LectureSessionDetails() {
     //     const link = document.createElement("a");
     //     link.href = url;
 
-    //     console.log("url",url);
+    //     logger.log("url",url);
 
     //     link.download = url.split("/").pop();
     //     link.click();
@@ -209,7 +210,7 @@ export default function LectureSessionDetails() {
         link.click();
         }
         catch(e){
-            console.error("error",e.message);
+            logger.error("error",e.message);
         }
        
     };
@@ -234,7 +235,7 @@ export default function LectureSessionDetails() {
         }),
         onSubmit: async (values) => {
 
-            console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+            logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
             let data = {
                 // title_ar: values?.title_ar,
                 // title_en: values?.title_en,
@@ -251,8 +252,8 @@ export default function LectureSessionDetails() {
             if (files2?.length > 0) data.lecture_videos = files2;
 
             try {
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
-                console.log(data);
+                logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
+                logger.log(data);
 
                 // return;
                 const result = await UpdateLectureSession({
@@ -262,14 +263,14 @@ export default function LectureSessionDetails() {
                     }
                 });
 
-                console.log('result', result);
+                logger.log('result', result);
 
                 notify(t("success"), "success");
 
                 // navigate(location.pathname.split('/add')[0]);
 
             } catch (error) {
-                console.error("Error logging in:", error);
+                logger.error("Error logging in:", error);
                 notify(t("error"), "error");
 
             } finally {
@@ -279,9 +280,9 @@ export default function LectureSessionDetails() {
     });
 
 
-    console.log("getLectureSessionById", getLectureSessionById);
+    logger.log("getLectureSessionById", getLectureSessionById);
 
-    console.log("iddddddddddddd", id);
+    logger.log("iddddddddddddd", id);
 
     let translateText = isArabic ? "المحاضرة" : "Lecture";
     let translateText2 = isArabic ? "مادة جديدة" : "New Subject";

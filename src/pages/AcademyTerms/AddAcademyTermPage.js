@@ -16,6 +16,7 @@ import { CREATE_ACADEMY_TERM } from "../../graphql/AcademyTerms";
 import MaterialArrComponent from "./MaterialArrComponent";
 import { GET_MATERIALS_BY_DEPARTMENT_ID } from "../../graphql/materialQueries";
 import { terms_optionsArr } from "../../constants";
+import logger from "../../utils/logger";
 
 
 export default function AddAcademyTermPage() {
@@ -85,13 +86,13 @@ export default function AddAcademyTermPage() {
   //   }
   // },[selectedMaterials]);
 
-  console.log("getFacultyDepartmentsByFaculty", getFacultyDepartmentsByFaculty);
+  logger.log("getFacultyDepartmentsByFaculty", getFacultyDepartmentsByFaculty);
 
-  console.log("materialsByDepartment", materialsByDepartment);
+  logger.log("materialsByDepartment", materialsByDepartment);
 
-  // console.log('**********************************');
-  // console.log(selectedMaterials);
-  // console.log('***********************************');
+  // logger.log('**********************************');
+  // logger.log(selectedMaterials);
+  // logger.log('***********************************');
   // useEffect(()=>{
   //   if(selectedFaculity && selectedFaculity!=0){
 
@@ -142,14 +143,14 @@ export default function AddAcademyTermPage() {
     }),
     onSubmit: async (values) => {
 
-      console.log("suuuubmit");
+      logger.log("suuuubmit");
 
       // // ✅ التحقق اليدوي قبل الإرسال
       // selectedFaculity || selectedSemester || selectedDepartment
-      // console.log('ppppppppppppp', values?.min_study_hours)
+      // logger.log('ppppppppppppp', values?.min_study_hours)
 
       if (Number(values?.min_study_hours) > Number(values?.max_study_hours)) {
-        console.log('rrrrrrrrrrrrrrrrrrrrrrr');
+        logger.log('rrrrrrrrrrrrrrrrrrrrrrr');
 
         notify(t("Dashboard.greaterThanError", {
           more: t("studentDashboard.maxAcademyHours"),
@@ -158,7 +159,7 @@ export default function AddAcademyTermPage() {
 
         return; // وقف الإرسال لحد ما المستخدم يختار
       }
-      // console.log('xxxxxxxxxxxxxxxxxxxxxxx');
+      // logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
 
       let MaterialHours = 0;
       let hoursError=false;
@@ -174,12 +175,12 @@ export default function AddAcademyTermPage() {
         // واقل من اقصي عدد ساعات للترم
 
         if(Number(MaterialHours) < Number(values?.min_study_hours) || Number(MaterialHours) > Number(values?.max_study_hours) ){
-            console.log("MaterialHours error",MaterialHours);
+            logger.log("MaterialHours error",MaterialHours);
             hoursError=true;
         } 
       }
 
-      console.log("MaterialHours",MaterialHours);
+      logger.log("MaterialHours",MaterialHours);
 
       if(hoursError){
           notify(t("Dashboard.termHoursError"), "error");
@@ -202,8 +203,8 @@ export default function AddAcademyTermPage() {
 
 
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
-        // console.log(data);
+        logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
+        // logger.log(data);
 
         //  return;
         const result = await CreateAcademyTerm({
@@ -212,14 +213,14 @@ export default function AddAcademyTermPage() {
           }
         });
 
-        console.log('result', result);
+        logger.log('result', result);
 
         notify(t("success"), "success");
 
         navigate(location.pathname.split('/add')[0]);
 
       } catch (error) {
-        console.error("Error logging in:", error);
+        logger.error("Error logging in:", error);
         notify(t("error"), "error");
 
       } finally {
@@ -234,8 +235,8 @@ export default function AddAcademyTermPage() {
   let translateText = isArabic ? "فصل دراسي" : "AcademyTerm";
   let translateText2 = isArabic ? "الفصل الدراسي" : "AcademyTerm";
 
-  console.log('formik.touched.selectedFaculity', formik.touched);
-  console.log("errors", formik.errors);
+  logger.log('formik.touched.selectedFaculity', formik.touched);
+  logger.log("errors", formik.errors);
   if (faculitiesLoading) return <LoadingPage />;
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper", maxWidth: "100%" }}>
@@ -337,7 +338,7 @@ export default function AddAcademyTermPage() {
           setValue={setSelectedSemester}
           //  onChange={()=>selectedSemester !=0 &&formik.setFieldError("selectedSemester", undefined)}
           onBlur={(e) => {
-            console.log('blur', selectedSemester);
+            logger.log('blur', selectedSemester);
             if (selectedSemester != 0) formik.setFieldError("selectedSemester", undefined);
 
           }}
@@ -372,7 +373,7 @@ export default function AddAcademyTermPage() {
           }}
 
           onBlur={(e) => {
-            // console.log('blur',selectedSemester);
+            // logger.log('blur',selectedSemester);
             if (selectedFaculity != 0) formik.setFieldError("selectedFaculity", undefined);
 
           }}
@@ -413,7 +414,7 @@ export default function AddAcademyTermPage() {
             });
           }}
           onBlur={(e) => {
-            // console.log('blur',selectedSemester);
+            // logger.log('blur',selectedSemester);
             if (selectedDepartment != 0) formik.setFieldError("selectedDepartment", undefined);
 
           }}
@@ -446,28 +447,28 @@ export default function AddAcademyTermPage() {
           value={selectedMaterials}
           setValue={setSelectedMaterials}
           onChangeFn={(newIDS) => {
-            console.log("newIDS", newIDS);
+            logger.log("newIDS", newIDS);
             let rows = [];
             rows = materialsByDepartment?.filter(m => newIDS?.find(el => el == m?.id));
-            console.log("rows", rows);
+            logger.log("rows", rows);
             setRows(rows);
           }
           }
           // error={formik.errors.selectedFeeType && t("admissions.errors.required")}
           onBlur={(e) => {
-            // console.log("selectedFeeType blur",selectedFeeType);
+            // logger.log("selectedFeeType blur",selectedFeeType);
             // let totalAmount = 0;
 
             // materialsByDepartment?.map(fee => {
             //   let feeObj = selectedFeeType?.find(el => el == fee?.id);
-            //   console.log("feeObj", feeObj);
+            //   logger.log("feeObj", feeObj);
             //   if (feeObj) {
             //     if (isInSideYemen == true) totalAmount += Number(fee?.inside_yemen_value)
             //     else totalAmount += Number(fee?.outside_yemen_value)
             //   }
             // });
 
-            // console.log('total amount',totalAmount);
+            // logger.log('total amount',totalAmount);
 
             // formik.values.amount = totalAmount;
 

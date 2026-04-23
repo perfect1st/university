@@ -21,6 +21,7 @@ import { paymentMethodsArr, transactionTypesArr, TrueOrFalseArr } from "../../co
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import NoPermissionPage from "../../components/NoPermissionPage";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import logger from "../../utils/logger";
 
 // t(`fee.transactionType.${el}
 // t(`fee.transactionType.${el}`, { lng: "ar" })
@@ -100,7 +101,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("tran
 
   }, [searchParams]);
 
-  console.log("getTransactionTypes", getTransactionTypes);
+  logger.log("getTransactionTypes", getTransactionTypes);
 
 
 
@@ -111,7 +112,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("tran
     }
   });
 
-  console.log("getTransactionTypesToShow", getTransactionTypesToShow);
+  logger.log("getTransactionTypesToShow", getTransactionTypesToShow);
 
   let columns = [
     // { key: "ID", label: "ID" },
@@ -140,7 +141,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("tran
         type
       });
     } catch (err) {
-      console.error("Export error:", err);
+      logger.error("Export error:", err);
     }
   };
 
@@ -157,7 +158,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("tran
 
   const onStatusChange = async (selectedRow, newStatus) => {
     try {
-      console.log("selectedRow", selectedRow, newStatus);
+      logger.log("selectedRow", selectedRow, newStatus);
       let row = getTransactionTypes?.find(el => el?.id == selectedRow?.id);
 
       // return;
@@ -172,7 +173,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("tran
         }
       });
 
-      console.log("reeesult", result);
+      logger.log("reeesult", result);
 
       notify(t("success"), "success");
 
@@ -189,12 +190,12 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("tran
     pageLimit = Number(searchParams.get("limit"));
   }
 
-  console.log("pageLimit", pageLimit);
+  logger.log("pageLimit", pageLimit);
 
   const totalPages = parseInt(total / pageLimit) + 1;
 
   const onFilterChange = async (filterOBJ) => {
-    console.log("filterOBJ", filterOBJ);
+    logger.log("filterOBJ", filterOBJ);
     if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
     if (filterOBJ.hasOwnProperty("operation_type") && filterOBJ.operation_type !== "0") searchParams.set("operation_type", filterOBJ.operation_type);
     if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);

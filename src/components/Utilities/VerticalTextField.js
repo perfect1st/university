@@ -2,6 +2,7 @@ import { Autocomplete, Box, Checkbox, MenuItem, TextField, Typography, useMediaQ
 import React from 'react'
 import { CustomSelect } from './CustomTextField';
 import { isNullableType } from 'graphql';
+import logger from '../../utils/logger';
 
 export default function VerticalTextField({
   title,
@@ -21,7 +22,7 @@ export default function VerticalTextField({
 
   const theme = useTheme();
 
-  console.log("fieldID", fieldID);
+  logger.log("fieldID", fieldID);
   return (
     <>
       <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>

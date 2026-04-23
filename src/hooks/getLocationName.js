@@ -1,3 +1,5 @@
+import logger from "../utils/logger";
+
 const getLocationName = async (lat, lng) => {
   try {
     const response = await fetch(
@@ -8,11 +10,11 @@ const getLocationName = async (lat, lng) => {
     if (data.status === "OK" && data.results.length > 0) {
       return data.results[0].formatted_address; // or pick another result
     } else {
-      console.error("No results found or error:", data.status);
+      logger.error("No results found or error:", data.status);
       return null;
     }
   } catch (error) {
-    console.error("Error fetching location:", error);
+    logger.error("Error fetching location:", error);
     return null;
   }
 };
