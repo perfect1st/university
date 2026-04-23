@@ -14,6 +14,7 @@ import { useState } from "react";
 import { CREATE_USER_BY_ADMIN } from "../../graphql/userQueriesForAdmin";
 import { userRules } from "../../constants";
 import { GET_GROUPS } from "../../graphql/groupQueries";
+import { GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import logger from "../../utils/logger";
 
 
@@ -27,6 +28,10 @@ export default function AddUserPage() {
 
     const [selectedRule, setSelectedRule] = useState(0);
   const { data, loading, error } = useQuery(GET_GROUPS, {
+    fetchPolicy: "network-only",
+  });
+
+  const { data: facultiesData } = useQuery(GET_ALL_FACULITIES, {
     fetchPolicy: "network-only",
   });
 
@@ -45,6 +50,7 @@ export default function AddUserPage() {
             mobile: "",
             password:"",
             groupIds: [],
+            faculty_id: "",
         },
 
         validationSchema: Yup.object({
@@ -67,8 +73,11 @@ export default function AddUserPage() {
         email: values?.email,
         mobile: values?.mobile,
         password: values?.password,
-        groups: values.groupIds
+        groups: values.groupIds,
     };
+    if (values.faculty_id) {
+        data.faculty_id = values.faculty_id;
+    }
     data.role = selectedRule;
 
     try {
@@ -90,6 +99,8 @@ export default function AddUserPage() {
     });
 
     const groupsOptions = data?.groups || [];
+    const facultiesOptions = facultiesData?.faculties || [];
+    
     let translateText = isArabic ? "مستخدم" : "User";
     let translateText2 = isArabic ? "المستخدم" : "User";
 
@@ -197,6 +208,18 @@ export default function AddUserPage() {
     setValue={(newIds) => formik.setFieldValue("groupIds", newIds)}
     onBlur={() => formik.setFieldTouched("groupIds", true)}
     error={formik.touched.groupIds && formik.errors.groupIds}
+/>
+
+<SearchByTypingSelect
+    title={t("admissions .faculty")}
+    options={facultiesOptions}
+    multiple={false} 
+    findKey="id"    
+    labelToShow={(option) => (isArabic ? option.title_ar : option.title_en)}
+    value={formik.values.faculty_id}
+    setValue={(newId) => formik.setFieldValue("faculty_id", newId)}
+    onBlur={() => formik.setFieldTouched("faculty_id", true)}
+    error={formik.touched.faculty_id && formik.errors.faculty_id}
 />
 
                 <SubmitButton loading={CreateUserLoading} t={t} />
