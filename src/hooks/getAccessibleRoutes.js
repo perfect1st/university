@@ -3,10 +3,12 @@ import { useMemo } from "react";
 import routesData from "../data/routes";
 import { useQuery } from "@apollo/client/react";
 import { GET_ALL_TRANSACTION_TYPES } from "../graphql/transactionTypeQueries";
+import logger from "../utils/logger";
 
 const useAccessibleRoutes = () => {
   const user = useSelector((state) => state.user.loggedUser);
 
+  logger.log("loggedUserloggedUser",user)
 const filteredRoutes = useMemo(() => {
     if (!user) return [];
 

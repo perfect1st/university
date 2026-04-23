@@ -2,8 +2,9 @@ import { ReactComponent as SettingIcon } from '../assets/setting.svg';
 import { ReactComponent as DashboardIcon } from "../assets/HomeIcon.svg";
 import { ReactComponent as ProfileIcon } from "../assets/Profile.svg";
 import { ReactComponent as FeePaymentIcon } from "../assets/feePayment.svg";
-
-/**
+import { getUserCookie } from '../hooks/authCookies';
+import logger from '../utils/logger';
+import { store } from '../redux/store';/**
  * Dynamically retrieves the faculty department id from localStorage.
  * This optimizes the app by evaluating localStorage at render-time when
  * the path is requested, rather than at module-load time.
@@ -18,8 +19,8 @@ const getFacultyDepartmentId = () => {
   }
 };
 
-
 const routesData = {
+
   student: [
     {
       key: "group_academic",
@@ -39,6 +40,14 @@ const routesData = {
           key: "materials",
           label: { en: "Materials", ar: "المواد الدراسية" },
           get path() { return `/materials?faculty_department_id=${getFacultyDepartmentId()}` },
+        },
+        {
+          key: "degrees",
+          label: { en: "student degrees", ar: "درجات الطالب" },
+          get path() { 
+            const user = store.getState().user.loggedUser;
+            return `/exams/studentDegrees/${user?.id}`; 
+          },
         },
         {
           key: "userStudyMaterials",

@@ -125,7 +125,9 @@ query StudentDegreeByStudent($student_id: ID!) {
             student_degree
             lecture_attendance
             total_exam_degree
-             exam_id {
+            exam_id {
+                id
+                serial
                 exam_name
                 exam_type
                 full_mark_degree
@@ -136,6 +138,19 @@ query StudentDegreeByStudent($student_id: ID!) {
                 createdAt
                 updatedAt
             }
+        }
+        material_id {
+            id
+            serial
+            title_ar
+            title_en
+            status
+            fullmark_degree
+            success_degree
+            material_hours
+            file
+            createdAt
+            updatedAt
         }
         totals {
             total_full_mark

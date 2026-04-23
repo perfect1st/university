@@ -41,7 +41,7 @@ export const GET_USER_BY_ID = gql`
 `;
 
 // login 
-export const LOGIN_USER=gql`
+export const LOGIN_USER = gql`
 mutation Login($input: LoginInput!) {
     login(input: $input) {
         token
@@ -49,7 +49,7 @@ mutation Login($input: LoginInput!) {
 }
 `;
 
-export const GET_LOGGED_USER_BY_TOKEN=gql`
+export const GET_LOGGED_USER_BY_TOKEN = gql`
 query Me {
     me {
         id
@@ -73,10 +73,10 @@ query Me {
         }
     }
 }
-`;  
+`;
 
 
-export const GET_USER_REQUIRED_FEES_BY_STUDENT_ID=gql`
+export const GET_USER_REQUIRED_FEES_BY_STUDENT_ID = gql`
 query GetUsersRequiredFeesByStudent($student_id: ID!) {
     getUsersRequiredFeesByStudent(student_id: $student_id) {
         is_inside_yemen
@@ -145,7 +145,7 @@ query GetUsersRequiredFeesByStudent($student_id: ID!) {
 
 `;
 
-export const PAY_USER_REQUIRED_FEES=gql`
+export const PAY_USER_REQUIRED_FEES = gql`
 mutation PayUserRequiredFees(
 $input: PayUserRequiredFeesInput!
 ) {
@@ -192,7 +192,7 @@ $input: PayUserRequiredFeesInput!
 `;
 
 // الطالب بيخنار المواد الل عاوز ياخدها ف الترم 
-export const CREATE_USER_STUDY_MATERIAL=gql`
+export const CREATE_USER_STUDY_MATERIAL = gql`
 mutation CreateUserStudyMaterial($input:UserStudyMaterialInput!) {
     createUserStudyMaterial(input: $input) {
         id
@@ -203,7 +203,7 @@ mutation CreateUserStudyMaterial($input:UserStudyMaterialInput!) {
 }
 `;
 
-export const GET_USER_STUDY_MATERIALS_BY_USER_ID=gql`
+export const GET_USER_STUDY_MATERIALS_BY_USER_ID = gql`
 query GetUserStudyMaterialsByUser($user_id:ID!) {
     getUserStudyMaterialsByUser(user_id: $user_id) {
         id

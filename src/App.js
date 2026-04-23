@@ -185,7 +185,7 @@ function App() {
     () =>
       createTheme({
         direction: i18n.language === "ar" ? "rtl" : "ltr",
-        
+
         palette: {
           mode,
           primary: {
@@ -586,7 +586,7 @@ function App() {
                         </MainLayout>
                       }
                     />
-                     <Route
+                    <Route
                       path="add"
                       element={
                         <MainLayout isLoggedIn={true}>
@@ -603,7 +603,7 @@ function App() {
                         </MainLayout>
                       }
                     />
-                    </Route>
+                  </Route>
 
                   {/* Site Settings */}
                   <Route path="/site-settings" element={
@@ -1092,25 +1092,25 @@ function App() {
 
                   </Route>
 
-                    <Route path="/allStudentDegrees" element={
-                        <MainLayout isLoggedIn={true}>
-                          <AllStudentDegreesPage />
-                        </MainLayout>
-                      }  />
+                  <Route path="/allStudentDegrees" element={
+                    <MainLayout isLoggedIn={true}>
+                      <AllStudentDegreesPage />
+                    </MainLayout>
+                  } />
 
-                    {/* Support tickets */}
+                  {/* Support tickets */}
+                  <Route
+                    path="/Support"
+                  >
                     <Route
-                    path="/Support" 
-                    >
-                      <Route
-                        index
-                        element={
-                          <MainLayout isLoggedIn={true}>
-                            <GetAllSupportTicketsPage />
-                          </MainLayout>
-                        }
-                      />
-                      <Route path="add" element={
+                      index
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <GetAllSupportTicketsPage />
+                        </MainLayout>
+                      }
+                    />
+                    <Route path="add" element={
                       <MainLayout isLoggedIn={true}>
                         <AddSupportTicketPage />
                       </MainLayout>
@@ -1121,7 +1121,7 @@ function App() {
                         <EditSupportTicketPage />
                       </MainLayout>
                     } />
-                    </Route>
+                  </Route>
                 </Route>
 
                 <Route path="/Maintenance" element={<Maintenance />} />
