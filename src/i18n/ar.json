@@ -534,5 +534,11 @@
     "No logs found": "لا يوجد سجلات لهذه المعاملة",
     "Logs": "السجلات"
   },
-  "Serial": "الرقم التسلسلي"
+  "Serial": "الرقم التسلسلي",
+  "type":"النوع",
+  "university_card": "بطاقة الجامعة",
+  "university_certificate": "شهادة جامعية",
+  "graduation_certificate": "شهادة تخرج",
+  "success_statement": "بيان نجاح",
+  "registration_suspension": "إيقاف قيد"
 }

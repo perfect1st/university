@@ -495,5 +495,11 @@
     "No logs found": "No logs found",
     "Logs": "Logs"
   },
-  "Serial": "Serial"
+  "Serial": "Serial",
+  "type":"Type",
+  "university_card": "University ID Card",
+  "university_certificate": "University Certificate",
+  "graduation_certificate": "Graduation Certificate",
+  "success_statement": "Statement of Success",
+  "registration_suspension": "Suspension of Registration"
 }

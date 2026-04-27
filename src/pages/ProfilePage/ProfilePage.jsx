@@ -247,7 +247,7 @@ export default function ProfilePage() {
               </Grid>
             )}
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Box sx={{ my: 1 }}>
                 <UploadFileField
                   title={t("profile.profile_image", "Profile Image")}
@@ -259,7 +259,7 @@ export default function ProfilePage() {
                   showInput={true}
                 />
               </Box>
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <Box sx={{ 
@@ -395,11 +395,11 @@ export default function ProfilePage() {
               />
             </Grid>
           </Grid>
-            {me?.role === "student" && (
+            {/* {me?.role === "student" && (
         <Box sx={{ mt: 4 }}>
           <UniversityCard studentData={me} registrationData={getRegisterFormByUserId} />
         </Box>
-      )}
+      )} */}
 </>}
 
           {/* </Paper> */}

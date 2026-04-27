@@ -39,7 +39,14 @@ import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import Header from "../../components/PageHeader/header";
 import LoadingPage from "../../components/LoadingComponent";
 import notify from "../../components/notify";
-import { GET_SITE_CONFIG, UPDATE_SITE_CONFIG } from "../../graphql/siteConfigQueries";
+import { GET_SITE_CONFIG, UPDATE_SITE_CONFIG, GET_SETTINGS, UPDATE_SETTING, GET_FEES_TYPES } from "../../graphql/siteConfigQueries";
+import SettingsIcon from '@mui/icons-material/Settings';
+import UploadFileField from "../../components/Utilities/UploadFileField";
+import axios from "axios";
+import { baseURL } from "../../Api/apolloClient";
+import VerticalTextField, { SearchByTypingSelect } from "../../components/Utilities/VerticalTextField";
+import { useRef } from "react";
+import logger from "../../utils/logger";
 
 // --- Custom TabPanel Component ---
 function TabPanel(props) {
@@ -88,12 +95,33 @@ export default function SiteSettings() {
     },
   });
 
+  const [generalSettings, setGeneralSettings] = useState({
+    id: "",
+    register_conditions_file_inside_yemen: "",
+    register_conditions_file_outside_yemen: "",
+    bank_account_inside_yemen: "",
+    bank_account_outside_yemen: "",
+    registration_Fees: "",
+    support_ticket_fees: [],
+  });
+
+  const fileInputRef1 = useRef(null);
+  const fileInputRef2 = useRef(null);
+  const [progress1, setProgress1] = useState(0);
+  const [progress2, setProgress2] = useState(0);
+
   const [tabIndex, setTabIndex] = useState(0);
 
   const { data, loading: configLoading } = useQuery(GET_SITE_CONFIG, {
     fetchPolicy: "network-only",
   });
   const [updateConfig, { loading: updating }] = useMutation(UPDATE_SITE_CONFIG);
+
+  const { data: settingsData, loading: settingsLoading } = useQuery(GET_SETTINGS, {
+    fetchPolicy: "network-only",
+  });
+  const { data: feesData } = useQuery(GET_FEES_TYPES);
+  const [updateSetting, { loading: updatingSetting }] = useMutation(UPDATE_SETTING);
 
   useEffect(() => {
     if (data?.getSiteConfig) {
@@ -120,6 +148,25 @@ export default function SiteSettings() {
       });
     }
   }, [data]);
+  logger.log("settingsData",settingsData)
+
+  useEffect(() => {
+    if (settingsData?.getSettings && settingsData.getSettings.length > 0) {
+      const settings = settingsData.getSettings[0];
+      setGeneralSettings({
+        id: settings.id,
+        register_conditions_file_inside_yemen: settings.register_conditions_file_inside_yemen || "",
+        register_conditions_file_outside_yemen: settings.register_conditions_file_outside_yemen || "",
+        bank_account_inside_yemen: settings.bank_account_inside_yemen || "",
+        bank_account_outside_yemen: settings.bank_account_outside_yemen || "",
+        registration_Fees: typeof settings.registration_Fees === 'object' ? settings.registration_Fees.id : settings.registration_Fees || "",
+        support_ticket_fees: settings.support_ticket_fees?.map(stf => ({
+          type: stf.type,
+          fees: stf.fees || []
+        })) || [],
+      });
+    }
+  }, [settingsData]);
 
   const handleChange = (field, value, category = null) => {
     if (category) {
@@ -142,38 +189,82 @@ export default function SiteSettings() {
     setTabIndex(newValue);
   };
 
+  const handleFileChange = async (e, field) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const isInside = field === "register_conditions_file_inside_yemen";
+    const setProgress = isInside ? setProgress1 : setProgress2;
+
+    try {
+      setProgress(1);
+      const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+        onUploadProgress: (p) => setProgress(Math.round((p.loaded * 100) / p.total)),
+      });
+      setGeneralSettings(prev => ({ ...prev, [field]: res?.data?.url }));
+      notify(isArabic ? "تم رفع الملف بنجاح" : "File uploaded successfully", "success");
+    } catch (error) {
+      notify(isArabic ? "خطأ في الرفع" : "Upload error", "error");
+    } finally {
+      setTimeout(() => setProgress(0), 2000);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const input = {
-        privacy_policy_ar: formData.privacy_policy_ar,
-        privacy_policy_en: formData.privacy_policy_en,
-        terms_of_service_ar: formData.terms_of_service_ar,
-        terms_of_service_en: formData.terms_of_service_en,
-        accessibility_ar: formData.accessibility_ar,
-        accessibility_en: formData.accessibility_en,
-        social_media: {
-          facebook: formData.social_media.facebook,
-          twitter: formData.social_media.twitter,
-          tiktok: formData.social_media.tiktok
-        },
-        contact_info: {
-          email: formData.contact_info.email,
-          whatsapp_saudi: formData.contact_info.whatsapp_saudi,
-          whatsapp_yemeni: formData.contact_info.whatsapp_yemeni,
-          phone_yemeni_1: formData.contact_info.phone_yemeni_1,
-          phone_yemeni_2: formData.contact_info.phone_yemeni_2,
-        },
-      };
+      if (tabIndex === 5) {
+        // Handle General Settings update
+        const input = {
+          register_conditions_file_inside_yemen: generalSettings.register_conditions_file_inside_yemen,
+          register_conditions_file_outside_yemen: generalSettings.register_conditions_file_outside_yemen,
+          bank_account_inside_yemen: generalSettings.bank_account_inside_yemen,
+          bank_account_outside_yemen: generalSettings.bank_account_outside_yemen,
+          registration_Fees: generalSettings.registration_Fees,
+        };
 
-      await updateConfig({ variables: { input } });
-      notify(isArabic ? "تم تحديث الإعدادات بنجاح" : "Settings updated successfully", "success");
+        // Map dynamic support_ticket_fees to flat fields (e.g., university_card_fee)
+        generalSettings.support_ticket_fees.forEach(stf => {
+          input[`${stf.type}_fee`] = stf.fees;
+        });
+
+        await updateSetting({ variables: { id: generalSettings.id, input } });
+        notify(isArabic ? "تم تحديث إعدادات النظام بنجاح" : "System settings updated successfully", "success");
+      } else {
+        const input = {
+          privacy_policy_ar: formData.privacy_policy_ar,
+          privacy_policy_en: formData.privacy_policy_en,
+          terms_of_service_ar: formData.terms_of_service_ar,
+          terms_of_service_en: formData.terms_of_service_en,
+          accessibility_ar: formData.accessibility_ar,
+          accessibility_en: formData.accessibility_en,
+          social_media: {
+            facebook: formData.social_media.facebook,
+            twitter: formData.social_media.twitter,
+            tiktok: formData.social_media.tiktok
+          },
+          contact_info: {
+            email: formData.contact_info.email,
+            whatsapp_saudi: formData.contact_info.whatsapp_saudi,
+            whatsapp_yemeni: formData.contact_info.whatsapp_yemeni,
+            phone_yemeni_1: formData.contact_info.phone_yemeni_1,
+            phone_yemeni_2: formData.contact_info.phone_yemeni_2,
+          },
+        };
+
+        await updateConfig({ variables: { input } });
+        notify(isArabic ? "تم تحديث الإعدادات بنجاح" : "Settings updated successfully", "success");
+      }
     } catch (err) {
       notify(err.message || t("error"), "error");
     }
   };
 
-  if (configLoading) return <LoadingPage />;
+  if (configLoading || settingsLoading) return <LoadingPage />;
+
+  const feesOptions = feesData?.getFeesTypes || [];
 
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, maxWidth: '1400px', mx: 'auto' }}>
@@ -193,6 +284,7 @@ export default function SiteSettings() {
               <Tab icon={<AccessibilityNewIcon sx={{ mr: isArabic ? 0 : 1, ml: isArabic ? 1 : 0 }} fontSize="small" />} iconPosition="start" label={isArabic ? "إمكانية الوصول" : "Accessibility"} sx={{ fontWeight: 'bold' }} />
               <Tab icon={<ShareIcon sx={{ mr: isArabic ? 0 : 1, ml: isArabic ? 1 : 0 }} fontSize="small" />} iconPosition="start" label={isArabic ? "التواصل الاجتماعي" : "Social Media"} sx={{ fontWeight: 'bold' }} />
               <Tab icon={<ContactPhoneIcon sx={{ mr: isArabic ? 0 : 1, ml: isArabic ? 1 : 0 }} fontSize="small" />} iconPosition="start" label={isArabic ? "معلومات الاتصال" : "Contact Info"} sx={{ fontWeight: 'bold' }} />
+              <Tab icon={<SettingsIcon sx={{ mr: isArabic ? 0 : 1, ml: isArabic ? 1 : 0 }} fontSize="small" />} iconPosition="start" label={isArabic ? "إعدادات النظام" : "General Settings"} sx={{ fontWeight: 'bold' }} />
             </Tabs>
           </Box>
 
@@ -395,6 +487,86 @@ export default function SiteSettings() {
                 />
               </Stack>
             </TabPanel>
+
+            <TabPanel value={tabIndex} index={5}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <Stack spacing={1.5}>
+                    <SearchByTypingSelect
+                      title={isArabic ? "رسوم التسجيل" : "Registration Fees"}
+                      options={feesOptions}
+                      multiple={false}
+                      findKey="id"
+                      labelToShow={(option) => isArabic ? option.title_ar : option.title_en}
+                      value={generalSettings.registration_Fees}
+                      setValue={(val) => setGeneralSettings(prev => ({ ...prev, registration_Fees: val }))}
+                    />
+                    <VerticalTextField
+                      title={isArabic ? "الحساب البنكي (داخل اليمن)" : "Bank Account (Inside Yemen)"}
+                      placeholder={isArabic ? "أدخل تفاصيل الحساب البنكي..." : "Enter bank account details..."}
+                      value={generalSettings.bank_account_inside_yemen}
+                      onChange={(e) => setGeneralSettings(prev => ({ ...prev, bank_account_inside_yemen: e.target.value }))}
+                    />
+                    <VerticalTextField
+                      title={isArabic ? "الحساب البنكي (خارج اليمن)" : "Bank Account (Outside Yemen)"}
+                      placeholder={isArabic ? "أدخل تفاصيل الحساب البنكي..." : "Enter bank account details..."}
+                      value={generalSettings.bank_account_outside_yemen}
+                      onChange={(e) => setGeneralSettings(prev => ({ ...prev, bank_account_outside_yemen: e.target.value }))}
+                    />
+                  </Stack>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <Stack spacing={2}>
+                    {generalSettings.support_ticket_fees?.map((stf, index) => (
+                      <SearchByTypingSelect
+                        key={stf.type}
+                        title={isArabic ? t(stf.type) : stf.type.replace(/_/g, ' ')}
+                        options={feesOptions}
+                        multiple={true}
+                        findKey="id"
+                        labelToShow={(option) => isArabic ? option.title_ar : option.title_en}
+                        value={stf.fees || []}
+                        setValue={(vals) => {
+                          const newFees = [...generalSettings.support_ticket_fees];
+                          newFees[index] = { ...newFees[index], fees: vals };
+                          setGeneralSettings(prev => ({ ...prev, support_ticket_fees: newFees }));
+                        }}
+                      />
+                    ))}
+                  </Stack>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Divider sx={{ my: 2 }} />
+                  <Typography variant="h6" gutterBottom>{isArabic ? "ملفات شروط التسجيل" : "Registration Conditions Files"}</Typography>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} md={6}>
+                      <UploadFileField
+                        title={isArabic ? "ملف الشروط (داخل اليمن)" : "Conditions File (Inside Yemen)"}
+                        fileInputRef={fileInputRef1}
+                        handleFileChange={(e) => handleFileChange(e, "register_conditions_file_inside_yemen")}
+                        handlePickFile={() => fileInputRef1.current.click()}
+                        selectedToShowFile={generalSettings.register_conditions_file_inside_yemen?.split('/').pop()}
+                        progress={progress1}
+                        showInput={true}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <UploadFileField
+                        title={isArabic ? "ملف الشروط (خارج اليمن)" : "Conditions File (Outside Yemen)"}
+                        fileInputRef={fileInputRef2}
+                        handleFileChange={(e) => handleFileChange(e, "register_conditions_file_outside_yemen")}
+                        handlePickFile={() => fileInputRef2.current.click()}
+                        selectedToShowFile={generalSettings.register_conditions_file_outside_yemen?.split('/').pop()}
+                        progress={progress2}
+                        showInput={true}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </TabPanel>
           </Box>
 
           <Paper elevation={0} sx={{ p: 2, border: "1px solid", borderColor: "divider", borderRadius: 2, bgcolor: "background.paper" }}>
@@ -403,11 +575,11 @@ export default function SiteSettings() {
                 type="submit"
                 variant="contained"
                 size="large"
-                disabled={updating}
-                startIcon={updating ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
+                disabled={updating || updatingSetting}
+                startIcon={(updating || updatingSetting) ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
                 sx={{ px: 5, py: 1.5, borderRadius: 2, fontSize: '1.1rem', fontWeight: 'bold' }}
               >
-                {updating ? (isArabic ? "جاري الحفظ..." : "Saving...") : (isArabic ? "حفظ التغييرات" : "Save Changes")}
+                {(updating || updatingSetting) ? (isArabic ? "جاري الحفظ..." : "Saving...") : (isArabic ? "حفظ التغييرات" : "Save Changes")}
               </Button>
             </Stack>
           </Paper>

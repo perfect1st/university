@@ -55,3 +55,64 @@ export const UPDATE_SITE_CONFIG = gql`
         }
     }
 `;
+
+export const GET_SETTINGS = gql`
+query GetSettings {
+    getSettings {
+        id
+        serial
+        register_conditions_file_inside_yemen
+        register_conditions_file_outside_yemen
+        bank_account_inside_yemen
+        bank_account_outside_yemen
+        registration_Fees
+        support_ticket_fees {
+            type
+            fees
+        }
+        createdAt
+        updatedAt
+    }
+}
+`;
+
+export const UPDATE_SETTING = gql`
+mutation UpdateSetting($id: ID!, $input: SettingInput!) {
+    updateSetting(id: $id, input: $input) {
+        id
+        serial
+        register_conditions_file_inside_yemen
+        register_conditions_file_outside_yemen
+        bank_account_inside_yemen
+        bank_account_outside_yemen
+        registration_Fees
+        university_card_fee
+        university_certificate_fee
+        graduation_certificate_fee
+        success_statement_fee
+        registration_suspension_fee
+        support_ticket_fees {
+            type
+            fees
+        }
+        createdAt
+        updatedAt
+    }
+}
+`;
+
+export const GET_FEES_TYPES = gql`
+query GetFeesTypes {
+    getFeesTypes {
+        id
+        serial
+        title_ar
+        title_en
+        inside_yemen_value
+        outside_yemen_value
+        createdAt
+        updatedAt
+        status
+    }
+}
+`;

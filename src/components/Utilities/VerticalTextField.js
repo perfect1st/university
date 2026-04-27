@@ -16,8 +16,7 @@ export default function VerticalTextField({
   type = "text",
   isDisabled = false,
   isMultiline = false,
-  isReadOnly = false
-
+  isReadOnly = false,
 }) {
 
   const theme = useTheme();
