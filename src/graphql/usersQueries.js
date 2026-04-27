@@ -53,6 +53,7 @@ export const GET_LOGGED_USER_BY_TOKEN = gql`
 query Me {
     me {
         id
+        serial
         username
         fullname
         email

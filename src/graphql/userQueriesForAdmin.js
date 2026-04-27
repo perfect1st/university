@@ -63,6 +63,7 @@ export const UPDATE_USER_BY_ADMIN = gql`
       mobile
       role
       status
+      profile_image
       groups {
         id
         name_ar

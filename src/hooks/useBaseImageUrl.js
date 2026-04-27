@@ -1,5 +1,5 @@
 const useBaseImageUrl = () => {
-  return 'http://178.128.38.212:3000/uploads/users/';
+  return 'https://uas.edu.ye';
 };
 
 export default useBaseImageUrl;

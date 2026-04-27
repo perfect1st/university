@@ -29,6 +29,7 @@ export const GET_REGISTERATION_FORM_BY_USER_ID=gql`
 query GetRegisterFormByUserId($user_id:ID!) {
     getRegisterFormByUserId(user_id: $user_id) {
         id
+        serial
         first_name
         second_name
         third_name

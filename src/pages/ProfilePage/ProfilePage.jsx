@@ -14,6 +14,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DownloadIcon from "@mui/icons-material/Download";
 import LabelValueRow from "../../components/LabelValueRow";
 import RegistrationSteps from "../../components/studentDashboard/RegistrationSteps";
+import UniversityCard from "../../components/UniversityCard";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client/react";
 import { GET_LOGGED_USER_BY_TOKEN } from "../../graphql/usersQueries";
 import notify from "../../components/notify";
@@ -22,6 +23,9 @@ import LoadingPage from "../../components/LoadingComponent";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
 import i18n from "../../i18n/i18n";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { baseURL } from "../../Api/apolloClient";
+import UploadFileField from "../../components/Utilities/UploadFileField";
 import logger from "../../utils/logger";
 
 export default function ProfilePage() {
@@ -33,6 +37,11 @@ export default function ProfilePage() {
   const [password, setPassword] = useState("");
   const [UpdateUser, { loading: updating }] = useMutation(UPDATE_USER_BY_ADMIN);
 
+  const fileInputRef = React.useRef(null);
+  const [selectedToShowFile, setSelectedToShowFile] = useState(me?.profile_image || null);
+  const [progress, setProgress] = useState(0);
+  const [profileImage, setProfileImage] = useState(me?.profile_image || "");
+
   const handleUpdatePassword = async () => {
     if (!password || password.trim() === "") return;
     try {
@@ -43,6 +52,7 @@ export default function ProfilePage() {
         mobile: me?.mobile,
         role: me?.role,
         groups: me?.groups?.map(g => g.id) || [],
+        profile_image: profileImage,
       };
       
       if (password && password.trim() !== "") {
@@ -123,6 +133,44 @@ export default function ProfilePage() {
     (gender) => gender.en === getRegisterFormByUserId?.gender,
   );
 
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSelectedToShowFile(file.name);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setProgress(1);
+      const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+        onUploadProgress: (p) => setProgress(Math.round((p.loaded * 100) / p.total)),
+      });
+      setProfileImage(res?.data?.url);
+      notify(t("fileUploaded"), "success");
+
+      // Automatic update after upload
+      await UpdateUser({
+        variables: {
+          id: me?.id,
+          input: {
+            username: me?.username,
+            fullname: me?.fullname,
+            email: me?.email,
+            mobile: me?.mobile,
+            role: me?.role,
+            groups: me?.groups?.map((g) => g.id) || [],
+            profile_image: res?.data?.url,
+          },
+        },
+        refetchQueries: [{ query: GET_LOGGED_USER_BY_TOKEN }],
+      });
+    } catch (error) {
+      notify(t("errorUplaod"), "error");
+    } finally {
+      setTimeout(() => setProgress(0), 2000);
+    }
+  };
+
   if (me == null || GetRegisterFormByUserIdLoading) return <LoadingPage />;
   // logger.log('genderrrrr',gender)
   return (
@@ -190,16 +238,30 @@ export default function ProfilePage() {
                 value={me?.mobile}
               />
             </Grid>
+            {me?.role !== "admin" && (
+              <Grid item xs={12}>
+                <LabelValueRow
+                  label={t("profile.IDNo")}
+                  value={getRegisterFormByUserId?.national_id}
+                />
+              </Grid>
+            )}
 
-         {me?.role !== "admin" &&
             <Grid item xs={12}>
-              <LabelValueRow
-                label={t("profile.IDNo")}
-                value={getRegisterFormByUserId?.national_id}
-              />
-            </Grid>}
+              <Box sx={{ my: 1 }}>
+                <UploadFileField
+                  title={t("profile.profile_image", "Profile Image")}
+                  fileInputRef={fileInputRef}
+                  handleFileChange={handleFileChange}
+                  handlePickFile={() => fileInputRef.current.click()}
+                  selectedToShowFile={selectedToShowFile}
+                  progress={progress}
+                  showInput={true}
+                />
+              </Box>
+            </Grid>
 
-            {false &&<Grid item xs={12}>
+            <Grid item xs={12}>
               <Box sx={{ 
                 backgroundColor: theme.palette.primary?.gray || "#f5f5f5",
                 borderRadius: 1,
@@ -212,7 +274,7 @@ export default function ProfilePage() {
                 gap: 2 
               }}>
                 <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500, flexBasis: "23%", flexGrow: 0, flexShrink: 0 }}>
-                  {t("form.password", "Password")}
+                  {t("form.password", "Update Info")}
                 </Typography>
                 <TextField
                   type="password"
@@ -225,13 +287,13 @@ export default function ProfilePage() {
                 <Button 
                   variant="outlined" 
                   onClick={handleUpdatePassword} 
-                  disabled={updating || !password.trim()}
+                  disabled={updating}
                   sx={{ ml: 'auto' }}
                 >
-                  {t("form.save", "Update")}
+                  {t("form.save", "Update Profile")}
                 </Button>
               </Box>
-            </Grid>}
+            </Grid>
           </Grid>
 
           {/* </Paper> */}
@@ -333,6 +395,11 @@ export default function ProfilePage() {
               />
             </Grid>
           </Grid>
+            {me?.role === "student" && (
+        <Box sx={{ mt: 4 }}>
+          <UniversityCard studentData={me} registrationData={getRegisterFormByUserId} />
+        </Box>
+      )}
 </>}
 
           {/* </Paper> */}
@@ -343,6 +410,8 @@ export default function ProfilePage() {
           <RegistrationSteps paid={false} semester="first" />
         </Grid>}
       </Grid>
+      
+      
     </Box>
   );
 }
