@@ -73,7 +73,7 @@ export default function FeeCard({
     const formData = new FormData();
     formData.append("file", file);
     try {
-     
+
       setProgress(0);
 
       const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
@@ -150,7 +150,7 @@ export default function FeeCard({
 
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
               {isPaid &&
-              data?.transactions_id?.payment_method_type == "BANK_TRANSFER" ? (
+                data?.transactions_id?.payment_method_type == "BANK_TRANSFER" ? (
                 <>
                   <Button
                     variant="outlined"
@@ -475,7 +475,7 @@ export default function FeeCard({
                 let paymentOBJ = {
                   id: data.id,
                   payment_method_type: method,
-                  transaction_type_id: "68fdce917bb1890cd9720a60",
+                  transaction_type_id: "69de135ce9799b76cf8806a8",
                   amount: parseFloat(total_payment),
                 };
 
@@ -483,18 +483,18 @@ export default function FeeCard({
 
                 if (method == "BANK_TRANSFER")
                   paymentOBJ.payment_document_file = bankTransferDocument;
-try{
-  const result = await PayUserRequiredFees({
-    variables: {
-      // payUserRequiredFeesId: data.id,
-      input: paymentOBJ,
-    },
-  });
-} catch(error){
-  logger.log("error", error);
-  notify(t("error"), "error");
-  return;
-}
+                try {
+                  const result = await PayUserRequiredFees({
+                    variables: {
+                      // payUserRequiredFeesId: data.id,
+                      input: paymentOBJ,
+                    },
+                  });
+                } catch (error) {
+                  logger.log("error", error);
+                  notify(t("error"), "error");
+                  return;
+                }
 
 
                 await GetUsersRequiredFeesByStudent({

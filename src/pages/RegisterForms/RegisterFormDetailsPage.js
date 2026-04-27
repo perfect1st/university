@@ -36,7 +36,7 @@ export default function RegisterFormDetailsPage() {
     });
 
     const formData = registerFormData?.getRegisterFormById;
-logger.log('formData', formData);
+    logger.log('formData', formData);
     const { data: transactionsData, loading: loadingTransactions } = useQuery(GET_TRANSACTIONS_BY_USER, {
         variables: { user_id: formData?.user_id?.id },
         skip: !formData?.user_id?.id
@@ -172,13 +172,13 @@ logger.log('formData', formData);
 
                 // Remove user_id as it shouldn't be updated here
                 delete input.user_id;
-                
+
                 // Ensure relation IDs are null if empty string or "null"
                 const relationFields = [
-                    "nationality_id", "faculty_id", "faculty_department_id", 
+                    "nationality_id", "faculty_id", "faculty_department_id",
                     "country_id", "city_id", "academyTerm_id"
                 ];
-                
+
                 relationFields.forEach(field => {
                     if (input[field] === "" || input[field] === "null" || input[field] === null) {
                         input[field] = null;
@@ -249,7 +249,7 @@ logger.log('formData', formData);
                             {t("registerForms.personalInfo")}
                         </Typography>
                     </Grid>
-                    
+
                     <Grid item xs={12} md={6}>
                         <HorizentalTextField title={t("admissions.firstName")} fieldName="first_name" value={formik.values.first_name} onChange={formik.handleChange} />
                     </Grid>
@@ -262,7 +262,7 @@ logger.log('formData', formData);
                     <Grid item xs={12} md={6}>
                         <HorizentalTextField title={t("admissions.fourthName")} fieldName="fourth_name" value={formik.values.fourth_name} onChange={formik.handleChange} />
                     </Grid>
-                    
+
                     <Grid item xs={12} md={6}>
                         <HorizentalTextField title={t("Email")} fieldName="email" value={formik.values.email} onChange={formik.handleChange} />
                     </Grid>
@@ -273,11 +273,11 @@ logger.log('formData', formData);
                         <HorizentalTextField title={t("registerForms.homeTel")} fieldName="home_tel" value={formik.values.home_tel} onChange={formik.handleChange} />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <HorizentalTextFieldSelect 
+                        <HorizentalTextFieldSelect
                             t={t}
-                            title={t("admissions.gender")} 
-                            fieldName="gender" 
-                            value={formik.values.gender} 
+                            title={t("admissions.gender")}
+                            fieldName="gender"
+                            value={formik.values.gender}
                             onChange={formik.handleChange}
                             setValue={(val) => formik.setFieldValue("gender", val)}
                         >
@@ -286,11 +286,11 @@ logger.log('formData', formData);
                         </HorizentalTextFieldSelect>
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <HorizentalTextFieldSelect 
+                        <HorizentalTextFieldSelect
                             t={t}
-                            title={t("registerForms.nationality")} 
-                            fieldName="nationality_id" 
-                            value={formik.values.nationality_id} 
+                            title={t("registerForms.nationality")}
+                            fieldName="nationality_id"
+                            value={formik.values.nationality_id}
                             onChange={formik.handleChange}
                             setValue={(val) => formik.setFieldValue("nationality_id", val)}
                         >
@@ -313,11 +313,11 @@ logger.log('formData', formData);
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                        <HorizentalTextFieldSelect 
+                        <HorizentalTextFieldSelect
                             t={t}
-                            title={t("Dashboard.faculty")} 
-                            fieldName="faculty_id" 
-                            value={formik.values.faculty_id} 
+                            title={t("Dashboard.faculty")}
+                            fieldName="faculty_id"
+                            value={formik.values.faculty_id}
                             onChange={formik.handleChange}
                             setValue={handleFacultyChange}
                         >
@@ -327,11 +327,11 @@ logger.log('formData', formData);
                         </HorizentalTextFieldSelect>
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <HorizentalTextFieldSelect 
+                        <HorizentalTextFieldSelect
                             t={t}
-                            title={t("Dashboard.facultyDepartment")} 
-                            fieldName="faculty_department_id" 
-                            value={formik.values.faculty_department_id} 
+                            title={t("Dashboard.facultyDepartment")}
+                            fieldName="faculty_department_id"
+                            value={formik.values.faculty_department_id}
                             onChange={formik.handleChange}
                             setValue={handleDepartmentChange}
                             disabled={!formik.values.faculty_id}
@@ -342,11 +342,11 @@ logger.log('formData', formData);
                         </HorizentalTextFieldSelect>
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <HorizentalTextFieldSelect 
+                        <HorizentalTextFieldSelect
                             t={t}
-                            title={t("registerForms.academyTerm")} 
-                            fieldName="academyTerm_id" 
-                            value={formik.values.academyTerm_id} 
+                            title={t("registerForms.academyTerm")}
+                            fieldName="academyTerm_id"
+                            value={formik.values.academyTerm_id}
                             onChange={formik.handleChange}
                             setValue={(val) => formik.setFieldValue("academyTerm_id", val)}
                             disabled={!formik.values.faculty_department_id}
@@ -360,11 +360,11 @@ logger.log('formData', formData);
                         <HorizentalTextField title={t("registerForms.educationYear")} fieldName="education_year" value={formik.values.education_year} onChange={formik.handleChange} />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <HorizentalTextFieldSelect 
+                        <HorizentalTextFieldSelect
                             t={t}
-                            title={t("registerForms.country")} 
-                            fieldName="country_id" 
-                            value={formik.values.country_id} 
+                            title={t("registerForms.country")}
+                            fieldName="country_id"
+                            value={formik.values.country_id}
                             onChange={formik.handleChange}
                             setValue={handleCountryChange}
                         >
@@ -374,11 +374,11 @@ logger.log('formData', formData);
                         </HorizentalTextFieldSelect>
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <HorizentalTextFieldSelect 
+                        <HorizentalTextFieldSelect
                             t={t}
-                            title={t("registerForms.city")} 
-                            fieldName="city_id" 
-                            value={formik.values.city_id} 
+                            title={t("registerForms.city")}
+                            fieldName="city_id"
+                            value={formik.values.city_id}
                             onChange={formik.handleChange}
                             setValue={(val) => formik.setFieldValue("city_id", val)}
                             disabled={!formik.values.country_id}
@@ -408,11 +408,11 @@ logger.log('formData', formData);
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                        <HorizentalTextFieldSelect 
+                        <HorizentalTextFieldSelect
                             t={t}
-                            title={t("registerForms.idType")} 
-                            fieldName="national_id_type" 
-                            value={formik.values.national_id_type} 
+                            title={t("registerForms.idType")}
+                            fieldName="national_id_type"
+                            value={formik.values.national_id_type}
                             onChange={formik.handleChange}
                             setValue={(val) => formik.setFieldValue("national_id_type", val)}
                         >
@@ -425,11 +425,11 @@ logger.log('formData', formData);
                         <HorizentalTextField title={t("registerForms.idNumber")} fieldName="national_id" value={formik.values.national_id} onChange={formik.handleChange} />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                         <HorizentalTextFieldSelect 
+                        <HorizentalTextFieldSelect
                             t={t}
-                            title={t("registerForms.insideYemen")} 
-                            fieldName="is_inside_yemen" 
-                            value={formik.values.is_inside_yemen} 
+                            title={t("registerForms.insideYemen")}
+                            fieldName="is_inside_yemen"
+                            value={formik.values.is_inside_yemen}
                             onChange={formik.handleChange}
                             setValue={(val) => formik.setFieldValue("is_inside_yemen", val)}
                         >
@@ -438,11 +438,11 @@ logger.log('formData', formData);
                         </HorizentalTextFieldSelect>
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <HorizentalTextFieldSelect 
+                        <HorizentalTextFieldSelect
                             t={t}
-                            title={t("Status")} 
-                            fieldName="status" 
-                            value={formik.values.status} 
+                            title={t("Status")}
+                            fieldName="status"
+                            value={formik.values.status}
                             onChange={formik.handleChange}
                             setValue={(val) => formik.setFieldValue("status", val)}
                         >
@@ -459,12 +459,12 @@ logger.log('formData', formData);
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                        <HorizentalTextField 
-                            title={t("registerForms.highSchoolCertificate")} 
-                            value={formik.values.high_school_certificate_file} 
+                        <HorizentalTextField
+                            title={t("registerForms.highSchoolCertificate")}
+                            value={formik.values.high_school_certificate_file}
                             fieldName="high_school_certificate_file"
-                            type="file" 
-                            isDisabled={false} 
+                            type="file"
+                            isDisabled={false}
                             handleChange={(e) => handleFileUpload(e, "high_school_certificate_file")}
                         />
                         {uploadStates.high_school_certificate_file.isUploading && (
@@ -474,12 +474,12 @@ logger.log('formData', formData);
                         )}
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <HorizentalTextField 
-                            title={t("registerForms.paidDocument")} 
-                            value={formik.values.paid_document_file} 
+                        <HorizentalTextField
+                            title={t("registerForms.paidDocument")}
+                            value={formik.values.paid_document_file}
                             fieldName="paid_document_file"
-                            type="file" 
-                            isDisabled={false} 
+                            type="file"
+                            isDisabled={false}
                             handleChange={(e) => handleFileUpload(e, "paid_document_file")}
                             placeholder={t("registerForms.noFile")}
                         />
@@ -503,10 +503,10 @@ logger.log('formData', formData);
                     ) : transactions.length > 0 ? (
                         transactions.map((transaction, index) => (
                             <Grid item xs={12} key={transaction.id} sx={{ mb: 3 }}>
-                                <Box sx={{ 
-                                    p: 3, 
-                                    border: '1px solid', 
-                                    borderColor: 'divider', 
+                                <Box sx={{
+                                    p: 3,
+                                    border: '1px solid',
+                                    borderColor: 'divider',
                                     borderRadius: 2,
                                     backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
                                     boxShadow: '0 2px 12px rgba(0,0,0,0.08)'
@@ -515,10 +515,10 @@ logger.log('formData', formData);
                                         <Typography variant="h6" fontWeight="bold" color="primary">
                                             {t("transactions.transaction")} #{transaction.transaction_serial}
                                         </Typography>
-                                        <Box sx={{ 
-                                            px: 1.5, 
-                                            py: 0.5, 
-                                            borderRadius: 1, 
+                                        <Box sx={{
+                                            px: 1.5,
+                                            py: 0.5,
+                                            borderRadius: 1,
                                             backgroundColor: transaction.approval_status === 'APPROVED' ? 'success.light' : transaction.approval_status === 'REJECTED' ? 'error.light' : 'warning.light',
                                             color: '#fff',
                                             fontSize: '0.875rem',
@@ -569,11 +569,11 @@ logger.log('formData', formData);
 
                                         {transaction.payment_document_file && (
                                             <Grid item xs={12}>
-                                                <Button 
-                                                    variant="outlined" 
+                                                <Button
+                                                    variant="outlined"
                                                     size="small"
-                                                    href={transaction.payment_document_file} 
-                                                    target="_blank" 
+                                                    href={transaction.payment_document_file}
+                                                    target="_blank"
                                                     rel="noreferrer"
                                                     sx={{ mt: 1 }}
                                                 >
@@ -591,16 +591,16 @@ logger.log('formData', formData);
                                 <Typography color="error" sx={{ mb: 2, fontWeight: "bold" }}>
                                     {t("transactions.notPaidMessage")}
                                 </Typography>
-                                <Button 
-                                    variant="contained" 
-                                    color="primary" 
-                                    onClick={() => navigate("/transactions/add", { 
-                                        state: { 
-                                            user_id: formData.user_id, 
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => navigate("/transactions/add", {
+                                        state: {
+                                            user_id: formData.user_id,
                                             register_form_id: formData.id,
                                             is_inside_yemen: formData.is_inside_yemen,
-                                            transaction_type_id: "68fdce917bb1890cd9720a60"
-                                        } 
+                                            transaction_type_id: "69de135ce9799b76cf8806a8"
+                                        }
                                     })}
                                 >
                                     {t("transactions.goToAdd")}

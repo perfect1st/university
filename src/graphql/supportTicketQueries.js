@@ -118,3 +118,51 @@ query GetSupportTickets {
     }
 }
 `;
+
+export const GET_SUPPORT_TICKET_BY_ID = gql`
+query GetSupportTicketById($id: ID!) {
+    getSupportTicketById(id: $id) {
+        id
+        serial
+        subject
+        message
+        type
+        status
+        admin_reply
+        attachment
+        admin_attachment
+        payment_status
+        has_fees
+        createdAt
+        updatedAt
+        fees {
+            id
+            serial
+            title_ar
+            title_en
+            inside_yemen_value
+            outside_yemen_value
+            createdAt
+            updatedAt
+            status
+        }
+        transaction_id {
+            id
+            serial
+            payment_method_type
+            source_type
+            amount
+            payment_document_file
+            approval_status
+            rejection_reason
+            transaction_date
+            transaction_serial
+            myfatoorah_invoice_id
+            myfatoorah_payment_id
+            myfatoorah_payment_url
+            myfatoorah_transaction_status
+            myfatoorah_payment_method
+        }
+    }
+}
+`;
