@@ -45,6 +45,30 @@ export const LOGIN_USER = gql`
 mutation Login($input: LoginInput!) {
     login(input: $input) {
         token
+          user {
+            id
+            serial
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+            groups {
+                id
+                serial
+                name_ar
+                name_en
+                permissions
+                createdAt
+                updatedAt
+            }
+        }
     }
 }
 `;

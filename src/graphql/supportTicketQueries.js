@@ -10,6 +10,10 @@ mutation CreateSupportTicket($input:CreateSupportTicketInput!) {
         type
         status
         admin_reply
+        attachment
+        admin_attachment
+        payment_status
+        has_fees
         createdAt
         updatedAt
         user_id {
@@ -25,6 +29,28 @@ mutation CreateSupportTicket($input:CreateSupportTicketInput!) {
             is_inside_yemen
             createdAt
             updatedAt
+        }
+    }
+}
+`;
+
+export const GET_SUPPORT_TICKET_TYPES_CONFIG = gql`
+query GetSupportTicketTypesConfig {
+    getSupportTicketTypesConfig {
+        type
+        label_ar
+        label_en
+        requires_fee
+        fees {
+            id
+            serial
+            title_ar
+            title_en
+            inside_yemen_value
+            outside_yemen_value
+            createdAt
+            updatedAt
+            status
         }
     }
 }

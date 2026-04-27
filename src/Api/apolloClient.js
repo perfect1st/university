@@ -13,7 +13,7 @@ const httpLink = new HttpLink({ uri: `${baseURL}/graphql` });
 const authLink = new ApolloLink((operation, forward) => {
   const token = getToken();
 
-  logger.log('token',token);
+  logger.log('my token',token);
 
   operation.setContext(({ headers = {} }) => ({
     headers: {

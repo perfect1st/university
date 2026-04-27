@@ -8,6 +8,7 @@ export const useGetData = async (url, params) => {
 
 export const useGetDataToken = async (url, params) => {
   const token = getToken();
+  console.log("my token", token);
 
   const tokenConfig = {
     ...config,

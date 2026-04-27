@@ -17,11 +17,12 @@ import { useTranslation } from "react-i18next";
 import logo from "../../assets/Logo.png";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/slices/user/thunk";
+import { storeLoggedUser } from "../../redux/slices/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import { setToken, setUserCookie } from "../../hooks/authCookies";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { LOGIN_USER } from "../../graphql/usersQueries";
-import { useMutation } from "@apollo/client/react";
+import { LOGIN_USER, GET_LOGGED_USER_BY_TOKEN } from "../../graphql/usersQueries";
+import { useMutation, useLazyQuery } from "@apollo/client/react";
 import notify from "../../components/notify";
 import logger from "../../utils/logger";
 
@@ -39,6 +40,8 @@ const LoginPage = () => {
     error:loginError
   }
 ]=useMutation(LOGIN_USER);
+
+  const [getMe] = useLazyQuery(GET_LOGGED_USER_BY_TOKEN);
 
   const isArabic = i18n.language === "ar";
   const [isLoading, setIsLoading] = useState(false);
@@ -70,16 +73,19 @@ const LoginPage = () => {
        });
 
        logger.log('response',response);
-      //  if(response?.data?.login?.status == true){
+       //  if(response?.data?.login?.status == true){
 
-         setTimeout(()=>{
-           setUserCookie(response?.data?.login);
-           setToken(response?.data?.login?.token);
-           // navigate("/profile");
-           window.location.href="/profile";
-           
-         },1000);
-      //  }else{
+       dispatch(storeLoggedUser(response?.data?.login?.user));
+       setUserCookie(response?.data?.login?.user);
+       setToken(response?.data?.login?.token);
+
+       // Execute 'me' query to populate apollo cache with the new session
+       const meResponse = await getMe();
+       logger.log("me query response:", meResponse);
+
+       navigate("/profile");
+          //  window.location.href="/profile";
+       //  }else{
       //   notify(t('user_not_active'),"error");
       //  }
         
