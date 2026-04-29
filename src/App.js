@@ -115,6 +115,8 @@ import AddBookPage from "./pages/E-Library/AddBookPage";
 import BookDetailsPage from "./pages/E-Library/BookDetailsPage";
 import AllContactMessagesPage from "./pages/ContactUs/AllContactMessagesPage";
 import SiteSettings from "./pages/SiteSettings/SiteSettings";
+import TestCertificatePage from "./pages/TestCertificatePage";
+
 
 // Public Site Config Pages
 import PrivacyPolicy from "./pages/Home/PrivacyPolicy";
@@ -450,6 +452,8 @@ function App() {
                   <Route path="/terms-of-service" element={<MainLayout><TermsOfService /></MainLayout>} />
                   <Route path="/accessibility" element={<MainLayout><Accessibility /></MainLayout>} />
                   <Route path="/contact-us" element={<MainLayout><ContactUs /></MainLayout>} />
+                  <Route path="/test-certificate" element={<TestCertificatePage />} />
+                  <Route path="*" element={<MainLayout><NotFoundPage /></MainLayout>} />
 
                   {/* Payment Result Pages */}
                   <Route path="/payment-success" element={<MainLayout><SuccessPaymentPage /></MainLayout>} />

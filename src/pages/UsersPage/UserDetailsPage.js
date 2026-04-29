@@ -20,6 +20,7 @@ import { userRules } from "../../constants";
 import { UPDATE_USER_BY_ADMIN } from "../../graphql/userQueriesForAdmin";
 import { GET_GROUPS } from "../../graphql/groupQueries";
 import logger from "../../utils/logger";
+import GraduationCertificate from "../../components/Certificates/GraduationCertificate";
 
 export default function UserDetailsPage() {
   const theme = useTheme();
@@ -225,6 +226,13 @@ export default function UserDetailsPage() {
       {userData?.role === "student" && (
         <Box sx={{ mt: 4, pt: 4, borderTop: "1px solid #eee" }}>
           <UniversityCard studentData={userData} registrationData={regData?.getRegisterFormByUserId} />
+        </Box>
+      )}
+
+      {/* Certificates */}
+      {userData?.role === "student" && (
+        <Box sx={{ mt: 4, pt: 4, borderTop: "1px solid #eee" }}>
+          <GraduationCertificate studentId={userData?.id} />
         </Box>
       )}
     </Box>
