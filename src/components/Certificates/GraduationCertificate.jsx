@@ -44,8 +44,8 @@ const GraduationCertificate = ({ studentId }) => {
         
         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
         pdf.save(`Graduation_Certificate_${user?.fullname || 'Student'}.pdf`);
-    } finally {
-        element.style.display = 'none'; 
+    } catch (error) {
+        console.error("PDF Error:", error);
     }
   };
 
@@ -64,8 +64,8 @@ const GraduationCertificate = ({ studentId }) => {
         Download Graduation Certificate
       </Button>
 
-      {/* HIDDEN PDF CONTAINER */}
-      <Box sx={{ overflow: 'hidden', height: 0, width: 0, position: 'absolute', top: -9999, left: -9999 }}>
+      {/* PREVIEW CONTAINER */}
+      <Box sx={{ overflow: 'auto', mt: 4, width: '100%', height: '450px', position: 'relative' }}>
         <Box
           ref={certificateRef}
           dir="ltr" // <--- CRITICAL FIX: Forces the entire layout to stay Left-to-Right
@@ -78,7 +78,11 @@ const GraduationCertificate = ({ studentId }) => {
             boxSizing: 'border-box',
             border: '18px solid #0f2038', 
             fontFamily: 'Noto Sans Arabic, Times New Roman", Times, serif',
-            display: 'none', 
+            display: 'block', 
+            transform: 'scale(0.6)', /* Scale down for preview if needed */
+            transformOrigin: 'top center',
+            margin: '0 auto',
+            boxShadow: '0 0 20px rgba(0,0,0,0.2)'
           }}
         >
           {/* DECORATIVE IMAGES (Absolute Positioning) */}

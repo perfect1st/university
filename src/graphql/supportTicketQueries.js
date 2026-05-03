@@ -163,6 +163,20 @@ query GetSupportTicketById($id: ID!) {
             myfatoorah_transaction_status
             myfatoorah_payment_method
         }
+        user_id {
+            id
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
     }
 }
 `;

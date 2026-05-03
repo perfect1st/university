@@ -21,6 +21,11 @@ import DownloadIcon from '@mui/icons-material/Download';
 import PaymentIcon from '@mui/icons-material/Payment';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
+import UniversityCard from "../../components/UniversityCard";
+import GraduationCertificate from "../../components/Certificates/GraduationCertificate";
+import StudentAffidavit from "../../components/Certificates/StudentAffidavit";
+import GraduationEnrollmentStatement from "../../components/Certificates/GraduationEnrollmentStatement";
+import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
 
 export default function EditSupportTicketPage() {
     const theme = useTheme();
@@ -39,6 +44,13 @@ export default function EditSupportTicketPage() {
     const [initiateOnlinePayment, { loading: initiatingPayment }] = useMutation(INITIATE_ONLINE_PAYMENT);
 
     const ticket = data?.getSupportTicketById;
+
+    const { data: regData } = useQuery(GET_REGISTERATION_FORM_BY_USER_ID, {
+        variables: { user_id: ticket?.user_id?.id },
+        skip: !ticket?.user_id?.id
+    });
+
+    const registrationData = regData?.getRegisterFormByUserId;
 
     const formik = useFormik({
         initialValues: {
@@ -244,7 +256,38 @@ export default function EditSupportTicketPage() {
                             )}
                         </Paper>
                     )}
+:
                 </Grid>
+
+                {/* Printable Documents Section */}
+                {(ticket?.transaction_id?.approval_status === "APPROVED" || ticket?.payment_status === "paid") && (
+                    <Grid item xs={12}>
+                        <Paper elevation={2} sx={{ p: 3, mt: 3, borderRadius: 2 }}>
+                            <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', fontWeight: 'bold', color: 'primary.main' }}>
+                                {isArabic ? "المستندات المتاحة للطباعة" : "Printable Documents"}
+                            </Typography>
+                            
+                            {ticket?.type === 'university_card' && (
+                                <UniversityCard studentData={ticket.user_id} registrationData={registrationData} />
+                            )}
+                            
+                            {ticket?.type === 'graduation_certificate' && (
+                                <GraduationCertificate studentId={ticket.user_id?.id} />
+                            )}
+
+                            {(ticket?.type === 'university_certificate' || ticket?.type === 'success_statement') && (
+                                <StudentAffidavit studentData={ticket.user_id} registrationData={registrationData} />
+                            )}
+
+                            {ticket?.type === 'registration_suspension' && (
+                                <GraduationEnrollmentStatement studentData={ticket.user_id} registrationData={registrationData} />
+                            )}
+                            
+                            {/* Special case for the new one "قيد تخرج" - usually mapped to a type */}
+                            {/* If the subject contains "تخرج" or similar, or just based on type */}
+                        </Paper>
+                    </Grid>
+                )}
             </Grid>
         </Box>
     );

@@ -49,7 +49,12 @@ export const YES_OR_NO_ARR = [
 export const ticketTypes=[
     { id: "complaint", labelAr: "شكوى", labelEn: "Complaint" },
     { id: "suggestion", labelAr: "مقترح", labelEn: "Suggestion" },
-    { id: "postgraduate_studies", labelAr: "طلب دراسات عليا", labelEn: "Postgraduate Studies" }
+    { id: "postgraduate_studies", labelAr: "طلب دراسات عليا", labelEn: "Postgraduate Studies" },
+    { id: "university_card", labelAr: "طلب بطاقة جامعية", labelEn: "University Card Request" },
+    { id: "university_certificate", labelAr: "طلب إفادة جامعية", labelEn: "University Certificate Request" },
+    { id: "graduation_certificate", labelAr: "طلب إفادة تخرج", labelEn: "Graduation Certificate Request" },
+    { id: "success_statement", labelAr: "طلب بيان نجاح", labelEn: "Success Statement Request" },
+    { id: "registration_suspension", labelAr: "طلب قيد تخرج", labelEn: "Graduation Enrollment Request" }
 ];
 
 export const isOpen = [
