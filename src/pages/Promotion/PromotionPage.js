@@ -31,6 +31,10 @@ import notify from "../../components/notify";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
+import { useLazyQuery, useQuery } from "@apollo/client/react";
+import { GET_ALL_FACULITIES, GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID } from "../../graphql/facultyQuiries";
+import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms";
+import { useEffect } from "react";
 
 // Dummy Data
 const dummyStudents = [
@@ -69,9 +73,26 @@ export default function PromotionPage() {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    // Data Fetching
+    const { data: facultiesData, loading: facultiesLoading } = useQuery(GET_ALL_FACULITIES);
+    const [getDepartments, { data: departmentsData, loading: departmentsLoading }] = useLazyQuery(GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID);
+    const [getTerms, { data: termsData, loading: termsLoading }] = useLazyQuery(GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID);
+
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
-        setFilters(prev => ({ ...prev, [name]: value }));
+        setFilters(prev => {
+            const newFilters = { ...prev, [name]: value };
+            if (name === "faculty") {
+                newFilters.department = "";
+                newFilters.period = "";
+                getDepartments({ variables: { faculty_id: value } });
+            }
+            if (name === "department") {
+                newFilters.period = "";
+                getTerms({ variables: { faculty_department_id: value } });
+            }
+            return newFilters;
+        });
     };
 
     const handleResultClick = () => {
@@ -122,9 +143,13 @@ export default function PromotionPage() {
                                 value={filters.faculty}
                                 onChange={handleFilterChange}
                                 size="small"
+                                disabled={facultiesLoading}
                             >
-                                <MenuItem value="1">Faculty of Medicine</MenuItem>
-                                <MenuItem value="2">Faculty of Engineering</MenuItem>
+                                {facultiesData?.faculties?.map(f => (
+                                    <MenuItem key={f.id} value={f.id}>
+                                        {isArabic ? f.title_ar : f.title_en}
+                                    </MenuItem>
+                                ))}
                             </TextField>
                         </Grid>
                         <Grid item xs={12} md={6}>
@@ -136,9 +161,13 @@ export default function PromotionPage() {
                                 value={filters.department}
                                 onChange={handleFilterChange}
                                 size="small"
+                                disabled={departmentsLoading || !filters.faculty}
                             >
-                                <MenuItem value="1">General Medicine</MenuItem>
-                                <MenuItem value="2">Civil Engineering</MenuItem>
+                                {departmentsData?.getFacultyDepartmentsByFaculty?.map(d => (
+                                    <MenuItem key={d.id} value={d.id}>
+                                        {isArabic ? d.title_ar : d.title_en}
+                                    </MenuItem>
+                                ))}
                             </TextField>
                         </Grid>
                         <Grid item xs={12} md={6}>
@@ -164,9 +193,13 @@ export default function PromotionPage() {
                                 value={filters.period}
                                 onChange={handleFilterChange}
                                 size="small"
+                                disabled={termsLoading || !filters.department}
                             >
-                                <MenuItem value="1">First Semester 2024</MenuItem>
-                                <MenuItem value="2">Second Semester 2024</MenuItem>
+                                {termsData?.getAcademyTermsByFacultyDepartment?.map(t => (
+                                    <MenuItem key={t.id} value={t.id}>
+                                        {isArabic ? t.title_ar : t.title_en}
+                                    </MenuItem>
+                                ))}
                             </TextField>
                         </Grid>
                         <Grid item xs={12}>
