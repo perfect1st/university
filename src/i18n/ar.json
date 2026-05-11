@@ -473,7 +473,7 @@
   "Manage Educational Content": "إدارة المحتوى التعليمي",
   "Browse Study E-Library": "تصفح المكتبة الالكترونية",
   "isLocalCountry": "دولة محلية",
-  "login":"تسجيل الدخول",
+  "login": "تسجيل الدخول",
   "registerForms": {
     "title": "الطلاب / استمارات التسجيل",
     "detailsTitle": "عرض وإدارة كافة طلبات التسجيل الخاصة بالطلاب، مع إمكانية مراجعة البيانات والحالة.",
@@ -535,10 +535,25 @@
     "Logs": "السجلات"
   },
   "Serial": "الرقم التسلسلي",
-  "type":"النوع",
+  "type": "النوع",
   "university_card": "بطاقة الجامعة",
   "university_certificate": "شهادة جامعية",
   "graduation_certificate": "شهادة تخرج",
   "success_statement": "بيان نجاح",
   "registration_suspension": "إيقاف قيد"
-}
+,
+  "Promotion": "الترفيع",
+  "Faculties": "الكليات",
+  "Department": "القسم",
+  "Promotion Type": "نوع الترفيع",
+  "Promotion Period": "فترة الترفيع",
+  "Result": "النتيجة",
+  "Upgrade All": "ترفيع الكل",
+  "Student Name": "اسم الطالب",
+  "Student Status": "حالة الطالب",
+  "The Student's Total Degree": "الدرجة الكلية للطالب",
+  "Success": "ناجح",
+  "Failed": "راسب",
+  "TERM_TO_TERM": "من ترم لترم",
+  "YEAR_TO_YEAR": "من سنة لسنة"
+}

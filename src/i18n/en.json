@@ -496,10 +496,25 @@
     "Logs": "Logs"
   },
   "Serial": "Serial",
-  "type":"Type",
+  "type": "Type",
   "university_card": "University ID Card",
   "university_certificate": "University Certificate",
   "graduation_certificate": "Graduation Certificate",
   "success_statement": "Statement of Success",
   "registration_suspension": "Suspension of Registration"
-}
+,
+  "Promotion": "Promotion",
+  "Faculties": "Faculties",
+  "Department": "Department",
+  "Promotion Type": "Promotion Type",
+  "Promotion Period": "Promotion Period",
+  "Result": "Result",
+  "Upgrade All": "Upgrade All",
+  "Student Name": "Student Name",
+  "Student Status": "Student Status",
+  "The Student's Total Degree": "The Student's Total Degree",
+  "Success": "Success",
+  "Failed": "Failed",
+  "TERM_TO_TERM": "Term to Term",
+  "YEAR_TO_YEAR": "Year to Year"
+}

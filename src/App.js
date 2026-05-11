@@ -116,6 +116,7 @@ import BookDetailsPage from "./pages/E-Library/BookDetailsPage";
 import AllContactMessagesPage from "./pages/ContactUs/AllContactMessagesPage";
 import SiteSettings from "./pages/SiteSettings/SiteSettings";
 import TestCertificatePage from "./pages/TestCertificatePage";
+import PromotionPage from "./pages/Promotion/PromotionPage";
 
 
 // Public Site Config Pages
@@ -998,6 +999,14 @@ function App() {
                     <Route path="details/:id" element={
                       <MainLayout isLoggedIn={true}>
                         <RegisterFormDetailsPage />
+                      </MainLayout>
+                    } />
+                  </Route>
+                  {/* الترفيع */}
+                  <Route path="/promotion">
+                    <Route index element={
+                      <MainLayout isLoggedIn={true}>
+                        <PromotionPage />
                       </MainLayout>
                     } />
                   </Route>
