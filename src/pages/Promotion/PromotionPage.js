@@ -32,28 +32,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
+import { useEffect } from "react";
 import { GET_ALL_FACULITIES, GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID } from "../../graphql/facultyQuiries";
 import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms";
-import { useEffect } from "react";
+import { PREVIEW_PROMOTION } from "../../graphql/PromotionQueries";
 
-// Dummy Data
-const dummyStudents = [
-    { id: "#72641", name: "Emma Davis", status: "Success", totalDegree: 90 },
-    { id: "#72642", name: "Emma Davis", status: "Failed", totalDegree: 45 },
-    { id: "#72643", name: "Emma Davis", status: "Success", totalDegree: 85 },
-    { id: "#72644", name: "Emma Davis", status: "Success", totalDegree: 78 },
-    { id: "#72645", name: "Emma Davis", status: "Success", totalDegree: 92 },
-    { id: "#72646", name: "Emma Davis", status: "Failed", totalDegree: 30 },
-];
 
-const dummyStudentDetails = [
-    { titleEn: "General Surgery", titleAr: "الجراحة العامة", fullmark: 100, degree: 80, status: "Success" },
-    { titleEn: "General Surgery", titleAr: "الجراحة العامة", fullmark: 100, degree: 75, status: "Success" },
-    { titleEn: "General Surgery", titleAr: "الجراحة العامة", fullmark: 100, degree: 40, status: "Failed" },
-    { titleEn: "General Surgery", titleAr: "الجراحة العامة", fullmark: 100, degree: 60, status: "Success" },
-    { titleEn: "General Surgery", titleAr: "الجراحة العامة", fullmark: 100, degree: 85, status: "Success" },
-    { titleEn: "General Surgery", titleAr: "الجراحة العامة", fullmark: 100, degree: 90, status: "Success" },
-];
 
 export default function PromotionPage() {
     const theme = useTheme();
@@ -64,43 +48,66 @@ export default function PromotionPage() {
         faculty: "",
         department: "",
         type: "TERM_TO_TERM",
-        period: ""
+        period: "",
+        source_study_year: ""
     });
 
-    const [showData, setShowData] = useState(false);
+    const [selectedFaculty, setSelectedFaculty] = useState(null);
+
+
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
-    const [loading, setLoading] = useState(false);
 
     // Data Fetching
     const { data: facultiesData, loading: facultiesLoading } = useQuery(GET_ALL_FACULITIES);
     const [getDepartments, { data: departmentsData, loading: departmentsLoading }] = useLazyQuery(GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID);
     const [getTerms, { data: termsData, loading: termsLoading }] = useLazyQuery(GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID);
+    const [getPreview, { data: previewData, loading: previewLoading, called }] = useLazyQuery(PREVIEW_PROMOTION, {
+        onError: (err) => {
+            notify(err.message, "error");
+        }
+    });
 
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
         setFilters(prev => {
             const newFilters = { ...prev, [name]: value };
             if (name === "faculty") {
+                const faculty = facultiesData?.faculties?.find(f => f.id === value);
+                setSelectedFaculty(faculty);
                 newFilters.department = "";
                 newFilters.period = "";
+                newFilters.source_study_year = "";
                 getDepartments({ variables: { faculty_id: value } });
             }
             if (name === "department") {
                 newFilters.period = "";
                 getTerms({ variables: { faculty_department_id: value } });
             }
+            if (name === "type") {
+                newFilters.period = "";
+                newFilters.source_study_year = "";
+            }
             return newFilters;
         });
     };
 
     const handleResultClick = () => {
-        setLoading(true);
-        setTimeout(() => {
-            setShowData(true);
-            setLoading(false);
-        }, 800);
+        if (!filters.faculty) return notify(t("Please select faculty"), "error");
+        if (selectedFaculty?.required_dep !== false && !filters.department) return notify(t("Please select department"), "error");
+        
+        if (filters.type === "TERM_TO_TERM" && !filters.period) return notify(t("Please select promotion period"), "error");
+        if (filters.type === "YEAR_TO_YEAR" && !filters.source_study_year) return notify(t("Please select study year"), "error");
+
+        const input = {
+            promotion_type: filters.type,
+            faculty_department_id: selectedFaculty?.required_dep === false ? null : filters.department,
+            source_academy_term_id: filters.type === "TERM_TO_TERM" ? filters.period : null,
+            source_study_year: filters.type === "YEAR_TO_YEAR" ? filters.source_study_year : null
+        };
+
+        getPreview({ variables: { input } });
     };
 
     const handleUpgradeAll = () => {
@@ -156,13 +163,17 @@ export default function PromotionPage() {
                             <TextField
                                 fullWidth
                                 select
-                                label={t("Department")}
+                                label={t("Department") + (selectedFaculty?.required_dep === false ? ` (${t("Optional")})` : "")}
                                 name="department"
                                 value={filters.department}
                                 onChange={handleFilterChange}
                                 size="small"
                                 disabled={departmentsLoading || !filters.faculty}
+                                error={selectedFaculty?.required_dep !== false && !filters.department && called}
                             >
+                                <MenuItem value="">
+                                    <em>{t("None")}</em>
+                                </MenuItem>
                                 {departmentsData?.getFacultyDepartmentsByFaculty?.map(d => (
                                     <MenuItem key={d.id} value={d.id}>
                                         {isArabic ? d.title_ar : d.title_en}
@@ -184,40 +195,61 @@ export default function PromotionPage() {
                                 <MenuItem value="YEAR_TO_YEAR">{t("YEAR_TO_YEAR")}</MenuItem>
                             </TextField>
                         </Grid>
-                        <Grid item xs={12} md={6}>
-                            <TextField
-                                fullWidth
-                                select
-                                label={t("Promotion Period")}
-                                name="period"
-                                value={filters.period}
-                                onChange={handleFilterChange}
-                                size="small"
-                                disabled={termsLoading || !filters.department}
-                            >
-                                {termsData?.getAcademyTermsByFacultyDepartment?.map(t => (
-                                    <MenuItem key={t.id} value={t.id}>
-                                        {isArabic ? t.title_ar : t.title_en}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid>
+                        {filters.type === "TERM_TO_TERM" ? (
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    fullWidth
+                                    select
+                                    label={t("Promotion Period")}
+                                    name="period"
+                                    value={filters.period}
+                                    onChange={handleFilterChange}
+                                    size="small"
+                                    disabled={termsLoading || (selectedFaculty?.required_dep !== false && !filters.department)}
+                                >
+                                    {termsData?.getAcademyTermsByFacultyDepartment?.map(t => (
+                                        <MenuItem key={t.id} value={t.id}>
+                                            {isArabic ? t.title_ar : t.title_en}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                        ) : (
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    fullWidth
+                                    select
+                                    label={t("Source Study Year")}
+                                    name="source_study_year"
+                                    value={filters.source_study_year}
+                                    onChange={handleFilterChange}
+                                    size="small"
+                                    disabled={!filters.faculty}
+                                >
+                                    {Array.from({ length: parseInt(selectedFaculty?.study_years_count || 0) }, (_, i) => i + 1).map(year => (
+                                        <MenuItem key={year} value={year.toString()}>
+                                            {year}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                        )}
                         <Grid item xs={12}>
                             <Button
                                 fullWidth
                                 variant="contained"
                                 sx={{ backgroundColor: "#22ABCE", "&:hover": { backgroundColor: "#1e96b5" } }}
                                 onClick={handleResultClick}
-                                disabled={loading}
+                                disabled={previewLoading}
                             >
-                                {loading ? <CircularProgress size={24} color="inherit" /> : t("Result")}
+                                {previewLoading ? <CircularProgress size={24} color="inherit" /> : t("Result")}
                             </Button>
                         </Grid>
                     </Grid>
                 </CardContent>
             </Card>
 
-            {showData && (
+            {called && !previewLoading && previewData?.previewPromotion && (
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={8}>
                         <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }}>
@@ -231,14 +263,14 @@ export default function PromotionPage() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {dummyStudents.map((student, index) => (
+                                    {previewData?.previewPromotion?.students?.map((student, index) => (
                                         <TableRow key={index} hover>
-                                            <TableCell>{student.id}</TableCell>
-                                            <TableCell>{student.name}</TableCell>
+                                            <TableCell>{student.student_id?.serial}</TableCell>
+                                            <TableCell>{student.student_id?.fullname}</TableCell>
                                             <TableCell>
                                                 <Chip
                                                     label={t(student.status)}
-                                                    color={student.status === "Success" ? "primary" : "warning"}
+                                                    color={student.status === "WILL_PROMOTE" ? "primary" : "warning"}
                                                     size="small"
                                                     sx={{ borderRadius: "16px", minWidth: 80 }}
                                                 />
@@ -265,7 +297,7 @@ export default function PromotionPage() {
                                 <Box sx={{ position: "relative", display: "inline-flex", mb: 3 }}>
                                     <CircularProgress
                                         variant="determinate"
-                                        value={75}
+                                        value={previewData?.previewPromotion?.total_students > 0 ? (previewData?.previewPromotion?.will_promote_count / previewData?.previewPromotion?.total_students) * 100 : 0}
                                         size={180}
                                         thickness={8}
                                         sx={{ color: "#F39A15" }}
@@ -284,7 +316,7 @@ export default function PromotionPage() {
                                         }}
                                     >
                                         <Typography variant="h4" component="div" sx={{ fontWeight: "bold" }}>
-                                            1,691
+                                            {previewData?.previewPromotion?.total_students || 0}
                                         </Typography>
                                         <Typography variant="body2" color="textSecondary">
                                             Students
@@ -297,7 +329,7 @@ export default function PromotionPage() {
                                         <CheckCircleIcon color="primary" />
                                     </Box>
                                     <Box sx={{ textAlign: isArabic ? "right" : "left", flex: 1 }}>
-                                        <Typography variant="h6">1,235</Typography>
+                                        <Typography variant="h6">{previewData?.previewPromotion?.will_promote_count || 0}</Typography>
                                         <Typography variant="body2" color="textSecondary">{t("Success")}</Typography>
                                     </Box>
                                 </Box>
@@ -307,7 +339,7 @@ export default function PromotionPage() {
                                         <ErrorIcon sx={{ color: "#F39A15" }} />
                                     </Box>
                                     <Box sx={{ textAlign: isArabic ? "right" : "left", flex: 1 }}>
-                                        <Typography variant="h6">456</Typography>
+                                        <Typography variant="h6">{previewData?.previewPromotion?.will_fail_count || 0}</Typography>
                                         <Typography variant="body2" color="textSecondary">{t("Failed")}</Typography>
                                     </Box>
                                 </Box>
@@ -339,24 +371,31 @@ export default function PromotionPage() {
                                     <TableCell sx={{ fontWeight: "bold" }}>Student Status</TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
-                                {dummyStudentDetails.map((item, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell>{item.titleEn}</TableCell>
-                                        <TableCell>{item.titleAr}</TableCell>
-                                        <TableCell>{item.fullmark}</TableCell>
-                                        <TableCell>{item.degree}</TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                label={t(item.status)}
-                                                color={item.status === "Success" ? "primary" : "warning"}
-                                                size="small"
-                                                sx={{ borderRadius: "16px" }}
-                                            />
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
+                                <TableBody>
+                                    {selectedStudent?.failed_materials?.map((item, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{item.title_en}</TableCell>
+                                            <TableCell>{item.title_ar}</TableCell>
+                                            <TableCell>{item.fullmark_degree}</TableCell>
+                                            <TableCell>{item.success_degree}</TableCell>
+                                            <TableCell>
+                                                <Chip
+                                                    label={t(item.status ? "Success" : "Failed")}
+                                                    color={item.status ? "primary" : "warning"}
+                                                    size="small"
+                                                    sx={{ borderRadius: "16px" }}
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                    {(!selectedStudent?.failed_materials || selectedStudent?.failed_materials?.length === 0) && (
+                                        <TableRow>
+                                            <TableCell colSpan={5} align="center">
+                                                {t("No Failed Materials")}
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
                         </Table>
                     </TableContainer>
                 </DialogContent>

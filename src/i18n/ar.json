@@ -542,13 +542,13 @@
   "success_statement": "بيان نجاح",
   "registration_suspension": "إيقاف قيد"
 ,
-  "Promotion": "الترفيع",
+  "Promotion": "الترقية",
   "Faculties": "الكليات",
   "Department": "القسم",
-  "Promotion Type": "نوع الترفيع",
-  "Promotion Period": "فترة الترفيع",
+  "Promotion Type": "نوع الترقية",
+  "Promotion Period": "فترة الترقية",
   "Result": "النتيجة",
-  "Upgrade All": "ترفيع الكل",
+  "Upgrade All": "ترقية الكل",
   "Student Name": "اسم الطالب",
   "Student Status": "حالة الطالب",
   "The Student's Total Degree": "الدرجة الكلية للطالب",
@@ -556,4 +556,4 @@
   "Failed": "راسب",
   "TERM_TO_TERM": "من ترم لترم",
   "YEAR_TO_YEAR": "من سنة لسنة"
-}
+}
