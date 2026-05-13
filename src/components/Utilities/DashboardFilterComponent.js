@@ -34,7 +34,8 @@ export default function DashboardFilterComponent({
   select2Label3,
   onSelect2Change,
   fromRegisterForm = false,
-  isAdmin = false
+  isAdmin = false,
+  isPromotion = false
 }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -99,7 +100,7 @@ export default function DashboardFilterComponent({
         width: "100%",
       }}
     >
-      <Grid
+      {!isPromotion && <Grid
         item
         xs={12}
         md={fromRegisterForm ? 3 : select3Search ? 6 : 8}
@@ -144,7 +145,7 @@ export default function DashboardFilterComponent({
             )}
           </>
         )}
-      </Grid>
+      </Grid>}
 
       {/* <Grid item xs={12} md={fromRegisterForm ? 8 : select3Search ? 6 : 4}> */}
         {/* <Grid

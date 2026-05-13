@@ -169,7 +169,7 @@ const routesData = {
         },
         {
           key: "registerForms",
-          label: { en: "Promotion", ar: "الترفيع" },
+          label: { en: "Promotion", ar: "الترقية" },
           path: "/promotion",
         },
       ]

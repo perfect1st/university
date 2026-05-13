@@ -555,5 +555,7 @@
   "Success": "ناجح",
   "Failed": "راسب",
   "TERM_TO_TERM": "من ترم لترم",
-  "YEAR_TO_YEAR": "من سنة لسنة"
+  "YEAR_TO_YEAR": "من سنة لسنة",
+  "Total Students":"إجمالي الطلاب",
+  "Add Promotion":"إضافة ترقية"
 }

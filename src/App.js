@@ -126,6 +126,7 @@ import Accessibility from "./pages/Home/Accessibility";
 import ContactUs from "./pages/Home/ContactUs";
 import SuccessPaymentPage from "./pages/PaymentResult/SuccessPaymentPage";
 import FailedPaymentPage from "./pages/PaymentResult/FailedPaymentPage";
+import AddPromotionPage from "./pages/Promotion/AddPromotionPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -1002,13 +1003,21 @@ function App() {
                       </MainLayout>
                     } />
                   </Route>
-                  {/* الترفيع */}
+                  {/* الترقية */}
                   <Route path="/promotion">
                     <Route index element={
                       <MainLayout isLoggedIn={true}>
                         <PromotionPage />
                       </MainLayout>
                     } />
+                    <Route
+                      path="add"
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <AddPromotionPage />
+                        </MainLayout>
+                      }
+                    />
                   </Route>
 
                   {/* رسائل اتصل بنا */}

@@ -237,40 +237,18 @@ const TableComponent = ({
                       }}
                     >
                       {
-                        column.key === statusKey && (
-                          // <Chip
-                          //   label={t(status)}
-                          //   ref={(el) => (chipRefs.current[row.id] = el)}
-                          //   sx={{
-                          //     cursor: showStatusChange ? "pointer" : "default",
-                          //     color:"success",
-                          //     variant:"filled",
-                          //     backgroundColor: styles.bgColor,
-                          //     border: `1px solid ${styles.borderColor}`,
-                          //     fontWeight: "bold",
-                          //     minWidth: maxChipWidth,
-                          //     borderRadius: 1,
-                          //     textTransform: "none",
-                          //     py: 0.5,
-
-                          //     "&:hover": showStatusChange
-                          //       ? {
-                          //           opacity: 0.9,
-                          //           transform: "scale(1.02)",
-                          //         }
-                          //       : {},
-                          //   }}
-                          // />
+                        column.render ? (
+                          column.render(row)
+                        ) : column.key === statusKey ? (
                           <Chip
                             label={t(
                               status ? activeStatusLabel : inActiveStatusLabel,
                             )}
-                            color={status == true ? "success" : "error"} // primary | secondary | success | error | info | warning
-                            variant="filled" // filled | outlined
+                            color={status == true ? "success" : "error"}
+                            variant="filled"
                             sx={{
                               cursor: showStatusChange ? "pointer" : "default",
                               fontWeight: "bold",
-                              // display:"inline-flex",
                               width: "100px",
                               borderRadius: 2,
                               textTransform: "none",
@@ -287,16 +265,7 @@ const TableComponent = ({
                                 : {},
                             }}
                           />
-                        )
-                        // :
-                        // column.render ? (
-                        //   column.render(row)
-                        // ) : (
-                        //   row[column.key]
-                        // )
-                      }
-                      {
-                        column.key === "navigate" && hasNavigateBtn ? (
+                        ) : column.key === "navigate" && hasNavigateBtn ? (
                           <Button
                             variant="contained"
                             onClick={() => navigate(`${navigateTo}/${row.id}`)}
@@ -313,10 +282,7 @@ const TableComponent = ({
                           >
                             {navigateBtnTitle}
                           </Button>
-                        ) :
-                        // /uploads/
-                        typeof row[column.key] === "string" &&
-                          row[column.key]?.includes("/uploads/") ? (
+                        ) : typeof row[column.key] === "string" && row[column.key]?.includes("/uploads/") ? (
                           <Box
                             component="img"
                             src={`${baseURL}${row[column.key]}`}
@@ -325,14 +291,11 @@ const TableComponent = ({
                             sx={{
                               width: 40,
                               height: 28,
-
                               objectFit: "cover",
                               objectPosition: "center",
-
                               borderRadius: "4px",
                               boxShadow: "0px 1px 3px rgba(0,0,0,0.2)",
                               border: "1px solid #e0e0e0",
-
                               display: "block",
                               my: 0.5
                             }}
@@ -343,37 +306,23 @@ const TableComponent = ({
                               fullWidth
                               variant="outlined"
                               sx={{ px: 2 }}
-                              cl={`textField${index}`}
+                              className={`textField${index}`}
                               onChange={(e) => {
-                                logger.log("index", index, e.target);
-                                const els =
-                                  document.getElementsByClassName("textField");
-                                const values = Array.from(els).map(
-                                  (el) => el.value,
-                                );
-                                logger.log(values);
-
-                                // logger.log("oooo",document.getElementsByClassName(`textField${index}`)[0]?.value);
+                                // handle input change
                               }}
                             />
                           ) : (
-                            column.key !== statusKey && t("dataNotFound")
+                            t("dataNotFound")
                           )
-                        ) : // hasObject ? isArabic ?
-                          // row[column.key]?.arPopulateKey : row[column.key]?.enPopulateKey
-                          // :row[column.key]  visibleColumns[2]?.nested
-                          row[column.key]?.id ? (
-                            // row[column.key]?.id[nestedPopulateKey] && column?.nested == "true" ?
-                            // isArabic ? row[column.key]?.[nestedPopulateKey]?.[nestedArPopulateKey] : row[column.key]?.[nestedPopulateKey]?.[nestedEnPopulateKey]
-                            // :
-                            isArabic ? (
-                              row[column.key]?.[arPopulateKey]
-                            ) : (
-                              row[column.key]?.[enPopulateKey]
-                            )
+                        ) : row[column.key]?.id ? (
+                          isArabic ? (
+                            row[column.key]?.[arPopulateKey]
                           ) : (
-                            row[column.key]
+                            row[column.key]?.[enPopulateKey]
                           )
+                        ) : (
+                          row[column.key]
+                        )
                       }
                     </TableCell>
                   ))}

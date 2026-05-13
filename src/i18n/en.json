@@ -516,5 +516,7 @@
   "Success": "Success",
   "Failed": "Failed",
   "TERM_TO_TERM": "Term to Term",
-  "YEAR_TO_YEAR": "Year to Year"
-}
+  "YEAR_TO_YEAR": "Year to Year",
+  "Total Students":"Total Students",
+  "Add Promotion":"Add Promotion"
+}
