@@ -307,16 +307,26 @@ export default function AcademyTermDetailsPage() {
           helperText={formik.touched.current_year && formik.errors.current_year}
         />
 
-        <HorizentalTextField
+        <HorizentalTextFieldSelect
+          t={t}
           title={t("Dashboard.studyYear", { item: translateText2 })}
-          fieldID={"study_year"}
-          fieldName={"study_year"}
-          placeholder={t("Dashboard.studyYear")}
+          backgroundColor={theme.palette.background.inputBackGround}
           value={formik.values.study_year}
-          onChange={formik.handleChange}
+          setValue={(val) => formik.setFieldValue("study_year", val)}
+          onBlur={() => formik.setFieldTouched("study_year", true)}
           error={formik.touched.study_year && Boolean(formik.errors.study_year)}
           helperText={formik.touched.study_year && formik.errors.study_year}
-        />
+        >
+          <MenuItem value="" disabled>{t("select")}</MenuItem>
+          {Array.from(
+            { length: Number(faculties?.find(f => f.id === selectedFaculity)?.study_years_count || 0) },
+            (_, i) => i + 1
+          ).map(year => (
+            <MenuItem key={year} value={year.toString()}>
+              {t(`studyYear${year}`)}
+            </MenuItem>
+          ))}
+        </HorizentalTextFieldSelect>
 
         <HorizentalTextField
           title={t("studentDashboard.minAcademyHours")}

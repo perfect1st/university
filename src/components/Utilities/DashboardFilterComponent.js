@@ -1,8 +1,10 @@
 import {
+  Autocomplete,
   Box,
   Button,
   Grid,
   MenuItem,
+  TextField,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -35,7 +37,8 @@ export default function DashboardFilterComponent({
   onSelect2Change,
   fromRegisterForm = false,
   isAdmin = false,
-  isPromotion = false
+  isPromotion = false,
+  isAcademyTerms = false
 }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -63,8 +66,7 @@ export default function DashboardFilterComponent({
   );
 
   const handleCancel = () => {
-    // 1. Clear the URL
-    setSearchParams({});
+    // 1. Clear local state
     setSearchValue("");
     setSearchValue2("");
     setStatusSearch("0");
@@ -103,7 +105,7 @@ export default function DashboardFilterComponent({
       {!isPromotion && <Grid
         item
         xs={12}
-        md={fromRegisterForm ? 3 : select3Search ? 6 : 8}
+        md={fromRegisterForm ? 3 : isAcademyTerms ? 5 : select3Search ? 6 : 8}
         sx={{ display: "flex", gap: 2, flexWrap: isMobile ? "wrap" : "nowrap" }}
       >
         {isMobile ? (
@@ -192,37 +194,70 @@ export default function DashboardFilterComponent({
           )}
 
           {selectOptions && isAdmin && (
-            <Grid item xs={12} md={2}>
-              {isMobile ? (
-                <Box sx={{ width: "80%", mx: "auto" }}>
-                  <CustomSelect
-                    t={t}
-                    value={select2Search}
-                    setValue={setSelect2Search}
-                    height={"40px"}
-                  >
-                    <MenuItem value="0">{t(select2Label)}</MenuItem>
-                    {selectOptions?.map((el, i) => (
-                      <MenuItem key={i} value={el?.id ? el?.id : el}>
-                        {el?.id ? (isArabic ? el[arKey] : el[enKey]) : t(el)}
-                      </MenuItem>
-                    ))}
-                  </CustomSelect>
-                </Box>
+            <Grid item xs={12} md={isAcademyTerms ? 4 : 2}>
+              {isAcademyTerms ? (
+                <Autocomplete
+                  size="small"
+                  options={selectOptions}
+                  getOptionLabel={(option) => {
+                    if (typeof option === 'string') return t(option);
+                    return isArabic ? option[arKey] : option[enKey];
+                  }}
+                  value={selectOptions.find(opt => opt.id === select2Search) || null}
+                  onChange={(event, newValue) => {
+                    setSelect2Search(newValue ? newValue.id : "0");
+                  }}
+                  renderInput={(params) => (
+                    <TextField 
+                      {...params} 
+                      placeholder={t(select2Label)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          height: '40px',
+                          backgroundColor: theme.palette.background.gray,
+                          borderRadius: '8px',
+                          '& fieldset': { border: 'none' },
+                          '&:hover fieldset': { border: 'none' },
+                          '&.Mui-focused fieldset': { border: 'none' },
+                        }
+                      }}
+                    />
+                  )}
+                />
               ) : (
-                <CustomSelect
-                  t={t}
-                  value={select2Search}
-                  setValue={setSelect2Search}
-                  height={"40px"}
-                >
-                  <MenuItem value="0">{t(select2Label)}</MenuItem>
-                  {selectOptions?.map((el, i) => (
-                    <MenuItem key={i} value={el?.id ? el?.id : el}>
-                      {el?.id ? (isArabic ? el[arKey] : el[enKey]) : t(el)}
-                    </MenuItem>
-                  ))}
-                </CustomSelect>
+                <>
+                  {isMobile ? (
+                    <Box sx={{ width: "80%", mx: "auto" }}>
+                      <CustomSelect
+                        t={t}
+                        value={select2Search}
+                        setValue={setSelect2Search}
+                        height={"40px"}
+                      >
+                        <MenuItem value="0">{t(select2Label)}</MenuItem>
+                        {selectOptions?.map((el, i) => (
+                          <MenuItem key={i} value={el?.id ? el?.id : el}>
+                            {el?.id ? (isArabic ? el[arKey] : el[enKey]) : t(el)}
+                          </MenuItem>
+                        ))}
+                      </CustomSelect>
+                    </Box>
+                  ) : (
+                    <CustomSelect
+                      t={t}
+                      value={select2Search}
+                      setValue={setSelect2Search}
+                      height={"40px"}
+                    >
+                      <MenuItem value="0">{t(select2Label)}</MenuItem>
+                      {selectOptions?.map((el, i) => (
+                        <MenuItem key={i} value={el?.id ? el?.id : el}>
+                          {el?.id ? (isArabic ? el[arKey] : el[enKey]) : t(el)}
+                        </MenuItem>
+                      ))}
+                    </CustomSelect>
+                  )}
+                </>
               )}
             </Grid>
           )}

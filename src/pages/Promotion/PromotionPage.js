@@ -93,7 +93,7 @@ export default function PromotionPage() {
         { key: "total_students", label: t("Total Students") },
         { key: "promoted_count", label: t("Success") },
         { key: "failed_count", label: t("Failed") },
-        { key: "promotion_status", label: t("Status") },
+        { key: "display_status", label: t("Status") },
         {
             key: "actions",
             label: t("Actions"),
@@ -162,6 +162,8 @@ export default function PromotionPage() {
             ...row,
             display_type: isArabic ? type?.title_ar : type?.title_en || row.promotion_type,
             display_date: row.promotion_date ? new Date(dateVal).toLocaleDateString(isArabic ? 'ar-EG' : 'en-US') : '-',
+            display_status: row.promotion_status === "ACTIVE",
+            source_study_year: row.source_study_year ? t(`studyYear${row.source_study_year}`) : '-'
         };
     });
 
@@ -205,7 +207,7 @@ export default function PromotionPage() {
                         columns={columns}
                         data={processedData}
                         loading={promotionsLoading || activatingLoading || deletingLoading}
-                        statusKey="promotion_status"
+                        statusKey="display_status"
                         activeStatusLabel="ACTIVE"
                         inActiveStatusLabel="DRAFT"
                         handleDetailsClick={handleDetailsClick}

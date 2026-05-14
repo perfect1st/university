@@ -137,3 +137,11 @@ mutation DeleteDraftPromotion($id: ID!) {
     deleteDraftPromotion(id: $id)
 }
 `;
+
+export const GET_STUDY_YEARS_BY_DEPARTMENT = gql`
+query GetStudyYearsByDepartment($faculty_department_id: ID!) {
+    getStudyYearsByDepartment(faculty_department_id: $faculty_department_id) {
+        study_year
+    }
+}
+`;

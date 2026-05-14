@@ -556,6 +556,18 @@
   "Failed": "راسب",
   "TERM_TO_TERM": "من ترم لترم",
   "YEAR_TO_YEAR": "من سنة لسنة",
-  "Total Students":"إجمالي الطلاب",
-  "Add Promotion":"إضافة ترقية"
+  "Total Students": "إجمالي الطلاب",
+  "Add Promotion": "إضافة ترقية",
+  "studyYear1": "العام الدراسي الأول",
+  "studyYear2": "العام الدراسي الثاني",
+  "studyYear3": "العام الدراسي الثالث",
+  "studyYear4": "العام الدراسي الرابع",
+  "studyYear5": "العام الدراسي الخامس",
+  "studyYear6": "العام الدراسي السادس",
+  "studyYear7": "العام الدراسي السابع",
+  "studyYear8": "العام الدراسي الثامن",
+  "studyYear9": "العام الدراسي التاسع",
+  "studyYear10": "العام الدراسي العاشر",
+  "current Study Year": "العام الدراسي الحالي",
+  "Target Academy Term": "ترم الترقية"
 }

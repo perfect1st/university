@@ -36,7 +36,7 @@ import { useLazyQuery, useQuery, useMutation } from "@apollo/client/react";
 import { useEffect } from "react";
 import { GET_ALL_FACULITIES, GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID } from "../../graphql/facultyQuiries";
 import { GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID } from "../../graphql/AcademyTerms";
-import { PREVIEW_PROMOTION, PROMOTE_TERM_TO_TERM, PROMOTE_YEAR_TO_YEAR } from "../../graphql/PromotionQueries";
+import { PREVIEW_PROMOTION, PROMOTE_TERM_TO_TERM, PROMOTE_YEAR_TO_YEAR, GET_STUDY_YEARS_BY_DEPARTMENT } from "../../graphql/PromotionQueries";
 
 
 
@@ -68,6 +68,7 @@ export default function AddPromotionPage() {
     const { data: facultiesData, loading: facultiesLoading } = useQuery(GET_ALL_FACULITIES);
     const [getDepartments, { data: departmentsData, loading: departmentsLoading }] = useLazyQuery(GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID);
     const [getTerms, { data: termsData, loading: termsLoading }] = useLazyQuery(GET_ACADEMY_TERMS_BY_FACULTY_DEPARTMENT_ID);
+    const [getStudyYears, { data: studyYearsData }] = useLazyQuery(GET_STUDY_YEARS_BY_DEPARTMENT);
     const [getPreview, { data: previewData, loading: previewLoading, called }] = useLazyQuery(PREVIEW_PROMOTION, {
         onError: (err) => {
             notify(err.message, "error");
@@ -107,10 +108,13 @@ export default function AddPromotionPage() {
             if (name === "department") {
                 newFilters.period = "";
                 getTerms({ variables: { faculty_department_id: value } });
+                getStudyYears({ variables: { faculty_department_id: value } });
             }
             if (name === "type") {
                 newFilters.period = "";
                 newFilters.source_study_year = "";
+                newFilters.target_period = "";
+                newFilters.failed_target_period = "";
             }
             return newFilters;
         });
@@ -125,17 +129,21 @@ export default function AddPromotionPage() {
 
         const input = {
             promotion_type: filters.type,
-            faculty_department_id: selectedFaculty?.required_dep === false ? null : filters.department,
-            source_academy_term_id: filters.type === "TERM_TO_TERM" ? filters.period : null,
-            source_study_year: filters.type === "YEAR_TO_YEAR" ? parseInt(filters.source_study_year) : null
+            faculty_department_id: filters.department,
         };
+
+        if (filters.type === "TERM_TO_TERM") {
+            input.source_academy_term_id = filters.period;
+        } else if (filters.type === "YEAR_TO_YEAR") {
+            input.source_study_year = filters.source_study_year;
+        }
 
         getPreview({ variables: { input } });
     };
 
     const handleUpgradeAll = () => {
-        if (!filters.target_period) return notify(t("Please select target academy term"), "error");
-        if (filters.type === "YEAR_TO_YEAR" && !filters.failed_target_period) return notify(t("Please select failed target academy term"), "error");
+        if (filters.type === "TERM_TO_TERM" && !filters.target_period) return notify(t("Please select target academy term"), "error");
+        // For YEAR_TO_YEAR, we don't need target terms anymore based on the new mutation structure
         setOpenConfirm(true);
     };
 
@@ -155,10 +163,8 @@ export default function AddPromotionPage() {
             promoteYearToYear({
                 variables: {
                     input: {
-                        faculty_department_id: selectedFaculty?.required_dep === false ? null : filters.department,
-                        source_study_year: parseInt(filters.source_study_year),
-                        target_academy_term_id: filters.target_period,
-                        failed_target_academy_term_id: filters.failed_target_period,
+                        faculty_department_id: filters.department,
+                        source_study_year: filters.source_study_year,
                         notes: filters.notes,
                         save_as_draft: saveAsDraft
                     }
@@ -267,47 +273,29 @@ export default function AddPromotionPage() {
                                 <TextField
                                     fullWidth
                                     select
-                                    label={t("Source Study Year")}
+                                    label={t("current Study Year")}
                                     name="source_study_year"
                                     value={filters.source_study_year}
                                     onChange={handleFilterChange}
                                     size="small"
-                                    disabled={!filters.faculty}
+                                    disabled={!filters.department}
                                 >
-                                    {Array.from({ length: parseInt(selectedFaculty?.study_years_count || 0) }, (_, i) => i + 1).map(year => (
-                                        <MenuItem key={year} value={year.toString()}>
-                                            {year}
+                                    {studyYearsData?.getStudyYearsByDepartment?.map(item => (
+                                        <MenuItem key={item.study_year} value={item.study_year.toString()}>
+                                            {t(`studyYear${item.study_year}`)}
                                         </MenuItem>
                                     ))}
                                 </TextField>
                             </Grid>
                         )}
-                        <Grid item xs={12} md={6}>
-                            <TextField
-                                fullWidth
-                                select
-                                label={t("Target Academy Term")}
-                                name="target_period"
-                                value={filters.target_period}
-                                onChange={handleFilterChange}
-                                size="small"
-                                disabled={termsLoading || (selectedFaculty?.required_dep !== false && !filters.department)}
-                            >
-                                {termsData?.getAcademyTermsByFacultyDepartment?.map(t => (
-                                    <MenuItem key={t.id} value={t.id}>
-                                        {isArabic ? t.title_ar : t.title_en}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid>
-                        {filters.type === "YEAR_TO_YEAR" && (
+                        {filters.type === "TERM_TO_TERM" && (
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     fullWidth
                                     select
-                                    label={t("Failed Target Academy Term")}
-                                    name="failed_target_period"
-                                    value={filters.failed_target_period}
+                                    label={t("Target Academy Term")}
+                                    name="target_period"
+                                    value={filters.target_period}
                                     onChange={handleFilterChange}
                                     size="small"
                                     disabled={termsLoading || (selectedFaculty?.required_dep !== false && !filters.department)}
@@ -320,6 +308,7 @@ export default function AddPromotionPage() {
                                 </TextField>
                             </Grid>
                         )}
+                        {/* Failed Target Academy Term is also hidden for Year to Year if not used in mutation */}
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth

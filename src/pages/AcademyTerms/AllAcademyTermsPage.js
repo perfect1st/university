@@ -16,7 +16,7 @@ import Header from "../../components/PageHeader/header";
 import { useEffect, useRef } from "react";
 import notify from "../../components/notify";
 import { GET_ACADEMY_TERMS_WITH_FILTER, GET_ALL_ACADEMY_TERMS, UPDATE_ACADEMY_TERM_BY_ID } from "../../graphql/AcademyTerms";
-import { GET_ALL_DEPARTMENTS, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
+import { GET_ALL_DEPARTMENTS, GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
@@ -88,9 +88,9 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("acad
     });
 
     useEffect(() => {
-    Faculties();
-    FacultyDepartments();
-}, []);
+        Faculties();
+        FacultyDepartments();
+    }, []);
 
 
     useEffect(() => {
@@ -128,6 +128,15 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("acad
 
         FilteredPagedAcademyTerms({ variables: variablesObj });
     }, [searchParams]);
+
+    const facultyDepartmentsWithCombinedLabel = facultyDepartments?.map(el => {
+        const facultyTitle = isArabic ? el?.faculty_id?.title_ar : el?.faculty_id?.title_en;
+        const deptTitle = isArabic ? el?.title_ar : el?.title_en;
+        return {
+            ...el,
+            combined_label: `${facultyTitle} - ${deptTitle}`
+        }
+    });
 
     let getAcademyTermsToShow = getAcademyTerms?.map(el => {
         return {
@@ -214,14 +223,22 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("acad
         }
     }
 
-    const onFilterChange = async (filterOBJ) => {
+    const onFilterChange = (filterOBJ) => {
         logger.log("filterOBJ", filterOBJ);
-        if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
-        if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
-        if (filterOBJ.hasOwnProperty("faculty_department_id") && filterOBJ.faculty_department_id !== "0") searchParams.set("faculty_department_id", filterOBJ.faculty_department_id);
-        // searchParams.get("search", e.target.value);
-        setSearchParams(searchParams);
-    }
+        const newParams = new URLSearchParams();
+        
+        // Preserve current limit or default to 10
+        newParams.set("limit", searchParams.get("limit") || 10);
+        newParams.set("page", 1); // Reset to page 1 on filter change
+
+        if (filterOBJ.search) newParams.set("search", filterOBJ.search);
+        if (filterOBJ.status && filterOBJ.status !== "0") newParams.set("status", filterOBJ.status);
+        if (filterOBJ.faculty_department_id && filterOBJ.faculty_department_id !== "0") {
+            newParams.set("faculty_department_id", filterOBJ.faculty_department_id);
+        }
+
+        setSearchParams(newParams);
+    };
 
     
 
@@ -283,15 +300,15 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("acad
                     <DashboardFilterComponent
                         placeholder={t("Dashboard.searchWith", { search: t("Dashboard.NameInArabic") })}
                         textSearchField={"search"}
-                        statusKey={"status"}
-                        TrueOrFalseArr={TrueOrFalseArr}
                         selectKey={"faculty_department_id"}
-                        selectOptions={facultyDepartments}
-                        arKey={"title_ar"}
-                        enKey={"title_en"}
+                        selectOptions={facultyDepartmentsWithCombinedLabel}
+                        arKey={"combined_label"}
+                        enKey={"combined_label"}
                         select2Label={departmentSearch}
                         onFilterChange={onFilterChange}
                         t={t}
+                        isAdmin={true}
+                        isAcademyTerms={true}
                     />
 
 

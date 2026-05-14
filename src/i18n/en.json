@@ -517,6 +517,18 @@
   "Failed": "Failed",
   "TERM_TO_TERM": "Term to Term",
   "YEAR_TO_YEAR": "Year to Year",
-  "Total Students":"Total Students",
-  "Add Promotion":"Add Promotion"
+  "Total Students": "Total Students",
+  "Add Promotion": "Add Promotion",
+  "studyYear1": "First Study Year",
+  "studyYear2": "Second Study Year",
+  "studyYear3": "Third Study Year",
+  "studyYear4": "Fourth Study Year",
+  "studyYear5": "Fifth Study Year",
+  "studyYear6": "Sixth Study Year",
+  "studyYear7": "Seventh Study Year",
+  "studyYear8": "Eighth Study Year",
+  "studyYear9": "Ninth Study Year",
+  "studyYear10": "Tenth Study Year",
+  "current Study Year": "Current Study Year",
+  "Target Academy Term": "Target Academy Term"
 }
