@@ -1,5 +1,5 @@
-import { useTheme } from "@emotion/react";
 import {
+    useTheme,
     Box,
     Button,
     Card,
@@ -32,6 +32,7 @@ import notify from "../../components/notify";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
+import PersonIcon from '@mui/icons-material/Person';
 import { useLazyQuery, useQuery, useMutation } from "@apollo/client/react";
 import { useEffect } from "react";
 import { GET_ALL_FACULITIES, GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID } from "../../graphql/facultyQuiries";
@@ -382,12 +383,28 @@ export default function AddPromotionPage() {
                         <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
                             <CardContent sx={{ textAlign: "center" }}>
                                 <Box sx={{ position: "relative", display: "inline-flex", mb: 3 }}>
+                                    {/* Background Circle representing Failed/Total */}
+                                    <CircularProgress
+                                        variant="determinate"
+                                        value={100}
+                                        size={180}
+                                        thickness={5}
+                                        sx={{ color: "#F39A15" }}
+                                    />
+                                    {/* Foreground Circle representing Success */}
                                     <CircularProgress
                                         variant="determinate"
                                         value={previewData?.previewPromotion?.total_students > 0 ? (previewData?.previewPromotion?.will_promote_count / previewData?.previewPromotion?.total_students) * 100 : 0}
                                         size={180}
-                                        thickness={8}
-                                        sx={{ color: "#F39A15" }}
+                                        thickness={5}
+                                        sx={{ 
+                                            color: "#095690",
+                                            position: "absolute",
+                                            left: 0,
+                                            '& .MuiCircularProgress-circle': {
+                                                strokeLinecap: 'round',
+                                            }
+                                        }}
                                     />
                                     <Box
                                         sx={{
@@ -411,22 +428,80 @@ export default function AddPromotionPage() {
                                     </Box>
                                 </Box>
 
-                                <Box sx={{ display: "flex", alignItems: "center", mb: 2, p: 2, border: "1px solid #eee", borderRadius: 2 }}>
-                                    <Box sx={{ p: 1, backgroundColor: "#e3f2fd", borderRadius: "50%", mr: 2 }}>
-                                        <CheckCircleIcon color="primary" />
+                                <Box sx={{ display: "flex", alignItems: "center", mb: 3, px: 1 }}>
+                                    <Box sx={{ position: "relative", display: "inline-flex", mr: 2 }}>
+                                        <CircularProgress
+                                            variant="determinate"
+                                            value={100}
+                                            size={50}
+                                            thickness={4}
+                                            sx={{ color: "#f0f0f0" }}
+                                        />
+                                        <CircularProgress
+                                            variant="determinate"
+                                            value={previewData?.previewPromotion?.total_students > 0 ? (previewData?.previewPromotion?.will_promote_count / previewData?.previewPromotion?.total_students) * 100 : 0}
+                                            size={50}
+                                            thickness={4}
+                                            sx={{ 
+                                                color: "#095690",
+                                                position: "absolute",
+                                                left: 0,
+                                                '& .MuiCircularProgress-circle': {
+                                                    strokeLinecap: 'round',
+                                                }
+                                            }}
+                                        />
+                                        <Box
+                                            sx={{
+                                                top: 0, left: 0, bottom: 0, right: 0,
+                                                position: "absolute",
+                                                display: "flex", alignItems: "center", justifyContent: "center",
+                                            }}
+                                        >
+                                            <PersonIcon sx={{ color: "#095690", fontSize: 16 }} />
+                                        </Box>
                                     </Box>
-                                    <Box sx={{ textAlign: isArabic ? "right" : "left", flex: 1 }}>
-                                        <Typography variant="h6">{previewData?.previewPromotion?.will_promote_count || 0}</Typography>
+                                    <Box sx={{ textAlign: isArabic ? "right" : "left" }}>
+                                        <Typography variant="h6" sx={{ fontWeight: "bold", lineHeight: 1.2 }}>{previewData?.previewPromotion?.will_promote_count || 0}</Typography>
                                         <Typography variant="body2" color="textSecondary">{t("Success")}</Typography>
                                     </Box>
                                 </Box>
 
-                                <Box sx={{ display: "flex", alignItems: "center", p: 2, border: "1px solid #eee", borderRadius: 2 }}>
-                                    <Box sx={{ p: 1, backgroundColor: "#fff3e0", borderRadius: "50%", mr: 2 }}>
-                                        <ErrorIcon sx={{ color: "#F39A15" }} />
+                                <Box sx={{ display: "flex", alignItems: "center", mb: 2, px: 1 }}>
+                                    <Box sx={{ position: "relative", display: "inline-flex", mr: 2 }}>
+                                        <CircularProgress
+                                            variant="determinate"
+                                            value={100}
+                                            size={50}
+                                            thickness={4}
+                                            sx={{ color: "#f0f0f0" }}
+                                        />
+                                        <CircularProgress
+                                            variant="determinate"
+                                            value={previewData?.previewPromotion?.total_students > 0 ? (previewData?.previewPromotion?.will_fail_count / previewData?.previewPromotion?.total_students) * 100 : 0}
+                                            size={50}
+                                            thickness={4}
+                                            sx={{ 
+                                                color: "#F39A15",
+                                                position: "absolute",
+                                                left: 0,
+                                                '& .MuiCircularProgress-circle': {
+                                                    strokeLinecap: 'round',
+                                                }
+                                            }}
+                                        />
+                                        <Box
+                                            sx={{
+                                                top: 0, left: 0, bottom: 0, right: 0,
+                                                position: "absolute",
+                                                display: "flex", alignItems: "center", justifyContent: "center",
+                                            }}
+                                        >
+                                            <PersonIcon sx={{ color: "#F39A15", fontSize: 16 }} />
+                                        </Box>
                                     </Box>
-                                    <Box sx={{ textAlign: isArabic ? "right" : "left", flex: 1 }}>
-                                        <Typography variant="h6">{previewData?.previewPromotion?.will_fail_count || 0}</Typography>
+                                    <Box sx={{ textAlign: isArabic ? "right" : "left" }}>
+                                        <Typography variant="h6" sx={{ fontWeight: "bold", lineHeight: 1.2 }}>{previewData?.previewPromotion?.will_fail_count || 0}</Typography>
                                         <Typography variant="body2" color="textSecondary">{t("Failed")}</Typography>
                                     </Box>
                                 </Box>
