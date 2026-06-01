@@ -14,7 +14,7 @@ const StudentFormalAffidavit = ({ ticketType, studentData, registrationData }) =
 
   const faculty = registrationData?.faculty_id?.title_ar || "................";
   const department = registrationData?.faculty_department_id?.title_ar || "................";
-  const registrationNo = studentData?.serial || registrationData?.registration_no || "................";
+  const registrationNo = registrationData?.user_id?.qid_number || " ــ ";
   const academicYear = registrationData?.academyTerm_id?.current_year || "................";
 
   // Configuration for different affidavit types
