@@ -37,6 +37,7 @@ export default function AddSupportTicketPage() {
     });
 
     const ticketTypes = configData?.getSupportTicketTypesConfig || [];
+    console.log("ticketTypes",ticketTypes);
 
     const me = useSelector((state) => state.user.loggedUser);
 

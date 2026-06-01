@@ -54,7 +54,8 @@ export const ticketTypes=[
     { id: "university_certificate", labelAr: "طلب إفادة جامعية", labelEn: "University Certificate Request" },
     { id: "graduation_certificate", labelAr: "طلب إفادة تخرج", labelEn: "Graduation Certificate Request" },
     { id: "success_statement", labelAr: "طلب بيان نجاح", labelEn: "Success Statement Request" },
-    { id: "registration_suspension", labelAr: "طلب قيد تخرج", labelEn: "Graduation Enrollment Request" }
+    { id: "registration_suspension", labelAr: "إيقاف قيد", labelEn: "Registration Suspension" },
+    { id: "graduation_enrollment", labelAr: "قيد تخرج", labelEn: "Graduation Enrollment" }
 ];
 
 export const isOpen = [

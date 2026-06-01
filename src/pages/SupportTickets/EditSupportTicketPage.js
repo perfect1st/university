@@ -25,6 +25,7 @@ import UniversityCard from "../../components/UniversityCard";
 import GraduationCertificate from "../../components/Certificates/GraduationCertificate";
 import StudentAffidavit from "../../components/Certificates/StudentAffidavit";
 import GraduationEnrollmentStatement from "../../components/Certificates/GraduationEnrollmentStatement";
+import StudentFormalAffidavit from "../../components/Certificates/StudentFormalAffidavit";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
 
 export default function EditSupportTicketPage() {
@@ -275,12 +276,12 @@ export default function EditSupportTicketPage() {
                                 <GraduationCertificate studentId={ticket.user_id?.id} />
                             )}
 
-                            {(ticket?.type === 'university_certificate' || ticket?.type === 'success_statement') && (
-                                <StudentAffidavit studentData={ticket.user_id} registrationData={registrationData} />
-                            )}
-
-                            {ticket?.type === 'registration_suspension' && (
-                                <GraduationEnrollmentStatement studentData={ticket.user_id} registrationData={registrationData} />
+                            {(ticket?.type === 'university_certificate' || ticket?.type === 'success_statement' || ticket?.type === 'registration_suspension' || ticket?.type === 'graduation_enrollment') && (
+                                <StudentFormalAffidavit 
+                                    ticketType={ticket.type} 
+                                    studentData={ticket.user_id} 
+                                    registrationData={registrationData} 
+                                />
                             )}
                             
                             {/* Special case for the new one "قيد تخرج" - usually mapped to a type */}
