@@ -116,6 +116,7 @@ import BookDetailsPage from "./pages/E-Library/BookDetailsPage";
 import AllContactMessagesPage from "./pages/ContactUs/AllContactMessagesPage";
 import SiteSettings from "./pages/SiteSettings/SiteSettings";
 import TestCertificatePage from "./pages/TestCertificatePage";
+import PromotionPage from "./pages/Promotion/PromotionPage";
 
 
 // Public Site Config Pages
@@ -125,6 +126,7 @@ import Accessibility from "./pages/Home/Accessibility";
 import ContactUs from "./pages/Home/ContactUs";
 import SuccessPaymentPage from "./pages/PaymentResult/SuccessPaymentPage";
 import FailedPaymentPage from "./pages/PaymentResult/FailedPaymentPage";
+import AddPromotionPage from "./pages/Promotion/AddPromotionPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -1000,6 +1002,22 @@ function App() {
                         <RegisterFormDetailsPage />
                       </MainLayout>
                     } />
+                  </Route>
+                  {/* الترقية */}
+                  <Route path="/promotion">
+                    <Route index element={
+                      <MainLayout isLoggedIn={true}>
+                        <PromotionPage />
+                      </MainLayout>
+                    } />
+                    <Route
+                      path="add"
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <AddPromotionPage />
+                        </MainLayout>
+                      }
+                    />
                   </Route>
 
                   {/* رسائل اتصل بنا */}

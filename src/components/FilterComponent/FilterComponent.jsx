@@ -38,47 +38,35 @@ const FilterComponent = ({
 
   const [filters, setFilters] = useState({
     search: initialFilters.keyword || "",
-    user_type: initialFilters.userType || "",
+    role: initialFilters.role || "",
     status: initialFilters.status || "",
   });
 
-  // // sync from URL on mount / location change
-  // useEffect(() => {
-  //   const q = new URLSearchParams(location.search);
-  //   setFilters({
-  //     search: q.get("keyword") || initialFilters.keyword || "",
-  //     user_type: q.get("user_type") || initialFilters.userType || "",
-  //     status: q.get("status") || initialFilters.status || "",
-  //   });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [location.search]);
+  // Sync internal state when initialFilters change (e.g., URL changes)
+  useEffect(() => {
+    setFilters({
+      search: initialFilters.keyword || "",
+      role: initialFilters.role || "",
+      status: initialFilters.status || "",
+    });
+  }, [initialFilters.keyword, initialFilters.role, initialFilters.status]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  const applyFiltersToUrl = (f) => {
-    const params = new URLSearchParams();
-    if (f.search) params.set("keyword", f.search);
-    if (f.user_type) params.set("user_type", f.user_type);
-    if (f.status) params.set("status", f.status);
-    navigate({ pathname: location.pathname, search: params.toString() });
-  };
-
   const handleSubmit = () => {
-    applyFiltersToUrl(filters);
     if (typeof onSearch === "function") {
-      onSearch({ keyword: filters.search, userType: filters.user_type, status: filters.status });
+      onSearch({ keyword: filters.search, role: filters.role, status: filters.status });
     }
   };
 
   const handleCancelFilters = () => {
-    const empty = { search: "", user_type: "", status: "" };
+    const empty = { search: "", role: "", status: "" };
     setFilters(empty);
-    navigate({ pathname: location.pathname, search: "" });
     if (typeof onSearch === "function") {
-      onSearch({ keyword: "", userType: "", status: "" });
+      onSearch(empty);
     }
   };
 
@@ -86,7 +74,7 @@ const FilterComponent = ({
     <Box sx={{ mb: 3, px: { xs: 1, sm: 2 } }}>
       <Grid container spacing={2} alignItems="center">
         {/* Search Field */}
-        {/* <Grid item xs={12} sm={6} md={6}>
+        <Grid item xs={12} sm={6} md={6}>
           <CustomTextField
             fullWidth
             size="small"
@@ -107,22 +95,22 @@ const FilterComponent = ({
               ),
             }}
           />
-        </Grid> */}
+        </Grid>
 
-        {/* User Type Select */}
-        {/* <Grid item xs={12} sm={3} md={2}>
+        {/* Role Select */}
+        <Grid item xs={12} sm={3} md={2}>
           <CustomTextField
             select
             fullWidth
             size="small"
             label={t("User Type")}
-            name="user_type"
-            value={filters.user_type || ""}
+            name="role"
+            value={filters.role || ""}
             onChange={handleChange}
             variant="outlined"
             isRtl={isArabic}
             SelectProps={{
-              IconComponent: (props) => <ArrowDropDown {...props} sx={{ left: "auto", right: 8, position: "absolute" }} />,
+              IconComponent: (props) => <ArrowDropDown {...props} sx={{ left: isArabic ? 8 : "auto", right: isArabic ? "auto" : 8, position: "absolute" }} />,
               MenuProps: { PaperProps: { style: { maxHeight: 250 } } },
             }}
             sx={inputSx}
@@ -140,7 +128,7 @@ const FilterComponent = ({
               )
             )}
           </CustomTextField>
-        </Grid> */}
+        </Grid>
 
         {/* Status Select */}
         <Grid item xs={12} sm={3} md={2}>
@@ -155,7 +143,7 @@ const FilterComponent = ({
             variant="outlined"
             isRtl={isArabic}
             SelectProps={{
-              IconComponent: (props) => <ArrowDropDown {...props} sx={{ left: "auto", right: 8, position: "absolute" }} />,
+              IconComponent: (props) => <ArrowDropDown {...props} sx={{ left: isArabic ? 8 : "auto", right: isArabic ? "auto" : 8, position: "absolute" }} />,
               MenuProps: { PaperProps: { style: { maxHeight: 250 } } },
             }}
             sx={inputSx}
@@ -178,8 +166,9 @@ const FilterComponent = ({
             size="medium"
             sx={{
               backgroundColor: theme.palette.info.main,
-              color: theme.palette.whiteText ? theme.palette.whiteText.primary : "#ffffff",
+              color: "#ffffff",
               borderRadius: 1,
+              height: "40px"
             }}
           >
             {t("Search")}
@@ -196,6 +185,7 @@ const FilterComponent = ({
               borderColor: theme.palette.error.main,
               color: theme.palette.error.main,
               borderRadius: 1,
+              height: "40px"
             }}
           >
             {t("Cancel")}

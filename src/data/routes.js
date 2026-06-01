@@ -44,9 +44,9 @@ const routesData = {
         {
           key: "degrees",
           label: { en: "student degrees", ar: "درجات الطالب" },
-          get path() { 
+          get path() {
             const user = store.getState().user.loggedUser;
-            return `/exams/studentDegrees/${user?.id}`; 
+            return `/exams/studentDegrees/${user?.id}`;
           },
         },
         {
@@ -152,13 +152,13 @@ const routesData = {
           path: "/lecturesSchedule",
         },
         {
-          key: "materials", 
+          key: "materials",
           label: { en: "Subjects", ar: "المواد الدراسية" },
           path: "/materials",
         },
         {
           // Key reused to share permissions with materials component
-          key: "materials", 
+          key: "materials",
           label: { en: "E-Library", ar: "المكتبة الالكترونية" },
           path: "/ELibrary",
         },
@@ -166,6 +166,11 @@ const routesData = {
           key: "registerForms",
           label: { en: "Register Forms", ar: "استمارات التسجيل" },
           path: "/registerForms",
+        },
+        {
+          key: "registerForms",
+          label: { en: "Promotion", ar: "الترقية" },
+          path: "/promotion",
         },
       ]
     },

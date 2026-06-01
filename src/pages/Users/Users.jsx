@@ -42,7 +42,7 @@ const UsersPage = () => {
   const page = parseInt(searchParams.get("page") || "1", 10);
   const limit = parseInt(searchParams.get("limit") || "10", 10);
   const keyword = searchParams.get("keyword") || "";
-  const userTypeParam = searchParams.get("userType") || "";
+  const roleParam = searchParams.get("role") || "";
   const statusParam = searchParams.get("status") || "";
   const { data, loading, error } = useQuery(GET_USERS, {
     // variables: { page, limit: 10, keyword, status: statusParam },
@@ -62,11 +62,11 @@ const UsersPage = () => {
         u.email.toLowerCase().includes(keyword.toLowerCase()) ||
         u.mobile.toLowerCase().includes(keyword.toLowerCase()) ||
         (u.serial_num && String(u.serial_num).includes(keyword));
-      const matchesType = !userTypeParam || userTypeParam === "" || String(u.userType) === String(userTypeParam);
+      const matchesType = !roleParam || roleParam === "" || String(u.userType) === String(roleParam);
       const matchesStatus = !statusParam || statusParam === "" || String(u.status) === String(statusParam);
       return matchesKeyword && matchesType && matchesStatus;
     });
-  }, [allUsers, keyword, userTypeParam, statusParam]);
+  }, [allUsers, keyword, roleParam, statusParam]);
 
   // pagination calculations
   const totalUsers = filteredUsers.length;
@@ -208,10 +208,10 @@ const UsersPage = () => {
       <Box sx={{ my: 2 }}>
         <FilterComponent
           onSearch={(filters) => {
-            // FilterComponent expected to provide { keyword, userType, status }
+            // FilterComponent provides { keyword, role, status }
             handleSearch(filters);
           }}
-          initialFilters={{ keyword, userType: userTypeParam, status: statusParam }}
+          initialFilters={{ keyword, role: roleParam, status: statusParam }}
           statusOptions={["active", "inActive"]}
           userTypeOptions={["Admin", "student", "accountant"]}
           isUsers={true}
