@@ -174,7 +174,7 @@ const hijriEndYear = getHijriYearFromGregorian(endYear);
                 {`${hijriStartYear} / ${hijriEndYear}`} هـ الموافق {`${startYear} / ${endYear}`} وبرقم<br/>
                 قيد ( {user.qid_number || '...'} )، حصل على درجة البكالوريوس من كلية<br/>
                 {user.faculty_id?.title_ar || 'الهندسة وعلوم الحاسوب'} ، تخصص: <Box component="span" sx={{ fontWeight: 'bold' }}>نظم المعلومات</Box>،<br/>
-                للعام الجامعي 4441/3441 هـ الموافق<br/>
+                للعام الجامعي 1444/1443 هـ الموافق<br/>
                 2024/2023م، بتقدير: <Box component="span" sx={{ fontWeight: 'bold' }}>جيد جداً</Box>.
               </Box>
             </Stack>

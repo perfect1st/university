@@ -27,6 +27,11 @@ const routesData = {
       label: { en: "Academic", ar: "أكاديمي" },
       children: [
         {
+          key: "StudentDashboard",
+          label: { en: "Student Dashboard", ar: "لوحة التحكم" },
+          path: "/StudentDashboard",
+        },
+        {
           key: "timeTables",
           label: { en: "Lectures Schedule", ar: "جداول المحاضرات" },
           path: "/StudentlecturesSchedule",
@@ -229,6 +234,12 @@ const routesData = {
           key: "countries",
           label: { en: "Countries", ar: "الدول" },
           path: "/countries",
+        },
+        {
+          key: "backups",
+          isPublic: true,
+          label: { en: "Backups", ar: "النسخ الاحتياطي" },
+          path: "/backups",
         },
       ]
     }

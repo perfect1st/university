@@ -115,6 +115,7 @@ import AddBookPage from "./pages/E-Library/AddBookPage";
 import BookDetailsPage from "./pages/E-Library/BookDetailsPage";
 import AllContactMessagesPage from "./pages/ContactUs/AllContactMessagesPage";
 import SiteSettings from "./pages/SiteSettings/SiteSettings";
+import BackupsPage from "./pages/Backups/BackupsPage";
 import TestCertificatePage from "./pages/TestCertificatePage";
 import PromotionPage from "./pages/Promotion/PromotionPage";
 
@@ -615,6 +616,13 @@ function App() {
                   <Route path="/site-settings" element={
                     <MainLayout isLoggedIn={true}>
                       <SiteSettings />
+                    </MainLayout>
+                  } />
+
+                  {/* Backups */}
+                  <Route path="/backups" element={
+                    <MainLayout isLoggedIn={true}>
+                      <BackupsPage />
                     </MainLayout>
                   } />
 
