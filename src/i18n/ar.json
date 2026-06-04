@@ -598,5 +598,8 @@
     "success": "ناجحة",
     "failed": "فاشلة",
     "details": "تفاصيل النسخة الاحتياطية"
-  }
+  },
+  "Student Type": "نوع الطالب",
+  "material_equivalence": "معادلة المواد",
+  "academic_suspension": "إيقاف أكاديمي"
 }

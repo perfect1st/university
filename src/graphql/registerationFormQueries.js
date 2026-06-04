@@ -39,6 +39,8 @@ query GetRegisterFormByUserId($user_id:ID!) {
         is_paid
         paid_document_file
         high_school_certificate_file
+        is_clearance
+        academic_record
         address
         status
         mobile
@@ -156,6 +158,8 @@ query GetRegisterFormById($id: ID!) {
         is_paid
         paid_document_file
         high_school_certificate_file
+        is_clearance
+        academic_record
         address
         status
         reviewed_at
@@ -270,6 +274,8 @@ query FilteredPagedRegisterForms($search: String, $status: String, $faculty_id: 
             is_paid
             paid_document_file
             high_school_certificate_file
+            is_clearance
+            academic_record
             address
             status
             reviewed_at

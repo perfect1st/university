@@ -68,7 +68,8 @@ export default function RegisterFormDetailsPage() {
 
     const [uploadStates, setUploadStates] = useState({
         high_school_certificate_file: { isUploading: false, progress: 0 },
-        paid_document_file: { isUploading: false, progress: 0 }
+        paid_document_file: { isUploading: false, progress: 0 },
+        academic_record: { isUploading: false, progress: 0 }
     });
 
     const handleFileUpload = (e, fieldName) => {
@@ -155,6 +156,8 @@ export default function RegisterFormDetailsPage() {
             academyTerm_id: formData?.academyTerm_id?.id || "",
             paid_document_file: formData?.paid_document_file || "null",
             high_school_certificate_file: formData?.high_school_certificate_file || "null",
+            academic_record: formData?.academic_record || "null",
+            is_clearance: formData?.is_clearance ?? false,
         },
         enableReinitialize: true,
         validationSchema: Yup.object({
@@ -167,6 +170,7 @@ export default function RegisterFormDetailsPage() {
                 const input = {
                     ...values,
                     is_inside_yemen: values.is_inside_yemen === true || values.is_inside_yemen === "true",
+                    is_clearance: values.is_clearance === true || values.is_clearance === "true",
                     gpa: values.gpa || "0",
                 };
 
@@ -451,6 +455,19 @@ export default function RegisterFormDetailsPage() {
                             <MenuItem value="rejected">{t("registerForms.status.rejected")}</MenuItem>
                         </HorizentalTextFieldSelect>
                     </Grid>
+                    <Grid item xs={12} md={6}>
+                        <HorizentalTextFieldSelect
+                            t={t}
+                            title={t("Student Type")}
+                            fieldName="is_clearance"
+                            value={formik.values.is_clearance}
+                            onChange={formik.handleChange}
+                            setValue={(val) => formik.setFieldValue("is_clearance", val)}
+                        >
+                            <MenuItem value={false}>{isArabic ? "طالب مستجد" : "New Student"}</MenuItem>
+                            <MenuItem value={true}>{isArabic ? "طالب منقول" : "Transfer Student"}</MenuItem>
+                        </HorizentalTextFieldSelect>
+                    </Grid>
 
                     <Grid item xs={12} sx={{ mt: 3 }}>
                         <Typography variant="h6" sx={{ mb: 2, color: theme.palette.primary.main, fontWeight: "bold" }}>
@@ -470,6 +487,21 @@ export default function RegisterFormDetailsPage() {
                         {uploadStates.high_school_certificate_file.isUploading && (
                             <Box sx={{ width: '100%', mt: -2, mb: 2 }}>
                                 <LinearProgress variant="determinate" value={uploadStates.high_school_certificate_file.progress} />
+                            </Box>
+                        )}
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <HorizentalTextField
+                            title={t("Academic Record") || "Academic Record"}
+                            value={formik.values.academic_record}
+                            fieldName="academic_record"
+                            type="file"
+                            isDisabled={false}
+                            handleChange={(e) => handleFileUpload(e, "academic_record")}
+                        />
+                        {uploadStates.academic_record.isUploading && (
+                            <Box sx={{ width: '100%', mt: -2, mb: 2 }}>
+                                <LinearProgress variant="determinate" value={uploadStates.academic_record.progress} />
                             </Box>
                         )}
                     </Grid>

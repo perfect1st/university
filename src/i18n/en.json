@@ -559,5 +559,8 @@
     "success": "Success",
     "failed": "Failed",
     "details": "Backup Details"
-  }
+  },
+  "Student Type": "Student Type",
+  "material_equivalence": "Material Equivalence",
+  "academic_suspension": "Academic Suspension"
 }

@@ -55,7 +55,9 @@ export const ticketTypes=[
     { id: "graduation_certificate", labelAr: "طلب إفادة تخرج", labelEn: "Graduation Certificate Request" },
     { id: "success_statement", labelAr: "طلب بيان نجاح", labelEn: "Success Statement Request" },
     { id: "registration_suspension", labelAr: "إيقاف قيد", labelEn: "Registration Suspension" },
-    { id: "graduation_enrollment", labelAr: "قيد تخرج", labelEn: "Graduation Enrollment" }
+    { id: "graduation_enrollment", labelAr: "قيد تخرج", labelEn: "Graduation Enrollment" },
+    { id: "material_equivalence", labelAr: "معادلة مواد", labelEn: "Material Equivalence" },
+    { id: "academic_suspension", labelAr: "إيقاف أكاديمي", labelEn: "Academic Suspension" }
 ];
 
 export const isOpen = [

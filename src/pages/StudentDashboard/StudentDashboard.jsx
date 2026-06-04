@@ -146,7 +146,8 @@ export default function StudentDashboard() {
   const isPending = getUserStudyMaterialsByUser ? true : false;
 
   // في مواد و ب انتظار موافقة المشرف
-  const isDisabled= getUserStudyMaterialsByUser?.length>0 && (getUserStudyMaterialsByUser[0]?.status=="pending" ? true : false)
+const isDisabled = getUserStudyMaterialsByUser?.length > 0 && 
+  getUserStudyMaterialsByUser[getUserStudyMaterialsByUser.length - 1]?.status !== "completed";
 
   logger.log("isPending", isPending);
   logger.log("isDisabled",isDisabled);
