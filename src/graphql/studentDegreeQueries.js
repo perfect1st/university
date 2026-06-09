@@ -161,3 +161,100 @@ query StudentDegreeByStudent($student_id: ID!) {
     }
 }
 `;
+
+export const GET_ACADEMIC_TRANSCRIPT = gql`
+query GetAcademicTranscript($student_id: ID!) {
+    getAcademicTranscript(student_id: $student_id) {
+        overall_total_subjects
+        overall_total_hours
+        overall_total_degrees
+        overall_max_degrees
+        overall_average
+        overall_grade
+        generated_at
+        student {
+            id
+            serial
+            username
+            fullname
+            email
+            mobile
+            role
+            status
+            profile_image
+            qid_number
+            is_inside_yemen
+            createdAt
+            updatedAt
+        }
+        faculty {
+            id
+            serial
+            title_ar
+            title_en
+            status
+            required_dep
+            study_years_count
+            createdAt
+            updatedAt
+        }
+        faculty_department {
+            id
+            serial
+            title_ar
+            title_en
+            status
+            createdAt
+            updatedAt
+        }
+        levels {
+            study_year
+            total_subjects
+            total_hours
+            total_degrees
+            average
+            grade
+            terms {
+                term_number
+                total_hours
+                total_degrees
+                average
+                grade
+                term {
+                    id
+                    serial
+                    title_ar
+                    title_en
+                    status
+                    study_year
+                    current_year
+                    term_number
+                    min_study_hours
+                    max_study_hours
+                }
+                subjects {
+                    material {
+                        id
+                        serial
+                        title_ar
+                        title_en
+                        fullmark_degree
+                        success_degree
+                    }
+                    hours
+                    degree
+                    grade
+                }
+            }
+        }
+        summary {
+            study_year
+            total_subjects
+            total_hours
+            total_degrees
+            average
+            grade
+        }
+    }
+}
+`;

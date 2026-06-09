@@ -24,6 +24,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import UniversityCard from "../../components/UniversityCard";
 import GraduationCertificate from "../../components/Certificates/GraduationCertificate";
 import StudentAffidavit from "../../components/Certificates/StudentAffidavit";
+import AcademicTranscript from "../../components/Certificates/AcademicTranscript";
 import GraduationEnrollmentStatement from "../../components/Certificates/GraduationEnrollmentStatement";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
 
@@ -275,8 +276,12 @@ export default function EditSupportTicketPage() {
                                 <GraduationCertificate studentId={ticket.user_id?.id} />
                             )}
 
-                            {(ticket?.type === 'university_certificate' || ticket?.type === 'success_statement') && (
+                            {ticket?.type === 'university_certificate' && (
                                 <StudentAffidavit studentData={ticket.user_id} registrationData={registrationData} />
+                            )}
+
+                            {ticket?.type === 'success_statement' && (
+                                <AcademicTranscript studentId={ticket.user_id?.id} registrationData={registrationData} />
                             )}
 
                             {ticket?.type === 'registration_suspension' && (
