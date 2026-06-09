@@ -22,6 +22,23 @@ const GraduationCertificate = ({ studentId }) => {
     skip: !studentId, 
   });
 
+  const getHijriYearFromGregorian = (gregorianYear) => {
+  // ننشئ تاريخاً في منتصف السنة الميلادية لضمان الدقة
+  const date = new Date(gregorianYear, 6, 1); 
+  
+  return new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+    year: 'numeric'
+  }).format(date).replace(/\u200f/g, '').replace(' هـ', '');
+};
+
+
+const startYear = parseInt(user?.register_form_id?.education_year || "2022");
+const endYear = startYear + 1;
+const hijriStartYear = getHijriYearFromGregorian(startYear);
+const hijriEndYear = getHijriYearFromGregorian(endYear);
+
+  console.log("user", user);
+
   const handleDownloadPDF = async () => {
     const element = certificateRef.current;
     
@@ -141,8 +158,8 @@ const GraduationCertificate = ({ studentId }) => {
                 Upon the Resolution of UAS Council No. <br/>
                 the student <Box component="span" sx={{ fontWeight: 'bold', fontSize: '20px' }}>Mr. {user.fullname}</Box><br/>
                 <Box component="span" sx={{ fontWeight: 'bold' }}>Yemeni</Box> nationality who was enrolled at this University<br/>
-                in the academic year {user.register_form_id?.education_year || '2019 / 2020'} corresponding to<br/>
-                registration No. ( {user.serial || '...'} ) has graduated from the College of<br/>
+                in the academic year {`${startYear} / ${endYear}`} corresponding to<br/>
+                registration No. ( {user.qid_number || '...'} ) has graduated from the College of<br/>
                 {user.faculty_id?.title_en || 'Engineering and Computer science'} with a<br/>
                 <Box component="span" sx={{ fontWeight: 'bold', fontSize: '20px' }}>Bachelor's degree in {user.register_form_id?.study_place || 'Information Systems'}</Box><br/>
                 in 2022 / 2023 with a cumulative grade of<br/>
@@ -152,13 +169,13 @@ const GraduationCertificate = ({ studentId }) => {
               {/* Arabic Paragraph */}
               <Box dir="rtl" sx={{ flex: 1, textAlign: 'center', fontSize: '18px', lineHeight: 1.2, fontFamily: 'Noto Sans Arabic, Arial, sans-serif' }}>
                 بناءً على قرار مجلس جامعة العلوم الأكاديمية رقم<br/>
-                (...) ، فإن الطالب / <Box component="span" sx={{ fontWeight: 'bold' }}>{user.fullname}</Box> ، يمني<br/>
-                الجنسية، والذي التحق بالجامعة في العام الدراسي<br/>
-                1441/0441 هـ الموافق 0202/9102م، وبرقم<br/>
-                قيد ( {user.serial || '...'} )، حصل على درجة البكالوريوس من كلية<br/>
+                (...) ، فإن الطالب / <Box component="span" sx={{ fontWeight: 'bold' }}>{user.fullname}</Box> ،{user?.register_form_id ?.is_inside_yemen ? "يمني الجنسية" : "غير يمني الجنسيه"}<br/>
+                 والذي التحق بالجامعة في العام الدراسي<br/>
+                {`${hijriStartYear} / ${hijriEndYear}`} هـ الموافق {`${startYear} / ${endYear}`} وبرقم<br/>
+                قيد ( {user.qid_number || '...'} )، حصل على درجة البكالوريوس من كلية<br/>
                 {user.faculty_id?.title_ar || 'الهندسة وعلوم الحاسوب'} ، تخصص: <Box component="span" sx={{ fontWeight: 'bold' }}>نظم المعلومات</Box>،<br/>
-                للعام الجامعي 4441/3441 هـ الموافق<br/>
-                2022/2023م، وبتقدير: <Box component="span" sx={{ fontWeight: 'bold' }}>جيد جداً</Box>.
+                للعام الجامعي 1444/1443 هـ الموافق<br/>
+                2024/2023م، بتقدير: <Box component="span" sx={{ fontWeight: 'bold' }}>جيد جداً</Box>.
               </Box>
             </Stack>
 

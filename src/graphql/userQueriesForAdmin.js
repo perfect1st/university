@@ -78,6 +78,18 @@ export const GET_SINGLE_USER = gql`
         gpa
         createdAt
         updatedAt
+        academyTerm_id {
+                id
+                serial
+                title_ar
+                title_en
+                status
+                study_year
+                current_year
+                term_number
+                min_study_hours
+                max_study_hours
+            }
       }
       faculty_id {
         id

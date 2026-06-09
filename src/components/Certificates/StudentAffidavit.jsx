@@ -7,14 +7,15 @@ import html2pdf from "html2pdf.js";
 const StudentAffidavit = ({ studentData, registrationData }) => {
   const printRef = useRef(null);
   const theme = useTheme();
-
+  console.log("studentData", studentData);
+  console.log("registrationData", registrationData);
   const studentFullName = registrationData
     ? `${registrationData.first_name || ""} ${registrationData.second_name || ""} ${registrationData.third_name || ""} ${registrationData.fourth_name || ""}`.trim()
     : studentData?.fullname || "................";
 
   const faculty = registrationData?.faculty_id?.title_ar || "................";
   const department = registrationData?.faculty_department_id?.title_ar || "................";
-  const registrationNo = studentData?.serial || registrationData?.registration_no || "................";
+  const registrationNo = registrationData?.user_id?.qid_number || "ــ"
   const academicYear = registrationData?.academyTerm_id?.current_year || "................";
 
   const handlePrint = () => {

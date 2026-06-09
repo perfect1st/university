@@ -229,6 +229,8 @@ export default function Admissions() {
     general_grade: "",
     gpa: "",
     high_school_certificate_file: null,
+    academic_record: null,
+    is_clearance: false,
     faculty_id: "",
     faculty_department_id: "",
     academyTerm_id: ""
@@ -240,7 +242,13 @@ export default function Admissions() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState("");
 
+  const [isUploadingAcademicRecord, setIsUploadingAcademicRecord] = useState(false);
+  const [uploadAcademicRecordProgress, setUploadAcademicRecordProgress] = useState(0);
+  const [uploadAcademicRecordError, setUploadAcademicRecordError] = useState("");
+  const [selectedAcademicRecordFile, setSelectedAcademicRecordFile] = useState(null);
+
   const fileInputRef = useRef(null);
+  const academicRecordInputRef = useRef(null);
   const paymentDocInputRef = useRef(null);
   const [paymentDocumentFile, setPaymentDocumentFile] = useState(null);
   const [isUploadingPaymentDoc, setIsUploadingPaymentDoc] = useState(false);
@@ -358,6 +366,11 @@ export default function Admissions() {
             ? ""
             : t("admissions.errors.requiredFile") ||
             "Please attach certificate file";
+        case "academic_record":
+          return value
+            ? ""
+            : t("admissions.errors.requiredFile") ||
+            "Please attach academic record file";
         default:
           return "";
       }
@@ -409,6 +422,7 @@ export default function Admissions() {
       "general_grade",
       "gpa",
       "high_school_certificate_file",
+      "academic_record",
       "faculty_id",
       "faculty_department_id",
       "academyTerm_id"
@@ -467,10 +481,10 @@ export default function Admissions() {
 
       // Append academic data
       Object.entries(academic).forEach(([key, value]) => {
-        if (key === "high_school_certificate_file" && value instanceof File) {
-          formData.append("high_school_certificate_file", value);
-        } else {
+        if ((key === "high_school_certificate_file" || key === "academic_record") && value instanceof File) {
           formData.append(key, value);
+        } else {
+          formData.append(key, typeof value === "boolean" ? String(value) : value);
         }
       });
 
@@ -482,6 +496,7 @@ export default function Admissions() {
         logger.log(key, value);
         objToSend[key] = value;
       }
+      objToSend.is_clearance = objToSend.is_clearance === "true" || objToSend.is_clearance === true;
 
       logger.log("objToSend", objToSend);
       setIsLoading(true);
@@ -633,6 +648,80 @@ export default function Admissions() {
       setUploadError(t("admissions.errorUplaod") || "Upload cancelled");
       setIsUploading(false);
       setUploadProgress(0);
+    });
+
+    xhr.open("POST", `${baseURL}/api/forms/single`);
+    xhr.send(formData);
+  };
+
+  const handlePickAcademicRecordFile = () => {
+    if (academicRecordInputRef.current) academicRecordInputRef.current.click();
+  };
+  const handleAcademicRecordFileChange = (e) => {
+    const file = e.target.files?.[0] ?? null;
+    setAcademic((a) => ({ ...a, academic_record: file }));
+    // validate file right away
+    const msg = validateField("academic_record", file, true);
+    setAcadErrors((prev) => ({ ...prev, academic_record: msg }));
+
+    if (!file) return;
+
+    setSelectedAcademicRecordFile(file?.name);
+    setUploadAcademicRecordError("");
+    setUploadAcademicRecordProgress(0);
+    setIsUploadingAcademicRecord(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const xhr = new XMLHttpRequest();
+
+    // Track upload progress
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        const percent = Math.round((event.loaded / event.total) * 100);
+        setUploadAcademicRecordProgress(percent);
+      }
+    });
+
+    // Handle successful completion
+    xhr.addEventListener("load", () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          logger.log("Upload successful:", data);
+          setAcademic((a) => ({
+            ...a,
+            academic_record: `${baseURL}${data?.url}`,
+          }));
+          setUploadAcademicRecordProgress(100);
+          setUploadAcademicRecordError("");
+        } catch (parseError) {
+          setUploadAcademicRecordError(t("admissions.errorUplaod") || "Upload failed");
+          notify(t("admissions.errorUplaod") || "Upload failed", "error");
+          setUploadAcademicRecordProgress(0);
+        }
+      } else {
+        setUploadAcademicRecordError(t("admissions.errorUplaod") || "Upload failed");
+        notify(t("admissions.errorUplaod") || "Upload failed", "error");
+        setUploadAcademicRecordProgress(0);
+      }
+      setIsUploadingAcademicRecord(false);
+    });
+
+    // Handle network errors
+    xhr.addEventListener("error", () => {
+      setUploadAcademicRecordError(t("admissions.errorUplaod") || "Upload failed");
+      notify(t("admissions.errorUplaod") || "Upload failed", "error");
+      setIsUploadingAcademicRecord(false);
+      setUploadAcademicRecordProgress(0);
+    });
+
+    // Handle abort
+    xhr.addEventListener("abort", () => {
+      setUploadAcademicRecordError(t("admissions.errorUplaod") || "Upload cancelled");
+      setIsUploadingAcademicRecord(false);
+      setUploadAcademicRecordProgress(0);
     });
 
     xhr.open("POST", `${baseURL}/api/forms/single`);
@@ -1566,6 +1655,149 @@ export default function Admissions() {
                           sx={{ display: "block", mt: 1 }}
                         >
                           {acadErrors.high_school_certificate_file}
+                        </Typography>
+                      )}
+                    </Box>
+                  </Grid>
+
+                  {/* Clearance status */}
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="body2"
+                      sx={{ display: "block", mb: 0.5 }}
+                    >
+                      {t("Student Type") || "Student Type"}
+                    </Typography>
+                    <CustomTextField
+                      select
+                      placeholder={t("Student Type") || "Student Type"}
+                      value={academic.is_clearance ? "true" : "false"}
+                      onChange={(e) =>
+                        setAcademic((a) => ({ ...a, is_clearance: e.target.value === "true" }))
+                      }
+                      onBlur={() => handleAcademicBlur("is_clearance")}
+                      error={!!acadErrors.is_clearance}
+                      helperText={acadErrors.is_clearance || ""}
+                    >
+                      <MenuItem value="false">
+                        {isArabic ? "طالب مستجد" : "New Student"}
+                      </MenuItem>
+                      <MenuItem value="true">
+                        {isArabic ? "طالب نقل" : "Transfer Student"}
+                      </MenuItem>
+                    </CustomTextField>
+                  </Grid>
+
+                  {/* Academic record upload */}
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle2">
+                      {t("Academic Record") || "Academic Record"}
+                    </Typography>
+                    <Box
+                      sx={{
+                        width: "100%",
+                        border: `2px dashed ${theme.palette.secondary.main}`,
+                        p: 2,
+                        mt: 1,
+                        borderRadius: 1,
+                      }}
+                    >
+                      <Typography variant="body2">
+                        {t("admissions.academicRecordDescription") || "Please attach academic record file"}
+                      </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          mt: 2,
+                          gap: 2,
+                          flexDirection: "column",
+                          alignItems: "center",
+                        }}
+                      >
+                        <input
+                          ref={academicRecordInputRef}
+                          type="file"
+                          hidden
+                          onChange={handleAcademicRecordFileChange}
+                        />
+                        <Button
+                          variant="contained"
+                          sx={{
+                            background: theme.palette.secondary.main,
+                            width: "150px",
+                            gap: 1,
+                          }}
+                          endIcon={
+                            <AddCircleOutlineIcon
+                              sx={{
+                                transform:
+                                  i18n.language === "ar"
+                                    ? "rotate(180deg)"
+                                    : "none",
+                                transition: "transform 0.3s ease",
+                              }}
+                            />
+                          }
+                          onClick={handlePickAcademicRecordFile}
+                        >
+                          {t("admissions.addFile")}
+                        </Button>
+                        <Typography
+                          variant="body2"
+                          sx={{ alignSelf: "center" }}
+                        >
+                          {selectedAcademicRecordFile ? selectedAcademicRecordFile : ""}
+                        </Typography>
+
+                        {/* Upload progress bar */}
+                        {isUploadingAcademicRecord && (
+                          <Box sx={{ width: "100%", mt: 1 }}>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              <Box sx={{ flex: 1 }}>
+                                <LinearProgress
+                                  variant="determinate"
+                                  value={uploadAcademicRecordProgress}
+                                  sx={{
+                                    height: 8,
+                                    borderRadius: 4,
+                                    backgroundColor: "#e0e0e0",
+                                    "& .MuiLinearProgress-bar": {
+                                      borderRadius: 4,
+                                      backgroundColor: theme.palette.primary.main,
+                                    },
+                                  }}
+                                />
+                              </Box>
+                              <Typography variant="body2" sx={{ minWidth: 40, fontWeight: 600 }}>
+                                {uploadAcademicRecordProgress}%
+                              </Typography>
+                            </Box>
+                          </Box>
+                        )}
+
+                        {/* Upload complete indicator */}
+                        {!isUploadingAcademicRecord && uploadAcademicRecordProgress === 100 && !uploadAcademicRecordError && (
+                          <Typography variant="body2" sx={{ color: "green", mt: 1, fontWeight: 600 }}>
+                            {t("admissions.uploadComplete") || "✔ Upload complete"}
+                          </Typography>
+                        )}
+
+                        {/* Upload error message */}
+                        {uploadAcademicRecordError && (
+                          <Typography variant="body2" sx={{ color: "error.main", mt: 1, fontWeight: 600 }}>
+                            {uploadAcademicRecordError}
+                          </Typography>
+                        )}
+
+                      </Box>
+                      {acadErrors.academic_record && (
+                        <Typography
+                          variant="caption"
+                          color="error"
+                          sx={{ display: "block", mt: 1 }}
+                        >
+                          {acadErrors.academic_record}
                         </Typography>
                       )}
                     </Box>
