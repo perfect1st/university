@@ -57,7 +57,8 @@ export const ticketTypes=[
     { id: "registration_suspension", labelAr: "إيقاف قيد", labelEn: "Registration Suspension" },
     { id: "graduation_enrollment", labelAr: "قيد تخرج", labelEn: "Graduation Enrollment" },
     { id: "material_equivalence", labelAr: "معادلة مواد", labelEn: "Material Equivalence" },
-    { id: "academic_suspension", labelAr: "إيقاف أكاديمي", labelEn: "Academic Suspension" }
+    { id: "academic_suspension", labelAr: "إيقاف أكاديمي", labelEn: "Academic Suspension" },
+    { id: "summer_course", labelAr: "تسجيل موادsummer", labelEn: "Summer Course Registration" }
 ];
 
 export const isOpen = [

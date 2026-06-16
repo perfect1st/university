@@ -118,6 +118,7 @@ import SiteSettings from "./pages/SiteSettings/SiteSettings";
 import BackupsPage from "./pages/Backups/BackupsPage";
 import TestCertificatePage from "./pages/TestCertificatePage";
 import PromotionPage from "./pages/Promotion/PromotionPage";
+import SummerCourseAdminPage from "./pages/SummerCourseAdmin/SummerCourseAdminPage";
 
 
 // Public Site Config Pages
@@ -1152,6 +1153,24 @@ function App() {
                       </MainLayout>
                     } />
                   </Route>
+
+                  {/* Summer Course Admin */}
+                  <Route
+                    path="/SummerCourseAdmin/:ticketId/:studentId"
+                    element={
+                      <MainLayout isLoggedIn={true}>
+                        <SummerCourseAdminPage />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/SummerCourseAdmin/:ticketId"
+                    element={
+                      <MainLayout isLoggedIn={true}>
+                        <SummerCourseAdminPage />
+                      </MainLayout>
+                    }
+                  />
                 </Route>
 
                 <Route path="/Maintenance" element={<Maintenance />} />

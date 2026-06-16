@@ -228,9 +228,36 @@ mutation CreateUserStudyMaterial($input:UserStudyMaterialInput!) {
 }
 `;
 
+export const UPDATE_USER_STUDY_MATERIAL = gql`
+mutation UpdateUserStudyMaterial($id: ID!, $input: UserStudyMaterialInput!) {
+    updateUserStudyMaterial(id: $id, input: $input) {
+        id
+        status
+        createdAt
+        updatedAt
+        user_id {
+            id
+            username
+            fullname
+        }
+        academyTerm_id {
+            id
+            title_ar
+            title_en
+        }
+        material_id {
+            id
+            title_ar
+            title_en
+            material_hours
+        }
+    }
+}
+`;
+
 export const GET_USER_STUDY_MATERIALS_BY_USER_ID = gql`
-query GetUserStudyMaterialsByUser($user_id:ID!) {
-    getUserStudyMaterialsByUser(user_id: $user_id) {
+query GetUserStudyMaterialsByUser($user_id:ID!, $academyTerm_id:ID!) {
+    getUserStudyMaterialsByUser(user_id: $user_id, academyTerm_id: $academyTerm_id) {
         id
         status
         createdAt

@@ -28,6 +28,7 @@ import AcademicTranscript from "../../components/Certificates/AcademicTranscript
 import GraduationEnrollmentStatement from "../../components/Certificates/GraduationEnrollmentStatement";
 import StudentFormalAffidavit from "../../components/Certificates/StudentFormalAffidavit";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
+import SummerCourseIcon from '@mui/icons-material/School';
 
 export default function EditSupportTicketPage() {
     const theme = useTheme();
@@ -144,6 +145,16 @@ export default function EditSupportTicketPage() {
                         <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
                             {isArabic ? "النوع:" : "Type:"} {typeLabel || ticket?.type}
                         </Typography>
+                        {ticket?.type === 'summer_course' && me?.role === 'admin' && (
+                            <Button
+                                variant="contained"
+                                startIcon={<SummerCourseIcon />}
+                                onClick={() => navigate(`/SummerCourseAdmin/${id}/${ticket?.user_id?.id}`)}
+                                sx={{ mt: 1, mb: 2 }}
+                            >
+                                {isArabic ? "إدارة موادsummer" : "Manage Summer Materials"}
+                            </Button>
+                        )}
                         <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
                             {isArabic ? "تاريخ الإنشاء:" : "Created At:"} {new Date(parseInt(ticket?.createdAt)).toLocaleString()}
                         </Typography>
