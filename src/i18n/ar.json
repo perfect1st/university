@@ -603,5 +603,14 @@
   "material_equivalence": "معادلة المواد",
   "academic_suspension": "إيقاف أكاديمي",
   "insideYemen":"داخل اليمن",
-  "outsideYemen":"خارج اليمن"
+  "outsideYemen":"خارج اليمن",
+  "summer_course": "تسجيل موادsummer",
+  "summerCourseAdmin": {
+    "title": "إدارة موادsummer",
+    "editMaterials": "تعديل المواد",
+    "cancelEdit": "إلغاء التعديل",
+    "materialsStatus": "حالة المواد",
+    "noMaterials": "لم يتم تسجيل مواد حتى الآن",
+    "manageMaterials": "إدارة موادsummer"
+  }
 }

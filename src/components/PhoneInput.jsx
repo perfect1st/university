@@ -6,6 +6,7 @@ import Flag from "react-world-flags";
 import { InputAdornment, TextField, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import logger from "../utils/logger";
+import { countriesData } from "../data/countriesData";
 
 /**
  * PhoneNumberInput
@@ -69,61 +70,25 @@ const PhoneNumberInput = (props) => {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
 
-  useEffect(() => {
-    let mounted = true;
-    const fetchCountries = async () => {
-      try {
-        const resp = await axios.get(
-          "https://restcountries.com/v3.1/all?fields=name,idd,cca2"
-        );
-        if (!mounted) return;
-        const list = resp.data
-          .map((c) => {
-            const root = c?.idd?.root || "";
-            const suffix = c?.idd?.suffixes?.[0] || "";
-            const dial = root ? `${root}${suffix}` : null;
-            if (!dial) return null;
-            return {
-              label: `${c?.name?.common || ""} (${dial})`,
-              value: dial,
-              cca2: c?.cca2 || "",
-              name: c?.name?.common || "",
-              dial,
-            };
-          })
-          .filter(Boolean);
+useEffect(() => {
+  // وضع البيانات المحلية مباشرة بدون انتظار الـ API
+  setOptions(countriesData);
+  setLoading(false);
 
-        const priority = ["YE", "BH", "SA", "EG"];
-        const prioritized = [
-          ...list.filter((i) => priority.includes(i.cca2)),
-          ...list.filter((i) => !priority.includes(i.cca2)),
-        ];
+  // تحديث الدولة الافتراضية لتكون "اليمن" أولاً، أو القيمة القادمة من الـ parent
+  const initial =
+    countriesData.find((o) => o.value === (personal?.countryCode || "")) ||
+    countriesData.find((o) => o.cca2 === "YE") || // الـ Fallback هنا هو اليمن 🇾🇪
+    null;
 
-        setOptions(prioritized);
-        setLoading(false);
+  if (initial) {
+    setSelected(initial);
+    if (typeof setPersonal === "function") {
+      setPersonal((p) => ({ ...(p || {}), countryCode: initial.value }));
+    }
+  }
+}, [personal?.countryCode]);
 
-        const initial =
-          prioritized.find((o) => o.value === (personal?.countryCode || "")) ||
-          prioritized.find((o) => o.cca2 === "YE") ||
-          null;
-
-        if (initial) {
-          setSelected(initial);
-          if (typeof setPersonal === "function") {
-            setPersonal((p) => ({ ...(p || {}), countryCode: initial.value }));
-          }
-        }
-      } catch (err) {
-        logger.error("PhoneInput fetch error:", err);
-        setLoading(false);
-      }
-    };
-
-    fetchCountries();
-    return () => {
-      mounted = false;
-    };
-  }, []); // مرة واحدة
 
   // مزامنة لو parent غيّر countryCode بعد التحميل
   useEffect(() => {

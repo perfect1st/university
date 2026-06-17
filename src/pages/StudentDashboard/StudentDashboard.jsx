@@ -85,10 +85,20 @@ export default function StudentDashboard() {
       logger.log("meeeee",me?.id);
       
         GetRegisterFormByUserId({ variables: { user_id: me?.id } });
-        GetUserStudyMaterialsByUser({ variables: { user_id: me?.id } });
     }
 
   }, [me]);
+
+  useEffect(() => {
+    if (getRegisterFormByUserId?.academyTerm_id?.id) {
+      GetUserStudyMaterialsByUser({
+        variables: {
+          user_id: me?.id,
+          academyTerm_id: getRegisterFormByUserId?.academyTerm_id?.id,
+        },
+      });
+    }
+  }, [getRegisterFormByUserId]);
 
   const subjects = getRegisterFormByUserId?.academyTerm_id?.materials_array || [];
 

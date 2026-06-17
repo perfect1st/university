@@ -28,6 +28,7 @@ import AcademicTranscript from "../../components/Certificates/AcademicTranscript
 import GraduationEnrollmentStatement from "../../components/Certificates/GraduationEnrollmentStatement";
 import StudentFormalAffidavit from "../../components/Certificates/StudentFormalAffidavit";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
+import SummerCourseIcon from '@mui/icons-material/School';
 
 export default function EditSupportTicketPage() {
     const theme = useTheme();
@@ -135,15 +136,25 @@ export default function EditSupportTicketPage() {
                     <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                             <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{ticket?.subject}</Typography>
-                            <Chip 
-                                label={ticket?.status === 'open' ? (isArabic ? 'مفتوحة' : 'Open') : (isArabic ? 'مغلقة' : 'Closed')} 
+                            <Chip
+                                label={ticket?.status === 'open' ? (isArabic ? 'مفتوحة' : 'Open') : (isArabic ? 'مغلقة' : 'Closed')}
                                 color={ticket?.status === 'open' ? 'success' : 'default'}
                             />
                         </Box>
-                        
+
                         <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
                             {isArabic ? "النوع:" : "Type:"} {typeLabel || ticket?.type}
                         </Typography>
+                        {ticket?.type === 'summer_course' && me?.role === 'admin' && (
+                            <Button
+                                variant="contained"
+                                startIcon={<SummerCourseIcon />}
+                                onClick={() => navigate(`/SummerCourseAdmin/${id}/${ticket?.user_id?.id}`)}
+                                sx={{ mt: 1, mb: 2 }}
+                            >
+                                {isArabic ? "إدارة موادsummer" : "Manage Summer Materials"}
+                            </Button>
+                        )}
                         <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
                             {isArabic ? "تاريخ الإنشاء:" : "Created At:"} {new Date(parseInt(ticket?.createdAt)).toLocaleString()}
                         </Typography>
@@ -155,9 +166,9 @@ export default function EditSupportTicketPage() {
 
                         {ticket?.attachment && (
                             <Box sx={{ mb: 4 }}>
-                                <Button 
-                                    variant="outlined" 
-                                    startIcon={<DownloadIcon />} 
+                                <Button
+                                    variant="outlined"
+                                    startIcon={<DownloadIcon />}
                                     onClick={() => window.open(ticket.attachment, '_blank')}
                                 >
                                     {isArabic ? "عرض المرفق" : "View Attachment"}
@@ -197,7 +208,7 @@ export default function EditSupportTicketPage() {
                                 <PaymentIcon color="primary" />
                                 {isArabic ? "رسوم التذكرة" : "Ticket Fees"}
                             </Typography>
-                            
+
                             {ticket.fees?.map(fee => (
                                 <Box key={fee.id} sx={{ mb: 2 }}>
                                     <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
@@ -230,10 +241,10 @@ export default function EditSupportTicketPage() {
                             </Box>
 
                             {!ticket.transaction_id && me?.role === "student" && (
-                                <Button 
-                                    fullWidth 
-                                    variant="contained" 
-                                    color="primary" 
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
                                     startIcon={initiatingPayment ? <CircularProgress size={20} color="inherit" /> : <PaymentIcon />}
                                     onClick={handlePay}
                                     disabled={initiatingPayment}
@@ -258,7 +269,7 @@ export default function EditSupportTicketPage() {
                             )}
                         </Paper>
                     )}
-:
+                    :
                 </Grid>
 
                 {/* Printable Documents Section */}
@@ -268,11 +279,11 @@ export default function EditSupportTicketPage() {
                             <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', fontWeight: 'bold', color: 'primary.main' }}>
                                 {isArabic ? "المستندات المتاحة للطباعة" : "Printable Documents"}
                             </Typography>
-                            
+
                             {ticket?.type === 'university_card' && (
                                 <UniversityCard studentData={ticket.user_id} registrationData={registrationData} />
                             )}
-                            
+
                             {ticket?.type === 'graduation_certificate' && (
                                 <GraduationCertificate studentId={ticket.user_id?.id} />
                             )}
@@ -288,14 +299,29 @@ export default function EditSupportTicketPage() {
                             {ticket?.type === 'registration_suspension' && (
                                 <GraduationEnrollmentStatement studentData={ticket.user_id} registrationData={registrationData} />
                                )}
+                               {/* <GraduationEnrollmentStatement
+                                    studentData={ticket.user_id}
+                                    registrationData={registrationData}
+                                /> */}
                             {(ticket?.type === 'university_certificate' || ticket?.type === 'success_statement' || ticket?.type === 'registration_suspension' || ticket?.type === 'graduation_enrollment') && (
                                 <StudentFormalAffidavit 
                                     ticketType={ticket.type} 
                                     studentData={ticket.user_id} 
-                                    registrationData={registrationData} 
-                                />
+                                    registrationData={registrationData}  />
+                               
                             )}
-                            
+
+                            {(ticket?.type === 'university_certificate' ||
+                                ticket?.type === 'success_statement' ||
+                                ticket?.type === 'registration_suspension' ||
+                                ticket?.type === 'graduation_enrollment') && (
+                                    <StudentFormalAffidavit
+                                        ticketType={ticket.type}
+                                        studentData={ticket.user_id}
+                                        registrationData={registrationData}
+                                    />
+                                )}
+
                             {/* Special case for the new one "قيد تخرج" - usually mapped to a type */}
                             {/* If the subject contains "تخرج" or similar, or just based on type */}
                         </Paper>

@@ -564,5 +564,14 @@
   "material_equivalence": "Material Equivalence",
   "academic_suspension": "Academic Suspension",
   "insideYemen":"Inside Yemen",
-  "outsideYemen":"Outside Yemen"
+  "outsideYemen":"Outside Yemen",
+  "summer_course": "Summer Course Registration",
+  "summerCourseAdmin": {
+    "title": "Summer Course Materials Management",
+    "editMaterials": "Edit Materials",
+    "cancelEdit": "Cancel Edit",
+    "materialsStatus": "Materials Status",
+    "noMaterials": "No materials registered yet",
+    "manageMaterials": "Manage Summer Materials"
+  }
 }
