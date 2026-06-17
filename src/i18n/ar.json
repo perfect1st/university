@@ -601,5 +601,7 @@
   },
   "Student Type": "نوع الطالب",
   "material_equivalence": "معادلة المواد",
-  "academic_suspension": "إيقاف أكاديمي"
+  "academic_suspension": "إيقاف أكاديمي",
+  "insideYemen":"داخل اليمن",
+  "outsideYemen":"خارج اليمن"
 }

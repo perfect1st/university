@@ -562,5 +562,7 @@
   },
   "Student Type": "Student Type",
   "material_equivalence": "Material Equivalence",
-  "academic_suspension": "Academic Suspension"
+  "academic_suspension": "Academic Suspension",
+  "insideYemen":"Inside Yemen",
+  "outsideYemen":"Outside Yemen"
 }

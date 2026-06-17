@@ -277,7 +277,6 @@ export default function EditSupportTicketPage() {
                                 <GraduationCertificate studentId={ticket.user_id?.id} />
                             )}
 
-<<<<<<< HEAD
                             {ticket?.type === 'university_certificate' && (
                                 <StudentAffidavit studentData={ticket.user_id} registrationData={registrationData} />
                             )}
@@ -288,14 +287,13 @@ export default function EditSupportTicketPage() {
 
                             {ticket?.type === 'registration_suspension' && (
                                 <GraduationEnrollmentStatement studentData={ticket.user_id} registrationData={registrationData} />
-=======
+                               )}
                             {(ticket?.type === 'university_certificate' || ticket?.type === 'success_statement' || ticket?.type === 'registration_suspension' || ticket?.type === 'graduation_enrollment') && (
                                 <StudentFormalAffidavit 
                                     ticketType={ticket.type} 
                                     studentData={ticket.user_id} 
                                     registrationData={registrationData} 
                                 />
->>>>>>> 9508ecb40557efdbae24afdf6cab5c4990028a0c
                             )}
                             
                             {/* Special case for the new one "قيد تخرج" - usually mapped to a type */}

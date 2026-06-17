@@ -123,6 +123,17 @@ query GetTransactionsFiltered(
                 is_inside_yemen
                 createdAt
                 updatedAt
+                 faculty_id {
+                    id
+                    serial
+                    title_ar
+                    title_en
+                    status
+                    required_dep
+                    study_years_count
+                    createdAt
+                    updatedAt
+                }
             }
             register_form_id {
                 id
