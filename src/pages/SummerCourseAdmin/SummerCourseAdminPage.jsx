@@ -352,11 +352,11 @@ export default function SummerCourseAdminPage() {
                         checked={
                           isEditing
                             ? selectedSubjects?.find(
-                                (el) => el == subj?.id
-                              )
+                              (el) => el == subj?.id
+                            )
                             : prevSelectedMaterials?.find(
-                                (el) => el.id == subj?.id
-                              )
+                              (el) => el.id == subj?.id
+                            )
                         }
                         value={subj?.id}
                         disabled={!isEditing}
@@ -374,6 +374,7 @@ export default function SummerCourseAdminPage() {
             <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
               <Button
                 variant="outlined"
+                sx={{ gap: 1 }}
                 startIcon={<EditIcon />}
                 onClick={() => {
                   if (!isEditing) {
@@ -399,7 +400,6 @@ export default function SummerCourseAdminPage() {
             <Button
               variant="contained"
               sx={{
-                width: "10%",
                 my: 4,
                 textAlign: "start",
                 justifyContent: "start",
