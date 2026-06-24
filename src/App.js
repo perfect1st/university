@@ -129,6 +129,7 @@ import ContactUs from "./pages/Home/ContactUs";
 import SuccessPaymentPage from "./pages/PaymentResult/SuccessPaymentPage";
 import FailedPaymentPage from "./pages/PaymentResult/FailedPaymentPage";
 import AddPromotionPage from "./pages/Promotion/AddPromotionPage";
+import MaterialEquivalence from "./pages/SupportTickets/MaterialEquivalence";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -1160,6 +1161,14 @@ function App() {
                     element={
                       <MainLayout isLoggedIn={true}>
                         <SummerCourseAdminPage />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/MaterialEquivalence/:ticketId/:studentId"
+                    element={
+                      <MainLayout isLoggedIn={true}>
+                        <MaterialEquivalence />
                       </MainLayout>
                     }
                   />

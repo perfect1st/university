@@ -155,6 +155,16 @@ export default function EditSupportTicketPage() {
                                 {isArabic ? "إدارة موادsummer" : "Manage Summer Materials"}
                             </Button>
                         )}
+                        {ticket?.type === 'material_equivalence' && me?.role === 'admin' && (
+                            <Button
+                                variant="contained"
+                                startIcon={<SummerCourseIcon />}
+                                onClick={() => navigate(`/MaterialEquivalence/${id}/${ticket?.user_id?.id}`)}
+                                sx={{ mt: 1, mb: 2, gap: 1 }}
+                            >
+                                {isArabic ? "إدارة موادالمعادلة" : "Manage Materials Equivalence"}
+                            </Button>
+                        )}
                         <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
                             {isArabic ? "تاريخ الإنشاء:" : "Created At:"} {new Date(parseInt(ticket?.createdAt)).toLocaleString()}
                         </Typography>
