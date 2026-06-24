@@ -117,7 +117,6 @@ export default function MaterialEquivalence() {
   const userStudyMaterials = materialsData?.getUserStudyMaterialsByUser;
 
   const subjects = departmentMaterialsData?.materialsByDepartment || [];
-console.log("userStudyMaterials",userStudyMaterials)
   const hasExistingMaterials =
     userStudyMaterials && userStudyMaterials.length > 0;
   const lastMaterialRecord =
@@ -126,6 +125,7 @@ console.log("userStudyMaterials",userStudyMaterials)
       : null;
 
   const prevSelectedMaterials = lastMaterialRecord?.material_id || [];
+  const canSelectMaterials = !hasExistingMaterials || isEditing;
 
   const handleChange = (e) => {
     let isChecked = e.target.checked;
@@ -370,7 +370,7 @@ console.log("userStudyMaterials",userStudyMaterials)
                     <TableCell sx={{ textAlign: "start" }}>
                       <Checkbox
                         checked={
-                          isEditing
+                          canSelectMaterials
                             ? selectedSubjects?.find(
                               (el) => el === subj?.id
                             )
@@ -379,7 +379,7 @@ console.log("userStudyMaterials",userStudyMaterials)
                             )
                         }
                         value={subj?.id}
-                        disabled={!isEditing}
+                        disabled={!canSelectMaterials}
                         onChange={(e) => handleChange(e)}
                         inputProps={{ "aria-label": "controlled" }}
                       />
@@ -416,7 +416,7 @@ console.log("userStudyMaterials",userStudyMaterials)
             </Box>
           )}
 
-          {!hasExistingMaterials || isEditing ? (
+          {canSelectMaterials ? (
             <Button
               variant="contained"
               sx={{

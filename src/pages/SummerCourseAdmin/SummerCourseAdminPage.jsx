@@ -126,6 +126,7 @@ export default function SummerCourseAdminPage() {
       : null;
 
   const prevSelectedMaterials = lastMaterialRecord?.material_id || [];
+  const canSelectMaterials = !hasExistingMaterials || isEditing;
 
   const handleChange = (e) => {
     let isChecked = e.target.checked;
@@ -217,7 +218,7 @@ export default function SummerCourseAdminPage() {
     <Box sx={{ p: 3, backgroundColor: "background.paper", minHeight: "100vh" }}>
       <Header
         title={t("Dashboard.support")}
-        subtitle={t("summerCourseAdmin.title") + " - " + studentName}
+        subtitle={t("MaterialEquivalence") + " - " + studentName}
         i18n={i18n}
         hasNavigate={true}
       />
@@ -370,7 +371,7 @@ export default function SummerCourseAdminPage() {
                     <TableCell sx={{ textAlign: "start" }}>
                       <Checkbox
                         checked={
-                          isEditing
+                          canSelectMaterials
                             ? selectedSubjects?.find(
                               (el) => el === subj?.id
                             )
@@ -379,7 +380,7 @@ export default function SummerCourseAdminPage() {
                             )
                         }
                         value={subj?.id}
-                        disabled={!isEditing}
+                        disabled={!canSelectMaterials}
                         onChange={(e) => handleChange(e)}
                         inputProps={{ "aria-label": "controlled" }}
                       />
@@ -416,7 +417,7 @@ export default function SummerCourseAdminPage() {
             </Box>
           )}
 
-          {!hasExistingMaterials || isEditing ? (
+          {canSelectMaterials ? (
             <Button
               variant="contained"
               sx={{
