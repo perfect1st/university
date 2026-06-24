@@ -6,7 +6,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import Barcode from 'react-barcode';
 // GraphQL & Assets
-import { GET_SINGLE_USER } from '../../graphql/userQueriesForAdmin';
+import { GET_ACADEMIC_TRANSCRIPT } from '../../graphql/studentDegreeQueries';
 import universityLogo from '../../assets/Logo.png';
 import rigth3lines from '../../assets/rigth3lines.png';
 import left3lines from '../../assets/left3lines.png';
@@ -16,28 +16,72 @@ import useBaseImageUrl from '../../hooks/useBaseImageUrl';
 const GraduationCertificate = ({ studentId }) => {
   const certificateRef = useRef();
   const baseImageUrl = useBaseImageUrl();
-  const { data: { user } = {}, loading } = useQuery(GET_SINGLE_USER, {
-    variables: { id: studentId },
+  const { data, loading, error } = useQuery(GET_ACADEMIC_TRANSCRIPT, {
+    variables: { student_id: studentId },
     fetchPolicy: "network-only",
     skip: !studentId, 
   });
 
+  const transcript = data?.getAcademicTranscript;
+  const user = transcript?.student;
+
   const getHijriYearFromGregorian = (gregorianYear) => {
-  // ننشئ تاريخاً في منتصف السنة الميلادية لضمان الدقة
-  const date = new Date(gregorianYear, 6, 1); 
-  
-  return new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
-    year: 'numeric'
-  }).format(date).replace(/\u200f/g, '').replace(' هـ', '');
-};
+    // ننشئ تاريخاً في منتصف السنة الميلادية لضمان الدقة
+    const date = new Date(gregorianYear, 6, 1); 
+    
+    return new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+      year: 'numeric'
+    }).format(date).replace(/\u200f/g, '').replace(' هـ', '');
+  };
 
+  let enrollmentYear = "2022/2023";
+  let graduationYear = "2023/2024";
 
-const startYear = parseInt(user?.register_form_id?.education_year || "2022");
-const endYear = startYear + 1;
-const hijriStartYear = getHijriYearFromGregorian(startYear);
-const hijriEndYear = getHijriYearFromGregorian(endYear);
+  if (transcript?.levels && transcript.levels.length > 0) {
+    const sortedLevels = [...transcript.levels].sort((a, b) => a.study_year - b.study_year);
+    
+    // Find first level term with a current_year
+    for (const lvl of sortedLevels) {
+      const year = lvl.terms?.find(t => t.term?.current_year)?.term?.current_year;
+      if (year) {
+        enrollmentYear = year;
+        break;
+      }
+    }
+    
+    // Find last level term with a current_year
+    for (let i = sortedLevels.length - 1; i >= 0; i--) {
+      const year = sortedLevels[i].terms?.find(t => t.term?.current_year)?.term?.current_year;
+      if (year) {
+        graduationYear = year;
+        break;
+      }
+    }
+  }
 
-  console.log("user", user);
+  const startYear = parseInt(enrollmentYear.split('/')[0]) || 2022;
+  const endYear = startYear + 1;
+
+  const gradStartYear = parseInt(graduationYear.split('/')[0]) || 2023;
+  const gradEndYear = gradStartYear + 1;
+
+  const hijriStartYear = getHijriYearFromGregorian(startYear);
+  const hijriEndYear = getHijriYearFromGregorian(endYear);
+
+  const hijriGradStart = getHijriYearFromGregorian(gradStartYear);
+  const hijriGradEnd = getHijriYearFromGregorian(gradEndYear);
+
+  const getEnglishGrade = (arabicGrade) => {
+    if (!arabicGrade) return "Very Good";
+    if (arabicGrade.includes("ممتاز")) return "Excellent";
+    if (arabicGrade.includes("جيد جداً")) return "Very Good";
+    if (arabicGrade.includes("جيد")) return "Good";
+    if (arabicGrade.includes("مقبول")) return "Pass";
+    if (arabicGrade.includes("راسب")) return "Fail";
+    return "Fail";
+  };
+
+  console.log("transcript", transcript);
 
   const handleDownloadPDF = async () => {
     const element = certificateRef.current;
@@ -68,7 +112,8 @@ const hijriEndYear = getHijriYearFromGregorian(endYear);
 
   if (!studentId) return <Typography color="error">No Student ID provided.</Typography>;
   if (loading) return <CircularProgress />;
-  if (!user) return <Typography>User not found.</Typography>;
+  if (error) return <Typography color="error">Error loading transcript: {error.message}</Typography>;
+  if (!transcript || !user) return <Typography>User not found.</Typography>;
 
   return (
     <Box sx={{ p: 2, textAlign: 'center' }}>
@@ -82,7 +127,7 @@ const hijriEndYear = getHijriYearFromGregorian(endYear);
       </Button>
 
       {/* PREVIEW CONTAINER */}
-      <Box sx={{ overflow: 'auto', mt: 4, width: '100%', height: '450px', position: 'relative' }}>
+      <Box sx={{ overflow: 'auto', mt: 4, width: '100%', position: 'relative' }}>
         <Box
           ref={certificateRef}
           dir="ltr" // <--- CRITICAL FIX: Forces the entire layout to stay Left-to-Right
@@ -135,47 +180,47 @@ const hijriEndYear = getHijriYearFromGregorian(endYear);
             </Stack>
 
             {/* TITLE & PHOTO STRIP */}
-            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ px: 4, mb: 3 }}>
-               <Typography variant="h5" sx={{ fontWeight: 700, fontSize: '36px', width: '360px', textAlign: 'left',mt:5 }}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ px: 4, mb: 1 }}>
+               <Typography variant="h5" sx={{ fontWeight: 700, fontSize: '32px', width: '360px', textAlign: 'left',mt:3}}>
                  Graduation Certificate
                </Typography>
                
                <Box 
                   component="img" 
                   src={user?.profile_image ? `${baseImageUrl}${user.profile_image}` : 'https://via.placeholder.com/150'} 
-                  sx={{ width: '150px', height: '170px', objectFit: 'cover', border: '1px solid #000', bgcolor: '#fff', zIndex: 3, mt:-5 }} 
+                  sx={{ width: '150px', height: '170px', objectFit: 'cover', border: '1px solid #000', bgcolor: '#fff', zIndex: 3, mt:-7 }} 
                />
 
-               <Typography dir="rtl" variant="h5" sx={{ fontWeight: 600, fontSize: '45px', fontFamily: 'Noto Sans Arabic', width: '360px', textAlign: 'right',mt:5 }}>
+               <Typography dir="rtl" variant="h5" sx={{ fontWeight: 600, fontSize: '40px', fontFamily: 'Noto Sans Arabic', width: '360px', textAlign: 'right',mt:3 }}>
                  وثيقـة تخرج
                </Typography>
             </Stack>
 
             {/* MAIN TEXT BODY */}
-            <Stack direction="row" spacing={4} sx={{ flexGrow: 1, px: 2 }}>
+            <Stack direction="row" spacing={4} sx={{ flexGrow: 1, px: 1 }}>
               {/* English Paragraph */}
-              <Box sx={{ flex: 1, textAlign: 'center', fontSize: '16px', lineHeight: 1.2, fontFamily: 'Arial, sans-serif' }}>
+              <Box sx={{ flex: 1, textAlign: 'center', fontSize: '18px', lineHeight: 1.2, fontFamily: 'Arial, sans-serif' }}>
                 Upon the Resolution of UAS Council No. <br/>
-                the student <Box component="span" sx={{ fontWeight: 'bold', fontSize: '20px' }}>Mr. {user.fullname}</Box><br/>
-                <Box component="span" sx={{ fontWeight: 'bold' }}>Yemeni</Box> nationality who was enrolled at this University<br/>
+                the student <Box component="span" sx={{ fontWeight: 'bold', fontSize: '18px' }}>Mr. {user.fullname}</Box><br/>
+                <Box component="span" sx={{ fontWeight: 'bold' }}>{user.is_inside_yemen ? "Yemeni" : "Non-Yemeni"}</Box> nationality who was enrolled at this University<br/>
                 in the academic year {`${startYear} / ${endYear}`} corresponding to<br/>
                 registration No. ( {user.qid_number || '...'} ) has graduated from the College of<br/>
-                {user.faculty_id?.title_en || 'Engineering and Computer science'} with a<br/>
-                <Box component="span" sx={{ fontWeight: 'bold', fontSize: '20px' }}>Bachelor's degree in {user.register_form_id?.study_place || 'Information Systems'}</Box><br/>
-                in 2022 / 2023 with a cumulative grade of<br/>
-                <Box component="span" sx={{ fontWeight: 'bold', fontSize: '20px' }}>"Very Good".</Box>
+                {transcript.faculty?.title_en || 'Engineering and Computer science'} with a<br/>
+                <Box component="span" sx={{ fontWeight: 'bold', fontSize: '18px' }}>Bachelor's degree in {transcript.faculty_department?.title_en || 'Information Systems'}</Box><br/>
+                in {`${gradStartYear} / ${gradEndYear}`} with a cumulative grade of<br/>
+                <Box component="span" sx={{ fontWeight: 'bold', fontSize: '18px' }}>"{getEnglishGrade(transcript.overall_grade)}".</Box>
               </Box>
 
               {/* Arabic Paragraph */}
               <Box dir="rtl" sx={{ flex: 1, textAlign: 'center', fontSize: '18px', lineHeight: 1.2, fontFamily: 'Noto Sans Arabic, Arial, sans-serif' }}>
                 بناءً على قرار مجلس جامعة العلوم الأكاديمية رقم<br/>
-                (...) ، فإن الطالب / <Box component="span" sx={{ fontWeight: 'bold' }}>{user.fullname}</Box> ،{user?.register_form_id ?.is_inside_yemen ? "يمني الجنسية" : "غير يمني الجنسيه"}<br/>
+                (...) ، فإن الطالب / <Box component="span" sx={{ fontWeight: 'bold' }}>{user.fullname}</Box> ، {user?.is_inside_yemen ? "يمني الجنسية" : "غير يمني الجنسية"}<br/>
                  والذي التحق بالجامعة في العام الدراسي<br/>
                 {`${hijriStartYear} / ${hijriEndYear}`} هـ الموافق {`${startYear} / ${endYear}`} وبرقم<br/>
                 قيد ( {user.qid_number || '...'} )، حصل على درجة البكالوريوس من كلية<br/>
-                {user.faculty_id?.title_ar || 'الهندسة وعلوم الحاسوب'} ، تخصص: <Box component="span" sx={{ fontWeight: 'bold' }}>نظم المعلومات</Box>،<br/>
-                للعام الجامعي 1444/1443 هـ الموافق<br/>
-                2024/2023م، بتقدير: <Box component="span" sx={{ fontWeight: 'bold' }}>جيد جداً</Box>.
+                {transcript.faculty?.title_ar || 'الهندسة وعلوم الحاسوب'} ، تخصص: <Box component="span" sx={{ fontWeight: 'bold' }}>{transcript.faculty_department?.title_ar || 'نظم المعلومات'}</Box>،<br/>
+                للعام الجامعي {`${hijriGradStart} / ${hijriGradEnd}`} هـ الموافق<br/>
+                {`${gradStartYear} / ${gradEndYear}`}م، بتقدير: <Box component="span" sx={{ fontWeight: 'bold' }}>{transcript.overall_grade || 'جيد جداً'}</Box>.
               </Box>
             </Stack>
 
