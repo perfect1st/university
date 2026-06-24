@@ -15,7 +15,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import LabelValueRow from "../../components/LabelValueRow";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import {
@@ -23,6 +23,7 @@ import {
   CREATE_USER_STUDY_MATERIAL,
   UPDATE_USER_STUDY_MATERIAL,
 } from "../../graphql/usersQueries";
+import { GET_MATERIALS_BY_DEPARTMENT_ID } from "../../graphql/materialQueries";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
 import { GET_SUPPORT_TICKET_BY_ID } from "../../graphql/supportTicketQueries";
 import LoadingPage from "../../components/LoadingComponent";
@@ -38,7 +39,6 @@ export default function SummerCourseAdminPage() {
   const { t } = useTranslation();
   const isArabic = i18n.language === "ar";
   const { ticketId, studentId } = useParams();
-  const navigate = useNavigate();
 
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -67,6 +67,13 @@ export default function SummerCourseAdminPage() {
     fetchPolicy: "network-only",
   });
 
+  const [
+    GetMaterialsByDepartment,
+    { data: departmentMaterialsData, loading: departmentMaterialsLoading },
+  ] = useLazyQuery(GET_MATERIALS_BY_DEPARTMENT_ID, {
+    fetchPolicy: "network-only",
+  });
+
   const [CreateUserStudyMaterial, { loading: creating }] = useMutation(
     CREATE_USER_STUDY_MATERIAL,
     { fetchPolicy: "network-only" }
@@ -81,8 +88,20 @@ export default function SummerCourseAdminPage() {
     if (resolvedStudentId) {
       GetRegisterFormByUserId({ variables: { user_id: resolvedStudentId } });
     }
-  }, [resolvedStudentId]);
+  }, [GetRegisterFormByUserId, resolvedStudentId]);
   const registrationData = regData?.getRegisterFormByUserId;
+  const departmentId =
+    registrationData?.user_id?.faculty_department_id?.id ||
+    registrationData?.faculty_department_id?.id ||
+    registrationData?.academyTerm_id?.faculty_department_id?.id;
+
+  useEffect(() => {
+    if (departmentId) {
+      GetMaterialsByDepartment({
+        variables: { faculty_department_id: departmentId },
+      });
+    }
+  }, [GetMaterialsByDepartment, departmentId]);
 
   useEffect(() => {
     if (resolvedStudentId && registrationData?.academyTerm_id?.id) {
@@ -93,12 +112,11 @@ export default function SummerCourseAdminPage() {
         },
       });
     }
-  }, [resolvedStudentId, registrationData?.academyTerm_id?.id]);
+  }, [GetUserStudyMaterialsByUser, resolvedStudentId, registrationData?.academyTerm_id?.id]);
 
   const userStudyMaterials = materialsData?.getUserStudyMaterialsByUser;
 
-  const subjects =
-    registrationData?.academyTerm_id?.materials_array || [];
+  const subjects = departmentMaterialsData?.materialsByDepartment || [];
 
   const hasExistingMaterials =
     userStudyMaterials && userStudyMaterials.length > 0;
@@ -122,17 +140,17 @@ export default function SummerCourseAdminPage() {
 
   const handleSubmitMaterials = async () => {
     try {
-      let selectedMaterialsArr = selectedSubjects?.map((el) =>
-        subjects?.find((ele) => ele?.id == el)
-      );
+      const selectedMaterialsArr = selectedSubjects
+        ?.map((el) => subjects?.find((ele) => ele?.id === el))
+        ?.filter(Boolean);
       let totalMaterialHours = 0;
       let academyMinHours =
         registrationData?.academyTerm_id?.min_study_hours;
       let academyMaxHours =
         registrationData?.academyTerm_id?.max_study_hours;
 
-      selectedMaterialsArr?.map(
-        (el) => (totalMaterialHours += el?.material_hours)
+      selectedMaterialsArr?.forEach(
+        (el) => (totalMaterialHours += el?.material_hours || 0)
       );
 
       if (
@@ -144,10 +162,12 @@ export default function SummerCourseAdminPage() {
             variables: {
               id: lastMaterialRecord?.id,
               input: {
+                status: lastMaterialRecord?.status,
                 user_id: resolvedStudentId,
                 academyTerm_id: registrationData?.academyTerm_id?.id,
                 material_id: selectedSubjects,
               },
+              serial: lastMaterialRecord?.serial,
             },
           });
         } else {
@@ -179,7 +199,7 @@ export default function SummerCourseAdminPage() {
     }
   };
 
-  if (ticketLoading || regLoading || materialsLoading)
+  if (ticketLoading || regLoading || materialsLoading || departmentMaterialsLoading)
     return <LoadingPage />;
 
   if (!resolvedStudentId || !registrationData)
@@ -352,10 +372,10 @@ export default function SummerCourseAdminPage() {
                         checked={
                           isEditing
                             ? selectedSubjects?.find(
-                              (el) => el == subj?.id
+                              (el) => el === subj?.id
                             )
                             : prevSelectedMaterials?.find(
-                              (el) => el.id == subj?.id
+                              (el) => el.id === subj?.id
                             )
                         }
                         value={subj?.id}
