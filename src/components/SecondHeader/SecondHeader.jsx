@@ -33,7 +33,7 @@ export default function SecondHeader() {
 const navItems = [
   { key: "home", path: "/home" },
   ...(isAuthenticated ? [] : [{ key: "admissions.title", path: "/admissions" }] ),
-  { key: "support", path: "/support" },
+  ...(isAuthenticated ? [{ key: "support", path: "/support" }] : [] ),
 ];
 
   const getActive = (path) => {
