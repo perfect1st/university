@@ -1,6 +1,17 @@
 {
   "home": "Home",
   "support": "Support",
+  "intro": {
+    "title": "University Portal",
+    "highlight": "Welcome Back",
+    "welcome": "Access your academic and administrative workspace",
+    "description": "Please sign in using your university credentials to manage your courses, view schedules, or access administrative services."
+  },
+  "validation": {
+    "usernameRequired": "University ID or Email is required",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 6 characters long"
+  },
   "header": {
     "title": "Page Title",
     "subtitle": "Page Subtitle",
