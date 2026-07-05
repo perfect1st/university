@@ -12,7 +12,7 @@ import { AiFillTikTok } from "react-icons/ai";
 export default function Footer() {
   const theme = useTheme();
   const { t } = useTranslation();
-  
+
   const { data } = useQuery(GET_SITE_CONFIG);
   const config = data?.getSiteConfig || {};
   const social = config.social_media || {};
@@ -31,11 +31,11 @@ export default function Footer() {
       {/* Top Links */}
       <Stack
         direction={{ xs: "column", sm: "row" }}
-        spacing={3}
+        // spacing={4}
         justifyContent="center"
         alignItems="center"
-        sx={{ mb: 3, textAlign: "center" }}
-      >
+        sx={{ mb: 3, textAlign: "center", gap: 4 }}
+              >
         <Link component={RouterLink} to="/contact-us" underline="hover" sx={{ color: theme.palette.background.secDefault, fontWeight: 'medium' }}>
           {t("footer.contact")}
         </Link>

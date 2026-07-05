@@ -532,7 +532,7 @@ const Header = ({ onAction }) => {
   if (!isAuthenticated) {
     return (
       <AppBar
-        position="static"
+        position="fixed"
         elevation={0}
         sx={{
           background: theme.palette.secondary.sec,
@@ -540,6 +540,7 @@ const Header = ({ onAction }) => {
           py: { xs: 1, md: 1.5 },
           maxHeight: { xs: 60, md: 80 },
           boxShadow: "none",
+          zIndex: 1201
         }}
       >
         <Toolbar disableGutters sx={{ width: "100%" }}>
@@ -650,7 +651,7 @@ const Header = ({ onAction }) => {
 
   return (
     <AppBar
-      position="static"
+      position="fixed"
       elevation={0}
       sx={{
         background: theme.palette.secondary.sec,
@@ -658,6 +659,7 @@ const Header = ({ onAction }) => {
         py: { xs: 1, md: 1.5 },
         maxHeight: { xs: 60, md: 80 },
         boxShadow: "none",
+        zIndex: 1201
       }}
     >
       <Toolbar disableGutters>

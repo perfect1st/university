@@ -212,18 +212,13 @@ const routesData = {
     },
     {
       key: "group_settings",
-      label: { en: "Settings & Setup", ar: "الإعدادات والدعم" },
+      label: { en: "Settings", ar: "الإعدادات" },
       children: [
         {
           key: "profile",
           isPublic: true,
           label: { en: "Profile", ar: "الصفحة الشخصية" },
           path: "/profile",
-        },
-        {
-          key: "supportTickets",
-          label: { en: "Support", ar: "الدعم الفني" },
-          path: "/Support",
         },
         {
           key: "nationalities",
@@ -242,6 +237,12 @@ const routesData = {
           path: "/backups",
         },
       ]
+    },
+     {
+      key: "supportTickets",
+          label: { en: "Support Tickets", ar: "الدعم الفني" },
+                path: "/Support",
+
     }
   ],
 

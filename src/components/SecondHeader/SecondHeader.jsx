@@ -16,35 +16,45 @@ export default function SecondHeader() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const[searchParams,setSearchParams]=useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const isNavOpen=useSelector(state=>state.user.isNavOpen);
+  const isNavOpen = useSelector(state => state.user.isNavOpen);
 
   // logger.log("isNavOpen",isNavOpen);
 
   // isNavOpen
-  
-  
+
+
   const currentPath = location.pathname;
   const user = getUserCookie();
-  const isAuthenticated = Boolean(user); 
+  const isAuthenticated = Boolean(user);
 
   // isAuthenticated ? "/StudentDashboard" :"/admissions"
-const navItems = [
-  { key: "home", path: "/home" },
-  ...(isAuthenticated ? [] : [{ key: "admissions.title", path: "/admissions" }] ),
-  { key: "support", path: "/support" },
-];
+  const navItems = [
+    { key: "home", path: "/home" },
+    { key: "news", path: "/home#news" },
+    { key: "activity", path: "/home#activity" },
+    { key: "FutureVision", path: "/home#FutureVision" },
+    { key: "contactus", path: "/contact-us" },
+    ...(isAuthenticated ? [] : [{ key: "admissions.title", path: "/admissions" }]),
+    { key: "support", path: "/support" },
+  ];
 
   const getActive = (path) => {
     if (path === "/") return currentPath == "/home";
     return currentPath.startsWith(path);
   };
 
+
   return (
     <Box>
       <Box
         sx={{
+          position: "fixed",
+          top: "80px",
+          left: 0,
+          right: 0,
+          zIndex: 1100,
           display: "flex",
           gap: 1,
           alignItems: "center",
@@ -54,7 +64,7 @@ const navItems = [
           py: { xs: 0.5, md: 1 },
         }}
       >
-        
+
         {/* {
           isMobile&&<IconButton onClick={() => {
           // searchParams.set("mobileOpen",true);
@@ -87,8 +97,8 @@ const navItems = [
                   background: active ? theme.palette.secondary.dark : theme.palette.primary.dark,
                 },
               }}
-              
-              
+
+
             >
               {t(item.key)}
             </Button>

@@ -623,5 +623,10 @@
     "materialsStatus": "حالة المواد",
     "noMaterials": "لم يتم تسجيل مواد حتى الآن",
     "manageMaterials": "إدارة موادsummer"
-  }
+  },
+  "news":"الأخبار والتحديثات",
+  "activity":"الأنشطة والبرامج",
+  "FutureVision":"رؤية المستقبل",
+  "contactus":"تواصل معنا"
+
 }

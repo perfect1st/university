@@ -1,12 +1,14 @@
 // src/components/AdmissionsComponents/HomeHero.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Box, Typography, useTheme, useMediaQuery, IconButton } from "@mui/material";
+import { Box, Typography, useTheme, useMediaQuery, IconButton , Collapse , Button} from "@mui/material";
 import { ReactComponent as VisionIcon } from "../../assets/vision.svg";
 import { ReactComponent as MissionIcon } from "../../assets/mission.svg";
 import { ReactComponent as GoalsIcon } from "../../assets/goal.svg";
 import { useTranslation } from "react-i18next";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 export default function HomeHero({ HomeSliderData = [] }) {
   const theme = useTheme();
@@ -14,6 +16,12 @@ export default function HomeHero({ HomeSliderData = [] }) {
   const heroHeight = isSm ? 600 : 854;
   const { i18n, t } = useTranslation();
   const isArabic = i18n.language === "ar";
+  const [expandedCard, setExpandedCard] = useState(null); // Tracks which card is expanded ('vision', 'mission', 'goals')
+
+  const handleToggle = (key) => {
+    setExpandedCard(expandedCard === key ? null : key);
+  };
+
 
   // Build images array for the hero slider.
   const sliderImages = useMemo(() => {
@@ -160,7 +168,7 @@ export default function HomeHero({ HomeSliderData = [] }) {
                 alignItems: "flex-end",
               }}
             >
- 
+
               {/* Overlay (keeps look similar to previous backgroundColor overlay) */}
               <Box
                 sx={{
@@ -170,37 +178,37 @@ export default function HomeHero({ HomeSliderData = [] }) {
                   zIndex: 1,
                 }}
               />
- {(hasImages && images.length > 1) && (
-      <Box
-        sx={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          // bottom is set so dots sit JUST ABOVE the content box's padded area
-          bottom: `calc(${contentPb} + 8px)`,
-          display: "flex",
-          justifyContent: "center",
-          gap: 1,
-          zIndex: 4,
-          pointerEvents: "auto",
-        }}
-      >
-        {images.map((_, di) => (
-          <Box
-            key={di}
-            onClick={() => goTo(di)}
-            sx={{
-              width: 10,
-              height: 10,
-              borderRadius: "50%",
-              cursor: "pointer",
-              backgroundColor: di === index ? theme.palette.secondary.main : "rgba(255,255,255,0.45)",
-              border: di === index ? "2px solid rgba(0,0,0,0.12)" : "none",
-            }}
-          />
-        ))}
-      </Box>
-         )}
+              {(hasImages && images.length > 1) && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    left: 0,
+                    right: 0,
+                    // bottom is set so dots sit JUST ABOVE the content box's padded area
+                    bottom: `calc(${contentPb} + 8px)`,
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 1,
+                    zIndex: 4,
+                    pointerEvents: "auto",
+                  }}
+                >
+                  {images.map((_, di) => (
+                    <Box
+                      key={di}
+                      onClick={() => goTo(di)}
+                      sx={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        cursor: "pointer",
+                        backgroundColor: di === index ? theme.palette.secondary.main : "rgba(255,255,255,0.45)",
+                        border: di === index ? "2px solid rgba(0,0,0,0.12)" : "none",
+                      }}
+                    />
+                  ))}
+                </Box>
+              )}
 
               {/* Content (title + welcome + desc) */}
               <Box
@@ -211,13 +219,13 @@ export default function HomeHero({ HomeSliderData = [] }) {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  textAlign:"center",
+                  textAlign: "center",
                   pb: { xs: 8, md: 12 },
                   px: { xs: 2, md: 6 },
                   backgroundColor: `${theme.palette.primary.main}DD`, // subtle tint to keep text readable
                 }}
               >
-                
+
 
 
                 <Box sx={{ width: "100%", py: { xs: 2, md: 3 }, px: { xs: 2, md: 6 } }}>
@@ -297,7 +305,7 @@ export default function HomeHero({ HomeSliderData = [] }) {
               }}
               aria-label="previous"
             >
-             {isArabic ? <ArrowForwardIosIcon fontSize="small" /> : <ArrowBackIosNewIcon fontSize="small" />}
+              {isArabic ? <ArrowForwardIosIcon fontSize="small" /> : <ArrowBackIosNewIcon fontSize="small" />}
             </IconButton>
 
             <IconButton
@@ -314,36 +322,135 @@ export default function HomeHero({ HomeSliderData = [] }) {
               }}
               aria-label="next"
             >
-             {isArabic ? <ArrowBackIosNewIcon fontSize="small" /> : <ArrowForwardIosIcon fontSize="small" />}
+              {isArabic ? <ArrowBackIosNewIcon fontSize="small" /> : <ArrowForwardIosIcon fontSize="small" />}
             </IconButton>
           </>
         )}
       </Box>
 
       {/* Cards Section (unchanged) */}
-      <Box sx={{ position: "relative", mt: { xs: -6, md: -10 }, px: { xs: 2, md: 6 }, zIndex: 999 }}>
-        <Box sx={{ display: "flex", gap: { xs: 2, md: 3 }, justifyContent: "center", alignItems: "stretch", flexWrap: "wrap" }}>
-          {cards.map((c) => {
-            const Icon = c.Icon;
-            const article = c.article;
+    <Box sx={{ position: "relative", mt: { xs: -6, md: -10 }, px: { xs: 2, md: 6 }, zIndex: 999 }}>
+    <Box 
+      sx={{ 
+        display: "flex", 
+        gap: { xs: 3, md: 4 }, 
+        justifyContent: "center", 
+        alignItems: "stretch", // Keeps card heights uniform in their default state
+        flexWrap: "wrap",
+        maxWidth: "1200px",
+        mx: "auto"
+      }}
+    >
+      {cards.map((c) => {
+        const Icon = c.Icon;
+        const article = c.article;
 
-            const title = article ? (isArabic ? article.title_ar : article.title_en) : (isArabic ? "" : "");
-            const desc = article ? (isArabic ? article.desc_ar : article.desc_en) : "";
+        const title = article ? (isArabic ? article.title_ar : article.title_en) : "";
+        const desc = article ? (isArabic ? article.desc_ar : article.desc_en) : "";
+        
+        const isExpanded = expandedCard === c.key;
+        
+        // Define a safe character length for the preview limit
+        const previewLimit = 120; 
+        const isLongText = desc.length > previewLimit;
+        
+        // Split text into preview and remainder
+        const previewText = isLongText ? `${desc.substring(0, previewLimit)}...` : desc;
 
-            return (
-              <Box key={c.key} sx={{ width: { xs: "100%", sm: 300, md: 320 }, bgcolor: "background.paper", borderRadius: 2, boxShadow: 3, px: 3, py: 4, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
-                <Icon sx={{ fontSize: 40, mb: 1, color: theme.palette.secondary.main }} />
-                <Typography variant="h6" sx={{ fontWeight: "bold", color: theme.palette.secondary.main }}>
-                  {title}
-                </Typography>
-                <Typography variant="body2" sx={{ mt: 1.5, color: theme.palette.primary.main }}>
+        return (
+          <Box 
+            key={c.key} 
+            sx={{ 
+              width: { xs: "100%", sm: 300, md: 340 }, 
+              bgcolor: "background.paper", 
+              borderRadius: 3, // Slightly softer premium corners
+              boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.08)", // Modern soft shadow
+              px: 3, 
+              py: 4, 
+              display: "flex", 
+              flexDirection: "column", 
+              alignItems: "center", 
+              textAlign: "center",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)", // Smooth spatial transition
+              "&:hover": {
+                transform: "translateY(-4px)",
+                boxShadow: "0px 15px 35px rgba(0, 0, 0, 0.12)",
+              }
+            }}
+          >
+            {/* Icon Context */}
+            <Box sx={{ color: theme.palette.secondary.main, mb: 2, "& svg": { fontSize: 42 } }}>
+              <Icon />
+            </Box>
+
+            {/* Title */}
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                fontWeight: 700, 
+                color: theme.palette.secondary.main,
+                mb: 2,
+                letterSpacing: isArabic ? 0 : "0.5px"
+              }}
+            >
+              {title}
+            </Typography>
+
+            {/* Dynamic Description Box */}
+            <Box sx={{ flexGrow: 1, width: "100%" }}>
+              {!isLongText ? (
+                <Typography variant="body2" sx={{ color: theme.palette.primary.main, lineHeight: 1.7 }}>
                   {desc}
                 </Typography>
-              </Box>
-            );
-          })}
-        </Box>
-      </Box>
+              ) : (
+                <>
+                  {/* Smooth height transition wrapper */}
+                  <Collapse in={isExpanded} collapsedSize={75}>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        color: theme.palette.primary.main, 
+                        lineHeight: 1.7,
+                        textAlign: "justify",
+                        textJustify: "inter-word",
+                        direction: isArabic ? "rtl" : "ltr"
+                      }}
+                    >
+                      {isExpanded ? desc : previewText}
+                    </Typography>
+                  </Collapse>
+
+                  {/* See More/Less Action Trigger */}
+                  <Button
+                    onClick={() => handleToggle(c.key)}
+                    endIcon={isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                    size="small"
+                    sx={{
+                      mt: 1.5,
+                      color: theme.palette.secondary.main,
+                      fontWeight: 600,
+                      textTransform: "none",
+                      fontSize: "0.825rem",
+                      fontFamily: "inherit",
+                      "&:hover": {
+                        backgroundColor: "transparent",
+                        textDecoration: "underline"
+                      }
+                    }}
+                  >
+                    {isExpanded 
+                      ? (isArabic ? "عرض أقل" : "See Less") 
+                      : (isArabic ? "عرض المزيد" : "See More")}
+                  </Button>
+                </>
+              )}
+            </Box>
+          </Box>
+        );
+      })}
+    </Box>
+  </Box>
+
 
       <Box sx={{ px: { xs: 2, md: 6 }, pt: 8 }} />
     </Box>

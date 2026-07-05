@@ -584,5 +584,9 @@
     "materialsStatus": "Materials Status",
     "noMaterials": "No materials registered yet",
     "manageMaterials": "Manage Summer Materials"
-  }
+  },
+    "news":"News & Updates",
+  "activity":"Activities & Programs",
+  "FutureVision":"Future Vision",
+  "contactus":"Contact Us"
 }

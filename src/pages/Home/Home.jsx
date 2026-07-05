@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, useTheme, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import LoadingComponent from "../../components/LoadingComponent";
@@ -11,13 +11,29 @@ import { useQuery } from "@apollo/client/react";
 import { GetWebsiteArticles ,ArticalesById} from "../../graphql/articleQueries.js";
 import { GetWebsiteDepartments, getDepartmentByFatherId } from "../../graphql/departmentsQueries.js";
 import logger from "../../utils/logger.js";
+import { useLocation } from "react-router-dom";
 
 const Home = () => {
   const theme = useTheme();
   const { t, i18n } = useTranslation();
+  const location = useLocation();
   const dispatch = useDispatch();
   const isArabic = i18n.language === "ar";
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  
+
+    useEffect(() => {
+    if (location.hash) {
+      const elementId = location.hash.replace("#", "");
+      const element = document.getElementById(elementId);
+      
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      }
+    }
+  }, [location]);
   
   const { data: HomeSliderData, loading: HomeSliderLoading, error: HomeSliderError } = useQuery(ArticalesById, {
     variables: { departmentId: "69d4c8e5d94595c71773dae4" },
@@ -47,6 +63,9 @@ const Home = () => {
   const loading = HomeSliderLoading || newsArticalesLoading || visionArticalesLoading || getDepartmentByFatherIdLoading;
   if (loading) return <LoadingComponent />;
 
+
+
+
   return (
 <Box sx={{ 
     backgroundColor: theme.palette.background.secDefault,
@@ -55,9 +74,15 @@ const Home = () => {
     display: "flex",
     flexDirection: "column"
   }}>      <HomeHero HomeSliderData={HomeSliderData?.getArticlesByDepartment} />
+       <Box id="news">
        <News news={news}/>
+       </Box>
+       <Box id="activity">
      <ActivitiesPrograms Activities={Activities} /> 
+       </Box>
+       <Box id="FutureVision">
       <FutureVision visionArticalesData={vision} />
+       </Box>
     </Box>
   );
 };

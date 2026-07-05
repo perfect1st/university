@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import {
+  Box,
   CssBaseline,
   ThemeProvider,
   Toolbar,
@@ -388,14 +389,32 @@ function App() {
               minHeight: "100vh",
             }}
           >
-            {hideHeader && <Header />}
-            <SecondHeader />
-            {/* {isMobile && !isArabic && hideSecandHeader &&<Toolbar sx={{ width: "100%" }}>
-</Toolbar>} */}
-            {/* Modals */}
+            <Box
+              sx={{
+                position: 'fixed', // تغيير الـ sticky إلى fixed لضمان الثبات الكامل أثناء السكرول
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 1100, // الـ zIndex هنا ليكون فوق المحتوى فقط وليس فوق المودال والتوست
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+            >
+              {/* {hideHeader && */}
+               <Header />
+                {/* } */}
+              <SecondHeader />
 
-            <main style={{ flex: 1 }}>
-              <Routes>
+            </Box>
+        
+
+            <main
+              style={{
+                flex: 1,
+                paddingTop: hideHeader ? "133px" : "60px"
+              }}
+            >              <Routes>
                 {/* المسارات العامة */}
                 <Route path="/" element={<Navigate to="/home" />} />
                 {/* <Route path="/login" element={<LoginScreen />} /> */}
