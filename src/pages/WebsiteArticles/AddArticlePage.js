@@ -155,7 +155,7 @@ export default function AddArticlePage() {
 
 
 
-  const isSpecialDept = selectedDepartment === "6a4e08cf262780da7d29616e" || selectedDepartment === "6a4e1ac7262780da7d296338";
+  const isSpecialDept = selectedDepartment === "6a4e08cf262780da7d29616e" || selectedDepartment === "6a4e1ac7262780da7d296338"|| selectedDepartment === "6a4e34d5262780da7d296a6e";
   const isThreeFieldsDept = selectedDepartment === "6a4e1ac7262780da7d296338";
 
   const formik = useFormik({
