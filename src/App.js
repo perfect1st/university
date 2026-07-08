@@ -32,7 +32,8 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import FeePaymentPage from "./pages/FeePaymentPage/FeePaymentPage";
 import UsersPage from "./pages/Users/Users";
 import UserDetails from "./pages/Users/UserDetails";
-import VisionsArticlesPage from "./pages/Home/VisionsArticlesPage";
+import LeadersArticlesPage from "./pages/Home/LeadersArticlesPage";
+import LeaderBiographyPage from "./pages/Home/LeaderBiographyPage";
 import NewsPage from "./pages/Home/NewsPage";
 import ArticalDetails from "./pages/Home/ArticalDetails";
 import AllNationalitiesPage from "./pages/nationality/AllNationalitiesPage";
@@ -402,12 +403,12 @@ function App() {
               }}
             >
               {/* {hideHeader && */}
-               <Header />
-                {/* } */}
+              <Header />
+              {/* } */}
               <SecondHeader />
 
             </Box>
-        
+
 
             <main
               style={{
@@ -430,10 +431,18 @@ function App() {
                 />
                 <Route element={<ProtectedRoute />}>
                   <Route
-                    path="/VisionsArticles"
+                    path="/leadersArticles"
                     element={
                       <MainLayout>
-                        <VisionsArticlesPage />
+                        <LeadersArticlesPage />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/leader-biography/:id"
+                    element={
+                      <MainLayout>
+                        <LeaderBiographyPage />
                       </MainLayout>
                     }
                   />
