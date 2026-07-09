@@ -32,13 +32,13 @@ export default function SecondHeader() {
   // isAuthenticated ? "/StudentDashboard" :"/admissions"
   const navItems = [
     { key: "home", path: "/home" },
-    { key: "news", path: "/home#news" },
-    { key: "activity", path: "/home#activity" },
-    { key: "FutureVision", path: "/home#FutureVision" },
+    // { key: "news", path: "/home#news" },
+    // { key: "activity", path: "/home#activity" },
+    // { key: "FutureVision", path: "/home#FutureVision" },
     { key: "leadersArticles", path: "/leaders-articles" },
     { key: "studentVoices", path: "/student-voices" },
     { key: "academics", path: "/academics" },
-    { key: "contactus", path: "/contact-us" },
+    // { key: "contactus", path: "/contact-us" },
     ...(isAuthenticated ? [] : [{ key: "admissions.title", path: "/admissions" }]),
     { key: "support", path: "/support" },
   ];
