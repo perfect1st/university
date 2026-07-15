@@ -29,18 +29,20 @@ export default function SecondHeader() {
   const user = getUserCookie();
   const isAuthenticated = Boolean(user);
 
+  if (isAuthenticated) return null;
+
   // isAuthenticated ? "/StudentDashboard" :"/admissions"
   const navItems = [
     { key: "home", path: "/home" },
-    { key: "news", path: "/home#news" },
-    { key: "activity", path: "/home#activity" },
-    { key: "FutureVision", path: "/home#FutureVision" },
+    // { key: "news", path: "/home#news" },
+    // { key: "activity", path: "/home#activity" },
+    // { key: "FutureVision", path: "/home#FutureVision" },
     { key: "leadersArticles", path: "/leaders-articles" },
     { key: "studentVoices", path: "/student-voices" },
     { key: "academics", path: "/academics" },
     { key: "contactus", path: "/contact-us" },
     ...(isAuthenticated ? [] : [{ key: "admissions.title", path: "/admissions" }]),
-    { key: "support", path: "/support" },
+    // { key: "support", path: "/support" },
   ];
 
   const getActive = (path) => {
@@ -61,10 +63,17 @@ export default function SecondHeader() {
           display: "flex",
           gap: 1,
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: { xs: "flex-start", md: "center" },
           background: theme.palette.primary.main,
-          px: { xs: 1, md: 2 },
+          px: { xs: 2, md: 2 },
           py: { xs: 0.5, md: 1 },
+          overflowX: "auto",
+          whiteSpace: "nowrap",
+          flexWrap: "nowrap",
+          scrollbarWidth: "none", // Firefox
+          "&::-webkit-scrollbar": {
+            display: "none", // Safari and Chrome
+          },
         }}
       >
 
@@ -99,6 +108,8 @@ export default function SecondHeader() {
                 "&:hover": {
                   background: active ? theme.palette.secondary.dark : theme.palette.primary.dark,
                 },
+                flexShrink: 0, // Prevent buttons from shrinking
+                whiteSpace: "nowrap", // Prevent button text from wrapping
               }}
 
 

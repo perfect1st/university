@@ -13,7 +13,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 export default function HomeHero({ HomeSliderData = [] }) {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
-  const heroHeight = isSm ? 600 : 854;
+  const heroHeight = isSm ? 480 : 854;
   const { i18n, t } = useTranslation();
   const isArabic = i18n.language === "ar";
   const [expandedCard, setExpandedCard] = useState(null); // Tracks which card is expanded ('vision', 'mission', 'goals')
@@ -122,7 +122,7 @@ export default function HomeHero({ HomeSliderData = [] }) {
   // If no images, fall back to first article main_image or empty
   const hasImages = images && images.length > 0;
   const currentBg = hasImages ? images[index] : HomeSliderData?.[0]?.main_image || "";
-  const contentPb = isSm ? theme.spacing(8) : "46%"; // returns like "64px" or "96px"
+  const contentPb = isSm ? theme.spacing(6) : "46%"; // returns like "48px" or "96px"
 
   return (
     <Box sx={{ position: "relative", zIndex: 5 }}>
@@ -221,7 +221,7 @@ export default function HomeHero({ HomeSliderData = [] }) {
                   alignItems: "center",
                   textAlign: "center",
                   backgroundColor: `${theme.palette.primary.main}DD`, // subtle tint to keep text readable
-                  pb: { xs: 8, md: 12 },
+                  pb: { xs: 6, md: 12 },
                 }}
               >
                 <Box
@@ -235,10 +235,14 @@ export default function HomeHero({ HomeSliderData = [] }) {
                     alignItems: "center"
                   }}
                 >
-                  <Box sx={{ width: "100%", py: { xs: 2, md: 3 } }}>
+                  <Box sx={{ width: "100%", py: { xs: 1.5, md: 3 } }}>
                     <Typography
                       variant={isSm ? "h5" : "h3"}
-                      sx={{ fontWeight: "bold", color: theme.palette.secondary.main, fontSize: "32px", fontFamily: "Arial" }}
+                      sx={{ 
+                        fontWeight: "bold", 
+                        color: theme.palette.secondary.main, 
+                        fontSize: { xs: "22px", md: "32px" }, 
+                      }}
                     >
                       {isArabic
                         ? HomeSliderData?.[0]?.title_ar || ""
@@ -246,15 +250,26 @@ export default function HomeHero({ HomeSliderData = [] }) {
                     </Typography>
 
                     <Typography
-                      variant={isSm ? "body1" : "h6"}
-                      sx={{ mt: 1, color: theme.palette.primary.contrastText }}
+                      variant={isSm ? "body2" : "h6"}
+                      sx={{ 
+                        mt: 1, 
+                        color: theme.palette.primary.contrastText,
+                        fontSize: { xs: "13px", md: "18px" }
+                      }}
                     >
                       {t("welcome_message")}
                     </Typography>
                   </Box>
 
-                  <Box sx={{ width: "100%", py: { xs: 3, md: 4 }, mt: 0.5 }}>
-                    <Typography variant="body1" sx={{ color: theme.palette.primary.contrastText, lineHeight: 1.7 }}>
+                  <Box sx={{ width: "100%", py: { xs: 1.5, md: 4 }, mt: 0.5 }}>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        color: theme.palette.primary.contrastText, 
+                        lineHeight: { xs: 1.5, md: 1.7 },
+                        fontSize: { xs: "12px", md: "16px" }
+                      }}
+                    >
                       {isArabic ? HomeSliderData?.[0]?.desc_ar : HomeSliderData?.[0]?.desc_en}
                     </Typography>
                   </Box>
@@ -337,7 +352,7 @@ export default function HomeHero({ HomeSliderData = [] }) {
       </Box>
 
       {/* Cards Section (unchanged) */}
-    <Box sx={{ position: "relative", mt: { xs: -6, md: -10 }, px: { xs: 2, md: 6 }, zIndex: 999 }}>
+    <Box sx={{ position: "relative", mt: { xs: -4, md: -10 }, mb: { xs: 4, md: 0 }, px: { xs: 2, md: 6 }, zIndex: 999 }}>
     <Box 
       sx={{ 
         display: "flex", 
