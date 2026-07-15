@@ -194,7 +194,7 @@ const LoginPage = () => {
         }}
       >
         {/* Language Switch Button */}
-        <Box
+        {/* <Box
           sx={{
             position: "absolute",
             top: 16,
@@ -204,7 +204,7 @@ const LoginPage = () => {
           <Button variant="outlined" size="small" onClick={changeLanguage}>
             {i18n.language === "en" ? "AR" : "EN"}
           </Button>
-        </Box>
+        </Box> */}
 
         <Box
           component="form"

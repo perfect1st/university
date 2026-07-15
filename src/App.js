@@ -418,7 +418,9 @@ function App() {
             <main
               style={{
                 flex: 1,
-                paddingTop: isLoggedIn ? "80px" : hideHeader ? "133px" : "60px"
+                paddingTop: isLoggedIn 
+                  ? (isMobile ? "60px" : "80px") 
+                  : (isMobile ? "100px" : "133px")
               }}
             >              <Routes>
                 {/* المسارات العامة */}

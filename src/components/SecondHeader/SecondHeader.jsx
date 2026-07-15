@@ -56,7 +56,7 @@ export default function SecondHeader() {
       <Box
         sx={{
           position: "fixed",
-          top: "80px",
+          top: { xs: "60px", md: "80px" },
           left: 0,
           right: 0,
           zIndex: 1100,
@@ -70,6 +70,8 @@ export default function SecondHeader() {
           overflowX: "auto",
           whiteSpace: "nowrap",
           flexWrap: "nowrap",
+          WebkitOverflowScrolling: "touch", // Smooth iOS scrolling
+          borderBottom: `2px solid ${theme.palette.divider || "rgba(0,0,0,0.12)"}`,
           scrollbarWidth: "none", // Firefox
           "&::-webkit-scrollbar": {
             display: "none", // Safari and Chrome
@@ -119,7 +121,6 @@ export default function SecondHeader() {
           );
         })}
       </Box>
-      <Box sx={{ height: 2, backgroundColor: theme.palette.divider, width: "100%" }} />
     </Box>
   );
 }
