@@ -125,7 +125,7 @@ export default function HomeHero({ HomeSliderData = [] }) {
   const contentPb = isSm ? theme.spacing(8) : "46%"; // returns like "64px" or "96px"
 
   return (
-    <Box>
+    <Box sx={{ position: "relative", zIndex: 5 }}>
       {/* Hero Section - now a slider */}
       <Box
         sx={{
@@ -220,36 +220,44 @@ export default function HomeHero({ HomeSliderData = [] }) {
                   flexDirection: "column",
                   alignItems: "center",
                   textAlign: "center",
-                  pb: { xs: 8, md: 12 },
-                  px: { xs: 2, md: 6 },
                   backgroundColor: `${theme.palette.primary.main}DD`, // subtle tint to keep text readable
+                  pb: { xs: 8, md: 12 },
                 }}
               >
+                <Box
+                  sx={{
+                    width: "100%",
+                    maxWidth: 1300,
+                    margin: "0 auto",
+                    px: { xs: 3, sm: 5, md: 8, lg: 12 },
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center"
+                  }}
+                >
+                  <Box sx={{ width: "100%", py: { xs: 2, md: 3 } }}>
+                    <Typography
+                      variant={isSm ? "h5" : "h3"}
+                      sx={{ fontWeight: "bold", color: theme.palette.secondary.main, fontSize: "32px", fontFamily: "Arial" }}
+                    >
+                      {isArabic
+                        ? HomeSliderData?.[0]?.title_ar || ""
+                        : HomeSliderData?.[0]?.title_en || ""}
+                    </Typography>
 
+                    <Typography
+                      variant={isSm ? "body1" : "h6"}
+                      sx={{ mt: 1, color: theme.palette.primary.contrastText }}
+                    >
+                      {t("welcome_message")}
+                    </Typography>
+                  </Box>
 
-
-                <Box sx={{ width: "100%", py: { xs: 2, md: 3 }, px: { xs: 2, md: 6 } }}>
-                  <Typography
-                    variant={isSm ? "h5" : "h3"}
-                    sx={{ fontWeight: "bold", color: theme.palette.secondary.main }}
-                  >
-                    {isArabic
-                      ? HomeSliderData?.[0]?.title_ar || ""
-                      : HomeSliderData?.[0]?.title_en || ""}
-                  </Typography>
-
-                  <Typography
-                    variant={isSm ? "body1" : "h6"}
-                    sx={{ mt: 1, color: theme.palette.primary.contrastText }}
-                  >
-                    {t("welcome_message")}
-                  </Typography>
-                </Box>
-
-                <Box sx={{ width: "100%", py: { xs: 3, md: 4 }, px: { xs: 2, md: 6 }, mt: 0.5 }}>
-                  <Typography variant="body1" sx={{ color: theme.palette.primary.contrastText, lineHeight: 1.7 }}>
-                    {isArabic ? HomeSliderData?.[0]?.desc_ar : HomeSliderData?.[0]?.desc_en}
-                  </Typography>
+                  <Box sx={{ width: "100%", py: { xs: 3, md: 4 }, mt: 0.5 }}>
+                    <Typography variant="body1" sx={{ color: theme.palette.primary.contrastText, lineHeight: 1.7 }}>
+                      {isArabic ? HomeSliderData?.[0]?.desc_ar : HomeSliderData?.[0]?.desc_en}
+                    </Typography>
+                  </Box>
                 </Box>
               </Box>
             </Box>
@@ -363,7 +371,7 @@ export default function HomeHero({ HomeSliderData = [] }) {
             sx={{ 
               width: { xs: "100%", sm: 300, md: 340 }, 
               bgcolor: "background.paper", 
-              borderRadius: 3, // Slightly softer premium corners
+              borderRadius: "8px", // Softer 8px rounded corners
               boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.08)", // Modern soft shadow
               px: 3, 
               py: 4, 

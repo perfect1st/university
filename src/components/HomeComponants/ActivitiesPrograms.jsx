@@ -123,7 +123,7 @@ logger.log("Articles for selected activity:", articles);
   };
 
   return (
-    <Paper sx={{ p: 4, backgroundColor: "background.paper", borderRadius: 0 }} elevation={3}>
+    <Paper sx={{ p: 0, backgroundColor: "transparent", borderRadius: 0 }} elevation={0}>
       {/* Title */}
       <TitleComponent title={t("Activities & Programs")} />
 

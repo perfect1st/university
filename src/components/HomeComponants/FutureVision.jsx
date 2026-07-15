@@ -28,7 +28,7 @@ export default function FutureVision({ visionArticalesData = [] }) {
   if (!article) return null;
 
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{ py: 4, px: 0 }}>
       {/* Title */}
       <TitleComponent title={t("Future Vision")} />
 
