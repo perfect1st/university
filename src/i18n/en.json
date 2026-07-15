@@ -116,7 +116,7 @@
     "riyadh": "Riyadh",
     "jeddah": "Jeddah",
     "dammam": "Dammam",
-    "success": "Application submitted successfully",
+    "success": "Registration successful!",
     "error": "Application submission failed try again later",
     "errors": {
       "required": "This field is required",
@@ -496,7 +496,7 @@
     "viewDocument": "View Payment Document",
     "notPaidMessage": "This student has not paid the registration form expenses",
     "goToAdd": "Go to Add Transaction",
-    "currency": "YER",
+    "currency": "SAR",
     "Transaction Logs": "Transaction Logs",
     "Action": "Action",
     "Amount": "Amount",
