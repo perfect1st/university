@@ -357,9 +357,7 @@ function App() {
 
   // ======= Replace the old polling block with this =======
 
-  // read cookie once at mount to avoid unstable deps
-  const initialUser = useMemo(() => getUserCookie(), []);
-  const isLoggedIn = Boolean(initialUser?.id);
+  const isLoggedIn = Boolean(user);
 
   // useEffect(() => {
   //   if (!isLoggedIn) return;
