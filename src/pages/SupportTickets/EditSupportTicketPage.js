@@ -21,6 +21,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import PaymentIcon from '@mui/icons-material/Payment';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import UniversityCard from "../../components/UniversityCard";
 import GraduationCertificate from "../../components/Certificates/GraduationCertificate";
 import StudentAffidavit from "../../components/Certificates/StudentAffidavit";
@@ -234,12 +235,28 @@ export default function EditSupportTicketPage() {
 
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 {ticket.transaction_id ? (
-                                    <>
-                                        <CheckCircleIcon color="success" />
-                                        <Typography variant="subtitle2" color="success.main" sx={{ fontWeight: 'bold' }}>
-                                            {isArabic ? "تم الدفع" : "Paid"}
-                                        </Typography>
-                                    </>
+                                    ticket.transaction_id.approval_status === "PENDING" ? (
+                                        <>
+                                            <HourglassEmptyIcon color="warning" />
+                                            <Typography variant="subtitle2" color="warning.main" sx={{ fontWeight: 'bold' }}>
+                                                {isArabic ? "قيد الانتظار" : "Pending"}
+                                            </Typography>
+                                        </>
+                                    ) : ticket.transaction_id.approval_status === "REJECTED" ? (
+                                        <>
+                                            <ErrorIcon color="error" />
+                                            <Typography variant="subtitle2" color="error.main" sx={{ fontWeight: 'bold' }}>
+                                                {isArabic ? "مرفوض" : "Rejected"}
+                                            </Typography>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <CheckCircleIcon color="success" />
+                                            <Typography variant="subtitle2" color="success.main" sx={{ fontWeight: 'bold' }}>
+                                                {isArabic ? "تم الدفع" : "Paid"}
+                                            </Typography>
+                                        </>
+                                    )
                                 ) : (
                                     <>
                                         <ErrorIcon color="error" />
@@ -250,7 +267,7 @@ export default function EditSupportTicketPage() {
                                 )}
                             </Box>
 
-                            {!ticket.transaction_id && me?.role === "student" && (
+                            {(!ticket.transaction_id || ticket.transaction_id.approval_status === "REJECTED") && me?.role === "student" && (
                                 <Button
                                     fullWidth
                                     variant="contained"
@@ -264,6 +281,21 @@ export default function EditSupportTicketPage() {
                                 </Button>
                             )}
 
+                            {ticket?.transaction_id?.approval_status === "PENDING" && ticket?.transaction_id?.myfatoorah_payment_url && me?.role === "student" && (
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    color="warning"
+                                    startIcon={<PaymentIcon />}
+                                    onClick={() => {
+                                        window.location.href = ticket.transaction_id.myfatoorah_payment_url;
+                                    }}
+                                    sx={{ mt: 2 }}
+                                >
+                                    {isArabic ? "إكمال عملية الدفع" : "Continue Payment"}
+                                </Button>
+                            )}
+
                             {ticket.transaction_id && (
                                 <Box sx={{ mt: 2, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
                                     <Typography variant="caption" display="block">
@@ -273,13 +305,12 @@ export default function EditSupportTicketPage() {
                                         {isArabic ? "طريقة الدفع:" : "Payment Method:"} {ticket.transaction_id.payment_method_type}
                                     </Typography>
                                     <Typography variant="caption" display="block">
-                                        {isArabic ? "التاريخ:" : "Date:"} {new Date(parseInt(ticket.transaction_id.transaction_date)).toLocaleDateString()}
+                                        {isArabic ? "التاريخ:" : "Date:"} {/^\d+$/.test(ticket.transaction_id.transaction_date) ? new Date(parseInt(ticket.transaction_id.transaction_date)).toLocaleDateString() : ticket.transaction_id.transaction_date}
                                     </Typography>
                                 </Box>
                             )}
                         </Paper>
                     )}
-                    :
                 </Grid>
 
                 {/* Printable Documents Section */}
