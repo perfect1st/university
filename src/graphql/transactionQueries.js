@@ -74,6 +74,8 @@ query GetTransactionsFiltered(
     $search: String
     $payment_method_type: String
     $approval_status: String
+    $user_id: ID
+    $transaction_date: String
 ) {
     getTransactionsFiltered(
         operation_type: $operation_type
@@ -82,6 +84,8 @@ query GetTransactionsFiltered(
         search: $search
         payment_method_type: $payment_method_type
         approval_status: $approval_status
+        user_id: $user_id
+        transaction_date: $transaction_date
     ) {
         total
         transactions {

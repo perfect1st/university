@@ -47,6 +47,8 @@ import { baseURL } from "../../Api/apolloClient";
 import VerticalTextField, { SearchByTypingSelect } from "../../components/Utilities/VerticalTextField";
 import { useRef } from "react";
 import logger from "../../utils/logger";
+import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
+import NoPermissionPage from "../../components/NoPermissionPage";
 
 // --- Custom TabPanel Component ---
 function TabPanel(props) {
@@ -73,6 +75,7 @@ export default function SiteSettings() {
   const { t } = useTranslation();
   const theme = useTheme();
   const isArabic = i18n.language === "ar";
+  const { view, create, update, delete: canDelete } = usePermissionsByModule("settings");
 
   const [formData, setFormData] = useState({
     privacy_policy_ar: "",
@@ -214,6 +217,7 @@ export default function SiteSettings() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!update) return notify(t("no_permission.title"), "error");
     try {
       if (tabIndex === 5) {
         // Handle General Settings update
@@ -261,6 +265,8 @@ export default function SiteSettings() {
       notify(err.message || t("error"), "error");
     }
   };
+
+  if (!view) return <NoPermissionPage />;
 
   if (configLoading || settingsLoading) return <LoadingPage />;
 
@@ -575,7 +581,7 @@ export default function SiteSettings() {
                 type="submit"
                 variant="contained"
                 size="large"
-                disabled={updating || updatingSetting}
+                disabled={updating || updatingSetting || !update}
                 startIcon={(updating || updatingSetting) ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
                 sx={{ px: 5, py: 1.5, borderRadius: 2, fontSize: '1.1rem', fontWeight: 'bold' }}
               >

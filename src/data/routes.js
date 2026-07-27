@@ -125,8 +125,7 @@ const routesData = {
           path: "/contact-messages",
         },
         {
-          key: "site-settings",
-          isPublic: true,
+          key: "settings",
           label: { en: "Site Settings", ar: "اعدادات الموقع" },
           path: "/site-settings",
         },
@@ -176,6 +175,11 @@ const routesData = {
           key: "registerForms",
           label: { en: "Promotion", ar: "الترقية" },
           path: "/promotion",
+        },
+        {
+          key: "studentDegrees",
+          label: { en: "Student Degrees", ar: "درجات الطلاب" },
+          path: "/allStudentDegrees",
         },
       ]
     },
@@ -238,10 +242,10 @@ const routesData = {
         },
       ]
     },
-     {
+    {
       key: "supportTickets",
-          label: { en: "Support Tickets", ar: "الدعم الفني" },
-                path: "/Support",
+      label: { en: "Support Tickets", ar: "الدعم الفني" },
+      path: "/Support",
 
     }
   ],

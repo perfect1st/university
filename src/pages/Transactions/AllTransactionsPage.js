@@ -9,7 +9,11 @@ import {
   InputLabel, 
   Select, 
   MenuItem, 
-  Typography 
+  Typography,
+  Autocomplete,
+  TextField,
+  Paper,
+  Button
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -23,6 +27,7 @@ import Header from "../../components/PageHeader/header";
 import { useEffect, useState } from "react";
 import notify from "../../components/notify";
 import { GET_ALL_TRANSACTIONS, GET_FILTERED_TRANSACTIONS } from "../../graphql/transactionQueries";
+import { GET_USERS } from "../../graphql/usersQueries";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { paymentMethodsArr, transactionTypesArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
@@ -43,6 +48,28 @@ export default function AllTransactionsPage() {
     // حالة فلتر نطاق الدولة (عام / داخل اليمن / خارج اليمن)
     const [countryFilter, setCountryFilter] = useState("all");
 
+    // استعلام المستخدمين لفلتر الأوتوكومبليت
+    const { data: usersData, loading: usersLoading } = useQuery(GET_USERS, { fetchPolicy: "network-only" });
+    const userOptions = usersData?.users || [];
+
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(searchParams.get("transaction_date") || searchParams.get("date") || "");
+
+    useEffect(() => {
+        const userIdFromUrl = searchParams.get("user_id");
+        if (userIdFromUrl && userOptions.length > 0) {
+            const foundUser = userOptions.find(u => String(u.id) === String(userIdFromUrl));
+            setSelectedUser(foundUser || null);
+        } else if (!userIdFromUrl) {
+            setSelectedUser(null);
+        }
+    }, [searchParams, userOptions]);
+
+    useEffect(() => {
+        const dateFromUrl = searchParams.get("transaction_date") || searchParams.get("date") || "";
+        setSelectedDate(dateFromUrl);
+    }, [searchParams]);
+
     const [
         GetTransactions,
         {
@@ -59,16 +86,33 @@ export default function AllTransactionsPage() {
     const transactions = filteredData?.getTransactionsFiltered?.transactions || [];
     const total = filteredData?.getTransactionsFiltered?.total || 0;
 
+    const formatDateToDDMMYYYY = (dateStr) => {
+        if (!dateStr) return "";
+        if (dateStr.includes("-")) {
+            const parts = dateStr.split("-");
+            if (parts[0].length === 4) {
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+        }
+        return dateStr;
+    };
+
     useEffect(() => {
         let page = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
         let limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : 10;
         let searchText = searchParams.get("search") || "";
+        let userIdParam = searchParams.get("user_id") || "";
+        let dateParam = searchParams.get("transaction_date") || searchParams.get("date") || "";
 
         let variablesObj = { page, limit };
         if (searchText) variablesObj.search = searchText;
         if (searchParams.get("payment_method_type")) variablesObj.payment_method_type = searchParams.get("payment_method_type");
         if (searchParams.get("operation_type")) variablesObj.operation_type = searchParams.get("operation_type");
         if (searchParams.get("approval_status")) variablesObj.approval_status = searchParams.get("approval_status");
+        if (userIdParam) variablesObj.user_id = userIdParam;
+        if (dateParam) {
+            variablesObj.transaction_date = formatDateToDDMMYYYY(dateParam);
+        }
 
         GetTransactions({ variables: variablesObj });
     }, [searchParams]);
@@ -83,6 +127,23 @@ export default function AllTransactionsPage() {
                     t.register_form_id?.is_inside_yemen === true ||
                     t.user_id?.is_inside_yemen === true;
                 return countryFilter === "YEMEN" ? isInsideYemen : !isInsideYemen;
+            });
+        }
+
+        const userIdParam = searchParams.get("user_id");
+        if (userIdParam) {
+            result = result.filter((t) => {
+                const uId = t.user_id?.id || t.user_id?._id || t.register_form_id?.id;
+                return String(uId) === String(userIdParam);
+            });
+        }
+
+        const dateParam = searchParams.get("transaction_date") || searchParams.get("date");
+        if (dateParam) {
+            const formattedDate = formatDateToDDMMYYYY(dateParam);
+            result = result.filter((t) => {
+                if (!t.transaction_date) return false;
+                return t.transaction_date === formattedDate || t.transaction_date.startsWith(dateParam);
             });
         }
 
@@ -205,6 +266,40 @@ export default function AllTransactionsPage() {
     let pageLimit = searchParams.get("limit") ? Number(searchParams.get("limit")) : 10;
     const totalPages = Math.ceil(total / pageLimit) || 1;
 
+    const handleUserChange = (event, newValue) => {
+        setSelectedUser(newValue);
+        if (newValue?.id) {
+            searchParams.set("user_id", newValue.id);
+        } else {
+            searchParams.delete("user_id");
+        }
+        searchParams.set("page", "1");
+        setSearchParams(searchParams);
+    };
+
+    const handleDateChange = (e) => {
+        const val = e.target.value;
+        setSelectedDate(val);
+        if (val) {
+            searchParams.set("transaction_date", val);
+        } else {
+            searchParams.delete("transaction_date");
+            searchParams.delete("date");
+        }
+        searchParams.set("page", "1");
+        setSearchParams(searchParams);
+    };
+
+    const handleClearUserAndDate = () => {
+        setSelectedUser(null);
+        setSelectedDate("");
+        searchParams.delete("user_id");
+        searchParams.delete("transaction_date");
+        searchParams.delete("date");
+        searchParams.set("page", "1");
+        setSearchParams(searchParams);
+    };
+
     const onFilterChange = async (filterOBJ) => {
         if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
         else searchParams.delete("search");
@@ -225,6 +320,14 @@ export default function AllTransactionsPage() {
             searchParams.set("approval_status", filterOBJ.approval_status);
         } else {
             searchParams.delete("approval_status");
+        }
+
+        if (Object.keys(filterOBJ).length === 0) {
+            setSelectedUser(null);
+            setSelectedDate("");
+            searchParams.delete("user_id");
+            searchParams.delete("transaction_date");
+            searchParams.delete("date");
         }
 
         setSearchParams(searchParams);
@@ -257,8 +360,6 @@ export default function AllTransactionsPage() {
                         onPrinter={() => fetchAndExport("print")}
                     />
 
-                   
-
                     <DashboardFilterComponent
                         placeholder={t("Dashboard.searchWith", { search: t("fee.transactionSerial") })}
                         textSearchField={"search"}
@@ -268,6 +369,11 @@ export default function AllTransactionsPage() {
                         select2Label={"Dashboard.transactionType"}
                         selectKey={"operation_type"}
                         selectOptions={transactionTypesArr}
+                        userKey={"user_id"}
+                        userOptions={userOptions}
+                        userLabel={isArabic ? "فلترة حسب المستخدم" : "Filter by User"}
+                        dateKey={"transaction_date"}
+                        dateLabel={isArabic ? "تاريخ المعاملة" : "Transaction Date"}
                         onFilterChange={onFilterChange}
                         t={t}
                     />

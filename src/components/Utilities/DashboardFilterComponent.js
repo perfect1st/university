@@ -38,7 +38,12 @@ export default function DashboardFilterComponent({
   fromRegisterForm = false,
   isAdmin = false,
   isPromotion = false,
-  isAcademyTerms = false
+  isAcademyTerms = false,
+  userKey,
+  userOptions,
+  userLabel,
+  dateKey,
+  dateLabel
 }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -65,6 +70,34 @@ export default function DashboardFilterComponent({
     () => searchParams.get(selectKey3) || "0",
   );
 
+  const [userSearch, setUserSearch] = useState(() => {
+    if (!userKey) return null;
+    const uId = searchParams.get(userKey);
+    if (uId && userOptions?.length > 0) {
+      return userOptions.find((u) => String(u.id) === String(uId)) || null;
+    }
+    return null;
+  });
+
+  const [dateSearch, setDateSearch] = useState(
+    () => (dateKey ? searchParams.get(dateKey) || "" : "")
+  );
+
+  React.useEffect(() => {
+    if (userKey) {
+      const uId = searchParams.get(userKey);
+      if (uId && userOptions?.length > 0) {
+        const found = userOptions.find((u) => String(u.id) === String(uId));
+        setUserSearch(found || null);
+      } else if (!uId) {
+        setUserSearch(null);
+      }
+    }
+    if (dateKey) {
+      setDateSearch(searchParams.get(dateKey) || "");
+    }
+  }, [searchParams, userKey, dateKey, userOptions]);
+
   const handleCancel = () => {
     // 1. Clear local state
     setSearchValue("");
@@ -73,6 +106,8 @@ export default function DashboardFilterComponent({
     setSelect2Search("0");
     setSelect3Search("0");
     setSelect4Search("0");
+    setUserSearch(null);
+    setDateSearch("");
     if (onSelect2Change) onSelect2Change("0");
 
     // 3. CRITICAL: Tell the parent page to show ALL data again
@@ -87,6 +122,8 @@ export default function DashboardFilterComponent({
     if (searchValue2) filterOBJ[textSearchField2] = searchValue2?.trim();
     if (selectKey2) filterOBJ[selectKey2] = select3Search;
     if (selectKey3) filterOBJ[selectKey3] = select4Search;
+    if (userKey && userSearch?.id) filterOBJ[userKey] = userSearch.id;
+    if (dateKey && dateSearch) filterOBJ[dateKey] = dateSearch;
 
     onFilterChange(filterOBJ);
   };
@@ -349,6 +386,64 @@ export default function DashboardFilterComponent({
                   ))}
                 </CustomSelect>
               )}
+            </Grid>
+          )}
+
+          {userKey && userOptions && (
+            <Grid item xs={12} md={2.5}>
+              <Autocomplete
+                size="small"
+                options={userOptions}
+                value={userSearch}
+                onChange={(event, newValue) => setUserSearch(newValue)}
+                getOptionLabel={(option) => {
+                  if (!option) return "";
+                  const name = option.fullname || option.username || "";
+                  const serial = option.serial ? ` (#${option.serial})` : "";
+                  return `${name}${serial}`;
+                }}
+                isOptionEqualToValue={(option, value) => String(option?.id) === String(value?.id)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder={userLabel ? t(userLabel) : (isArabic ? "فلترة حسب المستخدم" : "Filter by User")}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        height: '40px',
+                        backgroundColor: theme.palette.background.gray || "#f5f5f5",
+                        borderRadius: '8px',
+                        '& fieldset': { border: 'none' },
+                        '&:hover fieldset': { border: 'none' },
+                        '&.Mui-focused fieldset': { border: 'none' },
+                      }
+                    }}
+                  />
+                )}
+              />
+            </Grid>
+          )}
+
+          {dateKey && (
+            <Grid item xs={12} md={2}>
+              <TextField
+                fullWidth
+                size="small"
+                type="date"
+                value={dateSearch}
+                onChange={(e) => setDateSearch(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+                placeholder={dateLabel ? t(dateLabel) : (isArabic ? "تاريخ المعاملة" : "Transaction Date")}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    height: '40px',
+                    backgroundColor: theme.palette.background.gray || "#f5f5f5",
+                    borderRadius: '8px',
+                    '& fieldset': { border: 'none' },
+                    '&:hover fieldset': { border: 'none' },
+                    '&.Mui-focused fieldset': { border: 'none' },
+                  }
+                }}
+              />
             </Grid>
           )}
 

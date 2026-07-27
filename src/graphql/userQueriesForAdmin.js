@@ -182,6 +182,11 @@ export const FILTERED_USERS = gql`
             name_ar
             name_en
         }
+              faculty_id {
+            id
+            title_ar
+            title_en
+        }
       }
     }
   }

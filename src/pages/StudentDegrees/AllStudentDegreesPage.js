@@ -128,8 +128,14 @@ export default function AllStudentDegreesPage() {
         });
 
     useEffect(() => {
-        if (me?.id) {
-            StudentDegreesAll({ variables: { doctor_id: me?.id } });
+        if (me) {
+            const role = me.role?.toLowerCase();
+            const isAdmin = role === "admin" || role === "super_admin";
+            if (isAdmin) {
+                StudentDegreesAll({ variables: {} });
+            } else if (me.id) {
+                StudentDegreesAll({ variables: { doctor_id: me.id } });
+            }
         }
     }, [me]);
 

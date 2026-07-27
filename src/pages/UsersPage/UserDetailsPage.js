@@ -19,6 +19,7 @@ import { SearchByTypingSelect2 } from "../../components/Utilities/VerticalTextFi
 import { userRules } from "../../constants";
 import { UPDATE_USER_BY_ADMIN } from "../../graphql/userQueriesForAdmin";
 import { GET_GROUPS } from "../../graphql/groupQueries";
+import { GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import logger from "../../utils/logger";
 import GraduationCertificate from "../../components/Certificates/GraduationCertificate";
 
@@ -31,8 +32,10 @@ export default function UserDetailsPage() {
   const userData = location?.state;
   logger.log("location", location);
 
-  // Fetch Groups for the selection list
+  // Fetch Groups and Faculties for selection lists
   const { data: groupsData } = useQuery(GET_GROUPS);
+  const { data: facultiesData } = useQuery(GET_ALL_FACULITIES);
+  const facultiesOptions = facultiesData?.faculties || [];
 
   const [selectedRule, setSelectedRule] = useState(userData?.role || 0);
 
@@ -68,6 +71,7 @@ export default function UserDetailsPage() {
       profile_image: userData?.profile_image || "",
       // Initialize groupIds from location state (assuming the API returns objects, we map to IDs)
       groupIds: userData?.groups?.map((g) => g.id) || userData?.groupIds || [],
+      faculty_id: userData?.faculty_id?.id || userData?.faculty_id || "",
     },
 
     validationSchema: Yup.object({
@@ -89,6 +93,10 @@ export default function UserDetailsPage() {
         // تأكد أن القيم هنا IDs فقط (Strings) وليس Objects
         groups: values.groupIds.map((id) => (typeof id === "object" ? id.id : id)),
       };
+
+      if (values.faculty_id) {
+        input.faculty_id = values.faculty_id;
+      }
 
       if (values.password && values.password.trim() !== "") {
         input.password = values.password;
@@ -193,6 +201,19 @@ export default function UserDetailsPage() {
           setValue={(val) => formik.setFieldValue("groupIds", val)}
           onBlur={() => formik.setFieldTouched("groupIds", true)}
           error={formik.touched.groupIds && formik.errors.groupIds}
+        />
+
+        {/* Faculty Select Integration */}
+        <SearchByTypingSelect2
+          title={t("admissions .faculty")}
+          options={facultiesOptions}
+          multiple={false}
+          findKey="id"
+          labelToShow={(opt) => (isArabic ? opt.title_ar : opt.title_en)}
+          value={formik.values.faculty_id}
+          setValue={(val) => formik.setFieldValue("faculty_id", val)}
+          onBlur={() => formik.setFieldTouched("faculty_id", true)}
+          error={formik.touched.faculty_id && formik.errors.faculty_id}
         />
 
         <HorizentalTextField
