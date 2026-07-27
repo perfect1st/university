@@ -36,14 +36,17 @@ export default function DashboardFilterComponent({
   select2Label3,
   onSelect2Change,
   fromRegisterForm = false,
-  isAdmin = false,
+  isAdmin = true,
   isPromotion = false,
   isAcademyTerms = false,
   userKey,
   userOptions,
   userLabel,
   dateKey,
-  dateLabel
+  dateLabel,
+  scopeKey,
+  scopeOptions,
+  scopeLabel
 }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -82,6 +85,9 @@ export default function DashboardFilterComponent({
   const [dateSearch, setDateSearch] = useState(
     () => (dateKey ? searchParams.get(dateKey) || "" : "")
   );
+  const [scopeSearch, setScopeSearch] = useState(
+    () => (scopeKey ? searchParams.get(scopeKey) || "0" : "0")
+  );
 
   React.useEffect(() => {
     if (userKey) {
@@ -96,7 +102,10 @@ export default function DashboardFilterComponent({
     if (dateKey) {
       setDateSearch(searchParams.get(dateKey) || "");
     }
-  }, [searchParams, userKey, dateKey, userOptions]);
+    if (scopeKey) {
+      setScopeSearch(searchParams.get(scopeKey) || "0");
+    }
+  }, [searchParams, userKey, dateKey, scopeKey, userOptions]);
 
   const handleCancel = () => {
     // 1. Clear local state
@@ -108,6 +117,7 @@ export default function DashboardFilterComponent({
     setSelect4Search("0");
     setUserSearch(null);
     setDateSearch("");
+    setScopeSearch("0");
     if (onSelect2Change) onSelect2Change("0");
 
     // 3. CRITICAL: Tell the parent page to show ALL data again
@@ -118,12 +128,13 @@ export default function DashboardFilterComponent({
     let filterOBJ = {};
     if (searchValue) filterOBJ[textSearchField] = searchValue?.trim();
     if (statusSearch !== "0") filterOBJ[statusKey] = statusSearch;
-    if (selectKey) filterOBJ[selectKey] = select2Search;
+    if (selectKey && select2Search !== "0") filterOBJ[selectKey] = select2Search;
     if (searchValue2) filterOBJ[textSearchField2] = searchValue2?.trim();
-    if (selectKey2) filterOBJ[selectKey2] = select3Search;
-    if (selectKey3) filterOBJ[selectKey3] = select4Search;
+    if (selectKey2 && select3Search !== "0") filterOBJ[selectKey2] = select3Search;
+    if (selectKey3 && select4Search !== "0") filterOBJ[selectKey3] = select4Search;
     if (userKey && userSearch?.id) filterOBJ[userKey] = userSearch.id;
     if (dateKey && dateSearch) filterOBJ[dateKey] = dateSearch;
+    if (scopeKey && scopeSearch !== "0") filterOBJ[scopeKey] = scopeSearch;
 
     onFilterChange(filterOBJ);
   };
@@ -420,6 +431,48 @@ export default function DashboardFilterComponent({
                   />
                 )}
               />
+            </Grid>
+          )}
+
+          {scopeKey && (
+            <Grid item xs={12} md={2}>
+              {isMobile ? (
+                <Box sx={{ width: "80%", mx: "auto" }}>
+                  <CustomSelect
+                    t={t}
+                    value={scopeSearch}
+                    setValue={setScopeSearch}
+                    height={"40px"}
+                  >
+                    <MenuItem value="0">{scopeLabel ? t(scopeLabel) : (isArabic ? "النطاق الجغرافي" : "Scope")}</MenuItem>
+                    {(scopeOptions || [
+                      { id: "true", labelAr: "داخل اليمن", labelEn: "Inside Yemen" },
+                      { id: "false", labelAr: "خارج اليمن", labelEn: "Outside Yemen" }
+                    ]).map((el, i) => (
+                      <MenuItem key={i} value={el.id}>
+                        {isArabic ? el.labelAr : el.labelEn}
+                      </MenuItem>
+                    ))}
+                  </CustomSelect>
+                </Box>
+              ) : (
+                <CustomSelect
+                  t={t}
+                  value={scopeSearch}
+                  setValue={setScopeSearch}
+                  height={"40px"}
+                >
+                  <MenuItem value="0">{scopeLabel ? t(scopeLabel) : (isArabic ? "النطاق الجغرافي" : "Scope")}</MenuItem>
+                  {(scopeOptions || [
+                    { id: "true", labelAr: "داخل اليمن", labelEn: "Inside Yemen" },
+                    { id: "false", labelAr: "خارج اليمن", labelEn: "Outside Yemen" }
+                  ]).map((el, i) => (
+                    <MenuItem key={i} value={el.id}>
+                      {isArabic ? el.labelAr : el.labelEn}
+                    </MenuItem>
+                  ))}
+                </CustomSelect>
+              )}
             </Grid>
           )}
 

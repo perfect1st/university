@@ -76,6 +76,7 @@ query GetTransactionsFiltered(
     $approval_status: String
     $user_id: ID
     $transaction_date: String
+    $is_inside_yemen: Boolean
 ) {
     getTransactionsFiltered(
         operation_type: $operation_type
@@ -86,6 +87,7 @@ query GetTransactionsFiltered(
         approval_status: $approval_status
         user_id: $user_id
         transaction_date: $transaction_date
+        is_inside_yemen: $is_inside_yemen
     ) {
         total
         transactions {

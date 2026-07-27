@@ -29,7 +29,6 @@ import notify from "../../components/notify";
 import { GET_ALL_TRANSACTIONS, GET_FILTERED_TRANSACTIONS } from "../../graphql/transactionQueries";
 import { GET_USERS } from "../../graphql/usersQueries";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
-import { paymentMethodsArr, transactionTypesArr } from "../../constants";
 import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 import NoPermissionPage from "../../components/NoPermissionPage";
 import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
@@ -103,6 +102,7 @@ export default function AllTransactionsPage() {
         let searchText = searchParams.get("search") || "";
         let userIdParam = searchParams.get("user_id") || "";
         let dateParam = searchParams.get("transaction_date") || searchParams.get("date") || "";
+        let isInsideYemenParam = searchParams.get("is_inside_yemen") || "";
 
         let variablesObj = { page, limit };
         if (searchText) variablesObj.search = searchText;
@@ -112,6 +112,9 @@ export default function AllTransactionsPage() {
         if (userIdParam) variablesObj.user_id = userIdParam;
         if (dateParam) {
             variablesObj.transaction_date = formatDateToDDMMYYYY(dateParam);
+        }
+        if (isInsideYemenParam && isInsideYemenParam !== "0") {
+            variablesObj.is_inside_yemen = isInsideYemenParam === "true";
         }
 
         GetTransactions({ variables: variablesObj });
@@ -322,12 +325,28 @@ export default function AllTransactionsPage() {
             searchParams.delete("approval_status");
         }
 
+        if (filterOBJ.user_id) searchParams.set("user_id", filterOBJ.user_id);
+        else searchParams.delete("user_id");
+
+        if (filterOBJ.transaction_date) searchParams.set("transaction_date", filterOBJ.transaction_date);
+        else {
+            searchParams.delete("transaction_date");
+            searchParams.delete("date");
+        }
+
+        if (filterOBJ.is_inside_yemen && filterOBJ.is_inside_yemen !== "0") {
+            searchParams.set("is_inside_yemen", filterOBJ.is_inside_yemen);
+        } else {
+            searchParams.delete("is_inside_yemen");
+        }
+
         if (Object.keys(filterOBJ).length === 0) {
             setSelectedUser(null);
             setSelectedDate("");
             searchParams.delete("user_id");
             searchParams.delete("transaction_date");
             searchParams.delete("date");
+            searchParams.delete("is_inside_yemen");
         }
 
         setSearchParams(searchParams);
@@ -363,17 +382,13 @@ export default function AllTransactionsPage() {
                     <DashboardFilterComponent
                         placeholder={t("Dashboard.searchWith", { search: t("fee.transactionSerial") })}
                         textSearchField={"search"}
-                        statusKey={"payment_method_type"}
-                        select1Label={"fee.paymentMethodsTitle"}
-                        TrueOrFalseArr={paymentMethodsArr}
-                        select2Label={"Dashboard.transactionType"}
-                        selectKey={"operation_type"}
-                        selectOptions={transactionTypesArr}
                         userKey={"user_id"}
                         userOptions={userOptions}
                         userLabel={isArabic ? "فلترة حسب المستخدم" : "Filter by User"}
                         dateKey={"transaction_date"}
                         dateLabel={isArabic ? "تاريخ المعاملة" : "Transaction Date"}
+                        scopeKey={"is_inside_yemen"}
+                        scopeLabel={isArabic ? "النطاق الجغرافي" : "Scope"}
                         onFilterChange={onFilterChange}
                         t={t}
                     />
