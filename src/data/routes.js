@@ -83,13 +83,14 @@ const routesData = {
           label: { en: "Profile", ar: "الصفحة الشخصية" },
           path: "/profile",
           icon: ProfileIcon,
-        },
-        {
-          key: "supportTickets",
-          label: { en: "Support", ar: "الدعم الفني" },
-          path: "/Support",
-        },
+        }
       ]
+    },
+    {
+      key: "supportTickets",
+      label: { en: "Support Tickets", ar: "الدعم الفني" },
+      path: "/Support",
+
     }
   ],
 
@@ -287,13 +288,13 @@ const routesData = {
           label: { en: "Profile", ar: "الصفحة الشخصية" },
           path: "/profile",
           icon: ProfileIcon,
-        },
-        {
-          key: "supportTickets",
-          label: { en: "Support", ar: "الدعم الفني" },
-          path: "/Support",
-        },
+        }
       ]
+    },
+    {
+      key: "supportTickets",
+      label: { en: "Support Tickets", ar: "الدعم الفني" },
+      path: "/Support",
     }
   ],
 };

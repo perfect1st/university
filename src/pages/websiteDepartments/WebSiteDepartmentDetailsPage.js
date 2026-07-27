@@ -10,9 +10,13 @@ import * as Yup from "yup";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import { GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import LoadingPage from "../../components/LoadingComponent";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
 import { GET_DEPARTMENTS_BY_FATHER_ID_FOR_ADMIN, GET_WEBSITE_DEPARTMENTS_BY_ADMIN, UPDATE_WEBSITE_DEPARTMENT_BY_ID } from "../../graphql/departmentsQueries";
+
+import axios from "axios";
+import { baseURL } from "../../Api/apolloClient";
+import UploadFileField from "../../components/Utilities/UploadFileField";
 
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -56,6 +60,45 @@ export default function WebSiteDepartmentDetailsPage() {
     useEffect(() => {
         GetDepartmentsByFather({ variables: { father_id: id } });
     }, []);
+
+    const fileInputRef = useRef(null);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedToShowFile, setSelectedToShowFile] = useState(null);
+    const [progress, setProgress] = useState(0);
+
+    const handlePickFile = () => {
+        if (fileInputRef.current) fileInputRef.current.click();
+    };
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files?.[0] ?? null;
+
+        setSelectedToShowFile(file?.name);
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            setProgress(0);
+
+            const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percent = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                    setProgress(percent);
+                },
+            });
+
+            setSelectedFile(`${baseURL}${res?.data?.url}`);
+        } catch (error) {
+            notify(t("errorUplaod"), "error");
+            logger.log("error", error.message);
+        }
+    };
 
     let columns = [
         // { key: "ID", label: "ID" },
@@ -207,9 +250,10 @@ export default function WebSiteDepartmentDetailsPage() {
                 title_en: values?.title_en,
                 desc_ar: values?.desc_ar,
                 desc_en: values?.desc_en
-                // faculty_id: selected
-
             };
+
+            if (selectedFile != null) data.image = selectedFile;
+
             try {
                 logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu");
                 logger.log(data);
@@ -244,6 +288,9 @@ export default function WebSiteDepartmentDetailsPage() {
             formik.values.title_en=currentDep?.title_en;
             formik.values.desc_ar=currentDep?.desc_ar;
             formik.values.desc_en=currentDep?.desc_en;
+            if (currentDep?.image && !selectedToShowFile) {
+                setSelectedToShowFile(currentDep.image.split("/").pop());
+            }
         }
     },[websiteDepartments]);
 
@@ -336,6 +383,35 @@ export default function WebSiteDepartmentDetailsPage() {
             onChange={formik.handleChange}
             error={formik.touched.desc_en && Boolean(formik.errors.desc_en)}
             helperText={formik.touched.desc_en && formik.errors.desc_en}
+        />
+    </Grid>
+
+    {/* Image */}
+    <Grid item xs={12}>
+        {currentDep?.image && (
+            <Box
+                component="img"
+                src={selectedFile || currentDep.image}
+                alt={isArabic ? currentDep?.title_ar : currentDep?.title_en}
+                sx={{
+                    width: "100%",
+                    maxWidth: 200,
+                    height: 150,
+                    objectFit: "cover",
+                    borderRadius: 1,
+                    mb: 1,
+                    border: "1px solid rgba(0,0,0,0.1)",
+                }}
+            />
+        )}
+        <UploadFileField
+            title={t("Dashboard.mainImage")}
+            subTitle={t("admissions.addFile")}
+            fileInputRef={fileInputRef}
+            handleFileChange={handleFileChange}
+            handlePickFile={handlePickFile}
+            selectedToShowFile={selectedToShowFile}
+            progress={progress}
         />
     </Grid>
 

@@ -578,8 +578,8 @@ const Header = ({ onAction }) => {
               >
                 <LanguageIcon
                   sx={{
-                    width: 28,
-                    height: 28,
+                    width: { xs: 20, sm: 28 },
+                    height: { xs: 20, sm: 28 },
                     mr: 1,
                     filter:
                       theme.palette.mode === "dark" ? "invert(1)" : "none",
@@ -618,10 +618,11 @@ const Header = ({ onAction }) => {
                 onClick={() => navigate("/admissions")}
                 sx={{
                   borderRadius: 1,
-                  px: 3,
-                  py: 1,
+                  px: { xs: 1.5, sm: 3 },
+                  py: { xs: 0.5, sm: 1 },
                   textTransform: "none",
                   fontWeight: "bold",
+                  display: { xs: "none", sm: "inline-flex" },
                 }}
                 aria-label="سجل الآن"
               >
@@ -633,10 +634,11 @@ const Header = ({ onAction }) => {
                 onClick={() => navigate("/login")}
                 sx={{
                   borderRadius: 1,
-                  px: 3,
-                  py: 1,
+                  px: { xs: 0.5, sm: 3 },
+                  py: { xs: 0.5, sm: 1 },
                   textTransform: "none",
                   fontWeight: "bold",
+                  fontSize: { xs: "10px", sm: "14px" },
                 }}
                 aria-label="login"
               >

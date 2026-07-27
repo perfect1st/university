@@ -196,7 +196,7 @@ export default function ProfilePage() {
                 value={me?.fullname}
               />
             </Grid>
-          {me.role !== "admin" &&
+          {(me.role == "student" ) &&
           <>
           <Grid item xs={12}>
               <LabelValueRow
@@ -238,7 +238,7 @@ export default function ProfilePage() {
                 value={me?.mobile}
               />
             </Grid>
-            {me?.role !== "admin" && (
+            {me.role == "student" && (
               <Grid item xs={12}>
                 <LabelValueRow
                   label={t("profile.IDNo")}

@@ -25,6 +25,7 @@ import {
   Radio,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import AdmissionsHero from "../../components/AdmissionsComponents/AdmissionsHero";
 import TermsConditions from "../../components/AdmissionsComponents/TermsConditions";
 import { useTranslation } from "react-i18next";
@@ -801,15 +802,43 @@ export default function Admissions() {
               position: "absolute",
               top: 20, // المسافة من أعلى الصفحة
               margin: 0,
+              borderRadius: 3,
+              overflow: "hidden"
             },
           }}
           fullWidth // يخليه ياخد 100% من maxWidth
           maxWidth="xs"
         >
+          {/* Success Banner */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              p: 3,
+              backgroundColor: "rgba(76, 175, 80, 0.08)", // Soft green background
+              borderBottom: `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            <CheckCircleOutlineIcon sx={{ fontSize: 56, mb: 1.5, color: theme.palette.success.main }} />
+            <Typography variant="h6" sx={{ fontWeight: 800, color: theme.palette.success.main }}>
+              {t("admissions.success")}
+            </Typography>
+            {registerationFeesResults?.user?.fullname && (
+              <Typography variant="body2" sx={{ mt: 1, color: "text.secondary", fontWeight: 500 }}>
+                {registerationFeesResults.user.fullname}
+              </Typography>
+            )}
+          </Box>
+
           <DialogTitle
             sx={{
               color: theme.palette.primary.main,
               fontWeight: 800,
+              pt: 2.5,
+              pb: 1,
+              textAlign: "center",
             }}
           >
             {t("admissions.Pay")}:{" "}

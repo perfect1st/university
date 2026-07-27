@@ -1,7 +1,9 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
-import { Box, CircularProgress, LinearProgress, MenuItem, useMediaQuery, useTheme } from "@mui/material";
+import { Box, CircularProgress, IconButton, LinearProgress, MenuItem, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import Header from "../../components/PageHeader/header";
 import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
@@ -32,6 +34,24 @@ export default function SubTitleDetailsPage() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedToShowFile, setSelectedToShowFile] = useState(null);
     const [progress, setProgress] = useState(0);
+
+    const isAccreditationDept = DepID === "6a4e3fc8262780da7d296e39";
+
+    const parsedAr = (location?.state?.desc_ar || "").split("#$");
+    const parsedEn = (location?.state?.desc_en || "").split("#$");
+    const mainDescAr = isAccreditationDept ? (parsedAr[0] || "") : (location?.state?.desc_ar || "");
+    const mainDescEn = isAccreditationDept ? (parsedEn[0] || "") : (location?.state?.desc_en || "");
+
+    const initialPoints = isAccreditationDept
+        ? parsedAr.slice(1).map((ar, i) => ({ ar: ar || "", en: parsedEn[i + 1] || "" }))
+        : [];
+    const [points, setPoints] = useState(initialPoints);
+
+    const handlePointChange = (index, field, value) => {
+        setPoints((prev) => prev.map((p, i) => (i === index ? { ...p, [field]: value } : p)));
+    };
+    const handleAddPoint = () => setPoints((prev) => [...prev, { ar: "", en: "" }]);
+    const handleRemovePoint = (index) => setPoints((prev) => prev.filter((_, i) => i !== index));
 
     logger.log("location",location?.state);
     const [
@@ -95,8 +115,8 @@ export default function SubTitleDetailsPage() {
         initialValues: {
             title_ar: location?.state?.title_ar,
             title_en: location?.state?.title_en,
-            desc_ar: location?.state?.desc_ar,
-            desc_en: location?.state?.desc_en,
+            desc_ar: mainDescAr,
+            desc_en: mainDescEn,
             image:location?.state?.image?.split(baseURL)[1]
         },
 
@@ -110,11 +130,21 @@ export default function SubTitleDetailsPage() {
             logger.log("suuuubmit");
 
 
+            let finalDescAr = values?.desc_ar || "";
+            let finalDescEn = values?.desc_en || "";
+
+            if (isAccreditationDept && points.length > 0) {
+                const arPts = points.map((p) => p.ar).filter((v) => v && v.trim());
+                const enPts = points.map((p) => p.en).filter((v) => v && v.trim());
+                if (arPts.length) finalDescAr = values?.desc_ar ? `${values.desc_ar}#$${arPts.join("#$")}` : arPts.join("#$");
+                if (enPts.length) finalDescEn = values?.desc_en ? `${values.desc_en}#$${enPts.join("#$")}` : enPts.join("#$");
+            }
+
             let data = {
                 title_ar: values?.title_ar,
                 title_en: values?.title_en,
-                desc_ar: values?.desc_ar,
-                desc_en: values?.desc_en,
+                desc_ar: finalDescAr,
+                desc_en: finalDescEn,
             };
 
             if (selectedFile != null) data.image = selectedFile;
@@ -212,6 +242,64 @@ export default function SubTitleDetailsPage() {
                     error={formik.touched.desc_en && Boolean(formik.errors.desc_en)}
                     helperText={formik.touched.desc_en && formik.errors.desc_en}
                 />
+
+                {isAccreditationDept && (
+                    <Box sx={{ mb: 4, p: 2, border: `1px solid ${theme.palette.divider}`, borderRadius: 1 }}>
+                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                                {isArabic ? "النقاط / الاعتمادات" : "Points / Accreditations"}
+                            </Typography>
+                            <IconButton color="primary" onClick={handleAddPoint} size="small" sx={{ border: `1px solid ${theme.palette.primary.main}` }}>
+                                <AddIcon />
+                            </IconButton>
+                        </Box>
+
+                        <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 2 }}>
+                            {isArabic ? "تُضاف كل نقطة إلى الوصف عند الحفظ باستخدام الفاصل #$" : "Each point is appended to the description on save using the #$ delimiter"}
+                        </Typography>
+
+                        {points.length === 0 && (
+                            <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center", py: 2 }}>
+                                {isArabic ? "لا توجد نقاط بعد. اضغط + لإضافة نقطة." : "No points yet. Click + to add a point."}
+                            </Typography>
+                        )}
+
+                        {points.map((point, index) => (
+                            <Box key={index} sx={{ display: "flex", flexDirection: "column", gap: 1, mb: 2, p: 1.5, backgroundColor: theme.palette.primary?.gray, borderRadius: 1 }}>
+                                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                    <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+                                        {isArabic ? `نقطة ${index + 1}` : `Point ${index + 1}`}
+                                    </Typography>
+                                    <IconButton color="error" onClick={() => handleRemovePoint(index)} size="small">
+                                        <DeleteOutlineIcon fontSize="small" />
+                                    </IconButton>
+                                </Box>
+                                <TextField
+                                    size="small"
+                                    fullWidth
+                                    label={isArabic ? "النقطة (عربي)" : "Point (Arabic)"}
+                                    value={point.ar}
+                                    onChange={(e) => handlePointChange(index, "ar", e.target.value)}
+                                    sx={{
+                                        backgroundColor: "background.paper",
+                                        "& .MuiOutlinedInput-root": { "& fieldset": { border: "none" } },
+                                    }}
+                                />
+                                <TextField
+                                    size="small"
+                                    fullWidth
+                                    label={isArabic ? "النقطة (إنجليزي)" : "Point (English)"}
+                                    value={point.en}
+                                    onChange={(e) => handlePointChange(index, "en", e.target.value)}
+                                    sx={{
+                                        backgroundColor: "background.paper",
+                                        "& .MuiOutlinedInput-root": { "& fieldset": { border: "none" } },
+                                    }}
+                                />
+                            </Box>
+                        ))}
+                    </Box>
+                )}
 
                  <HorizentalTextField
                           title={t("Dashboard.mainImage")}

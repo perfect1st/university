@@ -32,7 +32,9 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import FeePaymentPage from "./pages/FeePaymentPage/FeePaymentPage";
 import UsersPage from "./pages/Users/Users";
 import UserDetails from "./pages/Users/UserDetails";
-import VisionsArticlesPage from "./pages/Home/VisionsArticlesPage";
+import LeadersArticlesPage from "./pages/Home/LeadersArticlesPage";
+import LeaderBiographyPage from "./pages/Home/LeaderBiographyPage";
+import StudentVoicesPage from "./pages/Home/StudentVoicesPage";
 import NewsPage from "./pages/Home/NewsPage";
 import ArticalDetails from "./pages/Home/ArticalDetails";
 import AllNationalitiesPage from "./pages/nationality/AllNationalitiesPage";
@@ -131,6 +133,7 @@ import SuccessPaymentPage from "./pages/PaymentResult/SuccessPaymentPage";
 import FailedPaymentPage from "./pages/PaymentResult/FailedPaymentPage";
 import AddPromotionPage from "./pages/Promotion/AddPromotionPage";
 import MaterialEquivalence from "./pages/SupportTickets/MaterialEquivalence";
+import AcademicsPage from "./pages/Home/AcademicsPage";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { },
@@ -354,9 +357,7 @@ function App() {
 
   // ======= Replace the old polling block with this =======
 
-  // read cookie once at mount to avoid unstable deps
-  const initialUser = useMemo(() => getUserCookie(), []);
-  const isLoggedIn = Boolean(initialUser?.id);
+  const isLoggedIn = Boolean(user);
 
   // useEffect(() => {
   //   if (!isLoggedIn) return;
@@ -374,6 +375,9 @@ function App() {
   const hideSecandHeader =
     location.pathname == "/home" ||
     location.pathname == "/visionsArticals" ||
+    location.pathname == "/leaders-articles" ||
+    location.pathname == "/student-voices" ||
+    location.pathname == "/student-voices" ||
     location.pathname == "/news";
 
   return (
@@ -402,17 +406,19 @@ function App() {
               }}
             >
               {/* {hideHeader && */}
-               <Header />
-                {/* } */}
+              <Header />
+              {/* } */}
               <SecondHeader />
 
             </Box>
-        
+
 
             <main
               style={{
                 flex: 1,
-                paddingTop: hideHeader ? "133px" : "60px"
+                paddingTop: isLoggedIn 
+                  ? (isMobile ? "60px" : "80px") 
+                  : (isMobile ? "100px" : "133px")
               }}
             >              <Routes>
                 {/* المسارات العامة */}
@@ -430,10 +436,42 @@ function App() {
                 />
                 <Route element={<ProtectedRoute />}>
                   <Route
-                    path="/VisionsArticles"
+                    path="/academics"
                     element={
                       <MainLayout>
-                        <VisionsArticlesPage />
+                        <AcademicsPage />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/leaders-articles"
+                    element={
+                      <MainLayout>
+                        <LeadersArticlesPage />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/leader-biography/:id"
+                    element={
+                      <MainLayout>
+                        <LeaderBiographyPage />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/student-voices"
+                    element={
+                      <MainLayout>
+                        <StudentVoicesPage />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/student-voices/:id"
+                    element={
+                      <MainLayout>
+                        <LeaderBiographyPage />
                       </MainLayout>
                     }
                   />

@@ -67,22 +67,60 @@ const Home = () => {
 
 
   return (
-<Box sx={{ 
-    backgroundColor: theme.palette.background.secDefault,
-    maxWidth: "100vw", // يمنع تجاوز عرض الشاشة
-    overflowX: "hidden", // يمنع ظهور السكرول العرضي نهائياً
-    display: "flex",
-    flexDirection: "column"
-  }}>      <HomeHero HomeSliderData={HomeSliderData?.getArticlesByDepartment} />
-       <Box id="news">
-       <News news={news}/>
-       </Box>
-       <Box id="activity">
-     <ActivitiesPrograms Activities={Activities} /> 
-       </Box>
-       <Box id="FutureVision">
-      <FutureVision visionArticalesData={vision} />
-       </Box>
+    <Box sx={{ 
+      backgroundColor: theme.palette.background.secDefault,
+      maxWidth: "100vw", // يمنع تجاوز عرض الشاشة
+      overflowX: "hidden", // يمنع ظهور السكرول العرضي نهائياً
+      display: "flex",
+      flexDirection: "column"
+    }}>
+      <HomeHero HomeSliderData={HomeSliderData?.getArticlesByDepartment} />
+      
+      {/* News Section */}
+      <Box sx={{
+        width: "100%",
+        maxWidth: 1300,
+        margin: "0 auto",
+        px: { xs: 3, sm: 5, md: 8, lg: 12 },
+        pt: { xs: 4, md: 8 },
+        pb: { xs: 2, md: 4 }
+      }}>
+        <Box id="news">
+          <News news={news}/>
+        </Box>
+      </Box>
+
+      {/* Activities & Programs Section (Full Width with white background) */}
+      <Box id="activity" sx={{ 
+        width: "100%", 
+        backgroundColor: "#ffffff",
+        py: { xs: 4, md: 8 },
+        borderTop: `1px solid ${theme.palette.divider || "#eaeaea"}`,
+        borderBottom: `1px solid ${theme.palette.divider || "#eaeaea"}`
+      }}>
+        <Box sx={{
+          width: "100%",
+          maxWidth: 1300,
+          margin: "0 auto",
+          px: { xs: 3, sm: 5, md: 8, lg: 12 }
+        }}>
+          <ActivitiesPrograms Activities={Activities} /> 
+        </Box>
+      </Box>
+
+      {/* Future Vision Section */}
+      <Box sx={{
+        width: "100%",
+        maxWidth: 1300,
+        margin: "0 auto",
+        px: { xs: 3, sm: 5, md: 8, lg: 12 },
+        pt: { xs: 2, md: 4 },
+        pb: { xs: 4, md: 8 }
+      }}>
+        <Box id="FutureVision">
+          <FutureVision visionArticalesData={vision} />
+        </Box>
+      </Box>
     </Box>
   );
 };

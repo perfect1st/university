@@ -29,7 +29,7 @@ export default function News({ news = [] }) {
       sx={{
         backgroundColor: theme.palette.background.secDefault,
         py: 2,
-        px: { xs: 2, md: 6 },
+        px: 0,
       }}
     >
       <TitleComponent title={t("news_updates")} />
