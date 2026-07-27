@@ -181,13 +181,13 @@ $input: PayUserRequiredFeesInput!
         payment_document_file
         transaction_date
         transaction_serial
-        transaction_type_id {
+        transaction_type_snapshot {
             id
+            title_ar
+            title_en
             operation_type
             notes
             status
-            createdAt
-            updatedAt
         }
         user_id {
             id
@@ -202,14 +202,13 @@ $input: PayUserRequiredFeesInput!
             createdAt
             updatedAt
         }
-        fees_type_ids {
+        fees_type_snapshot {
             id
             title_ar
             title_en
             inside_yemen_value
             outside_yemen_value
-            createdAt
-            updatedAt
+            status
         }
     }
 }
