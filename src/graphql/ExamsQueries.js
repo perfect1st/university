@@ -6,9 +6,10 @@ query FilteredPagedExams(
     $page: Int
     $search: String
     $exam_type: String
+    $materials: [ID]
     ) 
     {
-    filteredPagedExams(search: $search, exam_type: $exam_type, page: $page, limit: $limit) {
+    filteredPagedExams(search: $search, exam_type: $exam_type, page: $page, limit: $limit, materials: $materials) {
         total
         exams {
             id

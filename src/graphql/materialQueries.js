@@ -205,6 +205,11 @@ query MaterialsByDoctor($doctor_id:ID!) {
             status
             createdAt
             updatedAt
+            faculty_id {
+                id
+                title_ar
+                title_en
+            }
         }
         doctor_id {
             id

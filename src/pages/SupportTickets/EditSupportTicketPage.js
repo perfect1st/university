@@ -314,7 +314,8 @@ export default function EditSupportTicketPage() {
                 </Grid>
 
                 {/* Printable Documents Section */}
-                {(ticket?.transaction_id?.approval_status === "APPROVED" || ticket?.payment_status === "paid") && (
+                {/* {(ticket?.transaction_id?.approval_status === "APPROVED" || ticket?.payment_status === "paid") && ( */}
+                {true && (
                     <Grid item xs={12}>
                         <Paper elevation={2} sx={{ p: 3, mt: 3, borderRadius: 2 }}>
                             <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', fontWeight: 'bold', color: 'primary.main' }}>
@@ -329,9 +330,9 @@ export default function EditSupportTicketPage() {
                                 <GraduationCertificate studentId={ticket.user_id?.id} />
                             )}
 
-                            {ticket?.type === 'university_certificate' && (
+                            {/* {ticket?.type === 'university_certificate' && (
                                 <StudentAffidavit studentData={ticket.user_id} registrationData={registrationData} />
-                            )}
+                            )} */}
 
                             {ticket?.type === 'success_statement' && (
                                 <AcademicTranscript studentId={ticket.user_id?.id} registrationData={registrationData} />
@@ -344,14 +345,6 @@ export default function EditSupportTicketPage() {
                                     studentData={ticket.user_id}
                                     registrationData={registrationData}
                                 /> */}
-                            {(ticket?.type === 'university_certificate' || ticket?.type === 'success_statement' || ticket?.type === 'registration_suspension' || ticket?.type === 'graduation_enrollment') && (
-                                <StudentFormalAffidavit 
-                                    ticketType={ticket.type} 
-                                    studentData={ticket.user_id} 
-                                    registrationData={registrationData}  />
-                               
-                            )}
-
                             {(ticket?.type === 'university_certificate' ||
                                 ticket?.type === 'success_statement' ||
                                 ticket?.type === 'registration_suspension' ||

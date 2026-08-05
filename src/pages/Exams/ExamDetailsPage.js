@@ -89,6 +89,16 @@ export default function ExamDetailsPage() {
 
 
             logger.log('xxxxxxxxxxxxxxxxxxxxxxx');
+            const selectedMatObj = materialsByDoctor?.find(m => m?.id == selectedMaterial);
+            const facultyId = selectedMatObj?.faculty_department_id?.faculty_id?.id || 
+                              selectedMatObj?.faculty_department_id?.faculty_id || 
+                              location?.state?.faculty_id?.id || 
+                              location?.state?.faculty_id || 
+                              location?.state?.material_id?.faculty_department_id?.faculty_id?.id || 
+                              location?.state?.material_id?.faculty_department_id?.faculty_id || 
+                              me?.faculty_id?.id || 
+                              me?.faculty_id;
+
             let data = {
                 exam_name: values?.exam_name,
                 full_mark_degree: values?.full_mark_degree,
@@ -97,11 +107,8 @@ export default function ExamDetailsPage() {
                 date_from: values?.date_from,
                 date_to: values?.date_to,
                 material_id: selectedMaterial,
-                exam_type: selectedExamType
-                // fees_types_ids: selectedFeeType,
-                // student_id: selectedUser,
-                // website_user_id: me?.id
-                // amount: values?.amount,
+                exam_type: selectedExamType,
+                ...(facultyId && { faculty_id: facultyId })
             };
 
             // if(selectedFile!=null) data.payment_document_file=selectedFile;
