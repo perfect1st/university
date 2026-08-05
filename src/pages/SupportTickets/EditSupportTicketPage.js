@@ -314,8 +314,8 @@ export default function EditSupportTicketPage() {
                 </Grid>
 
                 {/* Printable Documents Section */}
-                {/* {(ticket?.transaction_id?.approval_status === "APPROVED" || ticket?.payment_status === "paid") && ( */}
-                {true && (
+                {/* {true && ( */}
+                {(ticket?.transaction_id?.approval_status === "APPROVED" || ticket?.payment_status === "paid") && (
                     <Grid item xs={12}>
                         <Paper elevation={2} sx={{ p: 3, mt: 3, borderRadius: 2 }}>
                             <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', fontWeight: 'bold', color: 'primary.main' }}>
