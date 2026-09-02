@@ -303,13 +303,14 @@ const NotificationButton = () => {
               }}
             >
               <ClickAwayListener onClickAway={handleClose}>
-                <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                <Box sx={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
 
                   {/* Panel Header */}
                   <Box sx={{
                     px: 2.5, pt: 2, pb: 1.5,
                     display: "flex", alignItems: "center", justifyContent: "space-between",
                     direction: lang === "ar" ? "rtl" : "ltr",
+                    flexShrink: 0
                   }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <Typography sx={{ fontWeight: 700, fontSize: 17 }}>
@@ -345,11 +346,11 @@ const NotificationButton = () => {
                     )}
                   </Box>
 
-                  <Divider />
+                  <Divider sx={{ flexShrink: 0 }} />
 
                   {/* Notification List */}
                   <Box sx={{
-                    flex: 1, overflowY: "auto", py: 1,
+                    flex: 1, overflowY: "auto", py: 1, minHeight: 0,
                     "&::-webkit-scrollbar": { width: 4 },
                     "&::-webkit-scrollbar-track": { bgcolor: "transparent" },
                     "&::-webkit-scrollbar-thumb": { bgcolor: theme.palette.divider, borderRadius: 4 },
