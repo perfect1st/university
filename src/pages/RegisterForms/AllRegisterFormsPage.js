@@ -282,24 +282,34 @@ export default function AllRegisterFormsPage() {
     };
 
     const onFilterChange = async (filterOBJ) => {
-        const newParams = new URLSearchParams();
-        
-        // Preserve pagination if needed, or reset to page 1 on new filter
-        // Usually, new filter should reset to page 1
-        newParams.set("page", "1");
-        newParams.set("limit", searchParams.get("limit") || "10");
+        logger.log("filterOBJ", filterOBJ);
+        let newParams = new URLSearchParams(searchParams);
 
-        if (filterOBJ.search) newParams.set("search", filterOBJ.search);
-        
-        if (filterOBJ.status && filterOBJ.status !== "0")
+        if (filterOBJ.search) {
+            newParams.set("search", filterOBJ.search);
+        } else {
+            newParams.delete("search");
+        }
+
+        if (filterOBJ.status && filterOBJ.status !== "0") {
             newParams.set("status", filterOBJ.status);
-            
-        if (filterOBJ.faculty_id && filterOBJ.faculty_id !== "0")
+        } else {
+            newParams.delete("status");
+        }
+
+        if (filterOBJ.faculty_id && filterOBJ.faculty_id !== "0") {
             newParams.set("faculty_id", filterOBJ.faculty_id);
-            
-        if (filterOBJ.faculty_department_id && filterOBJ.faculty_department_id !== "0")
+        } else {
+            newParams.delete("faculty_id");
+        }
+
+        if (filterOBJ.faculty_department_id && filterOBJ.faculty_department_id !== "0") {
             newParams.set("faculty_department_id", filterOBJ.faculty_department_id);
-            
+        } else {
+            newParams.delete("faculty_department_id");
+        }
+
+        newParams.delete("page");
         setSearchParams(newParams);
     };
 
