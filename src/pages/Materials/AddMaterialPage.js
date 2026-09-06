@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import VerticalTextField, { VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
+import VerticalTextField, { VerticalTextFieldSelect, SearchByTypingSelect } from "../../components/Utilities/VerticalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import { GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID, GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
 import LoadingPage from "../../components/LoadingComponent";
@@ -108,7 +108,8 @@ export default function AddMaterialPage() {
     Faculties();
     FilteredPagedUsers({
       variables: {
-        role: "doctor"
+        role: "doctor",
+        limit: 200000
       }
     })
   }, []);
@@ -379,25 +380,19 @@ export default function AddMaterialPage() {
 
         {/* دكتور المادة */}
 
-        <VerticalTextFieldSelect
-          t={t}
-          title={t("doctorName")} defaultOptionLabel={t("select")}
-          backgroundColor={theme.palette.background.inputBackGround}
+        <SearchByTypingSelect
+          options={users || []}
+          title={t("doctorName")}
+          label={t("select")}
           value={selectedDoctor}
           setValue={setSelectedDoctor}
           error={formik.errors.selectedDoctor && t("admissions.errors.required")}
-          helperText={formik.errors.selectedDoctor && t("admissions.errors.required")}
-          onBlur={(e) => {
-
-            if (selectedDoctor != 0) formik.setFieldError("selectedDoctor", undefined);
-
+          findKey="id"
+          labelToShow={(option) => option?.fullname || ""}
+          onChangeFn={(val) => {
+            if (val != 0) formik.setFieldError("selectedDoctor", undefined);
           }}
-        >
-          <MenuItem value={0} selected>{t("select")}</MenuItem>
-          {
-            users?.map(el => <MenuItem key={el?.id} value={el?.id}>{el?.fullname}</MenuItem>)
-          }
-        </VerticalTextFieldSelect>
+        />
 
         {/* المرفقات */}
         <UploadFileField

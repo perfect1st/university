@@ -13,6 +13,7 @@ import LoadingPage from "../../components/LoadingComponent";
 import { useEffect, useRef, useState } from "react";
 import { UPDATE_MATERIAL_BY_ID } from "../../graphql/materialQueries";
 import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
+import { SearchByTypingSelect } from "../../components/Utilities/VerticalTextField";
 import { FILTERED_USERS } from "../../graphql/userQueriesForAdmin";
 import { baseURL } from "../../Api/apolloClient";
 import axios from "axios";
@@ -129,7 +130,8 @@ export default function MaterialDetailsPage() {
         });
         FilteredPagedUsers({
             variables: {
-                role: "doctor"
+                role: "doctor",
+                limit: 200000
             }
         });
     }, []);
@@ -417,26 +419,19 @@ export default function MaterialDetailsPage() {
                 </HorizentalTextFieldSelect>
 
                 {/* دكتور المادة */}
-                <HorizentalTextFieldSelect
-                    t={t}
-                    title={t("doctorName")} defaultOptionLabel={t("select")}
-                    backgroundColor={theme.palette.background.inputBackGround}
+                <SearchByTypingSelect
+                    options={users || []}
+                    title={t("doctorName")}
+                    label={t("select")}
                     value={selectedDoctor}
                     setValue={setSelectedDoctor}
                     error={formik.errors.selectedDoctor && t("admissions.errors.required")}
-                    helperText={formik.errors.selectedDoctor && t("admissions.errors.required")}
-                    onBlur={(e) => {
-
-                        if (selectedDoctor != 0) formik.setFieldError("selectedDoctor", undefined);
-
+                    findKey="id"
+                    labelToShow={(option) => option?.fullname || ""}
+                    onChangeFn={(val) => {
+                        if (val != 0) formik.setFieldError("selectedDoctor", undefined);
                     }}
-                    isDisabled={me?.role !== "admin"}
-                >
-                    <MenuItem value={0} selected>{t("select")}</MenuItem>
-                    {
-                        users?.map(el => <MenuItem key={el?.id} value={el?.id}>{el?.fullname}</MenuItem>)
-                    }
-                </HorizentalTextFieldSelect>
+                />
 
 
                 <HorizentalTextField
