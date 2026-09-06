@@ -162,7 +162,7 @@ export default function SiteSettings() {
         register_conditions_file_outside_yemen: settings.register_conditions_file_outside_yemen || "",
         bank_account_inside_yemen: settings.bank_account_inside_yemen || "",
         bank_account_outside_yemen: settings.bank_account_outside_yemen || "",
-        registration_Fees: typeof settings.registration_Fees === 'object' ? settings.registration_Fees.id : settings.registration_Fees || "",
+        registration_Fees: settings.registration_Fees && typeof settings.registration_Fees === 'object' ? settings.registration_Fees.id : settings.registration_Fees || "",
         support_ticket_fees: settings.support_ticket_fees?.map(stf => ({
           type: stf.type,
           fees: stf.fees || []
