@@ -115,6 +115,23 @@ const GraduationCertificate = ({ studentId }) => {
   if (error) return <Typography color="error">Error loading transcript: {error.message}</Typography>;
   if (!transcript || !user) return <Typography>User not found.</Typography>;
 
+  const isFailed = transcript?.overall_grade === "راسب" || (typeof transcript?.overall_average === "number" && transcript?.overall_average < 50);
+
+  if (isFailed) {
+    return (
+      <Box sx={{ p: 4, textAlign: "center" }}>
+        <Box sx={{ p: 4, borderRadius: 3, bgcolor: "#fff5f5", border: "1px solid #feb2b2", maxWidth: 600, mx: "auto", boxShadow: "0 4px 15px rgba(239, 68, 68, 0.1)" }}>
+          <Typography variant="h6" sx={{ color: "#991b1b", fontWeight: 800, mb: 1 }}>
+            عفواً، لا يمكن إصدار وثيقة تخرج
+          </Typography>
+          <Typography variant="body1" sx={{ color: "#b91c1c", fontWeight: 600 }}>
+            الطالب لم يستوفِ شروط النجاح والتخرج (النتيجة الأكاديمية: راسب).
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ p: 2, textAlign: 'center' }}>
       <Button 

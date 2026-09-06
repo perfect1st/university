@@ -133,34 +133,32 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("supp
 
     const fetchAndExport = async (type) => {
         try {
-            // const exportData = data?.getUsersRequiredFees?.map((user, i) => {
-            //     const timestamp = Number(user?.createdAt); // نتأكد إنه رقم
-            //     const date = new Date(timestamp);
-            //     let total = 0;
+            if (!ticketsToShow || ticketsToShow.length === 0) {
+                notify(isArabic ? "لا توجد بيانات للطباعة" : "No data to export", "error");
+                return;
+            }
 
-            //     user?.fees_types_ids?.map(fee => {
-            //         if (user?.student_id?.is_inside_yemen == true) total += fee?.inside_yemen_value
-            //         else total += fee?.outside_yemen_value
-            //     })
-            //     return {
-            //         ID: i,
-            //         [t("Dashboard.studentName")]: user?.student_id?.fullname,
-            //         [t("Dashboard.createdAt")]: formatDateToString(date),
-            //         [t("fee.table.amount")]: total,
-            //         [t("fee.transactionSerial")]: user?.transactions_id?.transaction_serial,
-            //         [t("Dashboard.createdBy")]: user?.website_user_id?.fullname,
-            //         [t("Status")]: t(user?.is_paid == true ? "paid" : "unpaid"),
+            const exportData = ticketsToShow.map((ticket, i) => {
+                let row = {
+                    ID: i + 1,
+                    [t("title")]: ticket?.subject,
+                    [t("profile.Gender")]: ticket?.type,
+                };
 
-            //     }
-            // }
-            // );
+                if (me?.role === "admin") {
+                    row[t("Dashboard.userName")] = ticket?.user_name;
+                }
 
-            // ExportExcelAndPDF({
-            //     exportData,
-            //     isArabic,
-            //     reportTitle: isArabic ? "قائمة رسوم الطلاب" : "Student  Required Fees List",
-            //     type
-            // });
+                row[t("Status")] = ticket?.status ? t("open") : t("closed");
+                return row;
+            });
+
+            ExportExcelAndPDF({
+                exportData,
+                isArabic,
+                reportTitle: isArabic ? "تذاكر الدعم الفني" : "Support Tickets",
+                type
+            });
         } catch (err) {
             logger.error("Export error:", err);
         }

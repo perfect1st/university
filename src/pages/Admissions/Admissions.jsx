@@ -324,8 +324,8 @@ export default function Admissions() {
           return value ? "" : t("admissions.errors.required") || "Required";
         case "national_id":
           if (!value) return t("admissions.errors.required") || "Required";
-          if (!idRegex.test(value))
-            return t("admissions.errors.invalidId") || "Invalid ID number";
+          // if (!idRegex.test(value))
+          //   return t("admissions.errors.invalidId") || "Invalid ID number";
           return "";
 
         case "national_id_type":

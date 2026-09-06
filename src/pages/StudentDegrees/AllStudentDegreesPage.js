@@ -29,6 +29,8 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { examTypes } from "../../constants";
+import notify from "../../components/notify";
+import ExportExcelAndPDF from "../../components/Utilities/ExportExcelAndPDF";
 
 function SubjectGroup({ subject, isArabic, t, studentSerial }) {
     const [open, setOpen] = useState(true);
@@ -141,6 +143,59 @@ export default function AllStudentDegreesPage() {
 
     if (loading) return <LoadingPage />;
 
+    const fetchAndExport = async (type) => {
+        try {
+            if (!studentDegreesAll || studentDegreesAll.length === 0) {
+                notify(isArabic ? "لا توجد بيانات للطباعة" : "No data to export", "error");
+                return;
+            }
+
+            const exportData = [];
+
+            studentDegreesAll.forEach((studentEntry) => {
+                studentEntry.subjects?.forEach((subject) => {
+                    subject.exams?.forEach((exam) => {
+                        exportData.push({
+                            [t("Dashboard.studentName")]: studentEntry.student?.fullname,
+                            [t("Dashboard.subjectName")]: isArabic ? subject.material_id?.title_ar : subject.material_id?.title_en,
+                            [t("Dashboard.examName")]: exam.exam_id?.exam_name,
+                            [t("Dashboard.examType")]: isArabic 
+                                ? examTypes.find((el) => el.id === exam.exam_id?.exam_type)?.labelAr 
+                                : examTypes.find((el) => el.id === exam.exam_id?.exam_type)?.labelEn,
+                            [t("Dashboard.examAttendance")]: exam.exam_attendance ? t("yes") : t("no"),
+                            [t("studentDashboard.fullmarkDegree")]: exam.full_mark,
+                            [t("Dashboard.studentDegree")]: exam.student_degree,
+                            [t("Dashboard.lectureAttendance")]: exam.lecture_attendance,
+                            [t("Dashboard.totalExamDegree")]: exam.total_exam_degree,
+                        });
+                    });
+
+                    // Totals Row
+                    exportData.push({
+                        [t("Dashboard.studentName")]: studentEntry.student?.fullname,
+                        [t("Dashboard.subjectName")]: (isArabic ? subject.material_id?.title_ar : subject.material_id?.title_en) + " (" + t("Dashboard.totalDegree") + ")",
+                        [t("Dashboard.examName")]: "-",
+                        [t("Dashboard.examType")]: "-",
+                        [t("Dashboard.examAttendance")]: "-",
+                        [t("studentDashboard.fullmarkDegree")]: subject.totals?.total_full_mark,
+                        [t("Dashboard.studentDegree")]: subject.totals?.total_student_degree,
+                        [t("Dashboard.lectureAttendance")]: subject.totals?.total_lecture_attendance,
+                        [t("Dashboard.totalExamDegree")]: subject.totals?.total_exam_degree,
+                    });
+                });
+            });
+
+            ExportExcelAndPDF({
+                exportData,
+                isArabic,
+                reportTitle: isArabic ? "درجات الطلاب" : "Student Degrees",
+                type
+            });
+        } catch (err) {
+            logger.error("Export error:", err);
+        }
+    };
+
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
             <Grid container spacing={3}>
@@ -155,6 +210,9 @@ export default function AllStudentDegreesPage() {
                         isPdf
                         isPrinter
                         hasNavigate={true}
+                        onExcel={() => fetchAndExport("excel")}
+                        onPdf={() => fetchAndExport("pdf")}
+                        onPrinter={() => fetchAndExport("print")}
                     />
 
                     {studentDegreesAll?.map((studentEntry, sIndex) => (

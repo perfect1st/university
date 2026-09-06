@@ -360,6 +360,29 @@ query GetTransactionsByUser($user_id: ID!) {
 }
 `;
 
+export const GET_TRANSACTIONS_BY_REGISTER_FORM = gql`
+query GetTransactionsByRegisterForm($register_form_id: ID!) {
+    getTransactionsByRegisterForm(register_form_id: $register_form_id) {
+        id
+        serial
+        payment_method_type
+        source_type
+        amount
+        payment_document_file
+        approval_status
+        rejection_reason
+        transaction_date
+        transaction_serial
+        myfatoorah_invoice_id
+        myfatoorah_payment_id
+        myfatoorah_payment_url
+        myfatoorah_transaction_status
+        myfatoorah_payment_method
+    }
+}
+`;
+
+
 export const GET_PAYMENT_LOGS_BY_TRANSACTION = gql`
 query GetPaymentLogsByTransaction(
     $transaction_id: ID!

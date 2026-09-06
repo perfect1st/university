@@ -157,10 +157,22 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("facu
 
      const onFilterChange=async(filterOBJ)=>{
         logger.log("filterOBJ",filterOBJ);
-        if(filterOBJ.search) searchParams.set("search", filterOBJ.search);
-        if( filterOBJ.hasOwnProperty("status")&&filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
-            // searchParams.get("search", e.target.value);
-        setSearchParams(searchParams);
+        let newParams = new URLSearchParams(searchParams);
+
+        if(filterOBJ.search) {
+            newParams.set("search", filterOBJ.search);
+        } else {
+            newParams.delete("search");
+        }
+
+        if( filterOBJ.hasOwnProperty("status")&&filterOBJ.status !== "0") {
+            newParams.set("status", filterOBJ.status);
+        } else {
+            newParams.delete("status");
+        }
+        
+        newParams.delete("page");
+        setSearchParams(newParams);
     }
 
 

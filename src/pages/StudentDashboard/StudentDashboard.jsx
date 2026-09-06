@@ -346,14 +346,30 @@ const isDisabled = getUserStudyMaterialsByUser?.length > 0 &&
               </Paper>
 
                   {
-                    !isDisabled &&<>
+                    !isDisabled && <>
                       <Button
-                variant="contained"
-                sx={{ width: "10%", my: 4 , textAlign:"start", justifyContent:"start",gap:1 }}
-                 onClick={() => handleSubmitMaterials()}
-              >
-              { creatingUserSubjects ? <CircularProgress size={25} sx={{color:"white"}} /> : <> <CheckCircleRoundedIcon /> {t("submit")}</>}   
-              </Button>
+                        variant="contained"
+                        size="small"
+                        sx={{
+                          my: 2,
+                          px: 3,
+                          py: 0.75,
+                          width: "fit-content",
+                          minWidth: 130,
+                          display: "flex",
+                          justifyContent: "center",
+                          gap: 1,
+                        }}
+                        onClick={() => handleSubmitMaterials()}
+                      >
+                        {creatingUserSubjects ? (
+                          <CircularProgress size={20} sx={{ color: "white" }} />
+                        ) : (
+                          <>
+                            <CheckCircleRoundedIcon fontSize="small" /> {t("submit")}
+                          </>
+                        )}
+                      </Button>
                     </>
                   }
             

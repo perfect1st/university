@@ -165,12 +165,28 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
 
   const onFilterChange = async (filterOBJ) => {
     logger.log("filterOBJ", filterOBJ);
-    if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
-    if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0")
-      searchParams.set("status", filterOBJ.status);
-    if (filterOBJ.role != "0") searchParams.set("role", filterOBJ.role);
-    // searchParams.get("search", e.target.value);
-    setSearchParams(searchParams);
+    let newParams = new URLSearchParams(searchParams);
+
+    if (filterOBJ.search) {
+      newParams.set("search", filterOBJ.search);
+    } else {
+      newParams.delete("search");
+    }
+
+    if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") {
+      newParams.set("status", filterOBJ.status);
+    } else {
+      newParams.delete("status");
+    }
+
+    if (filterOBJ.role && filterOBJ.role !== "0") {
+      newParams.set("role", filterOBJ.role);
+    } else {
+      newParams.delete("role");
+    }
+
+    newParams.delete("page"); // Reset page to 1 when filters change
+    setSearchParams(newParams);
   };
 
   // const usersToShow=[];

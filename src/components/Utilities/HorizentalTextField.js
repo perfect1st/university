@@ -92,7 +92,7 @@ export default function HorizentalTextField({
 />
                 ))
                 :
-                value && (
+                (value && value !== "null" && value !== "undefined") && (
          <Box
   component="img"
   src={value?.startsWith("http") ? value : `${baseURL}${value}`}

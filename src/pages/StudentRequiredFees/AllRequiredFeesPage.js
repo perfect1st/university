@@ -215,11 +215,28 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
 
     const onFilterChange = async (filterOBJ) => {
         logger.log("filterOBJ", filterOBJ);
-        if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
-        if (filterOBJ.hasOwnProperty("is_paid") && filterOBJ.is_paid !== "0") searchParams.set("is_paid", filterOBJ.is_paid);
-        if (filterOBJ.role) searchParams.set("role", filterOBJ.role);
-        // searchParams.get("search", e.target.value);
-        setSearchParams(searchParams);
+        let newParams = new URLSearchParams(searchParams);
+
+        if (filterOBJ.search) {
+            newParams.set("search", filterOBJ.search);
+        } else {
+            newParams.delete("search");
+        }
+
+        if (filterOBJ.hasOwnProperty("is_paid") && filterOBJ.is_paid !== "0") {
+            newParams.set("is_paid", filterOBJ.is_paid);
+        } else {
+            newParams.delete("is_paid");
+        }
+
+        if (filterOBJ.role) {
+            newParams.set("role", filterOBJ.role);
+        } else {
+            newParams.delete("role");
+        }
+        
+        newParams.delete("page");
+        setSearchParams(newParams);
     }
 
 

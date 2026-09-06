@@ -185,13 +185,34 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("main
     }
     const onFilterChange = async (filterOBJ) => {
         logger.log("filterOBJ", filterOBJ);
-        if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
-        if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
-        if (filterOBJ.hasOwnProperty("faculty_department_id") && filterOBJ.faculty_department_id !== "0") searchParams.set("faculty_department_id", filterOBJ.faculty_department_id);
-        if (filterOBJ.hasOwnProperty("faculty_id") && filterOBJ.faculty_id !== "0") searchParams.set("faculty_id", filterOBJ.faculty_id);
+        let newParams = new URLSearchParams(searchParams);
 
-        // faculty_id
-        setSearchParams(searchParams);
+        if (filterOBJ.search) {
+            newParams.set("search", filterOBJ.search);
+        } else {
+            newParams.delete("search");
+        }
+
+        if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") {
+            newParams.set("status", filterOBJ.status);
+        } else {
+            newParams.delete("status");
+        }
+
+        if (filterOBJ.hasOwnProperty("faculty_department_id") && filterOBJ.faculty_department_id !== "0") {
+            newParams.set("faculty_department_id", filterOBJ.faculty_department_id);
+        } else {
+            newParams.delete("faculty_department_id");
+        }
+
+        if (filterOBJ.hasOwnProperty("faculty_id") && filterOBJ.faculty_id !== "0") {
+            newParams.set("faculty_id", filterOBJ.faculty_id);
+        } else {
+            newParams.delete("faculty_id");
+        }
+
+        newParams.delete("page");
+        setSearchParams(newParams);
     }
     const handleDetailsClick = (selectedRow) => {
       if(!update) return notify(t("no_permission.title"),"error");

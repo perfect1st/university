@@ -57,10 +57,9 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("mate
     }
   ] = useLazyQuery(GET_ALL_FILTERED_MATERIALS, { fetchPolicy: "network-only" });
 
-  // get all materials 
-  const{
-    data
-  }=useQuery(GET_ALL_MATERIALS, { fetchPolicy: "network-only" });
+  const [
+    GetMaterialsForExport
+  ] = useLazyQuery(GET_ALL_FILTERED_MATERIALS, { fetchPolicy: "network-only" });
 
   // update subject status
   const [UpdateMaterial, {
@@ -163,8 +162,30 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("mate
   ];
   const fetchAndExport = async (type) => {
     try {
-      const exportData = data?.materials?.map((user,i) => ({
-        ID: i,
+      let variablesObj = { page: 1, limit: 100000 };
+      
+      let searchText = "";
+      if (searchParams.get("search")) {
+        searchText = searchParams.get("search");
+      }
+      if (searchText) variablesObj.search = searchText;
+      if (searchParams.get("status")) variablesObj.status = searchParams.get("status") === "true" ? true : false;
+      
+      if (searchParams.get("faculty_department_id")) variablesObj.faculty_department_id = searchParams.get("faculty_department_id");
+      if (storedStudentForm?.faculty_department_id?.id) {
+        variablesObj.faculty_department_id = storedStudentForm?.faculty_department_id?.id;
+      }
+
+      const { data: exportDataResponse } = await GetMaterialsForExport({ variables: variablesObj });
+      const materialsToExport = exportDataResponse?.filteredPagedMaterials?.materials || [];
+
+      if (materialsToExport.length === 0) {
+        notify(isArabic ? "لا توجد بيانات للطباعة" : "No data to export", "error");
+        return;
+      }
+
+      const exportData = materialsToExport.map((user,i) => ({
+        ID: i + 1,
         [t("Dashboard.NameInArabic")]: user?.title_ar,
         [t("Dashboard.NameInEnglish")]: user?.title_en,
         [t("admissions.faculty")]: isArabic ? user?.faculty_department_id?.faculty_id?.title_ar : user?.faculty_department_id?.faculty_id?.title_en,
@@ -229,11 +250,28 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("mate
   }
   const onFilterChange = async (filterOBJ) => {
     logger.log("filterOBJ", filterOBJ);
-    if (filterOBJ.search) searchParams.set("search", filterOBJ.search);
-    if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") searchParams.set("status", filterOBJ.status);
-    if (filterOBJ.hasOwnProperty("faculty_department_id") && filterOBJ.faculty_department_id !== "0") searchParams.set("faculty_department_id", filterOBJ.faculty_department_id);
-    // searchParams.get("search", e.target.value);
-    setSearchParams(searchParams);
+    let newParams = new URLSearchParams(searchParams);
+
+    if (filterOBJ.search) {
+        newParams.set("search", filterOBJ.search);
+    } else {
+        newParams.delete("search");
+    }
+
+    if (filterOBJ.hasOwnProperty("status") && filterOBJ.status !== "0") {
+        newParams.set("status", filterOBJ.status);
+    } else {
+        newParams.delete("status");
+    }
+
+    if (filterOBJ.hasOwnProperty("faculty_department_id") && filterOBJ.faculty_department_id !== "0") {
+        newParams.set("faculty_department_id", filterOBJ.faculty_department_id);
+    } else {
+        newParams.delete("faculty_department_id");
+    }
+
+    newParams.delete("page");
+    setSearchParams(newParams);
   }
 
 

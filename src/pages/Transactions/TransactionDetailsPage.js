@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { useLazyQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import { Box, Collapse, Table, TableBody, TableCell, TableHead, TableRow, useMediaQuery, useTheme } from "@mui/material";
@@ -17,6 +17,7 @@ export default function TransactionDetailsPage() {
   const { t } = useTranslation();
   const isArabic = i18n.language === "ar";
   const navigate = useNavigate();
+  const { id } = useParams();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const location = useLocation();
 
@@ -25,13 +26,17 @@ export default function TransactionDetailsPage() {
     loading: loadingTrans
   }] = useLazyQuery(GET_TRANSACTION_BY_ID, { fetchPolicy: "network-only" });
 
+  const targetId = location?.state?.id || id;
+
   useEffect(() => {
-    GetTransactionById({
-      variables: {
-        id: location?.state?.id
-      }
-    })
-  }, []);
+    if (targetId) {
+      GetTransactionById({
+        variables: {
+          id: targetId
+        }
+      });
+    }
+  }, [targetId]);
 
   logger.log("location", location?.state);
   logger.log("getTransactionById", getTransactionById);

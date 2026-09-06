@@ -51,6 +51,12 @@ export default function ExamStudentDegreesPage() {
         fetchPolicy: "network-only",
     });
 
+    const [
+        GetStudentDegreesForExport
+    ] = useLazyQuery(GET_EXAM_DEGREES, {
+        fetchPolicy: "network-only",
+    });
+
       useEffect(() => {
             let page;
             let limit;
@@ -139,34 +145,40 @@ export default function ExamStudentDegreesPage() {
 
     const fetchAndExport = async (type) => {
         try {
-            // const exportData = data?.getUsersRequiredFees?.map((user, i) => {
-            //     const timestamp = Number(user?.createdAt); // نتأكد إنه رقم
-            //     const date = new Date(timestamp);
-            //     let total = 0;
+            let variablesObj = {
+                exam_id: id,
+                page: 1,
+                limit: 100000
+            };
+            
+            let searchText = "";
+            if (searchParams.get("search")) {
+                searchText = searchParams.get("search");
+            }
+            if (searchText) variablesObj.search = searchText;
 
-            //     user?.fees_types_ids?.map(fee => {
-            //         if (user?.student_id?.is_inside_yemen == true) total += fee?.inside_yemen_value
-            //         else total += fee?.outside_yemen_value
-            //     })
-            //     return {
-            //         ID: i,
-            //         [t("Dashboard.studentName")]: user?.student_id?.fullname,
-            //         [t("Dashboard.createdAt")]: formatDateToString(date),
-            //         [t("fee.table.amount")]: total,
-            //         [t("fee.transactionSerial")]: user?.transactions_id?.transaction_serial,
-            //         [t("Dashboard.createdBy")]: user?.website_user_id?.fullname,
-            //         [t("Status")]: t(user?.is_paid == true ? "paid" : "unpaid"),
+            const { data: exportDataResponse } = await GetStudentDegreesForExport({ variables: variablesObj });
+            const materialsToExport = exportDataResponse?.studentDegrees?.studentDegrees || [];
 
-            //     }
-            // }
-            // );
+            if (materialsToExport.length === 0) {
+                notify(isArabic ? "لا توجد بيانات للطباعة" : "No data to export", "error");
+                return;
+            }
 
-            // ExportExcelAndPDF({
-            //     exportData,
-            //     isArabic,
-            //     reportTitle: isArabic ? "قائمة رسوم الطلاب" : "Student  Required Fees List",
-            //     type
-            // });
+            const exportData = materialsToExport.map((material, i) => ({
+                ID: i + 1,
+                [t("profile.Name")]: material?.student_id?.fullname,
+                [t("Dashboard.studentDegree")]: String(material?.student_degree),
+                [t("Dashboard.lectureAttendance")]: String(material?.lecture_attendance),
+                [t("Dashboard.examAttendance")]: material?.exam_attendance ? t("yes") : t("no"),
+            }));
+
+            ExportExcelAndPDF({
+                exportData,
+                isArabic,
+                reportTitle: isArabic ? "درجات الطلاب للامتحان" : "Exam Student Degrees",
+                type
+            });
         } catch (err) {
             logger.error("Export error:", err);
         }

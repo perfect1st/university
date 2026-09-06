@@ -12,7 +12,7 @@ import i18n from "../../i18n/i18n";
 import formatDateToString from "../../components/Utilities/FormatDateToString";
 import notify from "../../components/notify";
 import { UPDATE_REGISTER_FORM, GET_REGISTER_FORM_BY_ID } from "../../graphql/registerationFormQueries";
-import { GET_TRANSACTIONS_BY_USER } from "../../graphql/transactionQueries";
+import { GET_TRANSACTIONS_BY_REGISTER_FORM } from "../../graphql/transactionQueries";
 import { GET_ALL_NATIONALITIES } from "../../graphql/nationalitiesQueries";
 import { GET_ALL_COUNTRIES, GET_CITIES_BY_COUNTRY_ID } from "../../graphql/countriesQueries";
 import { GET_ALL_FACULITIES, GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID } from "../../graphql/facultyQuiries";
@@ -37,9 +37,9 @@ export default function RegisterFormDetailsPage() {
 
     const formData = registerFormData?.getRegisterFormById;
     logger.log('formData', formData);
-    const { data: transactionsData, loading: loadingTransactions } = useQuery(GET_TRANSACTIONS_BY_USER, {
-        variables: { user_id: formData?.user_id?.id },
-        skip: !formData?.user_id?.id
+    const { data: transactionsData, loading: loadingTransactions } = useQuery(GET_TRANSACTIONS_BY_REGISTER_FORM, {
+        variables: { register_form_id: id },
+        skip: !id
     });
 
     const { data: nationalitiesData } = useQuery(GET_ALL_NATIONALITIES);
@@ -58,7 +58,7 @@ export default function RegisterFormDetailsPage() {
         }
     }, [formData, getCities, getDepartments, getTerms]);
 
-    const transactions = transactionsData?.getTransactionsByUser || [];
+    const transactions = transactionsData?.getTransactionsByRegisterForm || [];
     const nationalities = nationalitiesData?.nationalities?.filter(el => el.status) || [];
     const countries = countriesData?.countries?.filter(el => el.status) || [];
     const cities = citiesInCountry?.getCitiesByCountry?.filter(el => el.status) || [];
@@ -154,9 +154,9 @@ export default function RegisterFormDetailsPage() {
             country_id: formData?.country_id?.id || "",
             city_id: formData?.city_id?.id || "",
             academyTerm_id: formData?.academyTerm_id?.id || "",
-            paid_document_file: formData?.paid_document_file || "null",
-            high_school_certificate_file: formData?.high_school_certificate_file || "null",
-            academic_record: formData?.academic_record || "null",
+            paid_document_file: (formData?.paid_document_file && formData?.paid_document_file !== "null") ? formData.paid_document_file : null,
+            high_school_certificate_file: (formData?.high_school_certificate_file && formData?.high_school_certificate_file !== "null") ? formData.high_school_certificate_file : null,
+            academic_record: (formData?.academic_record && formData?.academic_record !== "null") ? formData.academic_record : null,
             is_clearance: formData?.is_clearance ?? false,
         },
         enableReinitialize: true,
@@ -177,14 +177,15 @@ export default function RegisterFormDetailsPage() {
                 // Remove user_id as it shouldn't be updated here
                 delete input.user_id;
 
-                // Ensure relation IDs are null if empty string or "null"
-                const relationFields = [
+                // Ensure relation & file fields are null if empty string, "null", or null
+                const nullableFields = [
                     "nationality_id", "faculty_id", "faculty_department_id",
-                    "country_id", "city_id", "academyTerm_id"
+                    "country_id", "city_id", "academyTerm_id",
+                    "paid_document_file", "high_school_certificate_file", "academic_record"
                 ];
 
-                relationFields.forEach(field => {
-                    if (input[field] === "" || input[field] === "null" || input[field] === null) {
+                nullableFields.forEach(field => {
+                    if (input[field] === "" || input[field] === "null" || input[field] === null || input[field] === "undefined") {
                         input[field] = null;
                     }
                 });
@@ -599,20 +600,26 @@ export default function RegisterFormDetailsPage() {
                                             </Grid>
                                         )}
 
-                                        {transaction.payment_document_file && (
-                                            <Grid item xs={12}>
+                                        <Grid item xs={12} sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
+                                            <Button
+                                                variant="contained"
+                                                size="small"
+                                                onClick={() => navigate(`/transactions/details/${transaction.id}`, { state: { id: transaction.id } })}
+                                            >
+                                                {isArabic ? "عرض تفاصيل المعاملة" : "View Transaction Details"}
+                                            </Button>
+                                            {transaction.payment_document_file && (
                                                 <Button
                                                     variant="outlined"
                                                     size="small"
                                                     href={transaction.payment_document_file}
                                                     target="_blank"
                                                     rel="noreferrer"
-                                                    sx={{ mt: 1 }}
                                                 >
                                                     {t("transactions.viewDocument")}
                                                 </Button>
-                                            </Grid>
-                                        )}
+                                            )}
+                                        </Grid>
                                     </Grid>
                                 </Box>
                             </Grid>

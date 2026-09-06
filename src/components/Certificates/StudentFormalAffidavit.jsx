@@ -1,176 +1,364 @@
+/**
+ * @file StudentFormalAffidavit.jsx
+ * @description Official Formal Academic Certificate Component (الإقرار والتعهد الرسمي للطالب).
+ * Header position: Republic info on Right, Logo in Center, Metadata on Left.
+ * Dynamic academic statement (Result vs Success) based on student overall grade/average.
+ * Single A4 page fit, all-black text, no text underlines, print-only capability.
+ *
+ * @module Certificates/StudentFormalAffidavit
+ *
+ * @param {Object} props - Component props.
+ * @param {("university_certificate"|"registration_suspension"|"success_statement"|"graduation_enrollment")} [props.ticketType="university_certificate"] - Document type key.
+ * @param {Object} [props.studentData] - Student profile details.
+ * @param {Object} [props.registrationData] - Detailed academic registration info.
+ *
+ * @returns {JSX.Element} The rendered formal certificate preview with Print action button.
+ */
+
 import React, { useRef } from "react";
-import { Box, Typography, Button, Stack, Divider, Paper } from "@mui/material";
+import { useQuery } from "@apollo/client/react";
+import { Box, Typography, Button, Stack, Divider, Paper, Grid } from "@mui/material";
 import PrintIcon from "@mui/icons-material/Print";
-import DownloadIcon from "@mui/icons-material/Download";
-import html2pdf from "html2pdf.js";
+import QrCode2Icon from "@mui/icons-material/QrCode2";
+import SecurityIcon from "@mui/icons-material/Security";
+import { GET_ACADEMIC_TRANSCRIPT } from "../../graphql/studentDegreeQueries";
 import universityLogo from "../../assets/Logo.png";
 
 const StudentFormalAffidavit = ({ ticketType, studentData, registrationData }) => {
+  /** Reference to the certificate printable DOM element */
   const printRef = useRef(null);
 
+  // Extract student ID for academic transcript query if needed
+  const studentId = studentData?.id || studentData?._id;
+
+  // Query academic transcript to determine true overall grade and average
+  const { data: transcriptQueryData } = useQuery(GET_ACADEMIC_TRANSCRIPT, {
+    variables: { student_id: studentId },
+    skip: !studentId || ticketType !== "success_statement",
+    fetchPolicy: "cache-first",
+  });
+
+  const transcript = transcriptQueryData?.getAcademicTranscript;
+  const overallGrade = transcript?.overall_grade || registrationData?.overall_grade || studentData?.overall_grade || "";
+  const overallAverage = transcript?.overall_average ?? registrationData?.overall_average ?? studentData?.overall_average;
+
+  // Determine if student has failed status
+  const isFailed = overallGrade === "راسب" || (typeof overallAverage === "number" && overallAverage < 50);
+
+  // Extract student full name safely
   const studentFullName = registrationData
     ? `${registrationData.first_name || ""} ${registrationData.second_name || ""} ${registrationData.third_name || ""} ${registrationData.fourth_name || ""}`.trim()
-    : studentData?.fullname || "................";
+    : transcript?.student?.fullname || studentData?.fullname || "غير محدد";
 
-  const faculty = registrationData?.faculty_id?.title_ar || "................";
-  const department = registrationData?.faculty_department_id?.title_ar || "................";
-  const registrationNo = registrationData?.user_id?.qid_number || " ــ ";
-  const academicYear = registrationData?.academyTerm_id?.current_year || "................";
+  // Academic metadata extraction with safe fallbacks
+  const faculty = registrationData?.faculty_id?.title_ar || transcript?.faculty?.title_ar || studentData?.faculty || "كلية العلوم الأكاديمية";
+  const department = registrationData?.faculty_department_id?.title_ar || transcript?.faculty_department?.title_ar || studentData?.department || "القسم العام";
+  const registrationNo = registrationData?.user_id?.qid_number || studentData?.serial || transcript?.student?.serial || "ــ";
+  const academicYear = registrationData?.academyTerm_id?.current_year || new Date().getFullYear().toString();
+  const serialNo = `REG-${Math.floor(10000000 + Math.random() * 90000000)}`;
+  const issueDate = new Date().toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric" });
 
-  // Configuration for different affidavit types
-  const config = {
+  /**
+   * Template configurations for different types of formal academic affidavits
+   */
+  const documentConfigs = {
     registration_suspension: {
-      title: "إفادة إيقاف قيد",
-      body: `تفيد جامعة العلوم الأكاديمية بأن الطالب / ${studentFullName}، المقيد بكلية ${faculty}، قسم ${department}، برقم قيد (${registrationNo})، قد تقدم بطلب إيقاف قيده للعام الدراسي ${academicYear}، وقد تمت الموافقة على طلبه بناءً على الإجراءات المتبعة في الجامعة.`,
+      title: "إفادة إيقاف قيد دراسي",
+      subtitle: "صادرة عن عمادة القبول والتسجيل",
+      bodyPrefix: "تفيد جامعة العلوم الأكاديمية بأن الطالب/ـة ",
+      bodyMiddle: "، المقيد بكلية ",
+      bodyDept: "، قسم ",
+      bodyReg: "، برقم قيد (",
+      bodyYear: ")، قد تقدم بطلب رسمـي لإيقاف قيده الدراسي للعام الجامعي ",
+      bodySuffix: "، وقد تمت الموافقة الاعتمادية على طلبه وفقاً للشروط واللوائح الأكاديمية المنظمة بالجامعة.",
+      disclaimer: "أعطيت له هذه الإفادة بناءً على طلبه لتقديمها إلى الجهات المختصة دون أدنى مسؤولية مالية أو قانونية على الجامعة.",
     },
     university_certificate: {
       title: "إفادة طالب",
-      body: `تفيد جامعة العلوم الأكاديمية بأن الطالب / ${studentFullName}، المقيد بكلية ${faculty}، قسم ${department}، برقم قيد (${registrationNo})، هو أحد طلاب الجامعة المنتظمين للعام الدراسي ${academicYear}.`,
+      subtitle: "شهادة إثبات طالب منتظم",
+      bodyPrefix: "تفيد جامعة العلوم الأكاديمية بأن الطالب/ـة ",
+      bodyMiddle: "، المقيد بكلية ",
+      bodyDept: "، قسم ",
+      bodyReg: "، برقم قيد (",
+      bodyYear: ")، هو أحد الطلاب المنتظمين بالجامعة للعام الجامعي ",
+      bodySuffix: " ويسير في خطته الدراسية بصورة منتظمة.",
+      disclaimer: "أعطيت له هذه الإفادة بناءً على طلبه لتقديمها لجهات الاكتفاء والجهات الرسمية دون أي مسؤولية على الجامعة.",
     },
-    success_statement: {
-      title: "بيان نجاح",
-      body: `تفيد جامعة العلوم الأكاديمية بأن الطالب / ${studentFullName}، المقيد بكلية ${faculty}، قسم ${department}، برقم قيد (${registrationNo})، قد اجتاز بنجاح المتطلبات الأكاديمية للعام الدراسي ${academicYear}.`,
-    },
+    success_statement: isFailed
+      ? {
+          title: "بيان نجاح",
+          subtitle: "إفادة السجل والتقدير الأكاديمي",
+          bodyPrefix: "تفيد جامعة العلوم الأكاديمية بأن الطالب/ـة ",
+          bodyMiddle: "، المقيد بكلية ",
+          bodyDept: "، قسم ",
+          bodyReg: "، برقم قيد (",
+          bodyYear: ")، قد أدى امتحانات العام الجامعي ",
+          bodySuffix: `، والنتيجة المسجلة بسجلاته الأكاديمية هي: ${overallGrade || "راسب"}${
+            typeof overallAverage === "number" ? ` (بمعدل ${overallAverage}%)` : ""
+          }.`,
+          disclaimer: "أعطيت له هذه الإفادة بناءً على طلبه لتقديمها إلى الجهات المعنية لإثبات النتيجة دون أدنى مسؤولية على الجامعة.",
+        }
+      : {
+          title: "بيان نجاح",
+          subtitle: "إفادة نجاح واجتياز المتطلبات",
+          bodyPrefix: "تفيد جامعة العلوم الأكاديمية بأن الطالب/ـة ",
+          bodyMiddle: "، المقيد بكلية ",
+          bodyDept: "، قسم ",
+          bodyReg: "، برقم قيد (",
+          bodyYear: ")، قد اجتاز بنجاح المتطلبات الأكاديمية المقررة للعام الجامعي ",
+          bodySuffix: overallGrade
+            ? ` بتقدير عام: ${overallGrade}${typeof overallAverage === "number" ? ` (بمعدل ${overallAverage}%)` : ""}.`
+            : " وفق السجلات المعتمدة بشؤون الطلاب.",
+          disclaimer: "أعطيت له هذه الوثيقة بناءً على طلبه لتقديمها إلى من يهمه الأمر رسمياً.",
+        },
     graduation_enrollment: {
-      title: "إفادة قيد تخرج",
-      body: `تفيد جامعة العلوم الأكاديمية بأن الطالب / ${studentFullName}، المقيد بكلية ${faculty}، قسم ${department}، برقم قيد (${registrationNo})، هو في مرحلة التخرج من الجامعة للعام الدراسي ${academicYear}.`,
+      title: "إفادة قيد وتوقع تخرج",
+      subtitle: "شهادة استكمال متطلبات التخرج",
+      bodyPrefix: "تفيد جامعة العلوم الأكاديمية بأن الطالب/ـة ",
+      bodyMiddle: "، المقيد بكلية ",
+      bodyDept: "، قسم ",
+      bodyReg: "، برقم قيد (",
+      bodyYear: ")، هو في المستوى النهائي ومقيد بمرحلة التخرج للعام الجامعي ",
+      bodySuffix: "، وجارٍ استكمال إجراءات منحه مدرج الخريجين.",
+      disclaimer: "أعطيت له هذه الإفادة بناءً على طلبه لتقديمها إلى جهات التوظيف والجهات المعنية لحين إصدار وثيقة التخرج النهائية.",
     },
   };
 
-  const currentConfig = config[ticketType] || config.university_certificate;
+  // Determine current active document template configuration
+  const currentConfig = documentConfigs[ticketType] || documentConfigs.university_certificate;
 
+  /**
+   * Opens print window for immediate high-fidelity physical printing
+   */
   const handlePrint = () => {
-    const content = printRef.current.innerHTML;
     const printWindow = window.open("", "_blank");
     printWindow.document.write(`
-      <html>
+      <!DOCTYPE html>
+      <html dir="rtl" lang="ar">
         <head>
+          <meta charset="utf-8" />
           <title>${currentConfig.title} - ${studentFullName}</title>
-          <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+          <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
           <style>
-            @page { size: A4; margin: 15mm; }
-            body { 
-              direction: rtl;
-              font-family: 'Cairo', sans-serif;
-              margin: 0;
-              padding: 0;
-              color: #1a202c;
+            @page {
+              size: A4 portrait;
+              margin: 8mm 12mm;
             }
-            .certificate-container {
-              width: 100%;
-              max-width: 800px;
-              margin: 0 auto;
-              padding: 50px;
-              border: 15px double #1a4a72;
-              min-height: 297mm;
-              display: flex;
-              flex-direction: column;
-              background: #fff;
-              position: relative;
+            * {
               box-sizing: border-box;
             }
-            .header {
-              text-align: center;
-              margin-bottom: 40px;
-            }
-            .logo {
-              width: 180px;
-              margin-bottom: 10px;
-            }
-            .univ-name {
-              font-size: 26px;
-              font-weight: 700;
-              color: #1a4a72;
+            html, body {
+              height: 100%;
               margin: 0;
+              padding: 0;
             }
-            .subtitle {
+            body {
+              direction: rtl;
+              font-family: 'Cairo', 'Traditional Arabic', Arial, sans-serif;
+              color: #000000;
+              background-color: #ffffff;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            .certificate-border {
+              width: 100%;
+              max-width: 800px;
+              height: 98vh;
+              margin: 0 auto;
+              padding: 30px 40px;
+              border: 8px double #000000;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              position: relative;
+              background: #ffffff;
+              box-sizing: border-box;
+              page-break-inside: avoid;
+            }
+            .watermark {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              opacity: 0.04;
+              width: 450px;
+              pointer-events: none;
+              z-index: 0;
+              filter: grayscale(100%);
+            }
+            .content-area {
+              position: relative;
+              z-index: 1;
+            }
+            .header-table {
+              width: 100%;
+              border-bottom: 2px dashed #000000;
+              padding-bottom: 15px;
+              margin-bottom: 25px;
+            }
+            .header-text-main {
               font-size: 18px;
-              color: #4a5568;
-              margin-top: 5px;
+              font-weight: 800;
+              color: #000000;
             }
-            .divider {
-              height: 2px;
-              background: linear-gradient(90deg, transparent, #1a4a72, transparent);
-              margin: 30px 0;
+            .header-text-sub {
+              font-size: 13px;
+              color: #000000;
             }
             .title-box {
               text-align: center;
-              margin: 40px 0;
+              margin: 25px 0 20px 0;
             }
-            .title-box h1 {
-              font-size: 36px;
-              font-weight: 700;
-              color: #1a4a72;
+            .main-title {
+              font-size: 28px;
+              font-weight: 900;
+              color: #000000;
               display: inline-block;
-              padding: 10px 40px;
-              border-bottom: 4px solid #1a4a72;
+              padding: 4px 35px;
+              border-bottom: 3px solid #000000;
+              letter-spacing: 0.5px;
             }
-            .content {
-              font-size: 22px;
+            .subtitle {
+              font-size: 15px;
+              color: #000000;
+              margin-top: 6px;
+              font-weight: 700;
+            }
+            .body-content {
+              font-size: 19px;
               line-height: 2.2;
               text-align: justify;
-              margin: 20px 0 60px 0;
-              flex-grow: 1;
+              margin: 25px 0 20px 0;
+              color: #000000;
+              font-weight: 600;
             }
-            .footer {
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-end;
-              margin-top: auto;
+            .highlight-value {
+              font-weight: 900;
+              color: #000000;
+              padding: 0 4px;
             }
-            .signature-block {
-              text-align: center;
-              width: 200px;
+            .disclaimer-text {
+              font-size: 14px;
+              line-height: 1.8;
+              color: #000000;
+              margin-top: 15px;
+              text-align: justify;
+              font-weight: 600;
+            }
+            .footer-table {
+              width: 100%;
+              margin-top: 35px;
+            }
+            .signature-title {
+              font-size: 15px;
+              font-weight: 800;
+              color: #000000;
+              margin-bottom: 45px;
             }
             .signature-line {
-              margin-top: 60px;
-              border-top: 2px solid #1a4a72;
+              width: 170px;
+              margin: 0 auto;
+              border-top: 2px solid #000000;
             }
-            .qr-code {
-              width: 100px;
-              height: 100px;
-              border: 1px solid #e2e8f0;
-              padding: 5px;
+            .seal-circle {
+              width: 90px;
+              height: 90px;
+              border: 2px dashed #000000;
+              border-radius: 50%;
+              margin: 0 auto;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 12px;
+              color: #000000;
+              font-weight: 700;
             }
-            @media print {
-              .certificate-container { border: 15px double #1a4a72; }
+            .security-bar {
+              margin-top: 20px;
+              padding-top: 12px;
+              border-top: 1px solid #000000;
+              display: flex;
+              justify-content: space-between;
+              font-size: 12px;
+              color: #000000;
+              font-weight: 700;
             }
           </style>
         </head>
-        <body onload="window.print();window.close()">
-          <div class="certificate-container">
-            <div class="header">
-              <img src="${universityLogo}" alt="University Logo" class="logo" />
-              <div class="univ-name">جامعة العلوم الأكاديمية</div>
-              <div class="subtitle">عمادة القبول والتسجيل</div>
-            </div>
+        <body onload="window.print(); window.close();">
+          <div class="certificate-border">
+            <img src="${universityLogo}" class="watermark" alt="Watermark" />
+            <div class="content-area">
+              <table class="header-table">
+                <tr>
+                  <!-- RIGHT COLUMN: Republic Title & University -->
+                  <td style="width: 35%; text-align: right; vertical-align: top;">
+                    <div class="header-text-main">الجمهورية اليمنية</div>
+                    <div class="header-text-sub">وزارة التعليم العالي والبحث العلمي</div>
+                    <div class="header-text-main" style="font-size: 16px; margin-top: 3px;">جامعة العلوم الأكاديمية</div>
+                    <div class="header-text-sub" style="font-weight: 700;">عمادة القبول والتسجيل</div>
+                  </td>
+                  <!-- CENTER COLUMN: Emblem Logo -->
+                  <td style="width: 30%; text-align: center; vertical-align: top;">
+                    <img src="${universityLogo}" alt="University Emblem" style="height: 65px; filter: grayscale(100%);" />
+                  </td>
+                  <!-- LEFT COLUMN: Metadata & Ref Info -->
+                  <td style="width: 35%; text-align: left; vertical-align: top; font-size: 13px; color: #000000; line-height: 1.8; font-weight: 600;">
+                    <div><strong>رقم القيد العام:</strong> &rlm;<span dir="ltr">${registrationNo}</span></div>
+                    <div><strong>الرقم المرجعي:</strong> &rlm;<span dir="ltr">${serialNo}</span></div>
+                    <div><strong>تاريخ الإصدار:</strong> ${issueDate}</div>
+                  </td>
+                </tr>
+              </table>
 
-            <div class="divider"></div>
-
-            <div class="title-box">
-              <h1>${currentConfig.title}</h1>
-            </div>
-
-            <div class="content">
-              ${currentConfig.body}
-              <br/><br/>
-              أعطيت له هذه الإفادة بناءً على طلبه دون أدنى مسؤولية على الجامعة.
-            </div>
-
-            <div class="footer">
-              <div class="signature-block">
-                <div style="font-weight: 600;">تاريخ الإصدار</div>
-                <div style="margin-top: 10px;">${new Date().toLocaleDateString('ar-SA')}</div>
+              <div class="title-box">
+                <div class="main-title">${currentConfig.title}</div>
+                <div class="subtitle">${currentConfig.subtitle}</div>
               </div>
-              
-              <div class="signature-block">
-                <div style="font-weight: 600;">ختم الجامعة</div>
-                <div style="margin-top: 20px; color: #e2e8f0; font-size: 12px;">(مساحة الختم)</div>
+
+              <div class="body-content">
+                ${currentConfig.bodyPrefix}
+                <span class="highlight-value">${studentFullName}</span>
+                ${currentConfig.bodyMiddle}
+                <span class="highlight-value">${faculty}</span>
+                ${currentConfig.bodyDept}
+                <span class="highlight-value">${department}</span>
+                ${currentConfig.bodyReg}
+                <span class="highlight-value">${registrationNo}</span>
+                ${currentConfig.bodyYear}
+                <span class="highlight-value">${academicYear}</span>
+                ${currentConfig.bodySuffix}
               </div>
 
-              <div class="signature-block">
-                <div style="font-weight: 600;">توقيع المسجل العام</div>
-                <div class="signature-line"></div>
+              <div class="disclaimer-text">
+                ${currentConfig.disclaimer}
+              </div>
+            </div>
+
+            <div>
+              <table class="footer-table">
+                <tr>
+                  <td style="width: 33%; text-align: center;">
+                    <div class="signature-title">تاريخ الإصدار والاعتماد</div>
+                    <div style="font-size: 14px; font-weight: 700; color: #000000;">${issueDate}</div>
+                  </td>
+                  <td style="width: 34%; text-align: center;">
+                    <div class="signature-title">ختم عمادة القبول والتسجيل</div>
+                    <div class="seal-circle">مساحة الختم الرسمية</div>
+                  </td>
+                  <td style="width: 33%; text-align: center;">
+                    <div class="signature-title">عميد القبول والتسجيل</div>
+                    <div class="signature-line"></div>
+                  </td>
+                </tr>
+              </table>
+
+              <div class="security-bar">
+                <div style="display: flex; gap: 4px; direction: rtl;">
+                  <span>الرمز الأمني:</span>
+                  <span dir="ltr"><strong>${serialNo}</strong></span>
+                </div>
+                <div>وثيقة إلكترونية موثقة رسمياً</div>
               </div>
             </div>
           </div>
@@ -180,162 +368,230 @@ const StudentFormalAffidavit = ({ ticketType, studentData, registrationData }) =
     printWindow.document.close();
   };
 
-  const handleDownload = () => {
-    const element = printRef.current;
-    const opt = {
-      margin: 0,
-      filename: `${currentConfig.title}_${studentFullName}.pdf`,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 3, useCORS: true, letterRendering: true },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    };
-    html2pdf().set(opt).from(element).save();
-  };
-
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", gap: 3 }}>
-      {/* Premium Preview Component */}
+    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", gap: 3, my: 2 }}>
+      {/* Document Frame Preview */}
       <Paper
-        elevation={6}
+        elevation={4}
         sx={{
           width: "100%",
           maxWidth: "800px",
           bgcolor: "#fff",
-          p: { xs: 2, md: 6 },
-          borderRadius: "12px",
-          border: "1px solid #e2e8f0",
+          p: { xs: 2.5, md: 5 },
+          borderRadius: "10px",
+          border: "6px double #000000",
           position: "relative",
           overflow: "hidden",
-          direction: "rtl"
+          direction: "rtl",
+          boxShadow: "0 6px 25px rgba(0, 0, 0, 0.12)",
         }}
       >
         <div ref={printRef}>
-          {/* Aesthetic Watermark */}
-          <Box sx={{ 
-            position: 'absolute', 
-            top: '50%', 
-            left: '50%', 
-            transform: 'translate(-50%, -50%)', 
-            opacity: 0.04, 
-            zIndex: 0,
-            pointerEvents: 'none'
-          }}>
-            <img src={universityLogo} alt="" style={{ width: '500px' }} />
+          {/* Central Watermark */}
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              opacity: 0.04,
+              zIndex: 0,
+              pointerEvents: "none",
+            }}
+          >
+            <img src={universityLogo} alt="Watermark" style={{ width: "420px", filter: "grayscale(100%)" }} />
           </Box>
 
-          <Box sx={{ position: 'relative', zIndex: 1 }}>
-            {/* Header Section */}
-            <Stack direction="row" justifyContent="center" alignItems="center" sx={{ mb: 4 }}>
-              <Box sx={{ textAlign: 'center' }}>
-                <img src={universityLogo} alt="University Logo" style={{ width: '150px', marginBottom: '12px' }} />
-                <Typography variant="h4" sx={{ fontWeight: 800, color: '#1a4a72', letterSpacing: 1 }}>
+          <Box sx={{ position: "relative", zIndex: 1 }}>
+            {/* Header Credentials */}
+            <Grid container alignItems="center" spacing={2} sx={{ pb: 2.5, borderBottom: "2px dashed #000000", mb: 3 }}>
+              {/* RIGHT SIDE: Republic Title & Deanship */}
+              <Grid item xs={12} sm={4} sx={{ textAlign: { xs: "center", sm: "right" } }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: "#000000", fontSize: "1.1rem" }}>
+                  الجمهورية اليمنية
+                </Typography>
+                <Typography variant="caption" sx={{ color: "#000000", display: "block", fontWeight: 600 }}>
+                  وزارة التعليم العالي والبحث العلمي
+                </Typography>
+                <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "#000000", mt: 0.5 }}>
                   جامعة العلوم الأكاديمية
                 </Typography>
-                <Typography variant="h6" sx={{ color: '#4a5568', mt: 1 }}>
+                <Typography variant="caption" sx={{ color: "#000000", fontWeight: 700, display: "block" }}>
                   عمادة القبول والتسجيل
                 </Typography>
-              </Box>
-            </Stack>
+              </Grid>
 
-            <Divider sx={{ mb: 6, borderColor: '#1a4a72', borderWidth: '1px', opacity: 0.3 }} />
+              {/* CENTER: Logo Emblem */}
+              <Grid item xs={12} sm={4} sx={{ textAlign: "center" }}>
+                <img src={universityLogo} alt="University Logo" style={{ height: "65px", objectFit: "contain", filter: "grayscale(100%)" }} />
+              </Grid>
 
-            {/* Document Title */}
-            <Box sx={{ textAlign: 'center', mb: 8 }}>
-              <Typography 
-                variant="h2" 
-                sx={{ 
-                  fontWeight: 900, 
-                  color: '#1a4a72',
-                  display: 'inline-block',
+              {/* LEFT SIDE: Document Metadata */}
+              <Grid item xs={12} sm={4} sx={{ textAlign: { xs: "center", sm: "left" } }}>
+                <Typography variant="caption" sx={{ color: "#000000", display: "block", fontWeight: 600 }}>
+                  <strong>رقم القيد العام:</strong> &rlm;<span dir="ltr">{registrationNo}</span>
+                </Typography>
+                <Typography variant="caption" sx={{ color: "#000000", display: "block", mt: 0.5, fontWeight: 600 }}>
+                  <strong>الرقم المرجعي:</strong> &rlm;<span dir="ltr">{serialNo}</span>
+                </Typography>
+                <Typography variant="caption" sx={{ color: "#000000", display: "block", mt: 0.5, fontWeight: 600 }}>
+                  <strong>تاريخ الإصدار:</strong> {issueDate}
+                </Typography>
+              </Grid>
+            </Grid>
+
+            {/* Document Main Title Header */}
+            <Box sx={{ textAlign: "center", my: 3 }}>
+              <Typography
+                variant="h3"
+                sx={{
+                  fontWeight: 900,
+                  color: "#000000",
+                  display: "inline-block",
                   px: 4,
                   pb: 1,
-                  borderBottom: '5px solid #1a4a72',
-                  fontSize: { xs: '2rem', md: '3rem' }
+                  borderBottom: "4px solid #000000",
+                  fontSize: { xs: "1.7rem", md: "2.2rem" },
+                  letterSpacing: 0.5,
                 }}
               >
                 {currentConfig.title}
               </Typography>
-            </Box>
-
-            {/* Body Content */}
-            <Box sx={{ px: { xs: 1, md: 4 }, minHeight: '300px' }}>
-              <Typography 
-                variant="body1" 
-                sx={{ 
-                  fontSize: '1.5rem', 
-                  lineHeight: 2.3, 
-                  textAlign: 'justify',
-                  color: '#2d3748',
-                  fontWeight: 500
-                }}
-              >
-                {currentConfig.body}
-              </Typography>
-              
-              <Typography variant="body1" sx={{ fontSize: '1.5rem', mt: 6, color: '#2d3748' }}>
-                أعطيت له هذه الإفادة بناءً على طلبه دون أدنى مسؤولية على الجامعة.
+              <Typography variant="subtitle1" sx={{ color: "#000000", mt: 1, fontWeight: 700 }}>
+                {currentConfig.subtitle}
               </Typography>
             </Box>
 
-            {/* Signature Area */}
-            <Stack direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mt: 12, px: 4 }}>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1a4a72' }}>تاريخ الإصدار</Typography>
-                <Typography variant="body1" sx={{ mt: 1, fontWeight: 600 }}>{new Date().toLocaleDateString('ar-SA')}</Typography>
+            {/* Document Body Declaration Text */}
+            <Typography
+              variant="body1"
+              sx={{
+                fontSize: "1.25rem",
+                lineHeight: 2.3,
+                textAlign: "justify",
+                color: "#000000",
+                fontWeight: 600,
+                my: 4,
+                px: { xs: 0, md: 1 },
+              }}
+            >
+              {currentConfig.bodyPrefix}
+              <Box component="span" sx={{ fontWeight: 900, color: "#000000", px: 0.5 }}>
+                {studentFullName}
               </Box>
-              
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1a4a72' }}>ختم الجامعة</Typography>
-                <Box sx={{ mt: 2, width: '100px', height: '100px', borderRadius: '50%', border: '2px dashed #cbd5e0', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.5 }}>
-                  <Typography variant="caption">مساحة الختم</Typography>
+              {currentConfig.bodyMiddle}
+              <Box component="span" sx={{ fontWeight: 900, color: "#000000", px: 0.5 }}>
+                {faculty}
+              </Box>
+              {currentConfig.bodyDept}
+              <Box component="span" sx={{ fontWeight: 900, color: "#000000", px: 0.5 }}>
+                {department}
+              </Box>
+              {currentConfig.bodyReg}
+              <Box component="span" sx={{ fontWeight: 900, color: "#000000", px: 0.5 }}>
+                {registrationNo}
+              </Box>
+              {currentConfig.bodyYear}
+              <Box component="span" sx={{ fontWeight: 900, color: "#000000", px: 0.5 }}>
+                {academicYear}
+              </Box>
+              {currentConfig.bodySuffix}
+            </Typography>
+
+            {/* Standard Disclaimer Statement */}
+            <Typography variant="body1" sx={{ color: "#000000", mt: 2, mb: 4, fontSize: "1.05rem", fontWeight: 600 }}>
+              {currentConfig.disclaimer}
+            </Typography>
+
+            <Divider sx={{ my: 3, borderColor: "#000000" }} />
+
+            {/* Signature & Seal Area */}
+            <Grid container justifyContent="space-between" alignItems="center" sx={{ mt: 3, px: 2 }}>
+              <Grid item xs={4} sx={{ textAlign: "center" }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#000000" }}>
+                  تاريخ الإصدار والاعتماد
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 1, fontWeight: 700, color: "#000000" }}>
+                  {issueDate}
+                </Typography>
+              </Grid>
+
+              <Grid item xs={4} sx={{ textAlign: "center" }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#000000", mb: 1 }}>
+                  ختم عمادة القبول والتسجيل
+                </Typography>
+                <Box
+                  sx={{
+                    width: 90,
+                    height: 90,
+                    mx: "auto",
+                    borderRadius: "50%",
+                    border: "2px dashed #000000",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#000000",
+                    fontSize: "0.75rem",
+                    fontWeight: 700,
+                  }}
+                >
+                  مساحة الختم الرسمية
                 </Box>
-              </Box>
+              </Grid>
 
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1a4a72' }}>توقيع المسجل العام</Typography>
-                <Box sx={{ mt: 8, width: '180px', borderTop: '2px solid #1a4a72' }} />
-              </Box>
+              <Grid item xs={4} sx={{ textAlign: "center" }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#000000" }}>
+                  عميد القبول والتسجيل
+                </Typography>
+                <Box sx={{ mt: 6, width: 160, mx: "auto", borderTop: "2px solid #000000" }} />
+              </Grid>
+            </Grid>
+
+            {/* Security Verification Bar */}
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              sx={{ mt: 4, pt: 2, borderTop: "1px solid #000000" }}
+            >
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <QrCode2Icon sx={{ color: "#000000" }} />
+                <Typography variant="caption" sx={{ color: "#000000", fontWeight: 700 }}>
+                  الرمز الأمني: <strong dir="ltr">{serialNo}</strong>
+                </Typography>
+              </Stack>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <SecurityIcon sx={{ color: "#000000", fontSize: 18 }} />
+                <Typography variant="caption" sx={{ color: "#000000", fontWeight: 700 }}>
+                  وثيقة إلكترونية موثقة رسمياً
+                </Typography>
+              </Stack>
             </Stack>
           </Box>
         </div>
       </Paper>
 
-      {/* Action Buttons */}
-      <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
+      {/* Print-Only Action Button */}
+      <Stack direction="row" justifyContent="center" sx={{ mb: 2 }}>
         <Button
           variant="contained"
           size="large"
           startIcon={<PrintIcon />}
           onClick={handlePrint}
-          sx={{ 
-            borderRadius: "12px", 
-            px: 5, 
+          sx={{
+            borderRadius: "50px",
+            px: 6,
             py: 1.5,
-            bgcolor: "#1a4a72", 
-            "&:hover": { bgcolor: "#133756" },
-            fontSize: '1.1rem',
-            boxShadow: '0 4px 14px 0 rgba(26, 74, 114, 0.39)'
+            bgcolor: "#000000",
+            color: "#ffffff",
+            "&:hover": { bgcolor: "#222222" },
+            fontSize: "1.15rem",
+            fontWeight: 800,
+            boxShadow: "0 6px 20px 0 rgba(0, 0, 0, 0.4)",
+            letterSpacing: 0.5,
           }}
         >
-          طباعة الوثيقة
-        </Button>
-        <Button
-          variant="outlined"
-          size="large"
-          startIcon={<DownloadIcon />}
-          onClick={handleDownload}
-          sx={{ 
-            borderRadius: "12px", 
-            px: 5, 
-            py: 1.5,
-            color: "#1a4a72", 
-            borderColor: "#1a4a72",
-            borderWidth: '2px',
-            fontSize: '1.1rem',
-            "&:hover": { borderWidth: '2px', bgcolor: 'rgba(26, 74, 114, 0.04)' }
-          }}
-        >
-          تحميل PDF
+          طباعة الوثيقة الرسمية
         </Button>
       </Stack>
     </Box>

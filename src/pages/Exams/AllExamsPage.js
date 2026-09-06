@@ -23,6 +23,10 @@ import { examTypes } from "../../constants";
 import logger from "../../utils/logger";
 
 
+import { useSelector } from "react-redux";
+import { GET_MATERIALS_BY_DOCTOR } from "../../graphql/materialQueries";
+
+
 export default function AllExamsPage() {
     const theme = useTheme();
     const { t } = useTranslation();
@@ -31,6 +35,7 @@ export default function AllExamsPage() {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const isArabic = i18n.language === "ar";
+    const me = useSelector((state) => state.user.loggedUser);
 
     // all filtered exams 
     const [
@@ -41,12 +46,26 @@ export default function AllExamsPage() {
         } = {},
     ] = useLazyQuery(GET_FILTERED_EXAMS, { fetchPolicy: "network-only" });
 
+    // get doctors materials
+    const [
+        MaterialsByDoctor,
+        {
+            data: { materialsByDoctor = [] } = {}
+        } = {}
+    ] = useLazyQuery(GET_MATERIALS_BY_DOCTOR, { fetchPolicy: "network-only" });
+
     const {
         filteredPagedExams: {
             exams = [],
             total = 0
         } = {}
     } = data;
+
+    useEffect(() => {
+        if (me?.id && me?.role === "doctor") {
+            MaterialsByDoctor({ variables: { doctor_id: me?.id } });
+        }
+    }, [me]);
 
     useEffect(() => {
         let page;
@@ -76,12 +95,38 @@ export default function AllExamsPage() {
         if (searchText) variablesObj.search = searchText;
         if (searchParams.get("exam_type") && searchParams.get("exam_type") !== "0") variablesObj.exam_type = searchParams.get("exam_type");
 
+        let materialsArr = [];
+        if (searchParams.get("materials")) {
+            try {
+                const parsed = JSON.parse(searchParams.get("materials"));
+                if (Array.isArray(parsed)) {
+                    materialsArr = [...parsed];
+                } else {
+                    materialsArr.push(searchParams.get("materials"));
+                }
+            } catch {
+                materialsArr = searchParams.get("materials").split(",");
+            }
+        }
+
+        if (me?.role === "doctor") {
+            const doctorMatIds = materialsByDoctor?.map(mat => mat?.id).filter(Boolean) || [];
+            doctorMatIds.forEach(id => {
+                if (!materialsArr.includes(id)) {
+                    materialsArr.push(id);
+                }
+            });
+        }
+
+        if (materialsArr.length > 0) {
+            variablesObj.materials = materialsArr;
+        }
 
         // if(searchParams.get("role")) variablesObj.role=searchParams.get("role");
 
         FilteredPagedExams({ variables: variablesObj });
 
-    }, [searchParams]);
+    }, [searchParams, me, materialsByDoctor]);
 
     logger.log("exams", exams);
 
