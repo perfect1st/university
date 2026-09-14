@@ -15,7 +15,7 @@ import { GET_ALL_FACULITIES, GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID } from "../../
 import axios from "axios";
 import { baseURL } from "../../../Api/apolloClient";
 import logger from "../../../utils/logger";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const ROLE_TITLES = [
   { id: "university_president", ar: "رئيس الجامعة", en: "University President" },
@@ -39,6 +39,8 @@ export default function AddSignaturePage() {
   const [roleTitle, setRoleTitle] = useState("0");
   const [imageFile, setImageFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
+  const [selectedToShowFile, setSelectedToShowFile] = useState("");
 
   const { data: facultiesData } = useQuery(GET_ALL_FACULITIES, {
     fetchPolicy: "network-only",
@@ -132,6 +134,18 @@ export default function AddSignaturePage() {
     }
   };
 
+  const handlePickFile = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0] ?? null;
+    if (file) {
+      setImageFile(file);
+      setSelectedToShowFile(file.name);
+    }
+  };
+
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Header
@@ -197,9 +211,12 @@ export default function AddSignaturePage() {
 
         <UploadFileField
           title={isArabic ? "صورة التوقيع" : "Signature Image"}
-          t={t}
-          uploadedFile={imageFile}
-          setUploadedFile={setImageFile}
+          subTitle={isArabic ? "رفع صورة" : "Upload Image"}
+          fileInputRef={fileInputRef}
+          handleFileChange={handleFileChange}
+          handlePickFile={handlePickFile}
+          selectedToShowFile={selectedToShowFile}
+          progress={0}
         />
 
         <SubmitButton loading={CreateSignatureLoading || uploading} t={t} />

@@ -15,7 +15,7 @@ import { GET_ALL_FACULITIES, GET_ALL_DEPARTMENTS_IN_FACULTY_BY_ID } from "../../
 import axios from "axios";
 import { baseURL } from "../../../Api/apolloClient";
 import logger from "../../../utils/logger";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const ROLE_TITLES = [
   { id: "university_president", ar: "رئيس الجامعة", en: "University President" },
@@ -41,6 +41,8 @@ export default function SignatureDetailsPage() {
   const [imageFile, setImageFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [initialImage, setInitialImage] = useState("");
+  const fileInputRef = useRef(null);
+  const [selectedToShowFile, setSelectedToShowFile] = useState("");
 
   const { data: facultiesData } = useQuery(GET_ALL_FACULITIES, {
     fetchPolicy: "network-only",
@@ -154,6 +156,18 @@ export default function SignatureDetailsPage() {
     }
   };
 
+  const handlePickFile = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0] ?? null;
+    if (file) {
+      setImageFile(file);
+      setSelectedToShowFile(file.name);
+    }
+  };
+
   return (
     <Box sx={{ p: 3, backgroundColor: "background.paper" }}>
       <Header
@@ -219,9 +233,12 @@ export default function SignatureDetailsPage() {
 
         <UploadFileField
           title={isArabic ? "تغيير صورة التوقيع" : "Change Signature Image"}
-          t={t}
-          uploadedFile={imageFile}
-          setUploadedFile={setImageFile}
+          subTitle={isArabic ? "رفع صورة" : "Upload Image"}
+          fileInputRef={fileInputRef}
+          handleFileChange={handleFileChange}
+          handlePickFile={handlePickFile}
+          selectedToShowFile={selectedToShowFile}
+          progress={0}
         />
         
         {initialImage && !imageFile && (

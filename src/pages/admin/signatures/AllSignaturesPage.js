@@ -208,6 +208,7 @@ export default function AllSignaturesPage() {
             hasDeleteBtn={canDelete}
             handleDeleteClick={handleDeleteClick}
             onStatusChange={onStatusChange}
+            isInDetails={true}
           />
 
           <FilterComponent totalPages={totalPages} />
