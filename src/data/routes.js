@@ -130,6 +130,11 @@ const routesData = {
           label: { en: "Site Settings", ar: "اعدادات الموقع" },
           path: "/site-settings",
         },
+        {
+          key: "signatures",
+          label: { en: "Signatures", ar: "التوقيعات" },
+          path: "/signatures",
+        },
       ]
     },
     {

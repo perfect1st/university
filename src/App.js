@@ -118,6 +118,9 @@ import AddBookPage from "./pages/E-Library/AddBookPage";
 import BookDetailsPage from "./pages/E-Library/BookDetailsPage";
 import AllContactMessagesPage from "./pages/ContactUs/AllContactMessagesPage";
 import SiteSettings from "./pages/SiteSettings/SiteSettings";
+import AllSignaturesPage from "./pages/admin/signatures/AllSignaturesPage";
+import AddSignaturePage from "./pages/admin/signatures/AddSignaturePage";
+import SignatureDetailsPage from "./pages/admin/signatures/SignatureDetailsPage";
 import BackupsPage from "./pages/Backups/BackupsPage";
 import TestCertificatePage from "./pages/TestCertificatePage";
 import PromotionPage from "./pages/Promotion/PromotionPage";
@@ -675,6 +678,23 @@ function App() {
                   <Route path="/site-settings" element={
                     <MainLayout isLoggedIn={true}>
                       <SiteSettings />
+                    </MainLayout>
+                  } />
+
+                  {/* Signatures */}
+                  <Route path="/signatures" element={
+                    <MainLayout isLoggedIn={true}>
+                      <AllSignaturesPage />
+                    </MainLayout>
+                  } />
+                  <Route path="/signatures/add" element={
+                    <MainLayout isLoggedIn={true}>
+                      <AddSignaturePage />
+                    </MainLayout>
+                  } />
+                  <Route path="/signatures/details/:id" element={
+                    <MainLayout isLoggedIn={true}>
+                      <SignatureDetailsPage />
                     </MainLayout>
                   } />
 
