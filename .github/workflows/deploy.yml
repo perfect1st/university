@@ -35,5 +35,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "build/" # ننسخ مجلد الـ build فقط
           target: "/root/university-api/src/public" # المسار الذي طلبته على السيرفر
-          strip_components: 1 # لتجاوز مجلد 'build' ونسخ محتوياته مباشرة داخل public
+          strip_components: 0 # تم التعديل لـ 0 عشان ينشئ مجلد build بالداخل
           rm: false # يمكنك تحويلها لـ true إذا كنت ترغب بمسح الملفات القديمة قبل نسخ الجديدة
