@@ -1,0 +1,39 @@
+name: Deploy Frontend to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # يمكنك تغيير الإصدار حسب السيرفر إذا لزم الأمر
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci --legacy-peer-deps # تجنباً لأي مشاكل في تعارض الحزم
+
+      - name: Build the React App
+        run: npm run build
+        env:
+          CI: false # يمنع توقف عملية البناء إذا ظهرت بعض التحذيرات (Warnings)
+
+      - name: Copy build files to Server via SCP
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "build/" # ننسخ مجلد الـ build فقط
+          target: "/root/university-api/src/public" # المسار الذي طلبته على السيرفر
+          strip_components: 1 # لتجاوز مجلد 'build' ونسخ محتوياته مباشرة داخل public
+          rm: false # يمكنك تحويلها لـ true إذا كنت ترغب بمسح الملفات القديمة قبل نسخ الجديدة
