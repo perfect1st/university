@@ -125,6 +125,8 @@ import BackupsPage from "./pages/Backups/BackupsPage";
 import TestCertificatePage from "./pages/TestCertificatePage";
 import PromotionPage from "./pages/Promotion/PromotionPage";
 import SummerCourseAdminPage from "./pages/SummerCourseAdmin/SummerCourseAdminPage";
+import Installments from "./pages/Installments/Installments";
+import InstallmentDetails from "./pages/Installments/InstallmentDetails";
 
 
 // Public Site Config Pages
@@ -518,7 +520,6 @@ function App() {
                   <Route path="/accessibility" element={<MainLayout><Accessibility /></MainLayout>} />
                   <Route path="/contact-us" element={<MainLayout><ContactUs /></MainLayout>} />
                   <Route path="/test-certificate" element={<TestCertificatePage />} />
-                  <Route path="*" element={<MainLayout><NotFoundPage /></MainLayout>} />
 
                   {/* Payment Result Pages */}
                   <Route path="/payment-success" element={<MainLayout><SuccessPaymentPage /></MainLayout>} />
@@ -576,6 +577,26 @@ function App() {
                       </MainLayout>
                     }
                   /> */}
+
+                  {/* Installments الاقساط */}
+                  <Route path="/installments">
+                    <Route
+                      index
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <Installments />
+                        </MainLayout>
+                      }
+                    />
+                    <Route
+                      path="details/:id"
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <InstallmentDetails />
+                        </MainLayout>
+                      }
+                    />
+                  </Route>
 
                   {/* website Departments  الاقسام */}
 

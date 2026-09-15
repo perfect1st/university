@@ -218,6 +218,11 @@ const routesData = {
           label: { en: "Student Required Fees", ar: "رسوم الطلاب" },
           path: "/requiredFees",
         },
+        {
+          key: "installments",
+          label: { en: "Installments", ar: "الأقساط" },
+          path: "/installments",
+        },
       ]
     },
     {
