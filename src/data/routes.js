@@ -71,6 +71,11 @@ const routesData = {
           path: "/FeePayment",
           icon: FeePaymentIcon,
         },
+        {
+          key: "studentInstallments",
+          label: { en: "Tuition Installments", ar: "الأقساط الدراسية" },
+          path: "/student/installments",
+        },
       ]
     },
     {

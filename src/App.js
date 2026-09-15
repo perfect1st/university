@@ -127,6 +127,7 @@ import PromotionPage from "./pages/Promotion/PromotionPage";
 import SummerCourseAdminPage from "./pages/SummerCourseAdmin/SummerCourseAdminPage";
 import Installments from "./pages/Installments/Installments";
 import InstallmentDetails from "./pages/Installments/InstallmentDetails";
+import StudentInstallmentsPage from "./pages/StudentDashboard/StudentInstallments/StudentInstallmentsPage";
 
 
 // Public Site Config Pages
@@ -557,6 +558,22 @@ function App() {
                     element={
                       <MainLayout isLoggedIn={true}>
                         <FeePaymentPage />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/student/installments"
+                    element={
+                      <MainLayout isLoggedIn={true}>
+                        <StudentInstallmentsPage />
+                      </MainLayout>
+                    }
+                  />
+                  <Route
+                    path="/StudentInstallments"
+                    element={
+                      <MainLayout isLoggedIn={true}>
+                        <StudentInstallmentsPage />
                       </MainLayout>
                     }
                   />
