@@ -510,7 +510,15 @@ export default function Admissions() {
       logger.log("result", result?.data?.createRegisterForm);
       if (result?.data?.createRegisterForm?.success) {
         setRegisterationFeesResults(result?.data?.createRegisterForm);
-        setShowPaymentModal(true);
+        const feesVal = result?.data?.createRegisterForm?.registration_Fees_Value;
+        const feesId = result?.data?.createRegisterForm?.registration_Fees_Id;
+
+        if (feesVal && feesId) {
+          setShowPaymentModal(true);
+        } else {
+          notify(result?.data?.createRegisterForm?.message || t("admissions.success"), "success");
+          setTimeout(() => navigate('/login'), 2500);
+        }
       } else {
         notify(result?.data?.createRegisterForm?.message, "error");
       }
@@ -520,16 +528,24 @@ export default function Admissions() {
 
   const handleSubmitPayment = async () => {
     try {
+      const feesVal = registerationFeesResults?.registration_Fees_Value;
+      const feesId = registerationFeesResults?.registration_Fees_Id;
+
+      if (!feesVal || !feesId) {
+        notify(t("admissions.error") || "Missing registration fees", "error");
+        return;
+      }
+
       if (selectedPaymnetMethod === 'ONLINE') {
         const result = await initiateOnlinePayment({
           variables: {
             input: {
               transaction_type_id: "69de135ce9799b76cf8806a8",
-              user_id: registerationFeesResults?.user?.id,
+              user_id: registerationFeesResults?.user?.id || null,
               register_form_id: String(registerationFeesResults?.form?.id),
               source_type: "REGISTER_FORM",
-              fees_type_ids: registerationFeesResults?.registration_Fees_Id || [],
-              amount: registerationFeesResults?.registration_Fees_Value,
+              fees_type_ids: [feesId],
+              amount: Number(feesVal),
               customer_name: `${personal.first_name} ${personal.second_name} ${personal.third_name} ${personal.fourth_name}`.trim(),
               customer_email: personal.email,
               customer_mobile: personal.mobile,
@@ -551,10 +567,10 @@ export default function Admissions() {
       let transactionObj = {
         payment_method_type: selectedPaymnetMethod,
         transaction_type_id,
-        user_id: registerationFeesResults?.user?.id,
-        fees_type_ids: registerationFeesResults?.registration_Fees_Id,
+        user_id: registerationFeesResults?.user?.id || null,
+        fees_type_ids: [feesId],
         transaction_date: formatDateToString(new Date()),
-        amount: registerationFeesResults?.registration_Fees_Value,
+        amount: Number(feesVal),
         register_form_id: registerationFeesResults?.form?.id,
         source_type: "REGISTER_FORM",
         payment_document_file: paymentDocumentFile,
@@ -924,6 +940,9 @@ export default function Admissions() {
               disabled={transactionLoading || onlinePaymentLoading}
               sx={{ width: "100%", mt: 1 }}
               onClick={() => {
+                if (!selectedPaymnetMethod) {
+                  return notify(t("admissions.paymentMethods") || "Please select a payment method", "error");
+                }
                 if ((selectedPaymnetMethod === "CASH" || selectedPaymnetMethod === "BANK_TRANSFER") && !paymentDocumentFile) {
                   return notify(t("admissions.errors.requiredFile"), "error");
                 }
