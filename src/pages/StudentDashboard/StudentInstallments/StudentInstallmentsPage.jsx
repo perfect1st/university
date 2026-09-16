@@ -212,7 +212,7 @@ export default function StudentInstallmentsPage() {
                     {isArabic ? "المبلغ الكلي المطلوب" : "Total Required Amount"}
                   </Typography>
                   <Typography variant="h5" sx={{ fontWeight: 700, mt: 0.5 }}>
-                    {totalAmount} {isArabic ? "جنيه" : "EGP"}
+                    {totalAmount} {isArabic ? "ريال" : "SAR"}
                   </Typography>
                 </Box>
                 <AccountBalanceWalletIcon sx={{ fontSize: 40, color: theme.palette.primary.main, opacity: 0.8 }} />
@@ -230,7 +230,7 @@ export default function StudentInstallmentsPage() {
                     {isArabic ? "المبلغ المسدد" : "Paid Amount"} ({paidInstallments.length})
                   </Typography>
                   <Typography variant="h5" sx={{ fontWeight: 700, color: "success.main", mt: 0.5 }}>
-                    {paidAmount} {isArabic ? "جنيه" : "EGP"}
+                    {paidAmount} {isArabic ? "ريال" : "SAR"}
                   </Typography>
                 </Box>
                 <CheckCircleIcon sx={{ fontSize: 40, color: "success.main", opacity: 0.8 }} />
@@ -248,7 +248,7 @@ export default function StudentInstallmentsPage() {
                     {isArabic ? "المتبقي للاستحقاق" : "Remaining Due"} ({unpaidInstallments.length})
                   </Typography>
                   <Typography variant="h5" sx={{ fontWeight: 700, color: "error.main", mt: 0.5 }}>
-                    {unpaidAmount} {isArabic ? "جنيه" : "EGP"}
+                    {unpaidAmount} {isArabic ? "ريال" : "SAR"}
                   </Typography>
                 </Box>
                 <ErrorOutlineIcon sx={{ fontSize: 40, color: "error.main", opacity: 0.8 }} />
@@ -335,7 +335,7 @@ export default function StudentInstallmentsPage() {
                         {isArabic ? "قيمة القسط" : "Amount"}
                       </Typography>
                       <Typography variant="h6" sx={{ fontWeight: 800, color: theme.palette.primary.main }}>
-                        {inst.amount} {isArabic ? "جنيه" : "EGP"}
+                        {inst.amount} {isArabic ? "ريال" : "SAR"}
                       </Typography>
                     </Grid>
 
@@ -451,7 +451,7 @@ export default function StudentInstallmentsPage() {
                 {isArabic ? "المبلغ المستحق للسداد:" : "Amount Due:"}
               </Typography>
               <Typography variant="h5" sx={{ fontWeight: 800, color: theme.palette.primary.main, mt: 0.5 }}>
-                {selectedInstallment.amount} {isArabic ? "جنيه" : "EGP"}
+                {selectedInstallment.amount} {isArabic ? "ريال" : "SAR"}
               </Typography>
             </Box>
           )}

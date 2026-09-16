@@ -99,7 +99,7 @@ const Installments = () => {
     return {
       id: inst.id,
       serial: inst.serial || "-",
-      amount: `${inst.amount} ${t("EGP")}`,
+      amount: `${inst.amount} ${t("SAR")}`,
       studyYear: inst.study_year || "-",
       termNumber: inst.term_number === 1 ? t("First Term") : inst.term_number === 2 ? t("Second Term") : inst.term_number || "-",
       createDate: formatDateToString(date),
