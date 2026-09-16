@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Tabs, Tab, Paper, Chip, useMediaQuery, useTheme } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useLazyQuery } from "@apollo/client/react";
@@ -46,12 +46,18 @@ const Installments = () => {
     fetchPolicy: "network-only",
   });
 
+  const currentStatus = searchParams.get("status") || "ALL";
+
   useEffect(() => {
     let page = Number(searchParams.get("page")) || 1;
     let limit = Number(searchParams.get("limit")) || 10;
     let searchText = searchParams.get("search") || "";
 
     let variablesObj = { page, limit, search: searchText };
+
+    if (searchParams.get("status") && searchParams.get("status") !== "ALL") {
+      variablesObj.status = searchParams.get("status");
+    }
 
     if (searchParams.get("is_paid") && searchParams.get("is_paid") !== "0") {
       variablesObj.is_paid = searchParams.get("is_paid") === "true";
@@ -83,13 +89,69 @@ const Installments = () => {
     setSearchParams(newParams);
   };
 
+  const handleStatusTabChange = (event, newValue) => {
+    let newParams = new URLSearchParams(searchParams);
+    if (newValue === "ALL") {
+      newParams.delete("status");
+    } else {
+      newParams.set("status", newValue);
+    }
+    newParams.delete("page");
+    setSearchParams(newParams);
+  };
+
   const columns = [
     { key: "serial", label: t("Serial") },
+    { key: "studentName", label: isArabic ? "اسم الطالب" : "Student Name" },
     { key: "amount", label: t("Amount") },
     { key: "studyYear", label: t("Study Year") },
     { key: "termNumber", label: t("Term") },
     { key: "createDate", label: t("CreatedAt") },
-    { key: "is_paid", label: t("Status") },
+    {
+      key: "status",
+      label: t("Status"),
+      render: (row) => {
+        const st = row.status || (row.is_paid ? "ACCEPTED" : "PENDING");
+        if (st === "ACCEPTED") {
+          return (
+            <Chip
+              label={isArabic ? "معتمد ومسدد" : "Accepted"}
+              color="success"
+              size="small"
+              sx={{ fontWeight: 700 }}
+            />
+          );
+        }
+        if (st === "UNDER_REVIEW") {
+          return (
+            <Chip
+              label={isArabic ? "قيد المراجعة" : "Under Review"}
+              color="warning"
+              size="small"
+              sx={{ fontWeight: 700 }}
+            />
+          );
+        }
+        if (st === "CANCELLED") {
+          return (
+            <Chip
+              label={isArabic ? "مرفوض" : "Cancelled"}
+              color="error"
+              size="small"
+              sx={{ fontWeight: 700 }}
+            />
+          );
+        }
+        return (
+          <Chip
+            label={isArabic ? "قيد الانتظار" : "Pending"}
+            color="info"
+            size="small"
+            sx={{ fontWeight: 700 }}
+          />
+        );
+      },
+    },
   ];
 
   const installmentsToShow = installments?.map((inst) => {
@@ -99,11 +161,13 @@ const Installments = () => {
     return {
       id: inst.id,
       serial: inst.serial || "-",
+      studentName: inst.student_id?.fullname || inst.student_id?.username || "-",
       amount: `${inst.amount} ${t("SAR")}`,
       studyYear: inst.study_year || "-",
       termNumber: inst.term_number === 1 ? t("First Term") : inst.term_number === 2 ? t("Second Term") : inst.term_number || "-",
       createDate: formatDateToString(date),
       is_paid: inst.is_paid,
+      status: inst.status || (inst.is_paid ? "ACCEPTED" : "PENDING"),
       ...inst,
     };
   });
@@ -125,8 +189,26 @@ const Installments = () => {
             haveBtn={false}
           />
 
+          {/* Status Filter Tabs */}
+          <Paper sx={{ mb: 2.5, borderRadius: 1.5, boxShadow: 1 }}>
+            <Tabs
+              value={currentStatus}
+              onChange={handleStatusTabChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="scrollable"
+              scrollButtons="auto"
+            >
+              <Tab label={isArabic ? "جميع الأقساط" : "All"} value="ALL" sx={{ fontWeight: 700 }} />
+              <Tab label={isArabic ? "قيد المراجعة" : "Under Review"} value="UNDER_REVIEW" sx={{ fontWeight: 700 }} />
+              <Tab label={isArabic ? "المعتمدة" : "Accepted"} value="ACCEPTED" sx={{ fontWeight: 700 }} />
+              <Tab label={isArabic ? "المرفوضة" : "Cancelled"} value="CANCELLED" sx={{ fontWeight: 700 }} />
+              <Tab label={isArabic ? "قيد الانتظار" : "Pending"} value="PENDING" sx={{ fontWeight: 700 }} />
+            </Tabs>
+          </Paper>
+
           <DashboardFilterComponent
-            placeholder={t("Search by Serial or Study Year")}
+            placeholder={isArabic ? "البحث برقم السيريال أو اسم الطالب أو السنة" : "Search by Serial, Student Name, or Study Year"}
             textSearchField="search"
             selectOptions={isPaidArr}
             arKey="arKey"
@@ -144,9 +226,7 @@ const Installments = () => {
             DetailsBtnLabel={t("Details")}
             onClickDetails={(row) => navigate(`/installments/details/${row.id}`, { state: { row } })}
             handleDetailsClick={(row) => navigate(`/installments/details/${row.id}`, { state: { row } })}
-            statusKey="is_paid"
-            activeStatusLabel="paid"
-            inActiveStatusLabel="unpaid"
+            statusKey="status"
             showStatusChange={false}
             sx={{ flex: 1, overflow: "auto", boxShadow: 1, borderRadius: 1, width: "100%" }}
           />

@@ -8,6 +8,8 @@ export const GET_STUDENT_INSTALLMENTS = gql`
       term_number
       amount
       is_paid
+      status
+      rejection_reason
       serial
       createdAt
       updatedAt
@@ -54,26 +56,27 @@ export const GET_STUDENT_INSTALLMENTS = gql`
         myfatoorah_payment_url
         myfatoorah_transaction_status
         myfatoorah_payment_method
+        createdAt
       }
     }
   }
 `;
 
-
-export const PAY_INSTALLMENT = gql`
-  mutation PayInstallment($input: PayInstallmentInput!) {
-    payInstallment(input: $input) {
-      id
-      amount
-      approval_status
-      createdAt
-    }
-  }
-`;
-
 export const FILTERED_PAGED_INSTALLMENTS = gql`
-  query FilteredPagedInstallments($search: String, $is_paid: Boolean, $page: Int, $limit: Int) {
-    filteredPagedInstallments(search: $search, is_paid: $is_paid, page: $page, limit: $limit) {
+  query FilteredPagedInstallments(
+    $search: String
+    $is_paid: Boolean
+    $status: String
+    $page: Int
+    $limit: Int
+  ) {
+    filteredPagedInstallments(
+      search: $search
+      is_paid: $is_paid
+      status: $status
+      page: $page
+      limit: $limit
+    ) {
       total
       installments {
         id
@@ -81,9 +84,24 @@ export const FILTERED_PAGED_INSTALLMENTS = gql`
         term_number
         amount
         is_paid
+        status
+        rejection_reason
         serial
         createdAt
         updatedAt
+        student_id {
+          id
+          serial
+          username
+          fullname
+          email
+          mobile
+        }
+        academy_term_id {
+          id
+          title_ar
+          title_en
+        }
         transaction_id {
           id
           serial
@@ -95,12 +113,61 @@ export const FILTERED_PAGED_INSTALLMENTS = gql`
           rejection_reason
           transaction_date
           transaction_serial
-          myfatoorah_invoice_id
-          myfatoorah_payment_id
-          myfatoorah_payment_url
-          myfatoorah_transaction_status
-          myfatoorah_payment_method
+          createdAt
         }
+      }
+    }
+  }
+`;
+
+export const PAY_INSTALLMENT = gql`
+  mutation PayInstallment($input: PayInstallmentInput!) {
+    payInstallment(input: $input) {
+      id
+      amount
+      approval_status
+      payment_method_type
+      payment_document_file
+      myfatoorah_invoice_id
+      myfatoorah_payment_url
+      installment_id {
+        id
+        status
+        is_paid
+      }
+      createdAt
+    }
+  }
+`;
+
+export const APPROVE_INSTALLMENT = gql`
+  mutation ApproveInstallment($installment_id: ID!) {
+    approveInstallment(installment_id: $installment_id) {
+      id
+      status
+      is_paid
+      transaction_id {
+        id
+        approval_status
+      }
+    }
+  }
+`;
+
+export const REJECT_INSTALLMENT = gql`
+  mutation RejectInstallment($installment_id: ID!, $rejection_reason: String) {
+    rejectInstallment(
+      installment_id: $installment_id
+      rejection_reason: $rejection_reason
+    ) {
+      id
+      status
+      is_paid
+      rejection_reason
+      transaction_id {
+        id
+        approval_status
+        rejection_reason
       }
     }
   }
