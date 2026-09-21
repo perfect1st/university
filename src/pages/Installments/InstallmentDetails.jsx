@@ -89,7 +89,7 @@ export default function InstallmentDetails() {
 
   const [approveInstallment, { loading: approving }] = useMutation(APPROVE_INSTALLMENT, {
     onCompleted: (data) => {
-      toast.success(isArabic ? "تم اعتماد القسط بنجاح" : "Installment approved successfully");
+      toast.success(t("installments.approveSuccess"));
       setOpenApproveModal(false);
       setCurrentData((prev) => ({
         ...prev,
@@ -99,13 +99,13 @@ export default function InstallmentDetails() {
     },
     onError: (err) => {
       logger.error("Error approving installment", err);
-      toast.error(err.message || (isArabic ? "فشل اعتماد القسط" : "Failed to approve installment"));
+      toast.error(err.message || t("installments.approveFailed"));
     },
   });
 
   const [rejectInstallment, { loading: rejecting }] = useMutation(REJECT_INSTALLMENT, {
     onCompleted: (data) => {
-      toast.success(isArabic ? "تم رفض الإيصال بنجاح" : "Installment receipt rejected");
+      toast.success(t("installments.rejectSuccess"));
       setOpenRejectModal(false);
       setCurrentData((prev) => ({
         ...prev,
@@ -116,13 +116,13 @@ export default function InstallmentDetails() {
     },
     onError: (err) => {
       logger.error("Error rejecting installment", err);
-      toast.error(err.message || (isArabic ? "فشل رفض الإيصال" : "Failed to reject installment"));
+      toast.error(err.message || t("installments.rejectFailed"));
     },
   });
 
   const [payAdminCash, { loading: payingCash }] = useMutation(PAY_INSTALLMENT, {
     onCompleted: (data) => {
-      toast.success(isArabic ? "تم تسجيل الدفع النقدي بنجاح واعتماد القسط" : "Cash payment recorded and installment approved");
+      toast.success(t("installments.cashPaySuccess"));
       setOpenCashModal(false);
       setCurrentData((prev) => ({
         ...prev,
@@ -132,7 +132,7 @@ export default function InstallmentDetails() {
     },
     onError: (err) => {
       logger.error("Error paying cash", err);
-      toast.error(err.message || (isArabic ? "فشل تسجيل الدفع النقدي" : "Failed to record cash payment"));
+      toast.error(err.message || t("installments.cashPayFailed"));
     },
   });
 
@@ -140,10 +140,10 @@ export default function InstallmentDetails() {
     return (
       <Box sx={{ p: 4, textAlign: "center" }}>
         <Typography variant="h6" color="text.secondary">
-          {isArabic ? "لم يتم العثور على بيانات القسط. يرجى الرجوع واختيار القسط من الجدول." : "No installment data found. Please go back and select from the list."}
+          {t("installments.notFound")}
         </Typography>
         <Button variant="contained" onClick={() => navigate("/installments")} sx={{ mt: 2 }}>
-          {isArabic ? "الرجوع للأقساط" : "Back to Installments"}
+          {t("installments.backToInstallments")}
         </Button>
       </Box>
     );
@@ -158,14 +158,14 @@ export default function InstallmentDetails() {
   const getStatusChip = (st) => {
     switch (st) {
       case "ACCEPTED":
-        return <Chip icon={<CheckCircleIcon />} label={isArabic ? "معتمد ومسدد" : "Accepted & Paid"} color="success" sx={{ fontWeight: 700 }} />;
+        return <Chip icon={<CheckCircleIcon />} label={t("installments.statusAcceptedDetailed")} color="success" sx={{ fontWeight: 700 }} />;
       case "UNDER_REVIEW":
-        return <Chip icon={<AccessTimeIcon />} label={isArabic ? "تحت المراجعة والتدقيق" : "Under Review"} color="warning" sx={{ fontWeight: 700 }} />;
+        return <Chip icon={<AccessTimeIcon />} label={t("installments.statusUnderReviewDetailed")} color="warning" sx={{ fontWeight: 700 }} />;
       case "CANCELLED":
-        return <Chip icon={<CancelIcon />} label={isArabic ? "مرفوض / ملغي" : "Cancelled / Rejected"} color="error" sx={{ fontWeight: 700 }} />;
+        return <Chip icon={<CancelIcon />} label={t("installments.statusCancelledDetailed")} color="error" sx={{ fontWeight: 700 }} />;
       case "PENDING":
       default:
-        return <Chip icon={<ErrorOutlineIcon />} label={isArabic ? "قيد الانتظار (غير مسدد)" : "Pending"} color="info" sx={{ fontWeight: 700 }} />;
+        return <Chip icon={<ErrorOutlineIcon />} label={t("installments.statusPendingDetailed")} color="info" sx={{ fontWeight: 700 }} />;
     }
   };
 
@@ -177,7 +177,7 @@ export default function InstallmentDetails() {
 
   const handleConfirmReject = () => {
     if (!rejectionReason.trim()) {
-      toast.error(isArabic ? "يرجى كتابة سبب الرفض" : "Please provide a rejection reason");
+      toast.error(t("installments.rejectionReasonRequired"));
       return;
     }
     rejectInstallment({
@@ -209,10 +209,10 @@ export default function InstallmentDetails() {
           onClick={() => navigate("/installments")}
           sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
         >
-          {isArabic ? "الأقساط الدراسية" : "Installments"} &gt; {isArabic ? "تفاصيل القسط" : "Installment Details"}
+          {t("installments.breadcrumb")} &gt; {t("installments.detailsBreadcrumb")}
         </Typography>
         <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5 }}>
-          {isArabic ? "تفاصيل القسط الدراسي" : "Tuition Installment Details"}
+          {t("installments.detailsPageTitle")}
         </Typography>
       </Box>
 
@@ -220,7 +220,7 @@ export default function InstallmentDetails() {
       {currentStatus === "CANCELLED" && (currentData.rejection_reason || transaction.rejection_reason) && (
         <Alert severity="error" sx={{ mb: 2.5, borderRadius: 2 }}>
           <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-            {isArabic ? "سبب رفض الإيصال من قبل الإدارة:" : "Rejection Reason:"}
+            {t("installments.rejectionReasonTitle")}
           </Typography>
           <Typography variant="body2" sx={{ mt: 0.5 }}>
             {currentData.rejection_reason || transaction.rejection_reason}
@@ -232,34 +232,34 @@ export default function InstallmentDetails() {
       {currentStatus === "UNDER_REVIEW" && (
         <Alert severity="warning" sx={{ mb: 2.5, borderRadius: 2 }}>
           <Typography variant="body2" sx={{ fontWeight: 600 }}>
-            {isArabic
-              ? "هذا القسط بانتظار مراجعة الإدارة والتحقق من صحة الإيصال المرفق لاعتماده أو رفضه."
-              : "This installment is awaiting admin verification of the attached payment receipt."}
+            {t("installments.underReviewAlert")}
           </Typography>
         </Alert>
       )}
 
       <Paper sx={{ p: 3, borderRadius: 2, boxShadow: 2, mb: 3 }}>
         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: "primary.main" }}>
-          {isArabic ? "بيانات الطالب والقسط" : "Student & Installment Info"}
+          {t("installments.studentAndInstallmentInfo")}
         </Typography>
 
-        <LabelValueRow label={isArabic ? "رقم السيريال" : "Serial"} value={`#${currentData.serial || "-"}`} />
-        <LabelValueRow label={isArabic ? "اسم الطالب" : "Student Name"} value={studentName} />
-        {student.email && <LabelValueRow label={isArabic ? "البريد الإلكتروني" : "Email"} value={student.email} />}
-        {student.mobile && <LabelValueRow label={isArabic ? "رقم الجوال" : "Mobile"} value={student.mobile} />}
-        <LabelValueRow label={isArabic ? "قيمة القسط" : "Amount"} value={currentData.amount ? `${currentData.amount} ${t("SAR")}` : "-"} />
-        <LabelValueRow label={isArabic ? "السنة الدراسية" : "Study Year"} value={currentData.study_year || currentData.studyYear || "-"} />
+        <LabelValueRow label={t("Serial")} value={`#${currentData.serial || "-"}`} />
+        <LabelValueRow label={t("Student Name")} value={studentName} />
+        {student.email && <LabelValueRow label={t("installments.email")} value={student.email} />}
+        {student.mobile && <LabelValueRow label={t("installments.mobile")} value={student.mobile} />}
+        <LabelValueRow label={t("installments.amount")} value={currentData.amount ? `${currentData.amount} ${t("SAR")}` : "-"} />
+        <LabelValueRow label={t("Study Year")} value={currentData.study_year || currentData.studyYear || "-"} />
         <LabelValueRow
-          label={isArabic ? "الفصل الدراسي" : "Term"}
+          label={t("Term")}
           value={
             currentData.term_number === 1 || currentData.termNumber === 1
-              ? (isArabic ? "الفصل الأول" : "First Term")
-              : (isArabic ? "الفصل الثاني" : "Second Term")
+              ? t("First Term")
+              : currentData.term_number === 2 || currentData.termNumber === 2
+              ? t("Second Term")
+              : currentData.term_number || currentData.termNumber || "-"
           }
         />
         <LabelValueRow
-          label={isArabic ? "حالة السداد" : "Status"}
+          label={t("installments.paymentStatus")}
           isStatus={true}
           statusNode={getStatusChip(currentStatus)}
         />
@@ -269,28 +269,28 @@ export default function InstallmentDetails() {
       {transaction && (transaction.id || receiptUrl || transaction.payment_method_type) && (
         <Paper sx={{ p: 3, borderRadius: 2, boxShadow: 2, mb: 3 }}>
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: "primary.main" }}>
-            {isArabic ? "بيانات المعاملة وإيصال السداد" : "Transaction & Receipt Details"}
+            {t("installments.transactionAndReceiptDetails")}
           </Typography>
 
           <LabelValueRow
-            label={isArabic ? "طريقة السداد" : "Payment Method"}
+            label={t("installments.paymentMethod")}
             value={
               transaction.payment_method_type === "CASH"
-                ? (isArabic ? "نقدي (سند قبض من الخزينة)" : "Cash (Receipt Voucher)")
+                ? t("installments.cashReceiptVoucher")
                 : transaction.payment_method_type === "BANK_TRANSFER"
-                ? (isArabic ? "تحويل بنكي / إيداع" : "Bank Transfer")
-                : (isArabic ? "دفع إلكتروني (ماي فاتورة)" : "Online Payment")
+                ? t("installments.bankTransfer")
+                : t("installments.onlinePayment")
             }
           />
 
           {transaction.transaction_serial && (
-            <LabelValueRow label={isArabic ? "رقم المعاملة" : "Transaction Serial"} value={transaction.transaction_serial} />
+            <LabelValueRow label={t("installments.transactionSerial")} value={transaction.transaction_serial} />
           )}
 
           {receiptUrl && (
             <Box sx={{ mt: 2 }}>
               <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600, mb: 1 }}>
-                {isArabic ? "صورة الإيصال / سند السداد:" : "Payment Receipt / Voucher Image:"}
+                {t("installments.receiptImage")}
               </Typography>
               <Box
                 sx={{
@@ -305,7 +305,7 @@ export default function InstallmentDetails() {
               >
                 <img
                   src={receiptUrl}
-                  alt="Receipt Preview"
+                  alt={t("installments.receiptPreview")}
                   style={{ width: "100%", maxHeight: 250, objectFit: "contain", display: "block" }}
                 />
               </Box>
@@ -317,7 +317,7 @@ export default function InstallmentDetails() {
                   href={receiptUrl}
                   target="_blank"
                 >
-                  {isArabic ? "فتح الإيصال بالحجم الكامل" : "Open full size"}
+                  {t("installments.openFullSize")}
                 </Button>
               </Box>
             </Box>
@@ -328,7 +328,7 @@ export default function InstallmentDetails() {
       {/* Action Buttons for Admin */}
       <Paper sx={{ p: 2.5, borderRadius: 2, boxShadow: 1, display: "flex", gap: 2, flexWrap: "wrap", justifyContent: "space-between", alignItems: "center" }}>
         <Button variant="outlined" onClick={() => navigate(-1)}>
-          {isArabic ? "رجوع" : "Back"}
+          {t("installments.back")}
         </Button>
 
         <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
@@ -344,7 +344,7 @@ export default function InstallmentDetails() {
                   setOpenRejectModal(true);
                 }}
               >
-                {isArabic ? "رفض الإيصال" : "Reject Receipt"}
+                {t("installments.rejectReceipt")}
               </Button>
               <Button
                 variant="contained"
@@ -352,7 +352,7 @@ export default function InstallmentDetails() {
                 startIcon={<CheckCircleIcon />}
                 onClick={() => setOpenApproveModal(true)}
               >
-                {isArabic ? "اعتماد القسط" : "Approve Installment"}
+                {t("installments.approveInstallment")}
               </Button>
             </>
           )}
@@ -365,7 +365,7 @@ export default function InstallmentDetails() {
               startIcon={<MonetizationOnIcon />}
               onClick={() => setOpenCashModal(true)}
             >
-              {isArabic ? "سداد نقدي مباشر (CASH)" : "Direct Cash Payment"}
+              {t("installments.directCashPay")}
             </Button>
           )}
         </Box>
@@ -373,69 +373,63 @@ export default function InstallmentDetails() {
 
       {/* Approve Confirmation Dialog */}
       <Dialog open={openApproveModal} onClose={() => !approving && setOpenApproveModal(false)} maxWidth="xs" fullWidth dir={isArabic ? "rtl" : "ltr"}>
-        <DialogTitle sx={{ fontWeight: 700 }}>{isArabic ? "تأكيد اعتماد القسط" : "Confirm Installment Approval"}</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 700 }}>{t("installments.confirmApproveTitle")}</DialogTitle>
         <DialogContent>
           <Typography variant="body1">
-            {isArabic
-              ? "هل أنت متأكد من صحة إيصال السداد واعتماد هذا القسط كمسدد رسمياً؟"
-              : "Are you sure you want to approve this installment as officially paid?"}
+            {t("installments.confirmApproveBody")}
           </Typography>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={() => setOpenApproveModal(false)} disabled={approving}>
-            {isArabic ? "إلغاء" : "Cancel"}
+            {t("installments.cancel")}
           </Button>
           <Button variant="contained" color="success" onClick={handleConfirmApprove} disabled={approving}>
-            {approving ? <CircularProgress size={24} color="inherit" /> : (isArabic ? "تأكيد الاعتماد" : "Confirm Approval")}
+            {approving ? <CircularProgress size={24} color="inherit" /> : t("installments.confirmApproveBtn")}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Reject Dialog with Reason */}
       <Dialog open={openRejectModal} onClose={() => !rejecting && setOpenRejectModal(false)} maxWidth="sm" fullWidth dir={isArabic ? "rtl" : "ltr"}>
-        <DialogTitle sx={{ fontWeight: 700 }}>{isArabic ? "رفض إيصال القسط" : "Reject Installment Receipt"}</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 700 }}>{t("installments.rejectDialogTitle")}</DialogTitle>
         <DialogContent>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {isArabic
-              ? "يرجى كتابة سبب رفض الإيصال ليتمكن الطالب من معرفة السبب وإعادة رفع الإيصال الصحيح."
-              : "Please specify the reason for rejection so the student can re-upload a valid receipt."}
+            {t("installments.rejectDialogSubtitle")}
           </Typography>
           <TextField
             fullWidth
             multiline
             rows={3}
-            label={isArabic ? "سبب الرفض *" : "Rejection Reason *"}
+            label={t("installments.rejectionReasonLabel")}
             value={rejectionReason}
             onChange={(e) => setRejectionReason(e.target.value)}
-            placeholder={isArabic ? "مثال: صورة الإيصال غير واضحة أو لا يظهر فيها الختم البنكي..." : "e.g. Receipt image is blurry or bank stamp missing..."}
+            placeholder={t("installments.rejectionReasonPlaceholder")}
           />
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={() => setOpenRejectModal(false)} disabled={rejecting}>
-            {isArabic ? "إلغاء" : "Cancel"}
+            {t("installments.cancel")}
           </Button>
           <Button variant="contained" color="error" onClick={handleConfirmReject} disabled={rejecting}>
-            {rejecting ? <CircularProgress size={24} color="inherit" /> : (isArabic ? "تأكيد الرفض" : "Confirm Rejection")}
+            {rejecting ? <CircularProgress size={24} color="inherit" /> : t("installments.confirmRejectBtn")}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Admin Direct Cash Pay Dialog */}
       <Dialog open={openCashModal} onClose={() => !payingCash && setOpenCashModal(false)} maxWidth="xs" fullWidth dir={isArabic ? "rtl" : "ltr"}>
-        <DialogTitle sx={{ fontWeight: 700 }}>{isArabic ? "تسجيل دفع نقدي مباشر" : "Record Direct Cash Payment"}</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 700 }}>{t("installments.directCashTitle")}</DialogTitle>
         <DialogContent>
           <Typography variant="body1">
-            {isArabic
-              ? `هل تريد تأكيد استلام مبلغ (${currentData.amount} ريال) نقداً من الطالب في الخزينة واعتماد القسط فوراً؟`
-              : `Confirm receiving (${currentData.amount} SAR) in cash and approving the installment immediately?`}
+            {t("installments.directCashBody", { amount: currentData.amount })}
           </Typography>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={() => setOpenCashModal(false)} disabled={payingCash}>
-            {isArabic ? "إلغاء" : "Cancel"}
+            {t("installments.cancel")}
           </Button>
           <Button variant="contained" color="primary" onClick={handleConfirmCashPay} disabled={payingCash}>
-            {payingCash ? <CircularProgress size={24} color="inherit" /> : (isArabic ? "تأكيد السداد" : "Confirm Payment")}
+            {payingCash ? <CircularProgress size={24} color="inherit" /> : t("installments.confirmPaymentBtn")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -443,7 +437,7 @@ export default function InstallmentDetails() {
       {/* Image Preview Lightbox Dialog */}
       <Dialog open={Boolean(previewImage)} onClose={() => setPreviewImage("")} maxWidth="md">
         <DialogContent sx={{ p: 1, backgroundColor: "#000", textAlign: "center" }}>
-          <img src={previewImage} alt="Full Receipt" style={{ maxWidth: "100%", maxHeight: "80vh" }} />
+          <img src={previewImage} alt={t("installments.fullReceipt")} style={{ maxWidth: "100%", maxHeight: "80vh" }} />
         </DialogContent>
       </Dialog>
     </Box>

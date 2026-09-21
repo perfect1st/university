@@ -102,7 +102,7 @@ const Installments = () => {
 
   const columns = [
     { key: "serial", label: t("Serial") },
-    { key: "studentName", label: isArabic ? "اسم الطالب" : "Student Name" },
+    { key: "studentName", label: t("Student Name") },
     { key: "amount", label: t("Amount") },
     { key: "studyYear", label: t("Study Year") },
     { key: "termNumber", label: t("Term") },
@@ -115,7 +115,7 @@ const Installments = () => {
         if (st === "ACCEPTED") {
           return (
             <Chip
-              label={isArabic ? "معتمد ومسدد" : "Accepted"}
+              label={t("installments.statusAcceptedChip")}
               color="success"
               size="small"
               sx={{ fontWeight: 700 }}
@@ -125,7 +125,7 @@ const Installments = () => {
         if (st === "UNDER_REVIEW") {
           return (
             <Chip
-              label={isArabic ? "قيد المراجعة" : "Under Review"}
+              label={t("installments.statusUnderReviewChip")}
               color="warning"
               size="small"
               sx={{ fontWeight: 700 }}
@@ -135,7 +135,7 @@ const Installments = () => {
         if (st === "CANCELLED") {
           return (
             <Chip
-              label={isArabic ? "مرفوض" : "Cancelled"}
+              label={t("installments.statusCancelledChip")}
               color="error"
               size="small"
               sx={{ fontWeight: 700 }}
@@ -144,7 +144,7 @@ const Installments = () => {
         }
         return (
           <Chip
-            label={isArabic ? "قيد الانتظار" : "Pending"}
+            label={t("installments.statusPendingChip")}
             color="info"
             size="small"
             sx={{ fontWeight: 700 }}
@@ -199,16 +199,16 @@ const Installments = () => {
               variant="scrollable"
               scrollButtons="auto"
             >
-              <Tab label={isArabic ? "جميع الأقساط" : "All"} value="ALL" sx={{ fontWeight: 700 }} />
-              <Tab label={isArabic ? "قيد المراجعة" : "Under Review"} value="UNDER_REVIEW" sx={{ fontWeight: 700 }} />
-              <Tab label={isArabic ? "المعتمدة" : "Accepted"} value="ACCEPTED" sx={{ fontWeight: 700 }} />
-              <Tab label={isArabic ? "المرفوضة" : "Cancelled"} value="CANCELLED" sx={{ fontWeight: 700 }} />
-              <Tab label={isArabic ? "قيد الانتظار" : "Pending"} value="PENDING" sx={{ fontWeight: 700 }} />
+              <Tab label={t("installments.allTab")} value="ALL" sx={{ fontWeight: 700 }} />
+              <Tab label={t("installments.underReviewTab")} value="UNDER_REVIEW" sx={{ fontWeight: 700 }} />
+              <Tab label={t("installments.acceptedTab")} value="ACCEPTED" sx={{ fontWeight: 700 }} />
+              <Tab label={t("installments.cancelledTab")} value="CANCELLED" sx={{ fontWeight: 700 }} />
+              <Tab label={t("installments.pendingTab")} value="PENDING" sx={{ fontWeight: 700 }} />
             </Tabs>
           </Paper>
 
           <DashboardFilterComponent
-            placeholder={isArabic ? "البحث برقم السيريال أو اسم الطالب أو السنة" : "Search by Serial, Student Name, or Study Year"}
+            placeholder={t("installments.searchPlaceholder")}
             textSearchField="search"
             selectOptions={isPaidArr}
             arKey="arKey"
