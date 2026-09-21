@@ -598,6 +598,7 @@
   "Term": "Term",
   "First Term": "First Term",
   "Second Term": "Second Term",
+  "Summer Term": "Summer Term",
   "CreatedAt": "Created At",
   "SAR": "SAR",
   "Amount": "Amount",
@@ -664,5 +665,19 @@
     "cashPaySuccess": "Cash payment recorded and installment approved successfully",
     "cashPayFailed": "Failed to record cash payment",
     "rejectionReasonRequired": "Please provide a rejection reason"
+  },
+  "supportTicketTypes": {
+    "title": "Ticket Types & Documents",
+    "item": "Ticket Type / Document",
+    "requiresFee": "Requires Fee?",
+    "configuredFees": "Configured Fees",
+    "free": "Free",
+    "nameAr": "Name (Arabic)",
+    "nameEn": "Name (English)",
+    "notice": "Does this request require fees?",
+    "noticeDesc": "If enabled, the student will be required to pay the configured fees upon submitting the request.",
+    "selectFees": "Select Associated Fees for this Document:",
+    "confirmDelete": "Confirm Delete Ticket Type",
+    "confirmDeleteBody": "Are you sure you want to delete this type?"
   }
 }

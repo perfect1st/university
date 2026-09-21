@@ -262,7 +262,11 @@ const routesData = {
       key: "supportTickets",
       label: { en: "Support Tickets", ar: "الدعم الفني" },
       path: "/Support",
-
+    },
+    {
+      key: "supportTicketTypes",
+      label: { en: "Ticket Types & Documents", ar: "أنواع التذاكر والمستندات" },
+      path: "/SupportTicketTypes",
     }
   ],
 

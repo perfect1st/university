@@ -437,7 +437,7 @@ export default function StudentInstallmentsPage() {
                         {isArabic ? "رقم الفصل" : "Term Number"}
                       </Typography>
                       <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                        {inst.term_number === 1 ? (isArabic ? "الفصل الأول" : "First Term") : (isArabic ? "الفصل الثاني" : "Second Term")}
+                        {inst.term_number === 1 ? (isArabic ? "الترم الأول" : "First Term") : inst.term_number === 2 ? (isArabic ? "الترم الثاني" : "Second Term") : (isArabic ? "الترم الصيفي" : "Summer Term")}
                       </Typography>
                     </Grid>
 

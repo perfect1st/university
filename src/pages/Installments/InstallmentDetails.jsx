@@ -255,6 +255,8 @@ export default function InstallmentDetails() {
               ? t("First Term")
               : currentData.term_number === 2 || currentData.termNumber === 2
               ? t("Second Term")
+              : (currentData.term_number === 3 || currentData.termNumber === 3)
+              ? t("Summer Term")
               : currentData.term_number || currentData.termNumber || "-"
           }
         />

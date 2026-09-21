@@ -13,6 +13,8 @@ import {
   Checkbox,
   Button,
   CircularProgress,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -25,7 +27,7 @@ import {
 } from "../../graphql/usersQueries";
 import { GET_MATERIALS_BY_DEPARTMENT_ID } from "../../graphql/materialQueries";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
-import { GET_SUPPORT_TICKET_BY_ID } from "../../graphql/supportTicketQueries";
+import { GET_SUPPORT_TICKET_BY_ID, SET_SUMMER_COURSE_FEES } from "../../graphql/supportTicketQueries";
 import LoadingPage from "../../components/LoadingComponent";
 import Header from "../../components/PageHeader/header";
 import i18n from "../../i18n/i18n";
@@ -33,6 +35,7 @@ import notify from "../../components/notify";
 import logger from "../../utils/logger";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import EditIcon from "@mui/icons-material/Edit";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 
 export default function SummerCourseAdminPage() {
   const theme = useTheme();
@@ -41,9 +44,10 @@ export default function SummerCourseAdminPage() {
   const { ticketId, studentId } = useParams();
 
   const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [feeAmount, setFeeAmount] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
-  const { data: ticketData, loading: ticketLoading } = useQuery(
+  const { data: ticketData, loading: ticketLoading, refetch: refetchTicket } = useQuery(
     GET_SUPPORT_TICKET_BY_ID,
     {
       variables: { id: ticketId },
@@ -54,6 +58,15 @@ export default function SummerCourseAdminPage() {
 
   const ticket = ticketData?.getSupportTicketById;
   const resolvedStudentId = studentId || ticket?.user_id?.id;
+
+  // Initialize fee amount when ticket data is loaded
+  useEffect(() => {
+    if (ticket?.fee_amount !== undefined && ticket?.fee_amount !== null && ticket?.fee_amount > 0) {
+      setFeeAmount(ticket.fee_amount.toString());
+    } else if (ticket?.installment_id?.amount) {
+      setFeeAmount(ticket.installment_id.amount.toString());
+    }
+  }, [ticket]);
 
   const [GetRegisterFormByUserId, { data: regData, loading: regLoading }] =
     useLazyQuery(GET_REGISTERATION_FORM_BY_USER_ID, {
@@ -84,11 +97,17 @@ export default function SummerCourseAdminPage() {
     { fetchPolicy: "network-only" }
   );
 
+  const [SetSummerCourseFees, { loading: settingFees }] = useMutation(
+    SET_SUMMER_COURSE_FEES,
+    { fetchPolicy: "network-only" }
+  );
+
   useEffect(() => {
     if (resolvedStudentId) {
       GetRegisterFormByUserId({ variables: { user_id: resolvedStudentId } });
     }
   }, [GetRegisterFormByUserId, resolvedStudentId]);
+
   const registrationData = regData?.getRegisterFormByUserId;
   const departmentId =
     registrationData?.user_id?.faculty_department_id?.id ||
@@ -115,7 +134,6 @@ export default function SummerCourseAdminPage() {
   }, [GetUserStudyMaterialsByUser, resolvedStudentId, registrationData?.academyTerm_id?.id]);
 
   const userStudyMaterials = materialsData?.getUserStudyMaterialsByUser;
-
   const subjects = departmentMaterialsData?.materialsByDepartment || [];
 
   const hasExistingMaterials =
@@ -183,6 +201,20 @@ export default function SummerCourseAdminPage() {
           });
         }
 
+        // Save Summer Course Fees if ticketId exists
+        const parsedFee = parseFloat(feeAmount);
+        if (ticketId && !isNaN(parsedFee) && parsedFee >= 0) {
+          await SetSummerCourseFees({
+            variables: {
+              ticket_id: ticketId,
+              student_id: resolvedStudentId,
+              academy_term_id: registrationData?.academyTerm_id?.id,
+              amount: parsedFee,
+            },
+          });
+          refetchTicket && refetchTicket();
+        }
+
         notify(t("success"), "success");
         GetUserStudyMaterialsByUser({
           variables: {
@@ -218,7 +250,7 @@ export default function SummerCourseAdminPage() {
     <Box sx={{ p: 3, backgroundColor: "background.paper", minHeight: "100vh" }}>
       <Header
         title={t("Dashboard.support")}
-        subtitle={t("MaterialEquivalence") + " - " + studentName}
+        subtitle={(isArabic ? "تسجيل مواد الترم الصيفي" : "Summer Course Registration") + " - " + studentName}
         i18n={i18n}
         hasNavigate={true}
       />
@@ -391,6 +423,81 @@ export default function SummerCourseAdminPage() {
             </Table>
           </Paper>
 
+          {/* Section: Summer Course Fees */}
+          <Paper sx={{ p: 2.5, mt: 3, borderRadius: 2, border: "1px solid #e0e0e0" }}>
+            <Typography
+              variant="h6"
+              sx={{
+                color: theme.palette.info.main,
+                fontWeight: 700,
+                mb: 1.5,
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <MonetizationOnIcon /> {isArabic ? "رسوم المواد الصيفية (Fees)" : "Summer Course Fees"}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              {isArabic
+                ? "حدد إجمالي الرسوم المستحقة على الطالب بناءً على المواد وعدد الساعات المسجلة ليتم تنزيلها عليه كسجل رسوم وقسط لسدادها."
+                : "Set total fees due from student based on selected courses and hours to be billed as fees/installment."}
+            </Typography>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={12} sm={7}>
+                <TextField
+                  fullWidth
+                  type="number"
+                  label={isArabic ? "إجمالي المبلغ المطلوب للترم الصيفي" : "Total Summer Course Fee Amount"}
+                  placeholder={isArabic ? "مثال: 50000" : "e.g. 50000"}
+                  value={feeAmount}
+                  onChange={(e) => setFeeAmount(e.target.value)}
+                  disabled={!canSelectMaterials}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <MonetizationOnIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
+                  helperText={
+                    isArabic
+                      ? "سيتم تنزيل هذا المبلغ كرسوم مستحقة على الطالب ويتاح له سدادها مباشرة"
+                      : "This amount will be assigned as required fees for the student to pay"
+                  }
+                />
+              </Grid>
+              {ticket?.payment_status && (
+                <Grid item xs={12} sm={5}>
+                  <Box sx={{ p: 1.5, bgcolor: "#f9f9f9", borderRadius: 1.5, border: "1px solid #eee" }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: "text.secondary" }}>
+                      {isArabic ? "حالة السداد الحالية:" : "Current Payment Status:"}
+                    </Typography>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        fontWeight: 700,
+                        mt: 0.5,
+                        color:
+                          ticket.payment_status === "paid"
+                            ? "success.main"
+                            : ticket.payment_status === "pending"
+                            ? "warning.main"
+                            : "error.main",
+                      }}
+                    >
+                      {ticket.payment_status === "paid"
+                        ? (isArabic ? "تم السداد بنجاح" : "Paid Successfully")
+                        : ticket.payment_status === "pending"
+                        ? (isArabic ? "قيد المراجعة / معلق" : "Under Review / Pending")
+                        : (isArabic ? "غير مسدد حتى الآن" : "Not Paid Yet")}
+                    </Typography>
+                  </Box>
+                </Grid>
+              )}
+            </Grid>
+          </Paper>
+
           {hasExistingMaterials && (
             <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
               <Button
@@ -411,8 +518,8 @@ export default function SummerCourseAdminPage() {
                     ? "إلغاء التعديل"
                     : "Cancel Edit"
                   : isArabic
-                    ? "تعديل المواد"
-                    : "Edit Materials"}
+                    ? "تعديل المواد والرسوم"
+                    : "Edit Materials & Fees"}
               </Button>
             </Box>
           )}
@@ -427,9 +534,9 @@ export default function SummerCourseAdminPage() {
                 gap: 1,
               }}
               onClick={() => handleSubmitMaterials()}
-              disabled={creating || updating}
+              disabled={creating || updating || settingFees}
             >
-              {creating || updating ? (
+              {creating || updating || settingFees ? (
                 <CircularProgress size={25} sx={{ color: "white" }} />
               ) : (
                 <>
@@ -487,6 +594,40 @@ export default function SummerCourseAdminPage() {
                   : "No materials registered yet"}
               </Typography>
             )}
+          </Paper>
+
+          {/* Sidebar Financial Status */}
+          <Paper sx={{ p: 2, mb: 3 }}>
+            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2, color: theme.palette.info.main }}>
+              {isArabic ? "الرسوم والمدفوعات" : "Fees & Payments"}
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              {isArabic ? "إجمالي الرسوم المحددة:" : "Set Fees:"}{" "}
+              <Typography component="span" sx={{ fontWeight: "bold", color: "primary.main" }}>
+                {feeAmount ? feeAmount : (isArabic ? "لم تحدد بعد" : "Not set")}
+              </Typography>
+            </Typography>
+            <Typography variant="body2">
+              {isArabic ? "حالة السداد:" : "Payment:"}{" "}
+              <Typography
+                component="span"
+                sx={{
+                  fontWeight: "bold",
+                  color:
+                    ticket?.payment_status === "paid"
+                      ? "success.main"
+                      : ticket?.payment_status === "pending"
+                      ? "warning.main"
+                      : "error.main",
+                }}
+              >
+                {ticket?.payment_status === "paid"
+                  ? isArabic ? "مسدد" : "Paid"
+                  : ticket?.payment_status === "pending"
+                  ? isArabic ? "معلق" : "Pending"
+                  : isArabic ? "غير مسدد" : "Unpaid"}
+              </Typography>
+            </Typography>
           </Paper>
         </Grid>
       </Grid>

@@ -69,13 +69,12 @@ export default function AddSupportTicketPage() {
             let data = {
                 subject: values?.subject,
                 message: values?.message,
-                type: values.selectedType,
+                type: selectedTypeData?.label_en || values.selectedType,
+                ticket_type_id: selectedTypeData?.id || values.selectedType,
                 user_id: me?.id,
-                attachment: values.attachment,
+                attachment: values.attachment || null,
                 fees: values.fees
             };
-
-
 
             try {
                 logger.log("uuuuuuuuuuuuuuuuuuuuuuuuuu", data);
@@ -90,9 +89,9 @@ export default function AddSupportTicketPage() {
 
                 logger.log('result', result);
 
-                if (selectedTypeData?.requires_fee) {
-                    const totalAmount = selectedTypeData.fees.reduce((sum, fee) => {
-                        return sum + (me?.is_inside_yemen ? fee.inside_yemen_value : fee.outside_yemen_value);
+                if (selectedTypeData?.requires_fee && selectedTypeData?.fees?.length > 0) {
+                    const totalAmount = (selectedTypeData.fees || []).reduce((sum, fee) => {
+                        return sum + (me?.is_inside_yemen ? (fee.inside_yemen_value || 0) : (fee.outside_yemen_value || 0));
                     }, 0);
 
                     const paymentInput = {
@@ -151,10 +150,10 @@ export default function AddSupportTicketPage() {
         }
     };
 
-    const selectedTypeData = ticketTypes.find(el => el.type === formik.values.selectedType);
+    const selectedTypeData = ticketTypes.find(el => el.id === formik.values.selectedType || el.type === formik.values.selectedType);
 
     useEffect(() => {
-        if (selectedTypeData?.requires_fee) {
+        if (selectedTypeData?.requires_fee && selectedTypeData?.fees) {
             const feeIds = selectedTypeData.fees.map(f => f.id);
             formik.setFieldValue("fees", feeIds);
         } else {
@@ -219,7 +218,7 @@ export default function AddSupportTicketPage() {
                     <MenuItem value={0} disabled>{t("select")}</MenuItem>
                     {
                         ticketTypes?.map(el => (
-                            <MenuItem key={el?.type} value={el?.type}>
+                            <MenuItem key={el?.id || el?.type} value={el?.id || el?.type}>
                                 {isArabic ? el?.label_ar : el?.label_en}
                             </MenuItem>
                         ))
@@ -227,11 +226,11 @@ export default function AddSupportTicketPage() {
                 </VerticalTextFieldSelect>
 
                 {selectedTypeData?.requires_fee && (
-                    <Box sx={{ mt: 2, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1 }}>
-                            {isArabic ? "الرسوم المطلوبة:" : "Required Fees:"}
+                    <Box sx={{ mt: 2, p: 2, border: '1px solid #fcd34d', bgcolor: '#fffbeb', borderRadius: 1.5 }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1, color: '#b45309' }}>
+                            {isArabic ? "⚠️ تنبيه: استخراج هذا المستند يتطلب سداد رسوم مقررة." : "⚠️ Notice: Issuing this document requires fee payment."}
                         </Typography>
-                        {selectedTypeData.fees.map(fee => (
+                        {selectedTypeData.fees?.map(fee => (
                             <Typography key={fee.id} variant="body2" sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                                 <span>{isArabic ? fee.title_ar : fee.title_en}</span>
                                 <span style={{ fontWeight: 'bold' }}>

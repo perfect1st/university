@@ -84,14 +84,24 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("supp
 
     }, [me]);
 
+    const getTicketTypeLabel = (ticket) => {
+        if (ticket?.ticket_type_id) {
+            return isArabic
+                ? (ticket.ticket_type_id.label_ar || ticket.ticket_type_id.label_en)
+                : (ticket.ticket_type_id.label_en || ticket.ticket_type_id.label_ar);
+        }
+        const legacy = ticketTypes?.find((type) => type.id === ticket?.type);
+        return legacy ? (isArabic ? legacy.labelAr : legacy.labelEn) : (ticket?.type || "-");
+    };
+
     let columns = [];
 
     if (me?.role == "admin") {
           columns = [
             { key: "serial", label: t("Serial") },
             { key: "subject", label: t("title") },
-            { key: "type", label: t("profile.Gender") },
-            {key:"user_name",label:t("Dashboard.userName")},
+            { key: "type", label: isArabic ? "نوع الطلب" : "Request Type" },
+            { key: "user_name", label: t("Dashboard.userName") },
             { key: "status", label: t("Status") },
         ];
     }
@@ -99,7 +109,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("supp
         columns = [
             { key: "serial", label: t("Serial") },
             { key: "subject", label: t("title") },
-            { key: "type", label: t("profile.Gender") },
+            { key: "type", label: isArabic ? "نوع الطلب" : "Request Type" },
             { key: "status", label: t("Status") },
         ];
     }
@@ -111,9 +121,9 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("supp
             return {
                 ...ticket,
                 subject: ticket?.subject,
-                type: isArabic ? ticketTypes.find((type) => type.id === ticket?.type)?.labelAr : ticketTypes.find((type) => type.id === ticket?.type)?.labelEn,
+                type: getTicketTypeLabel(ticket),
                 status: ticket?.status == "open" ? true : false,
-                user_name:ticket?.user_id?.fullname
+                user_name: ticket?.user_id?.fullname
             }
         });
     }
@@ -122,11 +132,10 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("supp
             return {
                 ...ticket,
                 subject: ticket?.subject,
-                type: isArabic ? ticketTypes.find((type) => type.id === ticket?.type)?.labelAr : ticketTypes.find((type) => type.id === ticket?.type)?.labelEn,
+                type: getTicketTypeLabel(ticket),
                 status: ticket?.status == "open" ? true : false
             }
         });
-
     }
 
     logger.log("ticketsToShow", ticketsToShow);
@@ -142,7 +151,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("supp
                 let row = {
                     ID: i + 1,
                     [t("title")]: ticket?.subject,
-                    [t("profile.Gender")]: ticket?.type,
+                    [isArabic ? "نوع الطلب" : "Request Type"]: ticket?.type,
                 };
 
                 if (me?.role === "admin") {

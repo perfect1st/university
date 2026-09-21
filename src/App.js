@@ -111,6 +111,9 @@ import AllStudentDegreesPage from "./pages/StudentDegrees/AllStudentDegreesPage"
 import GetAllSupportTicketsPage from "./pages/SupportTickets/GetAllSupportTicketsPage";
 import AddSupportTicketPage from "./pages/SupportTickets/AddSupportTicketPage";
 import EditSupportTicketPage from "./pages/SupportTickets/EditSupportTicketPage";
+import AllSupportTicketTypesPage from "./pages/SupportTicketTypes/AllSupportTicketTypesPage";
+import AddSupportTicketTypePage from "./pages/SupportTicketTypes/AddSupportTicketTypePage";
+import EditSupportTicketTypePage from "./pages/SupportTicketTypes/EditSupportTicketTypePage";
 import PermissionsGroupsPage from "./pages/PermissionsGroupsPage/PermissionsGroupsPage";
 import GroupFormPage from "./pages/PermissionsGroupsPage/GroupFormPage";
 import ELibraryPage from "./pages/E-Library/ELibraryPage";
@@ -1266,6 +1269,30 @@ function App() {
                     <Route path="details/:id" element={
                       <MainLayout isLoggedIn={true}>
                         <EditSupportTicketPage />
+                      </MainLayout>
+                    } />
+                  </Route>
+
+                  {/* Support Ticket Types & Documents Management */}
+                  <Route
+                    path="/SupportTicketTypes"
+                  >
+                    <Route
+                      index
+                      element={
+                        <MainLayout isLoggedIn={true}>
+                          <AllSupportTicketTypesPage />
+                        </MainLayout>
+                      }
+                    />
+                    <Route path="add" element={
+                      <MainLayout isLoggedIn={true}>
+                        <AddSupportTicketTypePage />
+                      </MainLayout>
+                    } />
+                    <Route path="details/:id" element={
+                      <MainLayout isLoggedIn={true}>
+                        <EditSupportTicketTypePage />
                       </MainLayout>
                     } />
                   </Route>

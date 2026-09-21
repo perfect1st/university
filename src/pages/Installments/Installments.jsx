@@ -164,7 +164,7 @@ const Installments = () => {
       studentName: inst.student_id?.fullname || inst.student_id?.username || "-",
       amount: `${inst.amount} ${t("SAR")}`,
       studyYear: inst.study_year || "-",
-      termNumber: inst.term_number === 1 ? t("First Term") : inst.term_number === 2 ? t("Second Term") : inst.term_number || "-",
+      termNumber: inst.term_number === 1 ? t("First Term") : inst.term_number === 2 ? t("Second Term") : inst.term_number === 3 ? t("Summer Term") : inst.term_number || "-",
       createDate: formatDateToString(date),
       is_paid: inst.is_paid,
       status: inst.status || (inst.is_paid ? "ACCEPTED" : "PENDING"),
