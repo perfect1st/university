@@ -3,7 +3,7 @@ import { useMutation, useQuery, useLazyQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
 import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFormQueries";
 import UniversityCard from "../../components/UniversityCard";
-import { Box, MenuItem, useMediaQuery, useTheme } from "@mui/material";
+import { Box, MenuItem, useMediaQuery, useTheme, Button, Typography } from "@mui/material";
 import Header from "../../components/PageHeader/header";
 import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
@@ -20,6 +20,7 @@ import { userRules } from "../../constants";
 import { UPDATE_USER_BY_ADMIN } from "../../graphql/userQueriesForAdmin";
 import { GET_GROUPS } from "../../graphql/groupQueries";
 import { GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
+import { GET_ACTIVE_JOB_TITLES } from "../../graphql/jobTitleQueries";
 import logger from "../../utils/logger";
 import GraduationCertificate from "../../components/Certificates/GraduationCertificate";
 
@@ -32,10 +33,12 @@ export default function UserDetailsPage() {
   const userData = location?.state;
   logger.log("location", location);
 
-  // Fetch Groups and Faculties for selection lists
+  // Fetch Groups, Faculties, and Job Titles for selection lists
   const { data: groupsData } = useQuery(GET_GROUPS);
   const { data: facultiesData } = useQuery(GET_ALL_FACULITIES);
+  const { data: jobTitlesData } = useQuery(GET_ACTIVE_JOB_TITLES);
   const facultiesOptions = facultiesData?.faculties || [];
+  const jobTitlesOptions = jobTitlesData?.getActiveJobTitles || [];
 
   const [selectedRule, setSelectedRule] = useState(userData?.role || 0);
 
@@ -44,6 +47,12 @@ export default function UserDetailsPage() {
   const fileInputRef = useRef(null);
   const [selectedToShowFile, setSelectedToShowFile] = useState(userData?.profile_image || null);
   const [progress, setProgress] = useState(0);
+
+  const signatureInputRef = useRef(null);
+  const [selectedToShowSignature, setSelectedToShowSignature] = useState(
+    userData?.signature ? (isArabic ? "توقيع محفوظ" : "Saved Signature") : null
+  );
+  const [signatureProgress, setSignatureProgress] = useState(0);
 
   const [
     GetRegisterFormByUserId,
@@ -69,6 +78,8 @@ export default function UserDetailsPage() {
       mobile: userData?.mobile || "",
       password: "",
       profile_image: userData?.profile_image || "",
+      job_title_id: userData?.job_title_id?.id || userData?.job_title_id || "",
+      signature: userData?.signature || "",
       // Initialize groupIds from location state (assuming the API returns objects, we map to IDs)
       groupIds: userData?.groups?.map((g) => g.id) || userData?.groupIds || [],
       faculty_id: userData?.faculty_id?.id || userData?.faculty_id || "",
@@ -90,6 +101,8 @@ export default function UserDetailsPage() {
         mobile: values.mobile,
         role: selectedRule,
         profile_image: values.profile_image,
+        job_title_id: values.job_title_id || null,
+        signature: values.signature || null,
         // تأكد أن القيم هنا IDs فقط (Strings) وليس Objects
         groups: values.groupIds.map((id) => (typeof id === "object" ? id.id : id)),
       };
@@ -135,6 +148,40 @@ export default function UserDetailsPage() {
       notify(t("errorUplaod"), "error");
     } finally {
       setTimeout(() => setProgress(0), 2000);
+    }
+  };
+
+  const handleSignatureChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSelectedToShowSignature(file.name);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setSignatureProgress(1);
+      let uploadedUrl = "";
+      try {
+        const res = await axios.post(`${baseURL}/api/users/single`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (p) => setSignatureProgress(Math.round((p.loaded * 100) / p.total)),
+        });
+        uploadedUrl = res?.data?.url || res?.data?.path;
+      } catch (err1) {
+        const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (p) => setSignatureProgress(Math.round((p.loaded * 100) / p.total)),
+        });
+        uploadedUrl = res?.data?.url || res?.data?.path;
+      }
+      if (uploadedUrl) {
+        formik.setFieldValue("signature", uploadedUrl);
+        notify(isArabic ? "تم رفع صورة التوقيع بنجاح" : "Signature uploaded successfully", "success");
+      }
+    } catch (error) {
+      notify(t("errorUplaod", "فشل الرفع"), "error");
+    } finally {
+      setTimeout(() => setSignatureProgress(0), 2000);
     }
   };
 
@@ -215,6 +262,68 @@ export default function UserDetailsPage() {
           onBlur={() => formik.setFieldTouched("faculty_id", true)}
           error={formik.touched.faculty_id && formik.errors.faculty_id}
         />
+
+        {/* Job Title Select Integration */}
+        <SearchByTypingSelect2
+          title={isArabic ? "المسمى الوظيفي" : "Job Title"}
+          options={jobTitlesOptions}
+          multiple={false}
+          findKey="id"
+          labelToShow={(opt) => (isArabic ? opt.name_ar : opt.name_en)}
+          value={formik.values.job_title_id}
+          setValue={(val) => formik.setFieldValue("job_title_id", val)}
+          onBlur={() => formik.setFieldTouched("job_title_id", true)}
+          error={formik.touched.job_title_id && formik.errors.job_title_id}
+        />
+
+        {/* Signature Upload & Preview */}
+        <Box sx={{ my: 2 }}>
+          <UploadFileField
+            title={isArabic ? "صورة التوقيع" : "Signature Image"}
+            fileInputRef={signatureInputRef}
+            handleFileChange={handleSignatureChange}
+            handlePickFile={() => signatureInputRef.current?.click()}
+            selectedToShowFile={selectedToShowSignature}
+            progress={signatureProgress}
+            showInput={true}
+          />
+          {formik.values.signature && (
+            <Box sx={{ mt: 1.5, display: "flex", alignItems: "center", gap: 2 }}>
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                {isArabic ? "معاينة التوقيع الحالي:" : "Current Signature:"}
+              </Typography>
+              <Box
+                component="img"
+                src={
+                  formik.values.signature.startsWith("http")
+                    ? formik.values.signature
+                    : `${baseURL}${formik.values.signature.startsWith("/") ? "" : "/"}${formik.values.signature}`
+                }
+                alt="Signature Preview"
+                sx={{
+                  maxHeight: 50,
+                  maxWidth: 130,
+                  border: "1px solid #ccc",
+                  borderRadius: 1,
+                  p: 0.5,
+                  backgroundColor: "#fff",
+                  boxShadow: 1,
+                }}
+              />
+              <Button
+                size="small"
+                color="error"
+                variant="outlined"
+                onClick={() => {
+                  formik.setFieldValue("signature", "");
+                  setSelectedToShowSignature("");
+                }}
+              >
+                {isArabic ? "إزالة التوقيع" : "Remove Signature"}
+              </Button>
+            </Box>
+          )}
+        </Box>
 
         <HorizentalTextField
           title={t("form.password", "Password")}

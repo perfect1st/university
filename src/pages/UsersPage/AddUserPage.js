@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom"
 import { useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
-import { Box, MenuItem, useMediaQuery, useTheme } from "@mui/material";
+import { Box, MenuItem, useMediaQuery, useTheme, Button, Typography } from "@mui/material";
 import Header from "../../components/PageHeader/header";
 import { useTranslation } from "react-i18next";
 import notify from "../../components/notify";
@@ -9,12 +9,15 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import VerticalTextField, { SearchByTypingSelect, VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
-import LoadingPage from "../../components/LoadingComponent";
-import { useState } from "react";
+import UploadFileField from "../../components/Utilities/UploadFileField";
+import { useState, useRef } from "react";
+import axios from "axios";
+import { baseURL } from "../../Api/apolloClient";
 import { CREATE_USER_BY_ADMIN } from "../../graphql/userQueriesForAdmin";
 import { userRules } from "../../constants";
 import { GET_GROUPS } from "../../graphql/groupQueries";
 import { GET_ALL_FACULITIES } from "../../graphql/facultyQuiries";
+import { GET_ACTIVE_JOB_TITLES } from "../../graphql/jobTitleQueries";
 import logger from "../../utils/logger";
 
 
@@ -27,11 +30,19 @@ export default function AddUserPage() {
     const location = useLocation();
 
     const [selectedRule, setSelectedRule] = useState(0);
+    const signatureInputRef = useRef(null);
+    const [selectedToShowSignature, setSelectedToShowSignature] = useState("");
+    const [uploadingSignature, setUploadingSignature] = useState(false);
+
   const { data, loading, error } = useQuery(GET_GROUPS, {
     fetchPolicy: "network-only",
   });
 
   const { data: facultiesData } = useQuery(GET_ALL_FACULITIES, {
+    fetchPolicy: "network-only",
+  });
+
+  const { data: jobTitlesData } = useQuery(GET_ACTIVE_JOB_TITLES, {
     fetchPolicy: "network-only",
   });
 
@@ -42,6 +53,39 @@ export default function AddUserPage() {
         }
     ] = useMutation(CREATE_USER_BY_ADMIN, { fetchPolicy: "network-only" });
 
+    const handleSignatureFileChange = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setSelectedToShowSignature(file.name);
+        const formData = new FormData();
+        formData.append("file", file);
+        setUploadingSignature(true);
+        try {
+            let uploadedUrl = "";
+            try {
+                const res = await axios.post(`${baseURL}/api/users/single`, formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
+                uploadedUrl = res?.data?.url || res?.data?.path;
+            } catch (err1) {
+                const res = await axios.post(`${baseURL}/api/forms/single`, formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
+                uploadedUrl = res?.data?.url || res?.data?.path;
+            }
+            if (uploadedUrl) {
+                formik.setFieldValue("signature", uploadedUrl);
+                notify(isArabic ? "تم رفع صورة التوقيع بنجاح" : "Signature uploaded successfully", "success");
+            } else {
+                notify(isArabic ? "فشل رفع صورة التوقيع" : "Failed to upload signature", "error");
+            }
+        } catch (err) {
+            notify(isArabic ? "فشل رفع صورة التوقيع" : "Failed to upload signature", "error");
+        } finally {
+            setUploadingSignature(false);
+        }
+    };
+
     const formik = useFormik({
         initialValues: {
             username: "",
@@ -51,6 +95,8 @@ export default function AddUserPage() {
             password:"",
             groupIds: [],
             faculty_id: "",
+            job_title_id: "",
+            signature: "",
         },
 
         validationSchema: Yup.object({
@@ -78,6 +124,12 @@ export default function AddUserPage() {
     if (values.faculty_id) {
         data.faculty_id = values.faculty_id;
     }
+    if (values.job_title_id) {
+        data.job_title_id = values.job_title_id;
+    }
+    if (values.signature) {
+        data.signature = values.signature;
+    }
     data.role = selectedRule;
 
     try {
@@ -100,6 +152,7 @@ export default function AddUserPage() {
 
     const groupsOptions = data?.groups || [];
     const facultiesOptions = facultiesData?.faculties || [];
+    const jobTitlesOptions = jobTitlesData?.getActiveJobTitles || [];
     
     let translateText = isArabic ? "مستخدم" : "User";
     let translateText2 = isArabic ? "المستخدم" : "User";
@@ -222,7 +275,68 @@ export default function AddUserPage() {
     error={formik.touched.faculty_id && formik.errors.faculty_id}
 />
 
-                <SubmitButton loading={CreateUserLoading} t={t} />
+<SearchByTypingSelect
+    title={isArabic ? "المسمى الوظيفي" : "Job Title"}
+    options={jobTitlesOptions}
+    multiple={false}
+    findKey="id"
+    labelToShow={(option) => (isArabic ? option.name_ar : option.name_en)}
+    value={formik.values.job_title_id}
+    setValue={(newId) => formik.setFieldValue("job_title_id", newId)}
+    onBlur={() => formik.setFieldTouched("job_title_id", true)}
+    error={formik.touched.job_title_id && formik.errors.job_title_id}
+/>
+
+<Box sx={{ my: 2 }}>
+    <UploadFileField
+        title={isArabic ? "صورة التوقيع" : "Signature Image"}
+        subTitle={isArabic ? "رفع توقيع الموظف" : "Upload Signature"}
+        fileInputRef={signatureInputRef}
+        handleFileChange={handleSignatureFileChange}
+        handlePickFile={() => signatureInputRef.current?.click()}
+        selectedToShowFile={selectedToShowSignature}
+        progress={uploadingSignature ? 50 : 0}
+        showInput={true}
+    />
+    {formik.values.signature && (
+        <Box sx={{ mt: 1.5, display: "flex", alignItems: "center", gap: 2 }}>
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                {isArabic ? "معاينة التوقيع:" : "Signature Preview:"}
+            </Typography>
+            <Box
+                component="img"
+                src={
+                    formik.values.signature.startsWith("http")
+                        ? formik.values.signature
+                        : `${baseURL}${formik.values.signature.startsWith("/") ? "" : "/"}${formik.values.signature}`
+                }
+                alt="Signature Preview"
+                sx={{
+                    maxHeight: 50,
+                    maxWidth: 130,
+                    border: "1px solid #ccc",
+                    borderRadius: 1,
+                    p: 0.5,
+                    backgroundColor: "#fff",
+                    boxShadow: 1,
+                }}
+            />
+            <Button
+                size="small"
+                color="error"
+                variant="outlined"
+                onClick={() => {
+                    formik.setFieldValue("signature", "");
+                    setSelectedToShowSignature("");
+                }}
+            >
+                {isArabic ? "إزالة التوقيع" : "Remove Signature"}
+            </Button>
+        </Box>
+    )}
+</Box>
+
+                <SubmitButton loading={CreateUserLoading || uploadingSignature} t={t} />
             </Box>
         </Box>
     )

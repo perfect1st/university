@@ -140,6 +140,11 @@ const routesData = {
           label: { en: "Signatures", ar: "التوقيعات" },
           path: "/signatures",
         },
+        {
+          key: "jobTitles",
+          label: { en: "Job Titles", ar: "مسميات الموظفين" },
+          path: "/job-titles",
+        },
       ]
     },
     {

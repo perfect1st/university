@@ -718,5 +718,10 @@
     "selectFees": "اختر بنود الرسوم المرتبطة بهذا المستند:",
     "confirmDelete": "تأكيد حذف نوع التذكرة",
     "confirmDeleteBody": "هل أنت متأكد من رغبتك في حذف هذا النوع؟"
-  }
+  },
+  "jobTitles": "مسميات الموظفين",
+  "jobTitle": "المسمى الوظيفي",
+  "signature": "التوقيع",
+  "signatureImage": "صورة التوقيع",
+  "uploadSignature": "رفع صورة التوقيع"
 }

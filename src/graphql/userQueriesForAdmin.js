@@ -11,6 +11,13 @@ query Users {
         mobile
         role
         status
+        signature
+        job_title_id {
+            id
+            name_ar
+            name_en
+            status
+        }
         profile_image
         qid_number
         is_inside_yemen
@@ -45,6 +52,13 @@ export const GET_SINGLE_USER = gql`
       mobile
       role
       status
+      signature
+      job_title_id {
+        id
+        name_ar
+        name_en
+        status
+      }
       profile_image
       qid_number
       is_inside_yemen
@@ -117,6 +131,13 @@ mutation CreateUser($input: AdminCreateUserInput!) {
         mobile
         role
         status
+        signature
+        job_title_id {
+            id
+            name_ar
+            name_en
+            status
+        }
         profile_image
         qid_number
         is_inside_yemen
@@ -136,6 +157,13 @@ export const UPDATE_USER_BY_ADMIN = gql`
       mobile
       role
       status
+      signature
+      job_title_id {
+        id
+        name_ar
+        name_en
+        status
+      }
       profile_image
       groups {
         id
@@ -172,6 +200,13 @@ export const FILTERED_USERS = gql`
             mobile
             role
             status
+            signature
+            job_title_id {
+                id
+                name_ar
+                name_en
+                status
+            }
             profile_image
             qid_number
             is_inside_yemen

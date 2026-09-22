@@ -10,12 +10,14 @@ import {
   Pagination,
   Select,
   Stack,
+  Typography,
   useMediaQuery,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import i18n from "../../i18n/i18n";
+import { baseURL } from "../../Api/apolloClient";
 
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DashboardFilterComponent from "../../components/Utilities/DashboardFilterComponent";
@@ -98,6 +100,49 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
   let columns = [
     { key: "serial", label: t("Serial") },
     { key: "fullname", label: t("admissions.fullName") },
+    { key: "job_title_label", label: isArabic ? "المسمى الوظيفي" : "Job Title" },
+    // {
+    //   key: "signature",
+    //   label: isArabic ? "التوقيع" : "Signature",
+    //   render: (row) => {
+    //     if (!row.signature) {
+    //       return (
+    //         <Typography variant="body2" sx={{ color: "text.secondary", fontSize: "0.85rem" }}>
+    //           -
+    //         </Typography>
+    //       );
+    //     }
+    //     const fullUrl = row.signature.startsWith("http")
+    //       ? row.signature
+    //       : `${baseURL}${row.signature.startsWith("/") ? "" : "/"}${row.signature}`;
+    //     return (
+    //       <Box
+    //         component="img"
+    //         src={fullUrl}
+    //         alt="signature"
+    //         onClick={(e) => {
+    //           e.stopPropagation();
+    //           window.open(fullUrl, "_blank");
+    //         }}
+    //         sx={{
+    //           maxHeight: 36,
+    //           maxWidth: 75,
+    //           objectFit: "contain",
+    //           cursor: "pointer",
+    //           borderRadius: 1,
+    //           border: "1px solid #e0e0e0",
+    //           backgroundColor: "#fff",
+    //           p: 0.5,
+    //           transition: "transform 0.2s",
+    //           "&:hover": {
+    //             transform: "scale(1.1)",
+    //             boxShadow: 2,
+    //           },
+    //         }}
+    //       />
+    //     );
+    //   },
+    // },
     { key: "email", label: t("admissions.email") },
     { key: "mobile", label: t("Mobile") },
     { key: "role", label: t("Dashboard.userType") },
@@ -106,8 +151,13 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
   const fetchAndExport = async (type) => {
     try {
       const exportData = users?.map((user, i) => ({
-        "#": i,
+        "#": user.serial || i + 1,
         [t("admissions.fullName")]: user.fullname,
+        [isArabic ? "المسمى الوظيفي" : "Job Title"]: user.job_title_id
+          ? isArabic
+            ? user.job_title_id.name_ar || user.job_title_id.name_en
+            : user.job_title_id.name_en || user.job_title_id.name_ar
+          : "-",
         [t("admissions.email")]: user.email,
         [t("Mobile")]: user.mobile,
         [t("Dashboard.userType")]: t(`Dashboard.${user.role}`),
@@ -192,9 +242,15 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
   // const usersToShow=[];
   const usersToShow = filteredPagedUsers?.users?.map((el) => {
     logger.log("el", el);
+    const jtName = el.job_title_id
+      ? isArabic
+        ? el.job_title_id.name_ar || el.job_title_id.name_en
+        : el.job_title_id.name_en || el.job_title_id.name_ar
+      : "-";
     return {
       ...el,
       role: t(`Dashboard.${el.role}`),
+      job_title_label: jtName,
     };
   });
 

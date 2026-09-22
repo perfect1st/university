@@ -124,6 +124,7 @@ import SiteSettings from "./pages/SiteSettings/SiteSettings";
 import AllSignaturesPage from "./pages/admin/signatures/AllSignaturesPage";
 import AddSignaturePage from "./pages/admin/signatures/AddSignaturePage";
 import SignatureDetailsPage from "./pages/admin/signatures/SignatureDetailsPage";
+import AllJobTitlesPage from "./pages/JobTitles/AllJobTitlesPage";
 import BackupsPage from "./pages/Backups/BackupsPage";
 import TestCertificatePage from "./pages/TestCertificatePage";
 import PromotionPage from "./pages/Promotion/PromotionPage";
@@ -736,6 +737,13 @@ function App() {
                   <Route path="/signatures/details/:id" element={
                     <MainLayout isLoggedIn={true}>
                       <SignatureDetailsPage />
+                    </MainLayout>
+                  } />
+
+                  {/* Job Titles مسميات الموظفين */}
+                  <Route path="/job-titles" element={
+                    <MainLayout isLoggedIn={true}>
+                      <AllJobTitlesPage />
                     </MainLayout>
                   } />
 

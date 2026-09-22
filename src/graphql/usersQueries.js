@@ -12,6 +12,13 @@ export const GET_USERS = gql`
         mobile
         role
         status
+        signature
+        job_title_id {
+            id
+            name_ar
+            name_en
+            status
+        }
         profile_image
         qid_number
         is_inside_yemen
@@ -32,6 +39,13 @@ export const GET_USER_BY_ID = gql`
       mobile
       role
       status
+      signature
+      job_title_id {
+        id
+        name_ar
+        name_en
+        status
+      }
       profile_image
       qid_number
       createdAt
@@ -54,6 +68,13 @@ mutation Login($input: LoginInput!) {
             mobile
             role
             status
+            signature
+            job_title_id {
+                id
+                name_ar
+                name_en
+                status
+            }
             profile_image
             qid_number
             is_inside_yemen
@@ -84,6 +105,13 @@ query Me {
         mobile
         role
         status
+        signature
+        job_title_id {
+            id
+            name_ar
+            name_en
+            status
+        }
         profile_image
         qid_number
         createdAt

@@ -679,5 +679,10 @@
     "selectFees": "Select Associated Fees for this Document:",
     "confirmDelete": "Confirm Delete Ticket Type",
     "confirmDeleteBody": "Are you sure you want to delete this type?"
-  }
+  },
+  "jobTitles": "Job Titles",
+  "jobTitle": "Job Title",
+  "signature": "Signature",
+  "signatureImage": "Signature Image",
+  "uploadSignature": "Upload Signature"
 }
