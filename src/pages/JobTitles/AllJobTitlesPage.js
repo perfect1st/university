@@ -5,6 +5,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogContentText,
   DialogActions,
   Button,
   TextField,
@@ -18,6 +19,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import BadgeIcon from "@mui/icons-material/Badge";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
@@ -62,6 +64,10 @@ export default function AllJobTitlesPage() {
   // Dialog state (modal for create/edit)
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+
+  // Delete Dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   // Lazy query for filtered and paged Job Titles
   const [
@@ -181,20 +187,28 @@ export default function AllJobTitlesPage() {
     formik.resetForm();
   };
 
-  const handleDeleteClick = async (row) => {
+  const handleDeleteClick = (row) => {
     if (!canDelete) return notify(t("no_permission.title"), "error");
-    const confirmMessage = isArabic
-      ? `هل أنت متأكد من رغبتك في حذف المسمى "${row?.name_ar}"؟`
-      : `Are you sure you want to delete "${row?.name_en || row?.name_ar}"?`;
+    setItemToDelete(row);
+    setDeleteDialogOpen(true);
+  };
 
-    if (window.confirm(confirmMessage)) {
-      try {
-        await deleteJobTitleMutation({ variables: { id: row.id } });
-        notify(isArabic ? "تم الحذف بنجاح" : "Deleted successfully", "success");
-        refetch();
-      } catch (err) {
-        notify(err.message || t("error"), "error");
-      }
+  const handleCloseDeleteDialog = () => {
+    if (deleting) return;
+    setDeleteDialogOpen(false);
+    setItemToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!itemToDelete?.id) return;
+    try {
+      await deleteJobTitleMutation({ variables: { id: itemToDelete.id } });
+      notify(isArabic ? "تم الحذف بنجاح" : "Deleted successfully", "success");
+      setDeleteDialogOpen(false);
+      setItemToDelete(null);
+      refetch();
+    } catch (err) {
+      notify(err.message || t("error"), "error");
     }
   };
 
@@ -474,6 +488,61 @@ export default function AllJobTitlesPage() {
             </Button>
           </DialogActions>
         </Box>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{ sx: { borderRadius: 2, p: 1 } }}
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1.5,
+            fontWeight: "bold",
+            color: "error.main",
+            pb: 1,
+          }}
+        >
+          <DeleteIcon color="error" />
+          <span>{isArabic ? "تأكيد حذف المسمى الوظيفي" : "Confirm Delete Job Title"}</span>
+        </DialogTitle>
+        <DialogContent sx={{ pt: 1 }}>
+          <DialogContentText sx={{ fontSize: "0.95rem", color: "text.primary" }}>
+            {isArabic
+              ? `هل أنت متأكد من رغبتك في حذف المسمى الوظيفي "${itemToDelete?.name_ar || itemToDelete?.name_en}"؟ لا يمكن التراجع عن هذا الإجراء.`
+              : `Are you sure you want to delete "${itemToDelete?.name_en || itemToDelete?.name_ar}"? This action cannot be undone.`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button
+            onClick={handleCloseDeleteDialog}
+            color="inherit"
+            disabled={deleting}
+          >
+            {t("cancel", "إلغاء")}
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            color="error"
+            variant="contained"
+            disabled={deleting}
+            startIcon={deleting ? <CircularProgress size={18} color="inherit" /> : <DeleteIcon />}
+            sx={{ fontWeight: "bold" }}
+          >
+            {deleting
+              ? isArabic
+                ? "جاري الحذف..."
+                : "Deleting..."
+              : isArabic
+              ? "تأكيد الحذف"
+              : "Delete"}
+          </Button>
+        </DialogActions>
       </Dialog>
     </Box>
   );

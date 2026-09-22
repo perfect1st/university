@@ -116,7 +116,15 @@ export default function AllSupportTicketTypesPage() {
 
   const handleDetailsClick = (row) => {
     if (!update) return notify(t("no_permission.title"), "error");
-    navigate(`details/${row.id}`, { state: row });
+    const cleanItem = {
+      id: row.id,
+      label_ar: row.label_ar,
+      label_en: row.label_en,
+      requires_fee: row.requires_fee,
+      fees: row.fees,
+      serial: row.serial,
+    };
+    navigate(`details/${row.id}`, { state: cleanItem });
   };
 
   const openDeleteModal = (row) => {
@@ -221,8 +229,6 @@ export default function AllSupportTicketTypesPage() {
             data={formattedData}
             loading={loading}
             handleDetailsClick={handleDetailsClick}
-            hasEditBtn={update}
-            handleEditClick={handleDetailsClick}
             hasDeleteBtn={canDelete}
             handleDeleteClick={openDeleteModal}
             dontShowActions={!update && !canDelete}
