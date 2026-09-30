@@ -97,22 +97,27 @@ export default function DoctorLecturesPage() {
 
     // اصنع rows لكل ساعة
     const rows = [];
+
+    const timeToMinutes = (timeString) => {
+      const [h, m] = timeString.split(":");
+      let hours = parseInt(h);
+      if (hours < 7) hours += 24; // Start day at 7 AM
+      return hours * 60 + parseInt(m);
+    };
+
     for (let i = 0; i < sortedTimes.length - 1; i++) {
       const slotStart = sortedTimes[i];
       const slotEnd = sortedTimes[i + 1];
 
-      // حوّل للـ 12-hour
-      const to12Hour = (h) => (h >= 13 ? h - 12 : h === 0 ? 12 : h);
-      const slotStart12 = to12Hour(parseInt(slotStart.split(":")[0]));
+      const slotStartMins = timeToMinutes(slotStart);
+      const slotEndMins = timeToMinutes(slotEnd);
 
       // اجمع المحاضرات اللي في هذا الوقت لكل يوم
       const items = timeTablesByDoctor.filter((lecture) => {
-        const lectureStart12 = to12Hour(
-          parseInt(lecture.start_time.split(":")[0]),
-        );
-        const lectureEnd12 = to12Hour(parseInt(lecture.end_time.split(":")[0]));
+        const lectureStartMins = timeToMinutes(lecture.start_time);
+        const lectureEndMins = timeToMinutes(lecture.end_time);
 
-        return lectureStart12 <= slotStart12 && lectureEnd12 > slotStart12;
+        return lectureStartMins <= slotStartMins && lectureEndMins > slotStartMins;
       });
 
       rows.push({
