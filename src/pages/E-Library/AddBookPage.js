@@ -189,7 +189,7 @@ export default function AddBookPage() {
                 error={formik.touched.faculty_id && !!formik.errors.faculty_id}
               >
                 {facultyData?.faculties?.map(el => (
-                  <MenuItem key={el.id} value={el.id}>{isArabic ? el.title_ar : el.title_en}</MenuItem>
+                  <MenuItem key={el.id} value={el.id}>{isArabic ? el.title_ar : (el.title_en || el.title_ar)}</MenuItem>
                 ))}
               </VerticalTextFieldSelect>
             </Grid>

@@ -6,7 +6,6 @@ query Faculties {
         id
         serial
         title_ar
-        title_en
         status
         required_dep
         study_years_count
