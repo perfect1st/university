@@ -76,7 +76,7 @@ export default function AddBookPage() {
       try {
         await createLibrary({ variables: { input: payload } });
         notify(t("success"), "success");
-        navigate('/materials');
+        navigate('/ELibrary');
       } catch (error) {
         notify(t("error"), "error");
       }
