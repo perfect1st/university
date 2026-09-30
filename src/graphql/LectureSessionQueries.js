@@ -45,7 +45,6 @@ query GetLectureSessionById($id: ID!) {
         faculty_id {
             id
             title_ar
-            title_en
             status
             required_dep
             study_years_count
@@ -178,7 +177,6 @@ query LectureSessionsByDoctor(
             faculty_id {
                 id
                 title_ar
-                title_en
                 status
                 required_dep
                 study_years_count
@@ -256,6 +254,7 @@ query LectureSessionsByStudent(
         total
         lectureSessions {
             id
+            serial
             study_year
             lecture_date
             lecture_videos
@@ -268,6 +267,7 @@ query LectureSessionsByStudent(
             updatedAt
             timetable_id {
                 id
+                serial
                 day
                 start_time
                 end_time
@@ -275,11 +275,64 @@ query LectureSessionsByStudent(
                 status
                 createdAt
                 updatedAt
+                main_time_table_id {
+                    id
+                    serial
+                    number
+                    title_ar
+                    title_en
+                    study_year
+                    status
+                    createdAt
+                    updatedAt
+                }
+                academy_term_id {
+                    id
+                    serial
+                    title_ar
+                    title_en
+                    status
+                    study_year
+                    current_year
+                    term_number
+                    min_study_hours
+                    max_study_hours
+                }
+                material_id {
+                    id
+                    serial
+                    title_ar
+                    title_en
+                    status
+                    fullmark_degree
+                    success_degree
+                    material_hours
+                    file
+                    createdAt
+                    updatedAt
+                }
+                doctor_id {
+                    id
+                    serial
+                    username
+                    fullname
+                    email
+                    mobile
+                    role
+                    status
+                    profile_image
+                    qid_number
+                    is_inside_yemen
+                    signature
+                    signature_image
+                    createdAt
+                    updatedAt
+                }
             }
             faculty_id {
                 id
+                serial
                 title_ar
-                title_en
                 status
                 required_dep
                 study_years_count
@@ -288,6 +341,7 @@ query LectureSessionsByStudent(
             }
             faculty_department_id {
                 id
+                serial
                 title_ar
                 title_en
                 status
@@ -296,6 +350,7 @@ query LectureSessionsByStudent(
             }
             academy_term_id {
                 id
+                serial
                 title_ar
                 title_en
                 status
@@ -307,17 +362,20 @@ query LectureSessionsByStudent(
             }
             material_id {
                 id
+                serial
                 title_ar
                 title_en
                 status
                 fullmark_degree
                 success_degree
                 material_hours
+                file
                 createdAt
                 updatedAt
             }
             doctor_id {
                 id
+                serial
                 username
                 fullname
                 email
@@ -327,6 +385,8 @@ query LectureSessionsByStudent(
                 profile_image
                 qid_number
                 is_inside_yemen
+                signature
+                signature_image
                 createdAt
                 updatedAt
             }

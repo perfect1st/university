@@ -22,6 +22,9 @@ import { useLocation } from "react-router-dom";
 import logger from "../../utils/logger";
 
 
+import { useState } from "react";
+import ConfirmModal from "./ConfirmModal";
+
 // const colors=["#e3f2fd","#f3e5f5","#e8f5e9"];
 
 
@@ -48,9 +51,13 @@ export default function ScheduleTable({ rows, canDelete = false }) {
     const location = useLocation();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [selectedToDelete, setSelectedToDelete] = useState(null);
+
     // delete time table
     const [
-        DeleteTimeTable
+        DeleteTimeTable,
+        { loading: deleteLoading }
     ] = useMutation(DELETE_TIME_TABLE_BY_ID, {
         refetchQueries: [
             {
@@ -63,7 +70,8 @@ export default function ScheduleTable({ rows, canDelete = false }) {
     });
 
     return (
-        <TableContainer
+        <>
+            <TableContainer
             component={Paper}
             sx={{
                 maxWidth: isMobile ? "80vw" : "100%",
@@ -169,17 +177,8 @@ export default function ScheduleTable({ rows, canDelete = false }) {
                                                         }}
                                                         onClick={async () => {
                                                             if (!canDelete) return;
-                                                            logger.log("row to delete", row);
-
-                                                            const confirm = window.confirm(t("Dashboard.confirm"));
-                                                            if (confirm) {
-                                                                logger.log("bbbbbbbbbbbbbbbb");
-                                                                await DeleteTimeTable({
-                                                                    variables: {
-                                                                        id: foundDay?.id
-                                                                    }
-                                                                })
-                                                            }
+                                                            setSelectedToDelete(foundDay);
+                                                            setDialogOpen(true);
                                                             // logger.log("day", day);
                                                             // logger.log("row[day.key]", row[day.key]);
                                                         }}
@@ -225,5 +224,24 @@ export default function ScheduleTable({ rows, canDelete = false }) {
                 </TableBody>
             </Table>
         </TableContainer>
+        <ConfirmModal
+            dialogOpen={dialogOpen}
+            setDialogOpen={setDialogOpen}
+            title={t("Dashboard.confirm")}
+            content={t("Dashboard.confirm")}
+            isLoading={deleteLoading}
+            onClickAction={async () => {
+                if (selectedToDelete) {
+                    await DeleteTimeTable({
+                        variables: {
+                            id: selectedToDelete.id
+                        }
+                    });
+                    setDialogOpen(false);
+                    setSelectedToDelete(null);
+                }
+            }}
+        />
+        </>
     );
 }
