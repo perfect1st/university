@@ -264,24 +264,30 @@ const routesData = {
       ]
     },
     {
-      key: "supportTickets",
-      label: { en: "Support Tickets", ar: "الدعم الفني" },
-      path: "/Support",
-    },
-    {
-      key: "supportTicketTypes",
-      label: { en: "Ticket Types & Documents", ar: "أنواع التذاكر والمستندات" },
-      path: "/SupportTicketTypes",
-    },
-    {
-      key: "typeSequences",
-      label: { en: "Approval Sequences", ar: "مسارات الموافقات" },
-      path: "/typeSequences",
-    },
-    {
-      key: "sequenceTrans",
-      label: { en: "Approval Transactions", ar: "حركات الموافقات" },
-      path: "/sequenceTrans",
+      key: "group_support",
+      label: { en: "Technical Support", ar: "الدعم الفني" },
+      children: [
+        {
+          key: "supportTickets",
+          label: { en: "Support Tickets", ar: "تذاكر الدعم" },
+          path: "/Support",
+        },
+        {
+          key: "supportTicketTypes",
+          label: { en: "Ticket Types & Documents", ar: "أنواع التذاكر والمستندات" },
+          path: "/SupportTicketTypes",
+        },
+        {
+          key: "typeSequences",
+          label: { en: "Approval Sequences", ar: "مسارات الموافقات" },
+          path: "/typeSequences",
+        },
+        {
+          key: "supportTicketsSequenceTrans",
+          label: { en: "Approval Transactions", ar: "حركات الموافقات" },
+          path: "/sequenceTrans",
+        }
+      ]
     }
   ],
 
