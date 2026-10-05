@@ -34,6 +34,7 @@ import { GET_REGISTERATION_FORM_BY_USER_ID } from "../../graphql/registerationFo
 import SummerCourseIcon from '@mui/icons-material/School';
 import axios from "axios";
 import { baseURL } from "../../Api/apolloClient";
+import ApprovalTimeline from "../../components/ApprovalTimeline";
 
 export default function EditSupportTicketPage() {
     const theme = useTheme();
@@ -356,6 +357,9 @@ export default function EditSupportTicketPage() {
                             )}
                         </Box>
                     </Paper>
+
+                    {/* Approval Workflow Timeline */}
+                    {ticket && <ApprovalTimeline ticketId={ticket.id} />}
                 </Grid>
 
                 {/* Sidebar Info: Fees and Payment */}

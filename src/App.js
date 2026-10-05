@@ -132,7 +132,12 @@ import SummerCourseAdminPage from "./pages/SummerCourseAdmin/SummerCourseAdminPa
 import Installments from "./pages/Installments/Installments";
 import InstallmentDetails from "./pages/Installments/InstallmentDetails";
 import StudentInstallmentsPage from "./pages/StudentDashboard/StudentInstallments/StudentInstallmentsPage";
-
+import AllTypeSequencesPage from "./pages/TypeSequences/AllTypeSequencesPage";
+import AddTypeSequencePage from "./pages/TypeSequences/AddTypeSequencePage";
+import EditTypeSequencePage from "./pages/TypeSequences/EditTypeSequencePage";
+import AllSequenceTransPage from "./pages/SequenceTrans/AllSequenceTransPage";
+import AddSequenceTransPage from "./pages/SequenceTrans/AddSequenceTransPage";
+import EditSequenceTransPage from "./pages/SequenceTrans/EditSequenceTransPage";
 
 // Public Site Config Pages
 import PrivacyPolicy from "./pages/Home/PrivacyPolicy";
@@ -1303,6 +1308,20 @@ function App() {
                         <EditSupportTicketTypePage />
                       </MainLayout>
                     } />
+                  </Route>
+
+                  {/* Approval Sequences (TypeSequences) */}
+                  <Route path="/typeSequences">
+                    <Route index element={<MainLayout isLoggedIn={true}><AllTypeSequencesPage /></MainLayout>} />
+                    <Route path="add" element={<MainLayout isLoggedIn={true}><AddTypeSequencePage /></MainLayout>} />
+                    <Route path="details/:id" element={<MainLayout isLoggedIn={true}><EditTypeSequencePage /></MainLayout>} />
+                  </Route>
+
+                  {/* Approval Transactions (SequenceTrans) */}
+                  <Route path="/sequenceTrans">
+                    <Route index element={<MainLayout isLoggedIn={true}><AllSequenceTransPage /></MainLayout>} />
+                    <Route path="add" element={<MainLayout isLoggedIn={true}><AddSequenceTransPage /></MainLayout>} />
+                    <Route path="details/:id" element={<MainLayout isLoggedIn={true}><EditSequenceTransPage /></MainLayout>} />
                   </Route>
 
                   {/* Summer Course Admin */}

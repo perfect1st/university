@@ -272,6 +272,16 @@ const routesData = {
       key: "supportTicketTypes",
       label: { en: "Ticket Types & Documents", ar: "أنواع التذاكر والمستندات" },
       path: "/SupportTicketTypes",
+    },
+    {
+      key: "typeSequences",
+      label: { en: "Approval Sequences", ar: "مسارات الموافقات" },
+      path: "/typeSequences",
+    },
+    {
+      key: "sequenceTrans",
+      label: { en: "Approval Transactions", ar: "حركات الموافقات" },
+      path: "/sequenceTrans",
     }
   ],
 
