@@ -61,7 +61,7 @@ export default function AddTypeSequencePage() {
       SupportTicketTypeId: Yup.string().required(isArabic ? "مطلوب" : "Required"),
       job_title_id: Yup.string().required(isArabic ? "مطلوب" : "Required"),
       arrange: Yup.number().required(isArabic ? "مطلوب" : "Required").positive().integer(),
-      period_time_per_day: Yup.string().required(isArabic ? "مطلوب" : "Required"),
+      period_time_per_day: Yup.number().required(isArabic ? "مطلوب" : "Required").min(0),
     }),
     onSubmit: async (values) => {
       try {
@@ -71,7 +71,7 @@ export default function AddTypeSequencePage() {
               SupportTicketTypeId: values.SupportTicketTypeId,
               job_title_id: values.job_title_id,
               arrange: Number(values.arrange),
-              period_time_per_day: values.period_time_per_day,
+              period_time_per_day: Number(values.period_time_per_day),
             },
           },
         });
@@ -163,10 +163,10 @@ export default function AddTypeSequencePage() {
             {/* Period Time */}
             <Grid item xs={12} md={6}>
               <VerticalTextField
-                title={isArabic ? "المدة (تاريخ / وقت)" : "Period Time (Date)"}
+                title={isArabic ? "المدة المسموحة (بالأيام)" : "Allowed Duration (Days)"}
                 fieldName="period_time_per_day"
                 fieldID="period_time_per_day"
-                type="date"
+                type="number"
                 value={formik.values.period_time_per_day}
                 onChange={formik.handleChange}
                 error={formik.touched.period_time_per_day && Boolean(formik.errors.period_time_per_day)}
