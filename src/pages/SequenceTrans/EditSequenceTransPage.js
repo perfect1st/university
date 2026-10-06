@@ -187,9 +187,9 @@ export default function EditSequenceTransPage() {
           </Grid>
 
           <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end", gap: 2 }}>
-            <Button variant="outlined" onClick={() => navigate(-1)} disabled={updating}>
+            {/* <Button variant="outlined" onClick={() => navigate(-1)} disabled={updating}>
               {t("cancel") || "إلغاء"}
-            </Button>
+            </Button> */}
             <SubmitButton loading={updating} t={t} />
           </Box>
         </form>

@@ -169,11 +169,11 @@ export default function EditSupportTicketPage() {
     const isSummerCourse = typeIdentifier.includes('summer') || typeIdentifier.includes('صيفي');
     const isMaterialEquivalence = typeIdentifier.includes('equivalence') || typeIdentifier.includes('معادلة');
 
-    const isUnivCard = ticket?.type === 'university_card' || typeIdentifier.includes('card') || typeIdentifier.includes('بطاقة') || typeIdentifier.includes('كارنيه');
-    const isGradCert = ticket?.type === 'graduation_certificate' || (typeIdentifier.includes('graduation') && typeIdentifier.includes('cert')) || typeIdentifier.includes('تخرج');
-    const isSuccessStatement = ticket?.type === 'success_statement' || typeIdentifier.includes('transcript') || typeIdentifier.includes('success') || typeIdentifier.includes('نجاح') || typeIdentifier.includes('درجات');
-    const isRegSuspension = ticket?.type === 'registration_suspension' || typeIdentifier.includes('suspension') || typeIdentifier.includes('إيقاف قيد');
-    const isAffidavit = ticket?.type === 'university_certificate' || isSuccessStatement || isRegSuspension || ticket?.type === 'graduation_enrollment';
+    const isUnivCard = ticket?.ticket_type_id?.documentType === 'university_card' || ticket?.type === 'university_card' || typeIdentifier.includes('card') || typeIdentifier.includes('بطاقة') || typeIdentifier.includes('كارنيه');
+    const isGradCert = ticket?.ticket_type_id?.documentType === 'graduation_certificate' || ticket?.type === 'graduation_certificate' || (typeIdentifier.includes('graduation') && typeIdentifier.includes('cert')) || typeIdentifier.includes('تخرج');
+    const isSuccessStatement = ticket?.ticket_type_id?.documentType === 'success_statement' || ticket?.type === 'success_statement' || typeIdentifier.includes('transcript') || typeIdentifier.includes('success') || typeIdentifier.includes('نجاح') || typeIdentifier.includes('درجات');
+    const isRegSuspension = ticket?.ticket_type_id?.documentType === 'registration_suspension' || ticket?.type === 'registration_suspension' || typeIdentifier.includes('suspension') || typeIdentifier.includes('إيقاف قيد');
+    const isAffidavit = ticket?.ticket_type_id?.documentType === 'university_certificate' || ticket?.type === 'university_certificate' || isSuccessStatement || isRegSuspension || ticket?.type === 'graduation_enrollment';
 
     return (
         <Box sx={{ p: 3, backgroundColor: "background.paper", minHeight: "100vh" }}>

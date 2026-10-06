@@ -21,17 +21,6 @@ export const GET_TYPE_SEQUENCES = gql`
               requires_fee
               createdAt
               updatedAt
-              fees {
-                  id
-                  serial
-                  title_ar
-                  title_en
-                  inside_yemen_value
-                  outside_yemen_value
-                  createdAt
-                  updatedAt
-                  status
-              }
           }
           job_title_id {
               id
@@ -475,17 +464,6 @@ export const UPDATE_SEQUENCE_TRANS = gql`
                   requires_fee
                   createdAt
                   updatedAt
-                  fees {
-                      id
-                      serial
-                      title_ar
-                      title_en
-                      inside_yemen_value
-                      outside_yemen_value
-                      createdAt
-                      updatedAt
-                      status
-                  }
               }
           }
           type_sequence_id {

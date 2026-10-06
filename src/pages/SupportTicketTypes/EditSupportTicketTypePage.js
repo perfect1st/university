@@ -21,7 +21,7 @@ import { useMutation, useQuery } from "@apollo/client/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Header from "../../components/PageHeader/header";
-import HorizentalTextField from "../../components/Utilities/HorizentalTextField";
+import HorizentalTextField, { HorizentalTextFieldSelect } from "../../components/Utilities/HorizentalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import LoadingPage from "../../components/LoadingComponent";
 import NoPermissionPage from "../../components/NoPermissionPage";
@@ -86,6 +86,7 @@ export default function EditSupportTicketTypePage() {
           label_en: values.label_en.trim(),
           requires_fee: values.requires_fee,
           fees: values.requires_fee ? values.fees : [],
+            documentType: values.documentType,
         };
 
         await updateSupportTicketType({
@@ -180,6 +181,27 @@ export default function EditSupportTicketTypePage() {
           helperText={formik.touched.label_en && formik.errors.label_en}
           isDisabled={!update}
         />
+
+        
+        {/* Document Type */}
+        <HorizentalTextFieldSelect
+          title={isArabic ? 'نوع الوثيقة' : 'Document Type'}
+          fieldID='documentType'
+          fieldName='documentType'
+          value={formik.values.documentType}
+          onChange={formik.handleChange}
+          error={formik.touched.documentType && Boolean(formik.errors.documentType)}
+          helperText={formik.touched.documentType && formik.errors.documentType}
+        >
+          <MenuItem value="">{isArabic ? "بدون وثيقة" : "No Document"}</MenuItem>
+          <MenuItem value="university_card">{isArabic ? 'بطاقة جامعية' : 'University Card'}</MenuItem>
+          <MenuItem value='graduation_certificate'>{isArabic ? 'شهادة تخرج' : 'Graduation Certificate'}</MenuItem>
+          <MenuItem value='success_statement'>{isArabic ? 'بيان نجاح' : 'Success Statement'}</MenuItem>
+          <MenuItem value='registration_suspension'>{isArabic ? 'وقف قيد' : 'Registration Suspension'}</MenuItem>
+          <MenuItem value='university_certificate'>{isArabic ? 'إفادة' : 'University Certificate'}</MenuItem>
+          <MenuItem value='graduation_enrollment'>{isArabic ? 'إفادة تخرج' : 'Graduation Enrollment'}</MenuItem>
+        </HorizentalTextFieldSelect>
+
 
         {/* Requires Fee Switch */}
         <Box

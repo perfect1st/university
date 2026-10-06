@@ -103,7 +103,8 @@ export default function AllSequenceTransPage() {
 
   const handleDetailsClick = (row) => {
     if (!update) return notify(t("no_permission.title"), "error");
-    navigate(`details/${row.id}`, { state: row });
+    const originalItem = filteredList.find(item => item.id === row.id) || row;
+    navigate(`details/${row.id}`, { state: originalItem });
   };
 
   const openDeleteModal = (row) => {

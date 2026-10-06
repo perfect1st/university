@@ -21,7 +21,7 @@ import { useMutation, useQuery } from "@apollo/client/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Header from "../../components/PageHeader/header";
-import VerticalTextField from "../../components/Utilities/VerticalTextField";
+import VerticalTextField, { VerticalTextFieldSelect } from "../../components/Utilities/VerticalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
 import LoadingPage from "../../components/LoadingComponent";
 import NoPermissionPage from "../../components/NoPermissionPage";
@@ -55,6 +55,7 @@ export default function AddSupportTicketTypePage() {
       label_en: "",
       requires_fee: false,
       fees: [],
+        documentType: "",
     },
     validationSchema: Yup.object({
       label_ar: Yup.string().trim().required(t("admissions.errors.required")),
@@ -69,6 +70,7 @@ export default function AddSupportTicketTypePage() {
           label_en: values.label_en.trim(),
           requires_fee: values.requires_fee,
           fees: values.requires_fee ? values.fees : [],
+            documentType: values.documentType,
         };
 
         await createSupportTicketType({
@@ -161,6 +163,27 @@ export default function AddSupportTicketTypePage() {
           error={formik.touched.label_en && Boolean(formik.errors.label_en)}
           helperText={formik.touched.label_en && formik.errors.label_en}
         />
+
+        
+        {/* Document Type */}
+        <VerticalTextFieldSelect
+          title={isArabic ? 'نوع الوثيقة' : 'Document Type'}
+          fieldID='documentType'
+          fieldName='documentType'
+          value={formik.values.documentType}
+          onChange={formik.handleChange}
+          error={formik.touched.documentType && Boolean(formik.errors.documentType)}
+          helperText={formik.touched.documentType && formik.errors.documentType}
+        >
+          <MenuItem value="">{isArabic ? "بدون وثيقة" : "No Document"}</MenuItem>
+          <MenuItem value="university_card">{isArabic ? 'بطاقة جامعية' : 'University Card'}</MenuItem>
+          <MenuItem value='graduation_certificate'>{isArabic ? 'شهادة تخرج' : 'Graduation Certificate'}</MenuItem>
+          <MenuItem value='success_statement'>{isArabic ? 'بيان نجاح' : 'Success Statement'}</MenuItem>
+          <MenuItem value='registration_suspension'>{isArabic ? 'وقف قيد' : 'Registration Suspension'}</MenuItem>
+          <MenuItem value='university_certificate'>{isArabic ? 'إفادة' : 'University Certificate'}</MenuItem>
+          <MenuItem value='graduation_enrollment'>{isArabic ? 'إفادة تخرج' : 'Graduation Enrollment'}</MenuItem>
+        </VerticalTextFieldSelect>
+
 
         {/* Requires Fee Switch */}
         <Box

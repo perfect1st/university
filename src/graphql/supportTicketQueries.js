@@ -13,6 +13,7 @@ mutation CreateSupportTicket($input:CreateSupportTicketInput!) {
             label_ar
             label_en
             requires_fee
+        documentType
         }
         status
         admin_reply
@@ -54,6 +55,7 @@ query GetSupportTicketTypesConfig {
         label_ar
         label_en
         requires_fee
+        documentType
         fees {
             id
             serial
@@ -82,6 +84,7 @@ query GetSupportTicketsByUser($userId: ID!) {
             label_ar
             label_en
             requires_fee
+        documentType
         }
         status
         admin_reply
@@ -124,6 +127,7 @@ mutation UpdateSupportTicket($id:ID!,$input:UpdateSupportTicketInput!) {
             label_ar
             label_en
             requires_fee
+        documentType
         }
         status
         admin_reply
@@ -159,6 +163,7 @@ query GetSupportTickets {
             label_ar
             label_en
             requires_fee
+        documentType
         }
         status
         admin_reply
@@ -200,6 +205,7 @@ query GetSupportTicketById($id: ID!) {
             label_ar
             label_en
             requires_fee
+        documentType
         }
         status
         admin_reply
@@ -288,6 +294,7 @@ query GetSupportTicketTypes {
         label_ar
         label_en
         requires_fee
+        documentType
         fees {
             id
             serial
@@ -311,6 +318,7 @@ query GetSupportTicketTypeById($id: ID!) {
         label_ar
         label_en
         requires_fee
+        documentType
         fees {
             id
             serial
@@ -333,6 +341,7 @@ mutation CreateSupportTicketType($input: CreateSupportTicketTypeInput!) {
         label_ar
         label_en
         requires_fee
+        documentType
         fees {
             id
             serial
@@ -353,6 +362,7 @@ mutation UpdateSupportTicketType($id: ID!, $input: UpdateSupportTicketTypeInput!
         label_ar
         label_en
         requires_fee
+        documentType
         fees {
             id
             serial
