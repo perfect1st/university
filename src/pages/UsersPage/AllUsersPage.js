@@ -29,6 +29,7 @@ import {
   UPDATE_USER_BY_ADMIN,
   FILTERED_USERS,
 } from "../../graphql/userQueriesForAdmin";
+import { GET_ACTIVE_JOB_TITLES } from "../../graphql/jobTitleQueries";
 import { useEffect, useState } from "react";
 import FilterComponent from "../../components/TableComponent/FilterComponent";
 import { TrueOrFalseArr, userRules } from "../../constants";
@@ -51,6 +52,11 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
   const { data: { users } = {}, loading: allUsersLoading } = useQuery(
     GET_ALL_USERES_FOR_ADMIN,
     { fetchPolicy: "network-only" },
+  );
+
+  const { data: { getActiveJobTitles: jobTitles = [] } = {} } = useQuery(
+    GET_ACTIVE_JOB_TITLES,
+    { fetchPolicy: "network-only" }
   );
 
   const [
@@ -86,6 +92,9 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
       variablesObj.status =
         searchParams.get("status") === "true" ? true : false;
     if (searchParams.get("role")) variablesObj.role = searchParams.get("role");
+    if (searchParams.get("job_title_id") && searchParams.get("job_title_id") !== "0") {
+      variablesObj.job_title_id = searchParams.get("job_title_id");
+    }
 
     FilteredPagedUsers({ variables: variablesObj });
   }, [searchParams]);
@@ -235,6 +244,12 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
       newParams.delete("role");
     }
 
+    if (filterOBJ.job_title_id && filterOBJ.job_title_id !== "0") {
+      newParams.set("job_title_id", filterOBJ.job_title_id);
+    } else {
+      newParams.delete("job_title_id");
+    }
+
     newParams.delete("page"); // Reset page to 1 when filters change
     setSearchParams(newParams);
   };
@@ -318,6 +333,9 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
             selectKey={"role"}
             selectOptions={userRules}
             select2Label={"Dashboard.userType"}
+            selectKey2={"job_title_id"}
+            selectOptions2={jobTitles}
+            select2Label2={isArabic ? "المسمى الوظيفي" : "Job Title"}
             onFilterChange={onFilterChange}
             t={t}
           />

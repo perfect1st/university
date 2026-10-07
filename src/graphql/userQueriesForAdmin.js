@@ -182,6 +182,7 @@ export const FILTERED_USERS = gql`
     $status: Boolean
     $role: String
     $search: String
+    $job_title_id: ID
   ) {
     filteredPagedUsers(
       limit: $limit
@@ -189,6 +190,7 @@ export const FILTERED_USERS = gql`
       status: $status
       role: $role
       search: $search
+      job_title_id: $job_title_id
     ) {
       total
       users {

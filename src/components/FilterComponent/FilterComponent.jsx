@@ -13,6 +13,7 @@ const FilterComponent = ({
   initialFilters = {},
   userTypeOptions = ["Admin", "student", "accountant"],
   statusOptions = ["active", "inActive"],
+  jobTitleOptions = [],
 }) => {
   const theme = useTheme();
   const { t, i18n } = useTranslation();
@@ -40,6 +41,7 @@ const FilterComponent = ({
     search: initialFilters.keyword || "",
     role: initialFilters.role || "",
     status: initialFilters.status || "",
+    job_title_id: initialFilters.job_title_id || "",
   });
 
   // Sync internal state when initialFilters change (e.g., URL changes)
@@ -48,8 +50,9 @@ const FilterComponent = ({
       search: initialFilters.keyword || "",
       role: initialFilters.role || "",
       status: initialFilters.status || "",
+      job_title_id: initialFilters.job_title_id || "",
     });
-  }, [initialFilters.keyword, initialFilters.role, initialFilters.status]);
+  }, [initialFilters.keyword, initialFilters.role, initialFilters.status, initialFilters.job_title_id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,12 +61,12 @@ const FilterComponent = ({
 
   const handleSubmit = () => {
     if (typeof onSearch === "function") {
-      onSearch({ keyword: filters.search, role: filters.role, status: filters.status });
+      onSearch({ keyword: filters.search, role: filters.role, status: filters.status, job_title_id: filters.job_title_id });
     }
   };
 
   const handleCancelFilters = () => {
-    const empty = { search: "", role: "", status: "" };
+    const empty = { search: "", role: "", status: "", job_title_id: "" };
     setFilters(empty);
     if (typeof onSearch === "function") {
       onSearch(empty);
@@ -156,6 +159,35 @@ const FilterComponent = ({
             ))}
           </CustomTextField>
         </Grid>
+
+        {/* Job Title Select (Only if options provided) */}
+        {jobTitleOptions && jobTitleOptions.length > 0 && (
+          <Grid item xs={12} sm={3} md={2}>
+            <CustomTextField
+              select
+              fullWidth
+              size="small"
+              label={t("Job Title")}
+              name="job_title_id"
+              value={filters.job_title_id || ""}
+              onChange={handleChange}
+              variant="outlined"
+              isRtl={isArabic}
+              SelectProps={{
+                IconComponent: (props) => <ArrowDropDown {...props} sx={{ left: isArabic ? 8 : "auto", right: isArabic ? "auto" : 8, position: "absolute" }} />,
+                MenuProps: { PaperProps: { style: { maxHeight: 250 } } },
+              }}
+              sx={inputSx}
+            >
+              <MenuItem value="">{t("All")}</MenuItem>
+              {jobTitleOptions.map((jt) => (
+                <MenuItem key={jt.id} value={jt.id}>
+                  {isArabic ? jt.name_ar : jt.name_en}
+                </MenuItem>
+              ))}
+            </CustomTextField>
+          </Grid>
+        )}
 
         {/* Buttons */}
         <Grid item xs={12} sm={6} md={1}>

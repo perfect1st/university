@@ -69,6 +69,7 @@ export default function EditSupportTicketTypePage() {
     initialValues: {
       label_ar: currentType?.label_ar || "",
       label_en: currentType?.label_en || "",
+      documentType: currentType?.documentType || "",
       requires_fee: Boolean(currentType?.requires_fee),
       fees: (currentType?.fees || []).map((f) => (typeof f === "string" ? f : f.id)),
     },

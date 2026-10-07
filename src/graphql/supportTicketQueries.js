@@ -381,3 +381,29 @@ mutation DeleteSupportTicketType($id: ID!) {
 }
 `;
 
+
+export const GET_SEQUENCE_TRANS_BY_TICKET = gql`
+  query GetSupportTicketsSequenceTransByTicket($ticketId: ID!) {
+    getSupportTicketsSequenceTransByTicket(ticketId: $ticketId) {
+      id
+      status
+      rejection_reason
+      is_approved
+      approved_datetime
+      type_sequence_id {
+        id
+        arrange
+        job_title_id {
+          name_ar
+          name_en
+        }
+      }
+      user_id {
+        id
+        fullname
+        signature
+      }
+    }
+  }
+`;
+

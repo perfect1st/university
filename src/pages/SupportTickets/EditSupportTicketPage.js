@@ -35,6 +35,7 @@ import SummerCourseIcon from '@mui/icons-material/School';
 import axios from "axios";
 import { baseURL } from "../../Api/apolloClient";
 import ApprovalTimeline from "../../components/ApprovalTimeline";
+import DocumentSignaturesFooter from "../../components/DocumentSignaturesFooter";
 
 export default function EditSupportTicketPage() {
     const theme = useTheme();
@@ -506,6 +507,9 @@ export default function EditSupportTicketPage() {
                                     registrationData={registrationData}
                                 />
                             )}
+
+                            {/* Signatures Footer */}
+                            <DocumentSignaturesFooter ticketId={ticket.id} />
                         </Paper>
                     </Grid>
                 )}
