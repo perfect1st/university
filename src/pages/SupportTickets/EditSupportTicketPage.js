@@ -13,7 +13,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import HorizentalTextField from "../../components/Utilities/HorizentalTextField";
 import SubmitButton from "../../components/Utilities/SubmitButton";
-import { GET_SUPPORT_TICKET_BY_ID, UPDATE_SUPPORT_TICKET_BY_ID, REPLY_SUPPORT_TICKET } from "../../graphql/supportTicketQueries";
+import { GET_SUPPORT_TICKET_BY_ID, UPDATE_SUPPORT_TICKET_BY_ID, REPLY_SUPPORT_TICKET, GET_SEQUENCE_TRANS_BY_TICKET } from "../../graphql/supportTicketQueries";
 import { INITIATE_ONLINE_PAYMENT } from "../../graphql/transactionQueries";
 import { ticketTypes } from "../../constants";
 import logger from "../../utils/logger";
@@ -66,6 +66,14 @@ export default function EditSupportTicketPage() {
     });
 
     const registrationData = regData?.getRegisterFormByUserId;
+
+    const { data: sequenceData } = useQuery(GET_SEQUENCE_TRANS_BY_TICKET, {
+        variables: { ticketId: id },
+        skip: !id
+    });
+
+    const sequenceSteps = sequenceData?.getSupportTicketsSequenceTransByTicket || [];
+    const isFullyApproved = sequenceSteps.length > 0 && sequenceSteps.every(step => step.status === 'approved' || step.is_approved);
 
     const handleAdminAttachmentUpload = async (e) => {
         const file = e.target.files?.[0];
@@ -484,32 +492,46 @@ export default function EditSupportTicketPage() {
                                 {isArabic ? "المستندات المتاحة للطباعة" : "Printable Documents"}
                             </Typography>
 
-                            {isUnivCard && (
-                                <UniversityCard studentData={ticket.user_id} registrationData={registrationData} />
-                            )}
+                            {isFullyApproved ? (
+                                <>
+                                    {isUnivCard && (
+                                        <UniversityCard studentData={ticket.user_id} registrationData={registrationData} />
+                                    )}
 
-                            {isGradCert && (
-                                <GraduationCertificate studentId={ticket.user_id?.id} />
-                            )}
+                                    {isGradCert && (
+                                        <GraduationCertificate studentId={ticket.user_id?.id} />
+                                    )}
 
-                            {isSuccessStatement && !isGradCert && (
-                                <AcademicTranscript studentId={ticket.user_id?.id} registrationData={registrationData} />
-                            )}
+                                    {isSuccessStatement && !isGradCert && (
+                                        <AcademicTranscript studentId={ticket.user_id?.id} registrationData={registrationData} />
+                                    )}
 
-                            {isRegSuspension && (
-                                <GraduationEnrollmentStatement studentData={ticket.user_id} registrationData={registrationData} />
-                            )}
+                                    {isRegSuspension && (
+                                        <GraduationEnrollmentStatement studentData={ticket.user_id} registrationData={registrationData} />
+                                    )}
 
-                            {isAffidavit && (
-                                <StudentFormalAffidavit
-                                    ticketType={ticket.type || "university_certificate"}
-                                    studentData={ticket.user_id}
-                                    registrationData={registrationData}
-                                />
-                            )}
+                                    {isAffidavit && (
+                                        <StudentFormalAffidavit
+                                            ticketType={ticket.type || "university_certificate"}
+                                            studentData={ticket.user_id}
+                                            registrationData={registrationData}
+                                        />
+                                    )}
 
-                            {/* Signatures Footer */}
-                            <DocumentSignaturesFooter ticketId={ticket.id} />
+                                    {/* Signatures Footer */}
+                                    <DocumentSignaturesFooter ticketId={ticket.id} />
+                                </>
+                            ) : (
+                                <Box sx={{ p: 3, textAlign: 'center', bgcolor: '#fff3cd', color: '#856404', borderRadius: 2 }}>
+                                    <HourglassEmptyIcon sx={{ fontSize: 40, mb: 1 }} />
+                                    <Typography variant="subtitle1" fontWeight="bold">
+                                        {isArabic ? "بانتظار موافقة الإدارة" : "Waiting for admin approval"}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        {isArabic ? "لا يمكن عرض المستند حتى يتم استكمال جميع الموافقات المطلوبة." : "The document cannot be displayed until all required approvals are completed."}
+                                    </Typography>
+                                </Box>
+                            )}
                         </Paper>
                     </Grid>
                 )}

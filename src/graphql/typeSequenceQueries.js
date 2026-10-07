@@ -176,6 +176,8 @@ export const GET_SEQUENCE_TRANS = gql`
           id
           serial
           is_approved
+          status
+          rejection_reason
           approved_datetime
           createdAt
           updatedAt
@@ -237,6 +239,8 @@ export const GET_SEQUENCE_TRANS_BY_ID = gql`
           id
           serial
           is_approved
+          status
+          rejection_reason
           approved_datetime
           createdAt
           updatedAt
@@ -298,6 +302,8 @@ export const GET_SEQUENCE_TRANS_BY_TICKET = gql`
           id
           serial
           is_approved
+          status
+          rejection_reason
           approved_datetime
           createdAt
           updatedAt
@@ -369,6 +375,8 @@ export const CREATE_SEQUENCE_TRANS = gql`
           id
           serial
           is_approved
+          status
+          rejection_reason
           approved_datetime
           createdAt
           updatedAt
@@ -422,6 +430,8 @@ export const UPDATE_SEQUENCE_TRANS = gql`
           id
           serial
           is_approved
+          status
+          rejection_reason
           approved_datetime
           createdAt
           updatedAt

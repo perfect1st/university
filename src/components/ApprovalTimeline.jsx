@@ -70,6 +70,7 @@ export default function ApprovalTimeline({ ticketId }) {
             type_sequence_id: transaction.type_sequence_id?.id,
             user_id: transaction.user_id?.id,
             is_approved: true,
+            status: 'approved',
             approved_datetime: String(new Date().getTime()),
           }
         }
@@ -90,8 +91,15 @@ export default function ApprovalTimeline({ ticketId }) {
       
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
         {sortedTransactions.map((trans, index) => {
-          const isApproved = trans.is_approved;
-          const isMyTurn = !isApproved && trans.user_id?.id === me?.id;
+          const isApproved = trans.is_approved || trans.status === 'approved';
+          
+          // Determine the first step that is not approved
+          const currentPendingStepIndex = sortedTransactions.findIndex(t => !t.is_approved && t.status !== 'approved');
+          const isCurrentStep = index === currentPendingStepIndex;
+          
+          // It's my turn if it's the current pending step and I am the assigned user
+          const isMyTurn = isCurrentStep && trans.user_id?.id === me?.id;
+          
           const stepName = isArabic ? trans.type_sequence_id?.job_title_id?.name_ar : trans.type_sequence_id?.job_title_id?.name_en;
           
           return (
