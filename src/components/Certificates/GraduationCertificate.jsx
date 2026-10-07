@@ -118,7 +118,7 @@ const GraduationCertificate = ({ ticketId, studentId }) => {
 
   const isFailed = transcript?.overall_grade === "راسب" || (typeof transcript?.overall_average === "number" && transcript?.overall_average < 50);
 
-  if (false) {
+  if (isFailed) {
     return (
       <Box sx={{ p: 4, textAlign: "center" }}>
         <Box sx={{ p: 4, borderRadius: 3, bgcolor: "#fff5f5", border: "1px solid #feb2b2", maxWidth: 600, mx: "auto", boxShadow: "0 4px 15px rgba(239, 68, 68, 0.1)" }}>
@@ -250,9 +250,57 @@ const GraduationCertificate = ({ ticketId, studentId }) => {
           </Box>
 
           {/* ABSOLUTE POSITIONED ELEMENTS (Signatures & Barcode) */}
-          <Box sx={{ position: 'absolute', bottom: '0px', left: 0, width: '100%', px: 4, zIndex: 10 }}>
-              {ticketId && <DocumentSignaturesFooter ticketId={ticketId} compact={false} />}
-          </Box>
+          {ticketId && (
+              <DocumentSignaturesFooter 
+                  ticketId={ticketId} 
+                  render={(steps) => (
+                      <Box sx={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '140px', zIndex: 10 }}>
+                          {steps.map((step, index) => {
+                              // Determine position based on index (assuming 3 signatures max typically)
+                              let positionProps = {};
+                              if (index === 0) {
+                                  // Left signature (مدير شؤون الطلاب)
+                                  positionProps = { left: '14%', bottom: '5px' };
+                              } else if (index === 1) {
+                                  // Middle signature (رئيس الجامعة)
+                                  positionProps = { left: '50%', bottom: '35px', transform: 'translateX(-50%)' };
+                              } else if (index === 2) {
+                                  // Right signature (عميد الكلية)
+                                  positionProps = { right: '14%', bottom: '5px' };
+                              }
+
+                              return (
+                                  <Box key={step.id} sx={{ position: 'absolute', textAlign: 'center', width: '180px', ...positionProps }}>
+                                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 0, fontSize: '0.9rem', lineHeight: 1.2 }}>
+                                          {step.type_sequence_id?.job_title_id?.name_ar || step.type_sequence_id?.job_title_id?.name_en || 'المسؤول'}
+                                      </Typography>
+                                      
+                                      {step.user_id?.signature ? (
+                                          <Box sx={{ height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center', my: 0.5 }}>
+                                              <img
+                                                  src={step.user_id.signature.startsWith('http') ? step.user_id.signature : `https://gam3a-backend.onrender.com${step.user_id.signature.startsWith('/') ? '' : '/'}${step.user_id.signature}`}
+                                                  alt="Signature"
+                                                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                                              />
+                                          </Box>
+                                      ) : (
+                                          <Box sx={{ height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                              <Typography variant="body2" color="textSecondary" sx={{ fontSize: '0.75rem' }}>
+                                                  No Signature
+                                              </Typography>
+                                          </Box>
+                                      )}
+
+                                      <Typography variant="body1" sx={{ fontWeight: 500, fontSize: '0.85rem', lineHeight: 1.2 }}>
+                                          {step.user_id?.fullname}
+                                      </Typography>
+                                  </Box>
+                              );
+                          })}
+                      </Box>
+                  )}
+              />
+          )}
 
           <Box sx={{ position: 'absolute', bottom: '20px', left: '30px', zIndex: 10, textAlign: 'center' }}>
               <Barcode 
