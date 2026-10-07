@@ -49,29 +49,22 @@ export default function AllSequenceTransPage() {
   const [selectedItemToDelete, setSelectedItemToDelete] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
 
+  const [pageState, setPageState] = useState(0);
+  const [limit, setLimit] = useState(10);
+  const statusFilter = activeTab === 0 ? "pending" : activeTab === 1 ? "approved" : "rejected";
+
   const { data, loading, refetch } = useQuery(GET_SEQUENCE_TRANS, {
+    variables: { search: searchTerm, status: statusFilter, page: pageState + 1, limit },
     fetchPolicy: "network-only",
   });
 
   const [deleteSequenceTrans, { loading: deleting }] = useMutation(DELETE_SEQUENCE_TRANS);
   const [updateSequenceTrans, { loading: updating }] = useMutation(UPDATE_SEQUENCE_TRANS);
 
-  const rawList = data?.getSupportTicketsSequenceTrans || [];
+  const rawList = data?.getSupportTicketsSequenceTrans?.transactions || [];
+  const totalItems = data?.getSupportTicketsSequenceTrans?.total || 0;
 
-  const filteredList = rawList.filter((item) => {
-    const itemStatus = item.status || (item.is_approved ? 'approved' : 'pending');
-    if (activeTab === 0 && itemStatus !== 'pending') return false;
-    if (activeTab === 1 && itemStatus !== 'approved') return false;
-    if (activeTab === 2 && itemStatus !== 'rejected') return false;
-
-    if (!searchTerm) return true;
-    const term = searchTerm.toLowerCase();
-    return (
-      item.support_ticketsId?.subject?.toLowerCase().includes(term) ||
-      item.user_id?.fullname?.toLowerCase().includes(term) ||
-      item.type_sequence_id?.SupportTicketTypeId?.label_ar?.toLowerCase().includes(term)
-    );
-  });
+  const filteredList = rawList;
 
   const formattedData = filteredList.map((item, index) => ({
     ...item,
@@ -264,6 +257,12 @@ export default function AllSequenceTransPage() {
             columns={columns}
             data={formattedData}
             loading={loading || updating}
+            serverPagination
+            totalItems={totalItems}
+            page={pageState}
+            rowsPerPage={limit}
+            onPageChange={(e, newPage) => setPageState(newPage)}
+            onRowsPerPageChange={(e) => { setLimit(parseInt(e.target.value, 10)); setPageState(0); }}
             handleDetailsClick={handleDetailsClick}
             hasDeleteBtn={canDelete && activeTab === 0}
             handleDeleteClick={openDeleteModal}

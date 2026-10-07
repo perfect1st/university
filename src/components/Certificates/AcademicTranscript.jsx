@@ -6,8 +6,9 @@ import DownloadIcon from "@mui/icons-material/Download";
 import html2pdf from "html2pdf.js";
 import { GET_ACADEMIC_TRANSCRIPT } from "../../graphql/studentDegreeQueries";
 import universityLogo from "../../assets/Logo.png";
+import DocumentSignaturesFooter from "../DocumentSignaturesFooter";
 
-const AcademicTranscript = ({ studentId, registrationData }) => {
+const AcademicTranscript = ({ ticketId, studentId, registrationData }) => {
   const printRef = useRef(null);
 
   const { data, loading, error } = useQuery(GET_ACADEMIC_TRANSCRIPT, {
@@ -709,68 +710,12 @@ const AcademicTranscript = ({ studentId, registrationData }) => {
               <Box>التقدير العام: <Box component="span" sx={{ color: getGradeColor(transcript.overall_grade) }}>{transcript.overall_grade}</Box></Box>
             </Stack>
 
-            {/* Signatures & Stamps */}
-            <Grid container spacing={2} sx={{ mt: 1, textAlign: 'center' }}>
-              <Grid item xs={4}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: '#1a4a72', fontSize: '0.8rem' }}>شؤون الطلاب</Typography>
-                <Box 
-                  sx={{ 
-                    width: '48px', 
-                    height: '48px', 
-                    border: '1.2px dashed #ccc', 
-                    borderRadius: '50%', 
-                    margin: '4px auto 0 auto', 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
-                    color: '#ccc', 
-                    fontSize: '0.6rem' 
-                  }}
-                >
-                  الختم
-                </Box>
-              </Grid>
-              
-              <Grid item xs={4}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: '#1a4a72', fontSize: '0.8rem' }}>عميد الكلية</Typography>
-                <Box 
-                  sx={{ 
-                    width: '48px', 
-                    height: '48px', 
-                    border: '1.2px dashed #ccc', 
-                    borderRadius: '50%', 
-                    margin: '4px auto 0 auto', 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
-                    color: '#ccc', 
-                    fontSize: '0.6rem' 
-                  }}
-                >
-                  الختم
-                </Box>
-              </Grid>
-
-              <Grid item xs={4}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: '#1a4a72', fontSize: '0.8rem' }}>رئيس الجامعة</Typography>
-                <Box 
-                  sx={{ 
-                    width: '48px', 
-                    height: '48px', 
-                    border: '1.2px dashed #ccc', 
-                    borderRadius: '50%', 
-                    margin: '4px auto 0 auto', 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
-                    color: '#ccc', 
-                    fontSize: '0.6rem' 
-                  }}
-                >
-                  الختم
-                </Box>
-              </Grid>
-            </Grid>
+            {/* Dynamic Signatures from Workflow */}
+            {ticketId && (
+              <Box sx={{ width: '100%', mt: 2 }}>
+                  <DocumentSignaturesFooter ticketId={ticketId} />
+              </Box>
+            )}
           </Box>
         </div>
       </Box>

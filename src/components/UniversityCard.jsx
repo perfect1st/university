@@ -5,7 +5,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import html2pdf from "html2pdf.js";
 import useBaseImageUrl from "../hooks/useBaseImageUrl";
 
-const UniversityCard = ({ studentData, registrationData }) => {
+const UniversityCard = ({ ticketId, studentData, registrationData }) => {
   const cardRef = useRef(null);
   const theme = useTheme();
   const baseImageUrl = useBaseImageUrl();

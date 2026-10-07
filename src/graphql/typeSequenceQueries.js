@@ -171,8 +171,10 @@ export const DELETE_TYPE_SEQUENCE = gql`
 // ==========================================
 
 export const GET_SEQUENCE_TRANS = gql`
-  query GetSupportTicketsSequenceTrans {
-      getSupportTicketsSequenceTrans {
+  query GetSupportTicketsSequenceTrans($search: String, $status: String, $page: Int, $limit: Int) {
+      getSupportTicketsSequenceTrans(search: $search, status: $status, page: $page, limit: $limit) {
+          total
+          transactions {
           id
           serial
           is_approved
@@ -229,6 +231,7 @@ export const GET_SEQUENCE_TRANS = gql`
               createdAt
               updatedAt
           }
+      }
       }
   }
 `;

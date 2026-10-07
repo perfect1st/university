@@ -3,8 +3,9 @@ import { Box, Typography, Button, Stack, useTheme, Divider } from "@mui/material
 import PrintIcon from "@mui/icons-material/Print";
 import DownloadIcon from "@mui/icons-material/Download";
 import html2pdf from "html2pdf.js";
+import DocumentSignaturesFooter from "../DocumentSignaturesFooter";
 
-const GraduationEnrollmentStatement = ({ studentData, registrationData }) => {
+const GraduationEnrollmentStatement = ({ ticketId, studentData, registrationData }) => {
   const printRef = useRef(null);
 
   const studentFullName = registrationData
@@ -199,12 +200,18 @@ const GraduationEnrollmentStatement = ({ studentData, registrationData }) => {
             </Typography>
           </Box>
 
-          <Box sx={{ mt: 10, display: 'flex', justifyContent: 'flex-end', px: 4 }}>
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>توقيع المختص</Typography>
-              <Typography variant="body2" sx={{ mt: 1, color: '#666' }}>تاريخ الإصدار: {new Date().toLocaleDateString('ar-SA')}</Typography>
-              <Box sx={{ mt: 6, width: '150px', borderTop: '2px solid #000' }} />
-            </Box>
+          <Box sx={{ mt: 5, width: '100%' }}>
+            {ticketId ? (
+                <DocumentSignaturesFooter ticketId={ticketId} />
+            ) : (
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 4 }}>
+                  <Box sx={{ textAlign: 'center' }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>توقيع المختص</Typography>
+                    <Typography variant="body2" sx={{ mt: 1, color: '#666' }}>تاريخ الإصدار: {new Date().toLocaleDateString('ar-SA')}</Typography>
+                    <Box sx={{ mt: 6, width: '150px', borderTop: '2px solid #000' }} />
+                  </Box>
+                </Box>
+            )}
           </Box>
         </div>
       </Box>

@@ -495,31 +495,29 @@ export default function EditSupportTicketPage() {
                             {isFullyApproved ? (
                                 <>
                                     {isUnivCard && (
-                                        <UniversityCard studentData={ticket.user_id} registrationData={registrationData} />
+                                        <UniversityCard ticketId={ticket.id} studentData={ticket.user_id} registrationData={registrationData} />
                                     )}
 
                                     {isGradCert && (
-                                        <GraduationCertificate studentId={ticket.user_id?.id} />
+                                        <GraduationCertificate ticketId={ticket.id} studentId={ticket.user_id?.id} />
                                     )}
 
                                     {isSuccessStatement && !isGradCert && (
-                                        <AcademicTranscript studentId={ticket.user_id?.id} registrationData={registrationData} />
+                                        <AcademicTranscript ticketId={ticket.id} studentId={ticket.user_id?.id} registrationData={registrationData} />
                                     )}
 
                                     {isRegSuspension && (
-                                        <GraduationEnrollmentStatement studentData={ticket.user_id} registrationData={registrationData} />
+                                        <GraduationEnrollmentStatement ticketId={ticket.id} studentData={ticket.user_id} registrationData={registrationData} />
                                     )}
 
                                     {isAffidavit && (
                                         <StudentFormalAffidavit
+                                            ticketId={ticket.id}
                                             ticketType={ticket.type || "university_certificate"}
                                             studentData={ticket.user_id}
                                             registrationData={registrationData}
                                         />
                                     )}
-
-                                    {/* Signatures Footer */}
-                                    <DocumentSignaturesFooter ticketId={ticket.id} />
                                 </>
                             ) : (
                                 <Box sx={{ p: 3, textAlign: 'center', bgcolor: '#fff3cd', color: '#856404', borderRadius: 2 }}>

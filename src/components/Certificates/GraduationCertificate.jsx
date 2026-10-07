@@ -12,8 +12,9 @@ import rigth3lines from '../../assets/rigth3lines.png';
 import left3lines from '../../assets/left3lines.png';
 import bottomImage from '../../assets/bottomImage.png';
 import useBaseImageUrl from '../../hooks/useBaseImageUrl';
+import DocumentSignaturesFooter from '../DocumentSignaturesFooter';
 
-const GraduationCertificate = ({ studentId }) => {
+const GraduationCertificate = ({ ticketId, studentId }) => {
   const certificateRef = useRef();
   const baseImageUrl = useBaseImageUrl();
   const { data, loading, error } = useQuery(GET_ACADEMIC_TRANSCRIPT, {
@@ -117,7 +118,7 @@ const GraduationCertificate = ({ studentId }) => {
 
   const isFailed = transcript?.overall_grade === "راسب" || (typeof transcript?.overall_average === "number" && transcript?.overall_average < 50);
 
-  if (isFailed) {
+  if (false) {
     return (
       <Box sx={{ p: 4, textAlign: "center" }}>
         <Box sx={{ p: 4, borderRadius: 3, bgcolor: "#fff5f5", border: "1px solid #feb2b2", maxWidth: 600, mx: "auto", boxShadow: "0 4px 15px rgba(239, 68, 68, 0.1)" }}>
@@ -167,7 +168,7 @@ const GraduationCertificate = ({ studentId }) => {
           {/* DECORATIVE IMAGES (Absolute Positioning) */}
           <Box component="img" src={left3lines} sx={{ position: 'absolute', top: '103px', right: '1px', width: '500px', zIndex: 1 }} />
           <Box component="img" src={rigth3lines} sx={{ position: 'absolute', top: '103px', left: '1px', width: '500px', zIndex: 1 }} />
-          <Box component="img" src={bottomImage} sx={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '140px', zIndex: 1 }} />
+          <Box component="img" src={bottomImage} sx={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '153px', zIndex: 1 }} />
 
           {/* CONTENT WRAPPER */}
           <Box sx={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', flexDirection: 'column', p: '20px' }}>
@@ -243,58 +244,28 @@ const GraduationCertificate = ({ studentId }) => {
 
             {/* FOOTER (Signatures & Barcode) */}
             {/* Added pb: 8 to push this up so it doesn't overlap the bottom graphic */}
-           {/* FOOTER SECTION */}
-<Box sx={{ mt: 'auto', px: 4, pb: 2, position: 'relative' }}>
-  
-  {/* Signatures Row: President on Left, Dean on Right */}
-  <Stack 
-    direction="row" 
-    justifyContent="space-between" 
-    alignItems="flex-end" 
-    sx={{ my: 3, px: 2 }}
-  >
-    {/* Left Side: University President */}
-    <Box sx={{ textAlign: 'center', width: '250px', mt:2 }}>
-      <Typography sx={{ fontWeight: 'bold', fontSize: '20px', fontFamily: 'Noto Sans Arabic, Arial' }}>
-        رئيس الجامعة
-      </Typography>
-      <Typography sx={{ fontWeight: 'bold', fontSize: '16px' }}>
-        (University President)
-      </Typography>
-    </Box>
+             {/* FOOTER SECTION (Empty for spacing) */}
+            <Box sx={{ mt: 'auto' }} />
 
-    {/* Right Side: Dean */}
-    <Box sx={{ textAlign: 'center', width: '250px', mt:2 }}>
-      <Typography sx={{ fontWeight: 'bold', fontSize: '20px', fontFamily: 'Noto Sans Arabic, Arial' }}>
-        عميد الكلية
-      </Typography>
-      <Typography sx={{ fontWeight: 'bold', fontSize: '16px' }}>
-        (Dean)
-      </Typography>
-    </Box>
-  </Stack>
+          </Box>
 
-  {/* Barcode: Absolute positioned at the very bottom left corner */}
-<Box sx={{ 
-    position: 'absolute', 
-    bottom: '-25px', // Adjusted to sit nicely above the very bottom edge
-    right: '15px',  // Moved to the RIGHT side as requested
-    textAlign: 'center',
-    zIndex: 5 
-}}>
-    <Barcode 
-        value={user?.serial || '1034578451125'} 
-        format="CODE128" // Standard scannable format
-        width={1.2}      // Thickness of bars
-        height={15}      // Height of bars
-        displayValue={true} // Shows the serial number text underneath the bars
-        fontSize={12}
-        font="monospace"
-        background="transparent"
-        lineColor="#000"
-    />
-</Box>
-</Box>
+          {/* ABSOLUTE POSITIONED ELEMENTS (Signatures & Barcode) */}
+          <Box sx={{ position: 'absolute', bottom: '0px', left: 0, width: '100%', px: 4, zIndex: 10 }}>
+              {ticketId && <DocumentSignaturesFooter ticketId={ticketId} compact={false} />}
+          </Box>
+
+          <Box sx={{ position: 'absolute', bottom: '20px', left: '30px', zIndex: 10, textAlign: 'center' }}>
+              <Barcode 
+                  value={user?.serial || '1034578451125'} 
+                  format="CODE128"
+                  width={1.2}
+                  height={15}
+                  displayValue={true}
+                  fontSize={12}
+                  font="monospace"
+                  background="transparent"
+                  lineColor="#000"
+              />
           </Box>
         </Box>
       </Box>

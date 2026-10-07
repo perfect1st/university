@@ -23,8 +23,9 @@ import QrCode2Icon from "@mui/icons-material/QrCode2";
 import SecurityIcon from "@mui/icons-material/Security";
 import { GET_ACADEMIC_TRANSCRIPT } from "../../graphql/studentDegreeQueries";
 import universityLogo from "../../assets/Logo.png";
+import DocumentSignaturesFooter from "../DocumentSignaturesFooter";
 
-const StudentFormalAffidavit = ({ ticketType, studentData, registrationData }) => {
+const StudentFormalAffidavit = ({ ticketId, ticketType, studentData, registrationData }) => {
   /** Reference to the certificate printable DOM element */
   const printRef = useRef(null);
 
@@ -506,46 +507,52 @@ const StudentFormalAffidavit = ({ ticketType, studentData, registrationData }) =
             <Divider sx={{ my: 3, borderColor: "#000000" }} />
 
             {/* Signature & Seal Area */}
-            <Grid container justifyContent="space-between" alignItems="center" sx={{ mt: 3, px: 2 }}>
-              <Grid item xs={4} sx={{ textAlign: "center" }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#000000" }}>
-                  تاريخ الإصدار والاعتماد
-                </Typography>
-                <Typography variant="body2" sx={{ mt: 1, fontWeight: 700, color: "#000000" }}>
-                  {issueDate}
-                </Typography>
-              </Grid>
+            {ticketId ? (
+              <Box sx={{ mt: 3, px: 2, width: '100%' }}>
+                <DocumentSignaturesFooter ticketId={ticketId} />
+              </Box>
+            ) : (
+              <Grid container justifyContent="space-between" alignItems="center" sx={{ mt: 3, px: 2 }}>
+                <Grid item xs={4} sx={{ textAlign: "center" }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#000000" }}>
+                    تاريخ الإصدار والاعتماد
+                  </Typography>
+                  <Typography variant="body2" sx={{ mt: 1, fontWeight: 700, color: "#000000" }}>
+                    {issueDate}
+                  </Typography>
+                </Grid>
 
-              <Grid item xs={4} sx={{ textAlign: "center" }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#000000", mb: 1 }}>
-                  ختم عمادة القبول والتسجيل
-                </Typography>
-                <Box
-                  sx={{
-                    width: 90,
-                    height: 90,
-                    mx: "auto",
-                    borderRadius: "50%",
-                    border: "2px dashed #000000",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#000000",
-                    fontSize: "0.75rem",
-                    fontWeight: 700,
-                  }}
-                >
-                  مساحة الختم الرسمية
-                </Box>
-              </Grid>
+                <Grid item xs={4} sx={{ textAlign: "center" }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#000000", mb: 1 }}>
+                    ختم عمادة القبول والتسجيل
+                  </Typography>
+                  <Box
+                    sx={{
+                      width: 90,
+                      height: 90,
+                      mx: "auto",
+                      borderRadius: "50%",
+                      border: "2px dashed #000000",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#000000",
+                      fontSize: "0.75rem",
+                      fontWeight: 700,
+                    }}
+                  >
+                    مساحة الختم الرسمية
+                  </Box>
+                </Grid>
 
-              <Grid item xs={4} sx={{ textAlign: "center" }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#000000" }}>
-                  عميد القبول والتسجيل
-                </Typography>
-                <Box sx={{ mt: 6, width: 160, mx: "auto", borderTop: "2px solid #000000" }} />
+                <Grid item xs={4} sx={{ textAlign: "center" }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#000000" }}>
+                    عميد القبول والتسجيل
+                  </Typography>
+                  <Box sx={{ mt: 6, width: 160, mx: "auto", borderTop: "2px solid #000000" }} />
+                </Grid>
               </Grid>
-            </Grid>
+            )}
 
             {/* Security Verification Bar */}
             <Stack

@@ -5,7 +5,7 @@ import { Box, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { baseURL } from '../Api/apolloClient';
 
-const DocumentSignaturesFooter = ({ ticketId }) => {
+const DocumentSignaturesFooter = ({ ticketId, compact = false }) => {
     const { t } = useTranslation();
     const { data, loading } = useQuery(GET_SEQUENCE_TRANS_BY_TICKET, {
         variables: { ticketId },
@@ -22,28 +22,43 @@ const DocumentSignaturesFooter = ({ ticketId }) => {
     if (approvedSteps.length === 0) return null;
 
     return (
-        <Box className="document-footer-signatures" sx={{ display: 'flex', justifyContent: 'space-around', marginTop: '50px', borderTop: '2px solid #eee', paddingTop: '20px' }}>
+        <Box 
+            className="document-footer-signatures" 
+            sx={{ 
+                display: 'flex', 
+                flexDirection: 'row',
+                justifyContent: 'center', 
+                gap: compact ? 0.5 : 2,
+                marginTop: compact ? '2px' : '5px', 
+                // borderTop: compact ? 'none' : '1px solid #ccc', 
+                paddingTop: compact ? '2px' : '5px',
+                flexWrap: 'wrap',
+                width: '100%'
+            }}
+        >
             {approvedSteps.map((step) => (
-                <Box key={step.id} className="signature-block" sx={{ textAlign: 'center', width: '200px' }}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+                <Box key={step.id} className="signature-block" sx={{ textAlign: 'center', minWidth: compact ? '60px' : '120px', flex: 1 }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 0, fontSize: compact ? '0.55rem' : '0.9rem', lineHeight: 1.2 }}>
                         {step.type_sequence_id?.job_title_id?.name_ar || step.type_sequence_id?.job_title_id?.name_en || 'المسؤول'}
                     </Typography>
 
                     {step.user_id?.signature ? (
-                        <img
-                            src={step.user_id.signature.startsWith('/') ? `${baseURL}${step.user_id.signature}` : step.user_id.signature}
-                            alt="Signature"
-                            style={{ width: '150px', height: 'auto', maxHeight: '100px', objectFit: 'contain', margin: '10px auto' }}
-                        />
+                        <Box sx={{ height: compact ? '22px' : '45px', display: 'flex', alignItems: 'center', justifyContent: 'center', my: compact ? 0.5 : 0.5 }}>
+                            <img
+                                src={step.user_id.signature.startsWith('http') ? step.user_id.signature : `${baseURL}${step.user_id.signature.startsWith('/') ? '' : '/'}${step.user_id.signature}`}
+                                alt="Signature"
+                                style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                            />
+                        </Box>
                     ) : (
-                        <Box sx={{ height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Typography variant="body2" color="textSecondary">
+                        <Box sx={{ height: compact ? '22px' : '45px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Typography variant="body2" color="textSecondary" sx={{ fontSize: compact ? '0.5rem' : '0.75rem' }}>
                                 {t('No Signature')}
                             </Typography>
                         </Box>
                     )}
 
-                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                    <Typography variant="body1" sx={{ fontWeight: 500, fontSize: compact ? '0.55rem' : '0.85rem', lineHeight: 1.2 }}>
                         {step.user_id?.fullname}
                     </Typography>
                 </Box>
