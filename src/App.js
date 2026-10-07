@@ -1151,14 +1151,30 @@ function App() {
                         <PromotionPage />
                       </MainLayout>
                     } />
-                    <Route
-                      path="add"
-                      element={
-                        <MainLayout isLoggedIn={true}>
-                          <AddPromotionPage />
-                        </MainLayout>
-                      }
-                    />
+                    <Route path="add" element={
+                      <MainLayout isLoggedIn={true}>
+                        <AddPromotionPage />
+                      </MainLayout>
+                    } />
+                  </Route>
+
+                  {/* موافقات التذاكر */}
+                  <Route path="/sequenceTrans">
+                    <Route index element={
+                      <MainLayout isLoggedIn={true}>
+                        <AllSequenceTransPage />
+                      </MainLayout>
+                    } />
+                    <Route path="add" element={
+                      <MainLayout isLoggedIn={true}>
+                        <AddSequenceTransPage />
+                      </MainLayout>
+                    } />
+                    <Route path="details/:id" element={
+                      <MainLayout isLoggedIn={true}>
+                        <EditSequenceTransPage />
+                      </MainLayout>
+                    } />
                   </Route>
 
                   {/* رسائل اتصل بنا */}
