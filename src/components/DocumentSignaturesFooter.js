@@ -58,9 +58,9 @@ const DocumentSignaturesFooter = ({ ticketId, compact = false }) => {
                         </Box>
                     )}
 
-                    <Typography variant="body1" sx={{ fontWeight: 500, fontSize: compact ? '0.55rem' : '0.85rem', lineHeight: 1.2 }}>
+                    {/* <Typography variant="body1" sx={{ fontWeight: 500, fontSize: compact ? '0.55rem' : '0.85rem', lineHeight: 1.2 }}>
                         {step.user_id?.fullname}
-                    </Typography>
+                    </Typography> */}
                 </Box>
             ))}
         </Box>
