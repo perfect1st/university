@@ -14,7 +14,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import PendingIcon from "@mui/icons-material/Pending";
 
-import { GET_SEQUENCE_TRANS_BY_TICKET, UPDATE_SEQUENCE_TRANS } from "../graphql/typeSequenceQueries";
+import { GET_SEQUENCE_TRANS_BY_TICKET, APPROVE_SEQUENCE } from "../graphql/typeSequenceQueries";
 import notify from "./notify";
 import logger from "../utils/logger";
 import { format } from "date-fns";
@@ -33,7 +33,7 @@ export default function ApprovalTimeline({ ticketId }) {
     skip: !ticketId,
   });
 
-  const [updateSequenceTrans, { loading: updating }] = useMutation(UPDATE_SEQUENCE_TRANS);
+  const [approveSequenceTrans, { loading: updating }] = useMutation(APPROVE_SEQUENCE);
 
   if (loading) {
     return (
@@ -62,17 +62,9 @@ export default function ApprovalTimeline({ ticketId }) {
 
   const handleApprove = async (transaction) => {
     try {
-      await updateSequenceTrans({
+      await approveSequenceTrans({
         variables: {
-          id: transaction.id,
-          input: {
-            support_ticketsId: transaction.support_ticketsId?.id,
-            type_sequence_id: transaction.type_sequence_id?.id,
-            user_id: transaction.user_id?.id,
-            is_approved: true,
-            status: 'approved',
-            approved_datetime: String(new Date().getTime()),
-          }
+          id: transaction.id
         }
       });
       notify(isArabic ? "تم الاعتماد بنجاح!" : "Approved successfully!", "success");

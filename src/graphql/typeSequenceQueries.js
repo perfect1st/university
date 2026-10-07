@@ -527,3 +527,14 @@ export const DELETE_SEQUENCE_TRANS = gql`
       deleteSupportTicketsSequenceTrans(id: $id)
   }
 `;
+
+export const APPROVE_SEQUENCE = gql`
+  mutation ApproveSupportTicketSequence($id: ID!) {
+      approveSupportTicketSequence(id: $id) {
+          id
+          is_approved
+          status
+          approved_datetime
+      }
+  }
+`;
