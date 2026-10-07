@@ -541,3 +541,14 @@ export const APPROVE_SEQUENCE = gql`
       }
   }
 `;
+
+export const REJECT_SEQUENCE = gql`
+  mutation RejectSupportTicketSequence($id: ID!, $reason: String) {
+      rejectSupportTicketSequence(id: $id, reason: $reason) {
+          id
+          is_approved
+          status
+          rejection_reason
+      }
+  }
+`;

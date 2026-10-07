@@ -32,7 +32,9 @@ import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 import {
   GET_SEQUENCE_TRANS,
   DELETE_SEQUENCE_TRANS,
-  UPDATE_SEQUENCE_TRANS
+  UPDATE_SEQUENCE_TRANS,
+  APPROVE_SEQUENCE,
+  REJECT_SEQUENCE
 } from "../../graphql/typeSequenceQueries";
 import logger from "../../utils/logger";
 import { format } from "date-fns";
@@ -41,6 +43,9 @@ export default function AllSequenceTransPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const isArabic = i18n.language === "ar";
+
+  const [approveSequence] = useMutation(APPROVE_SEQUENCE);
+  const [rejectSequence] = useMutation(REJECT_SEQUENCE);
 
   const { view, create, update, delete: canDelete } = usePermissionsByModule("supportTicketsSequenceTrans") || { view: true, create: true, update: true, delete: true };
 
@@ -142,20 +147,10 @@ export default function AllSequenceTransPage() {
 
   const handleApprove = async (row, closeMenu) => {
     try {
-      await updateSequenceTrans({
-        variables: {
-          id: row.id,
-          input: {
-            support_ticketsId: row.support_ticketsId?.id,
-            type_sequence_id: row.type_sequence_id?.id,
-            user_id: row.user_id?.id,
-            is_approved: true,
-            status: 'approved',
-            approved_datetime: String(new Date().getTime()),
-          }
-        }
+      await approveSequence({
+        variables: { id: row.id }
       });
-      notify(isArabic ? "تم الاعتماد بنجاح" : "Approved successfully", "success");
+      notify(isArabic ? "تم القبول بنجاح" : "Approved successfully", "success");
       closeMenu();
       refetch();
     } catch (err) {
@@ -165,17 +160,10 @@ export default function AllSequenceTransPage() {
 
   const handleReject = async (row, closeMenu) => {
     try {
-      await updateSequenceTrans({
-        variables: {
-          id: row.id,
-          input: {
-            support_ticketsId: row.support_ticketsId?.id,
-            type_sequence_id: row.type_sequence_id?.id,
-            user_id: row.user_id?.id,
-            is_approved: false,
-            status: 'rejected',
-          }
-        }
+      const reason = window.prompt(isArabic ? "أدخل سبب الرفض:" : "Enter rejection reason:");
+      if (reason === null) return;
+      await rejectSequence({
+        variables: { id: row.id, reason: reason || "" }
       });
       notify(isArabic ? "تم الرفض" : "Rejected", "success");
       closeMenu();
