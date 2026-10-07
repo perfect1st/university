@@ -11,6 +11,7 @@ const DocumentSignaturesFooter = ({ ticketId }) => {
         fetchPolicy: 'cache-first'
     });
 
+    
     if (loading) return null;
 
     const approvedSteps = data?.getSupportTicketsSequenceTransByTicket?.filter(
