@@ -13,6 +13,7 @@ import left3lines from '../../assets/left3lines.png';
 import bottomImage from '../../assets/bottomImage.png';
 import useBaseImageUrl from '../../hooks/useBaseImageUrl';
 import DocumentSignaturesFooter from '../DocumentSignaturesFooter';
+import { baseURL } from '../../Api/apolloClient';
 
 const GraduationCertificate = ({ ticketId, studentId }) => {
   const certificateRef = useRef();
@@ -278,7 +279,7 @@ const GraduationCertificate = ({ ticketId, studentId }) => {
                                       {step.user_id?.signature ? (
                                           <Box sx={{ height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center', my: 0.5 }}>
                                               <img
-                                                  src={step.user_id.signature.startsWith('http') ? step.user_id.signature : `https://gam3a-backend.onrender.com${step.user_id.signature.startsWith('/') ? '' : '/'}${step.user_id.signature}`}
+                                                  src={step.user_id.signature.startsWith('http') ? step.user_id.signature : `${baseURL}${step.user_id.signature.startsWith('/') ? '' : '/'}${step.user_id.signature}`}
                                                   alt="Signature"
                                                   style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                                               />
