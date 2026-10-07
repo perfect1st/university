@@ -334,7 +334,7 @@ const { view, create, update, delete: canDelete } = usePermissionsByModule("user
             selectOptions={userRules}
             select2Label={"Dashboard.userType"}
             selectKey2={"job_title_id"}
-            selectOptions2={jobTitles}
+            selectOptions2={jobTitles?.map(jt => ({ id: jt.id, title_ar: jt.name_ar, title_en: jt.name_en }))}
             select2Label2={isArabic ? "المسمى الوظيفي" : "Job Title"}
             onFilterChange={onFilterChange}
             t={t}
