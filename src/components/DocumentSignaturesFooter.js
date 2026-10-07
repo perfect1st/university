@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client/react';
 import { GET_SEQUENCE_TRANS_BY_TICKET } from '../graphql/supportTicketQueries';
 import { Box, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { baseURL } from '../Api/apolloClient';
 
 const DocumentSignaturesFooter = ({ ticketId }) => {
     const { t } = useTranslation();
@@ -15,7 +16,7 @@ const DocumentSignaturesFooter = ({ ticketId }) => {
     if (loading) return null;
 
     const approvedSteps = data?.getSupportTicketsSequenceTransByTicket?.filter(
-        (step) => step.status === 'approved'
+        (step) => step.status === 'approved' || (step.is_approved && step.status !== 'rejected')
     ) || [];
 
     if (approvedSteps.length === 0) return null;
@@ -30,7 +31,7 @@ const DocumentSignaturesFooter = ({ ticketId }) => {
 
                     {step.user_id?.signature ? (
                         <img
-                            src={step.user_id.signature}
+                            src={step.user_id.signature.startsWith('/') ? `${baseURL}${step.user_id.signature}` : step.user_id.signature}
                             alt="Signature"
                             style={{ width: '150px', height: 'auto', maxHeight: '100px', objectFit: 'contain', margin: '10px auto' }}
                         />

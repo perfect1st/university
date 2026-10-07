@@ -10,6 +10,9 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
+  Tabs,
+  Tab,
+  MenuItem
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +32,7 @@ import usePermissionsByModule from "../../hooks/getPermissionsByScreen";
 import {
   GET_SEQUENCE_TRANS,
   DELETE_SEQUENCE_TRANS,
+  UPDATE_SEQUENCE_TRANS
 } from "../../graphql/typeSequenceQueries";
 import logger from "../../utils/logger";
 import { format } from "date-fns";
@@ -43,16 +47,23 @@ export default function AllSequenceTransPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedItemToDelete, setSelectedItemToDelete] = useState(null);
+  const [activeTab, setActiveTab] = useState(0);
 
   const { data, loading, refetch } = useQuery(GET_SEQUENCE_TRANS, {
     fetchPolicy: "network-only",
   });
 
   const [deleteSequenceTrans, { loading: deleting }] = useMutation(DELETE_SEQUENCE_TRANS);
+  const [updateSequenceTrans, { loading: updating }] = useMutation(UPDATE_SEQUENCE_TRANS);
 
   const rawList = data?.getSupportTicketsSequenceTrans || [];
 
   const filteredList = rawList.filter((item) => {
+    const itemStatus = item.status || (item.is_approved ? 'approved' : 'pending');
+    if (activeTab === 0 && itemStatus !== 'pending') return false;
+    if (activeTab === 1 && itemStatus !== 'approved') return false;
+    if (activeTab === 2 && itemStatus !== 'rejected') return false;
+
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
     return (
@@ -70,11 +81,18 @@ export default function AllSequenceTransPage() {
     step_arrange: item.type_sequence_id?.arrange,
     job_title_display: isArabic ? item.type_sequence_id?.job_title_id?.name_ar : item.type_sequence_id?.job_title_id?.name_en,
     user_fullname: item.user_id?.fullname,
-    status_display: item.is_approved ? (
+    status_display: (item.status === 'approved' || (item.is_approved && item.status !== 'rejected')) ? (
       <Chip
         icon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
         label={isArabic ? "معتمد" : "Approved"}
         color="success"
+        size="small"
+        variant="outlined"
+      />
+    ) : item.status === 'rejected' ? (
+      <Chip
+        label={isArabic ? "مرفوض" : "Rejected"}
+        color="error"
         size="small"
         variant="outlined"
       />
@@ -129,6 +147,51 @@ export default function AllSequenceTransPage() {
     }
   };
 
+  const handleApprove = async (row, closeMenu) => {
+    try {
+      await updateSequenceTrans({
+        variables: {
+          id: row.id,
+          input: {
+            support_ticketsId: row.support_ticketsId?.id,
+            type_sequence_id: row.type_sequence_id?.id,
+            user_id: row.user_id?.id,
+            is_approved: true,
+            status: 'approved',
+            approved_datetime: String(new Date().getTime()),
+          }
+        }
+      });
+      notify(isArabic ? "تم الاعتماد بنجاح" : "Approved successfully", "success");
+      closeMenu();
+      refetch();
+    } catch (err) {
+      notify(t("error"), "error");
+    }
+  };
+
+  const handleReject = async (row, closeMenu) => {
+    try {
+      await updateSequenceTrans({
+        variables: {
+          id: row.id,
+          input: {
+            support_ticketsId: row.support_ticketsId?.id,
+            type_sequence_id: row.type_sequence_id?.id,
+            user_id: row.user_id?.id,
+            is_approved: false,
+            status: 'rejected',
+          }
+        }
+      });
+      notify(isArabic ? "تم الرفض" : "Rejected", "success");
+      closeMenu();
+      refetch();
+    } catch (err) {
+      notify(t("error"), "error");
+    }
+  };
+
   const fetchAndExport = (type) => {
     try {
       const exportData = filteredList.map((item, i) => ({
@@ -137,7 +200,7 @@ export default function AllSequenceTransPage() {
         [isArabic ? "نوع التذكرة" : "Ticket Type"]: isArabic ? item.type_sequence_id?.SupportTicketTypeId?.label_ar : item.type_sequence_id?.SupportTicketTypeId?.label_en,
         [isArabic ? "الخطوة" : "Step"]: item.type_sequence_id?.arrange,
         [isArabic ? "الموظف" : "Assignee"]: item.user_id?.fullname,
-        [isArabic ? "الحالة" : "Status"]: item.is_approved ? (isArabic ? "معتمد" : "Approved") : (isArabic ? "انتظار" : "Pending"),
+        [isArabic ? "الحالة" : "Status"]: (item.status === 'approved' || item.is_approved) ? (isArabic ? "معتمد" : "Approved") : item.status === 'rejected' ? (isArabic ? "مرفوض" : "Rejected") : (isArabic ? "انتظار" : "Pending"),
         [isArabic ? "التاريخ" : "Date"]: item.approved_datetime ? format(new Date(Number(item.approved_datetime)), "yyyy-MM-dd") : "-",
       }));
 
@@ -189,14 +252,30 @@ export default function AllSequenceTransPage() {
             t={t}
           />
 
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2, mt: 1 }}>
+            <Tabs value={activeTab} onChange={(e, v) => setActiveTab(v)} aria-label="approval tabs">
+              <Tab label={isArabic ? "قيد الانتظار" : "Pending"} />
+              <Tab label={isArabic ? "معتمد" : "Approved"} />
+              <Tab label={isArabic ? "مرفوض" : "Rejected"} />
+            </Tabs>
+          </Box>
+
           <TableComponent
             columns={columns}
             data={formattedData}
-            loading={loading}
+            loading={loading || updating}
             handleDetailsClick={handleDetailsClick}
-            hasDeleteBtn={canDelete}
+            hasDeleteBtn={canDelete && activeTab === 0}
             handleDeleteClick={openDeleteModal}
-            dontShowActions={!update && !canDelete}
+            dontShowActions={activeTab !== 0}
+            renderCustomMenuItems={activeTab === 0 ? (row, closeMenu) => [
+              <MenuItem key="approve" onClick={() => handleApprove(row, closeMenu)} sx={{ color: "success.main" }}>
+                {isArabic ? "قبول" : "Accept"}
+              </MenuItem>,
+              <MenuItem key="reject" onClick={() => handleReject(row, closeMenu)} sx={{ color: "error.main" }}>
+                {isArabic ? "رفض" : "Reject"}
+              </MenuItem>
+            ] : null}
             showStatusChange={false}
             sx={{
               flex: 1,
