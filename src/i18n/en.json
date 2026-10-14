@@ -645,6 +645,7 @@
     "back": "Back",
     "cancel": "Cancel",
     "rejectReceipt": "Reject Receipt",
+    "rejectInstallment": "Reject Installment",
     "approveInstallment": "Approve Installment",
     "directCashPay": "Direct Cash Payment (CASH)",
     "confirmApproveTitle": "Confirm Installment Approval",

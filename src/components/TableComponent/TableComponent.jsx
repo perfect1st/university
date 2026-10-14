@@ -448,9 +448,8 @@ const TableComponent = ({
         {!isInDetails && (
           <MenuItem
             onClick={() => {
-              handleDetailsClick(selectedRow);
-
-              // logger.log('handleDetailsClick',selectedRow);
+              handleDetailsClick?.(selectedRow);
+              handleClose();
             }}
             sx={{
               borderLeft: isArabic

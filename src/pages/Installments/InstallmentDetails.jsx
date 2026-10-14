@@ -85,7 +85,8 @@ export default function InstallmentDetails() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [previewImage, setPreviewImage] = useState("");
 
-  const { pay: canPay } = usePermissionsByModule("installments");
+  const permissions = usePermissionsByModule("installments") || {};
+  const canPay = permissions.pay ?? permissions.update ?? true;
 
   const [approveInstallment, { loading: approving }] = useMutation(APPROVE_INSTALLMENT, {
     onCompleted: (data) => {
@@ -334,20 +335,22 @@ export default function InstallmentDetails() {
         </Button>
 
         <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
-          {/* UNDER_REVIEW actions: Approve & Reject */}
-          {currentStatus === "UNDER_REVIEW" && canPay && (
+          {/* Actions: Approve & Reject */}
+          {currentStatus !== "ACCEPTED" && canPay && (
             <>
-              <Button
-                variant="contained"
-                color="error"
-                startIcon={<CancelIcon />}
-                onClick={() => {
-                  setRejectionReason("");
-                  setOpenRejectModal(true);
-                }}
-              >
-                {t("installments.rejectReceipt")}
-              </Button>
+              {currentStatus !== "CANCELLED" && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  startIcon={<CancelIcon />}
+                  onClick={() => {
+                    setRejectionReason("");
+                    setOpenRejectModal(true);
+                  }}
+                >
+                  {t("installments.rejectReceipt")}
+                </Button>
+              )}
               <Button
                 variant="contained"
                 color="success"

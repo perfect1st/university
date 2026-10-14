@@ -144,12 +144,15 @@ export const APPROVE_INSTALLMENT = gql`
   mutation ApproveInstallment($installment_id: ID!) {
     approveInstallment(installment_id: $installment_id) {
       id
-      status
+      study_year
+      term_number
+      amount
       is_paid
-      transaction_id {
-        id
-        approval_status
-      }
+      status
+      rejection_reason
+      serial
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -161,14 +164,15 @@ export const REJECT_INSTALLMENT = gql`
       rejection_reason: $rejection_reason
     ) {
       id
-      status
+      study_year
+      term_number
+      amount
       is_paid
+      status
       rejection_reason
-      transaction_id {
-        id
-        approval_status
-        rejection_reason
-      }
+      serial
+      createdAt
+      updatedAt
     }
   }
 `;

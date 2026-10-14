@@ -684,6 +684,7 @@
     "back": "رجوع",
     "cancel": "إلغاء",
     "rejectReceipt": "رفض الإيصال",
+    "rejectInstallment": "رفض القسط",
     "approveInstallment": "اعتماد القسط",
     "directCashPay": "سداد نقدي مباشر (CASH)",
     "confirmApproveTitle": "تأكيد اعتماد القسط",
